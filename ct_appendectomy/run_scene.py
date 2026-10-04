@@ -201,6 +201,11 @@ try:
             'success_info':success_info}
         simulation=env.sim
         env.close()
+    # Stage reload for FEM attachments can reset the viewport camera selection.
+    if not a.headless:
+        from omni.kit.viewport.utility import get_active_viewport
+        viewport=get_active_viewport()
+        if viewport: viewport.set_active_camera('/World/Endoscope')
     report['frames']=a.frames
     report['status']='passed'
     (a.out/'report.json').write_text(json.dumps(report,indent=2),encoding='utf-8')

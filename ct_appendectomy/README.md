@@ -43,3 +43,9 @@ With an initialized SimulationApp, instantiate `AppendixRetractionEnv(app, attac
 The handle attaches directly to selected FEM vertices. It is **not a surgical forceps contact model**. Zero gravity, estimated tissue parameters and static surrounding organs make this a controlled retraction benchmark. The mesoappendix and artery are visual meshes, not yet mechanically coupled deformable bodies. Cutting, ligation, perfusion, bleeding, trocar/RCM constraints and full surgical completion remain unimplemented.
 
 `requirements-isaac.lock.txt` records the tested Python 3.11 installation; install with NVIDIA's extra package index. Generated assets, caches and logs remain excluded from Git. Public input data remain in the sibling `appendectomy_lab` folder; the Git checkout alone does not contain these datasets. Provenance is captured by the scene builder.
+
+## Windows desktop launcher
+
+Run `./build-launcher.ps1` from the repository root to build `IsaacSimulator.exe`, then open that executable from the user desktop. The launcher starts the existing Python/Isaac installation without a terminal window and writes diagnostics to ignored `.cache/desktop-launch.log`. It uses the NVIDIA EULA acceptance already established for this local installation. Launching a GUI from an automation execution desktop may create a window invisible on the user desktop; use the desktop launcher in that case.
+
+The interactive runner selects `/World/Endoscope` again after the deformable stage reload. Mouse camera navigation may still change its pose. Restarting the scene restores the authored pose. The desktop launcher was observed opening an actual Isaac window; the final camera-selection adjustment has been syntax checked but has not been re-run in the GUI.
