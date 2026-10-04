@@ -24,7 +24,8 @@ def encode(folder,allow_failed=False):
     if count!=len(frames):raise RuntimeError('Encoded video frame loss')
     (folder/'video_validation.json').write_text(json.dumps({'status':'passed','decoded_frames':count,
         'size':metadata['size'],'fps':metadata['fps'],'nominal_sampling_fps':report['fps'],
-        'simulated_seconds':report['steps']/60,'policy':report['policy'],'learned_policy':report['learned_policy'],
+        'simulated_seconds':report.get('simulated_seconds',report['steps']/report.get('control_hz',60)),
+        'policy':report['policy'],'learned_policy':report['learned_policy'],
         'evaluation_status':report['status']},indent=2))
 
 

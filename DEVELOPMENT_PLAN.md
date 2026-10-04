@@ -107,3 +107,15 @@ Isaac의 960 Hz / 128 iterations CAD 접촉 과제 역시 실패했다.
 근거: `validation/ct-exploration-physics.json`, 실행법:
 `ct_appendectomy/EXPLORATION.md`. 복강 전체 충돌 회피, 시각 기반 탐색,
 다환자 일반화, 전체 수술 및 SOTA 성능은 여전히 미검증이다.
+
+## Rosota CT articulation follow-up (2026-10-04)
+
+Implemented a separate `RosotaCTEnv` with dynamic PhysX FR3 joint drives,
+original Rosota controller feedback at 480 Hz, and a fixed-port scope camera.
+The 90-sample / 1,440-physics-tick free-space commissioning run passed geometry
+and FEM checks. See `ct_appendectomy/ROSOTA_CT_RUNTIME.md` and
+`validation/rosota-ct-articulation.json`. The initial closer tool placement
+failed with tissue inversion and remains a recorded contact failure; withdrawal
+for commissioning is not a fix for grasp/contact. Ports/base poses remain
+engineering placements, both tips are graspers, and full arm/scope collisions,
+force-limited grasp, right cutter and complete policy observations remain open.

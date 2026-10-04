@@ -1,0 +1,178 @@
+{
+  "status": "passed_free_space_commissioning_not_full_contract",
+  "run": {
+    "status": "passed",
+    "learned_policy": false,
+    "policy": "geometric two-tip target tracking",
+    "failure": "",
+    "trocar": {
+      "left": {
+        "offset_m": 1.4732242606619302e-05,
+        "bite_m": -0.0004846463660593504,
+        "tilt_rad": 0.022634522658077864,
+        "insertion_m": 0.12139159391320034,
+        "inward": true,
+        "aperture_clear": true
+      },
+      "right": {
+        "offset_m": 2.0727827133540642e-05,
+        "bite_m": -0.0004786688036972171,
+        "tilt_rad": 0.022722561595742822,
+        "insertion_m": 0.12139898462114554,
+        "inward": true,
+        "aperture_clear": true
+      }
+    },
+    "scope_trocar": {
+      "offset_m": 3.469446951953614e-18,
+      "bite_m": -0.0004999278315774864,
+      "tilt_rad": 0.007598246453519922,
+      "insertion_m": 0.12,
+      "inward": true,
+      "aperture_clear": true,
+      "normal_source": "engineering scope port; not CT wall calibration",
+      "controller": "rigid scope geometric RCM"
+    },
+    "body_fk_error_m": [
+      5.121014741266034e-07,
+      7.701748558580615e-07
+    ],
+    "tissue_health": {
+      "tetrahedra": 29490,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.6426641662967305,
+      "median_volume_ratio": 1.0047061704913673,
+      "total_absolute_volume_ratio": 1.0040911695679153,
+      "p99_absolute_volume_change": 0.09521955789378893
+    },
+    "pin_drift_m": 2.997178605402711e-05,
+    "controller": "original Rosota TipController strict aperture",
+    "plant": "PhysX dynamic articulations with measured joint feedback",
+    "calibrated_ports": false,
+    "right_tool": "grasper; cutter pending",
+    "scope_shaft_collision": false,
+    "commissioning_retreat_m": 0.015,
+    "grasp_assist": false,
+    "rosota_full_contract": false,
+    "rot_rejected": {
+      "left": [
+        0.0,
+        0.0
+      ],
+      "right": [
+        0.0,
+        0.0
+      ]
+    },
+    "distance_m": [
+      1.2153490531809544e-05,
+      3.89279449629549e-06
+    ],
+    "steps": 90,
+    "frames": 17,
+    "fps": 5.0,
+    "control_hz": 30,
+    "physics_hz": 480,
+    "simulated_seconds": 3.0,
+    "physics_ticks_checked": 1440,
+    "tip_excursion_m": [
+      0.003028115490451455,
+      0.0030437600798904896
+    ],
+    "joint_excursion_rad": [
+      0.07006943225860596,
+      0.0690883994102478
+    ],
+    "scope_eye_excursion_m": 0.0009117873810656773,
+    "max_bite_m": {
+      "left": -0.0004537887775533187,
+      "right": -0.0004590197007060884
+    },
+    "max_body_fk_error_m": 1.1898892245454506e-06
+  },
+  "continuous_checks": {
+    "ticks": 1440,
+    "worst_inverted_tetrahedra": 0,
+    "minimum_volume_ratio": 0.6412595440666875,
+    "max_scope_bite_m": -0.0004998577708283029
+  },
+  "failed_close_start": {
+    "failure": "tet_inversion",
+    "trocar": {
+      "left": {
+        "offset_m": 6.730674424338156e-05,
+        "bite_m": -0.00043269411551713575,
+        "tilt_rad": 0.00017522379824966476,
+        "insertion_m": 0.12006915395051913,
+        "inward": true,
+        "aperture_clear": true
+      },
+      "right": {
+        "offset_m": 5.9351337173886665e-05,
+        "bite_m": -0.0004406493571732905,
+        "tilt_rad": 0.0001601268799542873,
+        "insertion_m": 0.12006810797756481,
+        "inward": true,
+        "aperture_clear": true
+      }
+    },
+    "scope_trocar": {
+      "offset_m": 0.0,
+      "bite_m": -0.0004999999999999996,
+      "tilt_rad": 0.0,
+      "insertion_m": 0.12,
+      "inward": true,
+      "aperture_clear": true,
+      "normal_source": "configured tool port frame; not CT wall calibration",
+      "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+    },
+    "body_fk_error_m": [
+      4.243395171212659e-07,
+      4.710465414037392e-07
+    ],
+    "tissue_health": {
+      "tetrahedra": 29490,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 3,
+      "minimum_signed_volume_ratio": -0.35272267814556435,
+      "median_volume_ratio": 1.00671675771149,
+      "total_absolute_volume_ratio": 1.0079201279582704,
+      "p99_absolute_volume_change": 0.1721744916480882
+    },
+    "pin_drift_m": 2.1954611208391557e-05,
+    "controller": "original Rosota TipController strict aperture",
+    "plant": "PhysX dynamic articulations with measured joint feedback",
+    "calibrated_ports": false,
+    "right_tool": "grasper; cutter pending",
+    "scope_shaft_collision": false,
+    "grasp_assist": false,
+    "rosota_full_contract": false
+  },
+  "video": {
+    "status": "passed",
+    "decoded_frames": 17,
+    "size": [
+      640,
+      360
+    ],
+    "fps": 5.0,
+    "nominal_sampling_fps": 5.0,
+    "simulated_seconds": 3.0,
+    "policy": "geometric two-tip target tracking",
+    "learned_policy": false,
+    "evaluation_status": "passed"
+  },
+  "files_sha256": {
+    "ct_appendectomy/rosota_ct_env.py": "6a187b59dfb2adf421beebf112090f22c3c22a115e4d2838d67dee9b62dfae42",
+    "ct_appendectomy/fr3_ct_scene.py": "fd873e678f12b37ed33aa34fe4373d2ef2f0d374ba51b0e4b294bbfbe5d9a4d2",
+    "ct_appendectomy/rosota_controller.py": "e7a9e3f69b398cd236fb19e37630d166b0c5bc7482f46861821a240ad6c7950a",
+    "ct_appendectomy/trocar_scope.py": "622760425e166cc727c5df0aa12befc6efc5461f24335a6d8d5a610d8a53c2ef",
+    "ct_appendectomy/run_rosota_ct.py": "67edd79cb6e0f56209d3ee56f89b157ee2fff23a3c26e5a1083c4dad8caabfbc"
+  },
+  "video_sha256": "442f124e761fa7f1832a582f17a5434ee435618e0922697ccca2a3a9dd20b80f",
+  "scope_unit_tests": 2,
+  "action_validation_unit_tests": 2,
+  "external_upload": false,
+  "immutable_source_files_verified": 42
+}
