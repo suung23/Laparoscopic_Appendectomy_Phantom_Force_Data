@@ -34,3 +34,10 @@ SSH 키, 임시 다운로드 파일, 캐시 및 가상환경은 이 저장소에
 
 GitHub 비공개 저장소: https://github.com/Rosota-Intelligence-Institute/rii-laparoscopic-simulator
 이번 정리는 로컬 커밋이며 원격 업로드는 수행하지 않습니다.
+
+## Isaac CT development
+
+`ct_appendectomy/` contains the CT + appendix Isaac Sim pipeline.
+Run `./run-ct.ps1 -RLSmoke` for GPU FEM and Gymnasium checks.
+Run `./run-ct.ps1 -Retraction -Interactive` for the visible scripted retraction scene.
+See `ct_appendectomy/README.md` for prerequisites, API and limitations.

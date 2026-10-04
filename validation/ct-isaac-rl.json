@@ -1,0 +1,43 @@
+{
+  "engine": "Isaac Sim 5.1 / PhysX",
+  "mode": "FEM retraction + Gymnasium",
+  "appendectomy_completed": false,
+  "appendix_patient_specific": false,
+  "registration_validated": false,
+  "cooked_nodes": 1388,
+  "gravity_m_s2": 0.0,
+  "material_identified": false,
+  "image_std": 49.550276527008684,
+  "finite_nodes": true,
+  "max_node_displacement_m": 0.010608303191769976,
+  "physics_validation": "prescribed 10mm attachment retraction; not contact-based grasp",
+  "pin_drift_m": 6.998559193255687e-05,
+  "grip_lift_m": 0.010005902013053064,
+  "rl_validation": {
+    "status": "passed",
+    "steps_to_success": 101,
+    "return": 2.008882890887194,
+    "reset_max_error": 0.0,
+    "rgb_shape": [
+      360,
+      640,
+      3
+    ],
+    "render_state_error": 0.0,
+    "invalid_action_rejected": true,
+    "terminal_guard": true,
+    "time_limit_truncates": true,
+    "success_info": {
+      "task": "pre-attached appendix retraction",
+      "is_success": true,
+      "appendectomy_completed": false,
+      "appendix_severed": false,
+      "privileged_state_observation": true,
+      "contact_based_grasp": false,
+      "lift_m": 0.010098928909586824,
+      "pin_drift_m": 3.9232800686393164e-05
+    }
+  },
+  "frames": 120,
+  "status": "passed"
+}

@@ -1,0 +1,414 @@
+{
+  "schema_version": 1,
+  "units": "m",
+  "axes": "RAS: +X right, +Y anterior, +Z superior",
+  "ct": {
+    "dataset": "TotalSegmentator v3.0",
+    "case": "s0042",
+    "source": "https://zenodo.org/records/22688904",
+    "license": "CC BY 4.0",
+    "shape": [
+      285,
+      285,
+      332
+    ],
+    "voxel_spacing_mm": [
+      1.5,
+      1.5,
+      1.5
+    ],
+    "ct_sha256": "981d7e9b343e7c168c45dfec23abc7ae37c26235e72ad933c007273d6abe64ee",
+    "slices": 332,
+    "target": [
+      -7.63387553087148,
+      22.317003090368566,
+      21.96865770858641
+    ],
+    "world_from_RAS": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        4.58203125
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -254.75
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -196.41796875
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "processing": "Gaussian sigma=0.65 voxel, marching cubes step_size=2; original volumes retained",
+    "appendix_label": false,
+    "structures": [
+      {
+        "name": "colon",
+        "triangles": 40424,
+        "bounds": [
+          [
+            -156.44809341430664,
+            -172.09633255004883,
+            -133.85165405273438
+          ],
+          [
+            151.8515853881836,
+            185.600830078125,
+            109.85165405273438
+          ]
+        ],
+        "center": [
+          -7.63387553087148,
+          22.317003090368566,
+          21.96865770858641
+        ],
+        "segmentation_sha256": "4592c2aaf92622f881604bbdf218396869a3ae258878fe44f656306eaadc4af3"
+      },
+      {
+        "name": "duodenum",
+        "triangles": 4628,
+        "bounds": [
+          [
+            -42.33915710449219,
+            40.90290069580078,
+            -19.85163116455078
+          ],
+          [
+            64.13909912109375,
+            140.60165405273438,
+            37.851654052734375
+          ]
+        ],
+        "center": [
+          18.663196698711772,
+          82.0755457819127,
+          6.2033109715892065
+        ],
+        "segmentation_sha256": "563d89c4a81411fadef84594c544a22d253e4a07199147041fe0ae4323bccdcb"
+      },
+      {
+        "name": "iliac_artery_left",
+        "triangles": 2112,
+        "bounds": [
+          [
+            -85.13428115844727,
+            -175.05847549438477,
+            -46.573951721191406
+          ],
+          [
+            0.40958404541015625,
+            7.96966552734375,
+            -1.8594818115234375
+          ]
+        ],
+        "center": [
+          -44.25867277269895,
+          -81.58452667597271,
+          -27.169439456479253
+        ],
+        "segmentation_sha256": "b3b5fcb72d88e16224b6b45f086c7a2c17a7bee0afc4c631898dcae084274114"
+      },
+      {
+        "name": "iliac_artery_right",
+        "triangles": 2268,
+        "bounds": [
+          [
+            -1.4326858520507812,
+            -171.6950340270996,
+            -49.84687042236328
+          ],
+          [
+            76.13900756835938,
+            8.596321105957031,
+            1.7906112670898438
+          ]
+        ],
+        "center": [
+          42.36788506250312,
+          -77.44174417862536,
+          -27.660005192536772
+        ],
+        "segmentation_sha256": "e880e287f0d98a0f28f18320edef6da916f8861e25e751ea9d68550c609c2bdd"
+      },
+      {
+        "name": "iliac_vena_left",
+        "triangles": 3344,
+        "bounds": [
+          [
+            -76.63087463378906,
+            -178.09782028198242,
+            -61.847076416015625
+          ],
+          [
+            15.812896728515625,
+            4.243927001953125,
+            -4.148368835449219
+          ]
+        ],
+        "center": [
+          -38.14630628675727,
+          -84.61337250470162,
+          -36.85250957576186
+        ],
+        "segmentation_sha256": "c3f1e24d4f76ab5ff90ce651614d7572d142cde0a2a1b00c656da292f3df67fb"
+      },
+      {
+        "name": "iliac_vena_right",
+        "triangles": 2864,
+        "bounds": [
+          [
+            13.347221374511719,
+            -177.87476921081543,
+            -64.01434707641602
+          ],
+          [
+            69.44359588623047,
+            2.6001434326171875,
+            1.6247634887695312
+          ]
+        ],
+        "center": [
+          44.150650952981394,
+          -88.54821961994003,
+          -35.52846181206527
+        ],
+        "segmentation_sha256": "3869ec16bdb35a4593920a8a7775311878d76e5cd93a957eac6d60c6afc6b40d"
+      },
+      {
+        "name": "iliopsoas_left",
+        "triangles": 16120,
+        "bounds": [
+          [
+            -123.8843994140625,
+            -216.38424396514893,
+            -94.14820861816406
+          ],
+          [
+            -25.152923583984375,
+            124.45035552978516,
+            7.148277282714844
+          ]
+        ],
+        "center": [
+          -71.48778507083237,
+          -47.87232353153423,
+          -43.810831549630336
+        ],
+        "segmentation_sha256": "8a235e8331817a38f864b83f03c51ff39398e19cd546568687f19c5fc5e48669"
+      },
+      {
+        "name": "iliopsoas_right",
+        "triangles": 13036,
+        "bounds": [
+          [
+            19.15143585205078,
+            -210.45706844329834,
+            -100.84328842163086
+          ],
+          [
+            109.84945678710938,
+            132.70033264160156,
+            -8.1917724609375
+          ]
+        ],
+        "center": [
+          61.737551902217035,
+          -25.891264049984805,
+          -53.01716969078409
+        ],
+        "segmentation_sha256": "138c52d87b39c81346442a863ab829a0bc8176ccb48519cd192b903d04c1ac88"
+      },
+      {
+        "name": "liver",
+        "triangles": 38732,
+        "bounds": [
+          [
+            -46.43433380126953,
+            68.61719512939453,
+            -121.85164833068848
+          ],
+          [
+            151.85165405273438,
+            239.24404907226562,
+            100.81395721435547
+          ]
+        ],
+        "center": [
+          68.79835178747899,
+          168.9356116495645,
+          3.1730415394588114
+        ],
+        "segmentation_sha256": "b404be21422a74ee58511031bd6d51ec4dad84fdccdc943c3ae348f809f854e6"
+      },
+      {
+        "name": "small_bowel",
+        "triangles": 48028,
+        "bounds": [
+          [
+            -112.84637832641602,
+            -94.10161972045898,
+            -31.851642608642578
+          ],
+          [
+            109.81690979003906,
+            139.89674377441406,
+            97.54602813720703
+          ]
+        ],
+        "center": [
+          -5.358199139121361,
+          5.648993729949125,
+          31.0816848783455
+        ],
+        "segmentation_sha256": "bbade854edf4a68b14074c85b3bb6752bfba4e4085ef3ce3e400b38e7783307e"
+      },
+      {
+        "name": "urinary_bladder",
+        "triangles": 12652,
+        "bounds": [
+          [
+            -46.851654052734375,
+            -171.88009071350098,
+            -85.14827728271484
+          ],
+          [
+            64.84854125976562,
+            -52.101654052734375,
+            34.148277282714844
+          ]
+        ],
+        "center": [
+          11.362675213619067,
+          -111.30941193536121,
+          -21.48984437220433
+        ],
+        "segmentation_sha256": "e1510a3a7f0ff3e6f157a813c95f68f420999f54ff59c2013461a7616ed44a73"
+      }
+    ]
+  },
+  "atlas_source": "https://lifesciencedb.jp/bp3d/",
+  "atlas_license": "CC BY 4.0 (DBCLS archive license updated 2025-02-27)",
+  "inputs": {
+    "ct.glb": "d5dbec113493bac0b2abf4e01eb6bafafc34641886a071ea2b4200c6b6722b8f",
+    "ct.json": "20d58f88f618283a478a5aff8c7c52ee2581940564f9ff7f8e774d7750db221a",
+    "anatomy.glb": "85bb383edac0175c2792424e9dcd41096f55efc238b8fab908b695ac6f034a16",
+    "anatomy.json": "3a0fce533b17705755722584358c968d5f119511c5a3cb384686244fbbb98057"
+  },
+  "appendix_is_patient_specific": false,
+  "registration_validated": false,
+  "placement_method": "heuristic right inferior colon",
+  "atlas_base_m": [
+    -0.07944491577148438,
+    0.017841136932373047,
+    -0.020901439666748046
+  ],
+  "ct_anchor_m": [
+    0.128426513671875,
+    0.033,
+    -0.02025
+  ],
+  "atlas_translation_m": [
+    0.20787142944335937,
+    0.015158863067626954,
+    0.0006514396667480458
+  ],
+  "camera_eye_m": [
+    0.15400564687362633,
+    0.14997114447797355,
+    0.03467990156816357
+  ],
+  "camera_aim_m": [
+    0.15400564687362633,
+    0.039971144477973564,
+    -0.02532009843183643
+  ],
+  "structures": [
+    {
+      "name": "colon",
+      "source": "CT",
+      "triangles": 40424
+    },
+    {
+      "name": "duodenum",
+      "source": "CT",
+      "triangles": 4628
+    },
+    {
+      "name": "iliac_artery_left",
+      "source": "CT",
+      "triangles": 2112
+    },
+    {
+      "name": "iliac_artery_right",
+      "source": "CT",
+      "triangles": 2268
+    },
+    {
+      "name": "iliac_vena_left",
+      "source": "CT",
+      "triangles": 3344
+    },
+    {
+      "name": "iliac_vena_right",
+      "source": "CT",
+      "triangles": 2864
+    },
+    {
+      "name": "iliopsoas_left",
+      "source": "CT",
+      "triangles": 16120
+    },
+    {
+      "name": "iliopsoas_right",
+      "source": "CT",
+      "triangles": 13036
+    },
+    {
+      "name": "liver",
+      "source": "CT",
+      "triangles": 38732
+    },
+    {
+      "name": "small_bowel",
+      "source": "CT",
+      "triangles": 48028
+    },
+    {
+      "name": "urinary_bladder",
+      "source": "CT",
+      "triangles": 12652
+    },
+    {
+      "name": "appendix",
+      "source": "atlas",
+      "triangles": 7072
+    },
+    {
+      "name": "mesoappendix",
+      "source": "atlas",
+      "triangles": 5552
+    },
+    {
+      "name": "appendicular_artery",
+      "source": "atlas",
+      "triangles": 3472
+    }
+  ],
+  "appearance": "procedural material, not measured tissue colour",
+  "limitations": [
+    "No insufflation model",
+    "No validated anatomy registration",
+    "No cutting or bleeding in exported asset scene"
+  ]
+}
