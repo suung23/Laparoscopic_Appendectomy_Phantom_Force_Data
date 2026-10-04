@@ -72,5 +72,31 @@
       "duplicate_tetrahedra": 28,
       "nonmanifold_faces": 150
     }
-  }
+  },
+  "source_mesh_comparison": {
+    "sim": {
+      "nodes": 6751,
+      "unique_positions": 6632,
+      "tetrahedra": 29490,
+      "duplicate_tetrahedra": 28,
+      "nonmanifold_faces": 150
+    },
+    "coll": {
+      "nodes": 3530,
+      "unique_positions": 3530,
+      "tetrahedra": 11257,
+      "duplicate_tetrahedra": 0,
+      "nonmanifold_faces": 0
+    },
+    "render": {
+      "nodes": 3538,
+      "triangles": 7072,
+      "watertight": true,
+      "winding_consistent": true,
+      "components": 1
+    }
+  },
+  "generation_path": "run_scene.py create_auto_volume_deformable_hierarchy: simulation_hex_mesh_enabled=True, resolution=64",
+  "next_action": "Evaluate conforming simulation mesh generation with hex simulation disabled; regenerate node-dependent attachments, validate mapping and mechanics. Actual contact targeting should use verified collision surface readback, not assume simulation boundary equals collision boundary.",
+  "schema_reference": "https://docs.omniverse.nvidia.com/kit/docs/omni_physics/107.3/dev_guide/deformables_beta/deformable_beta.html"
 }
