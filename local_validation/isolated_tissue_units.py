@@ -25,7 +25,7 @@ app=SimulationApp({'headless':True,'extra_args':['--/app/vulkan=false','--/app/d
     '--/privacy/extraDiagnosticDataOptIn=false','--/crashreporter/enabled=false']+
     [f'--/app/tokens/{k}={v.as_posix()}' for k,v in tokens.items()]})
 report=dict(status='running',mesh_sha256=hashlib.sha256(a.mesh.read_bytes()).hexdigest(),cases=[],
-    tensor_pipeline='torch_cuda' if a.tensor_readback else 'default_cpu',
+    tensor_pipeline='warp_cuda' if a.tensor_readback else 'default_cpu',
     scope='Isolated free fall with zero damping, no attachments, robot, contact or rendering. Not loaded tissue validation.',
     material_si=dict(density_kg_m3=1050,youngs_modulus_pa=12000,poissons_ratio=.45),
     gates=dict(max_translation_removed_rms_m=1e-5,max_acceleration_error_m_s2=.1,minimum_volume_ratio=.99))
@@ -53,7 +53,7 @@ try:
         prim.CreateAttribute('physxDeformableBody:selfCollision',Sdf.ValueTypeNames.Bool).Set(False)
         du.add_deformable_material(stage,'/World/Material',density=1050*mpu**3,youngs_modulus=12000*mpu,poissons_ratio=.45)
         UsdShade.MaterialBindingAPI.Apply(prim).Bind(UsdShade.Material.Get(stage,'/World/Material'),UsdShade.Tokens.weakerThanDescendants,'physics')
-        pipeline=dict(backend='torch',device='cuda:0') if a.tensor_readback else {}
+        pipeline=dict(backend='warp',device='cuda:0') if a.tensor_readback else {}
         sim=SimulationContext(stage_units_in_meters=mpu,physics_dt=1/480,rendering_dt=1/30,**pipeline)
         scene=UsdPhysics.Scene.Get(stage,sim.get_physics_context().prim_path)
         scene.CreateGravityDirectionAttr(Gf.Vec3f(0,-1,0));scene.CreateGravityMagnitudeAttr(9.81/mpu)
@@ -66,10 +66,10 @@ try:
         if a.tensor_readback:
             import omni.physics.tensors as tensors
             from node_correspondence import node_permutation
-            tensor_sim=tensors.create_simulation_view('torch',stage_id=omni.usd.get_context().get_stage_id())
+            tensor_sim=tensors.create_simulation_view('warp',stage_id=omni.usd.get_context().get_stage_id())
             body=tensor_sim.create_volume_deformable_body_view('/World/Tissue')
-            tensor_rest=body.get_rest_nodal_positions().cpu().numpy()[0]
-            tensor_tets=body.get_simulation_element_indices().cpu().numpy()[0]
+            tensor_rest=body.get_rest_nodal_positions().numpy()[0]
+            tensor_tets=body.get_simulation_element_indices().numpy()[0]
             permutation=node_permutation(np.asarray(prim.GetAttribute('omniphysics:restShapePoints').Get()),tets,tensor_rest,tensor_tets)
         rows=[];centers=[]
         for tick in range(181):
@@ -79,7 +79,7 @@ try:
                 rms=float(np.sqrt(np.mean(np.sum((displacement-translation)**2,axis=1))))
                 rows.append(dict(tick=tick,health=tetra_health(rest,points,tets),translation_removed_rms_m=rms))
                 if a.tensor_readback:
-                    tensor_points=body.get_simulation_nodal_positions().cpu().numpy()[0][permutation].astype(float)*mpu
+                    tensor_points=body.get_simulation_nodal_positions().numpy()[0][permutation].astype(float)*mpu
                     discrepancy=np.linalg.norm(tensor_points-points,axis=1)
                     rows[-1].update(tensor_health=tetra_health(rest,tensor_points,tets),
                         tensor_usd_max_difference_m=float(discrepancy.max()),

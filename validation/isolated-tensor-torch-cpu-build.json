@@ -1,0 +1,18 @@
+{
+  "status": "failed",
+  "mesh_sha256": "e601a3601ad3d6ce4414bf4ded7e5389678ac9e2b96931aca7ba31a784ced944",
+  "cases": [],
+  "tensor_pipeline": "torch_cuda",
+  "scope": "Isolated free fall with zero damping, no attachments, robot, contact or rendering. Not loaded tissue validation.",
+  "material_si": {
+    "density_kg_m3": 1050,
+    "youngs_modulus_pa": 12000,
+    "poissons_ratio": 0.45
+  },
+  "gates": {
+    "max_translation_removed_rms_m": 1e-05,
+    "max_acceleration_error_m_s2": 0.1,
+    "minimum_volume_ratio": 0.99
+  },
+  "error": "Torch not compiled with CUDA enabled"
+}
