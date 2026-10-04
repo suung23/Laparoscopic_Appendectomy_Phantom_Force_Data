@@ -1,0 +1,49 @@
+{
+  "steps": 360,
+  "contact_summary": {
+    "left": {
+      "peak_residual_n": 0.0510197416697143,
+      "stopped": false,
+      "jaw_limit_ticks": 1346
+    },
+    "right": {
+      "peak_residual_n": 0.04713156109069319,
+      "stopped": false,
+      "jaw_limit_ticks": 0
+    }
+  },
+  "tip_excursion_m": [
+    0.011467138305306435,
+    0.018091989681124687
+  ],
+  "final_jaw_position_rad": [
+    [
+      0.645727813243866,
+      -0.6457262635231018
+    ],
+    [
+      0.4363095760345459,
+      -0.4362945556640625
+    ]
+  ],
+  "tissue_health": {
+    "tetrahedra": 29490,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 0,
+    "minimum_signed_volume_ratio": 0.8699915846472323,
+    "median_volume_ratio": 1.0002596694501045,
+    "total_absolute_volume_ratio": 0.9999943913600909,
+    "p99_absolute_volume_change": 0.045100549388689175
+  },
+  "contact_validation": "unverified: reaction is not independent tissue contact evidence",
+  "status": "inconclusive contact evidence",
+  "runtime_status": "passed",
+  "first_left_guard_tick": 3454,
+  "left_aperture_at_first_guard_deg": 31.567105777615442,
+  "source_report_sha256": "a8c311bbbb472102975f7e0fc777965b25e39f0d38a280cf6007eb279096e815",
+  "limitations": [
+    "Targets were nearest FEM nodes, not exterior triangle points.",
+    "No independent collision impulse or jaw-mesh/tissue distance evidence.",
+    "Rendered frame inspected; visual proximity does not prove correct contact mechanics."
+  ]
+}
