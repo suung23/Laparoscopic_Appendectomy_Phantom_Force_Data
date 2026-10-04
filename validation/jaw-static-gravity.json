@@ -1,0 +1,140 @@
+{
+  "scope": "static load model diagnostic; no contact-force validation",
+  "hands": {
+    "left": [
+      {
+        "body": "left",
+        "mass_kg": 0.004000000189989805,
+        "com_body_m": [
+          0.00023753770801704377,
+          8.915125363273546e-05,
+          0.008527673780918121
+        ],
+        "body_rotation_world": [
+          [
+            -0.7549748310406305,
+            -0.6552642816582317,
+            -0.0253323050292088
+          ],
+          [
+            0.13756674562495874,
+            -0.12049233272473993,
+            -0.9831363019707432
+          ],
+          [
+            0.6411617541567254,
+            -0.7457280462323191,
+            0.1811112532925513
+          ]
+        ],
+        "expected_support_torque_nm": 5.5197194798993674e-05,
+        "measured_effort_nm": 5.507967944140546e-05,
+        "residual_nm": -1.1751535758821425e-07
+      },
+      {
+        "body": "right",
+        "mass_kg": 0.004000000189989805,
+        "com_body_m": [
+          -0.00039161925087682903,
+          -0.00018062257731799036,
+          0.008520088158547878
+        ],
+        "body_rotation_world": [
+          [
+            -0.23248100881804878,
+            -0.6552644990042347,
+            0.7187357072552272
+          ],
+          [
+            -0.907115585239985,
+            -0.12049197138906151,
+            -0.4032654210882668
+          ],
+          [
+            0.35084739639002854,
+            -0.7457279136357354,
+            -0.5663885444382074
+          ]
+        ],
+        "expected_support_torque_nm": -0.00030947142527670005,
+        "measured_effort_nm": -0.00030946193146519363,
+        "residual_nm": 9.493811506421698e-09
+      }
+    ],
+    "right": [
+      {
+        "body": "left",
+        "mass_kg": 0.004000000189989805,
+        "com_body_m": [
+          0.00015443327720277011,
+          -3.301980905234814e-05,
+          0.006638243328779936
+        ],
+        "body_rotation_world": [
+          [
+            0.025787917463125663,
+            0.8838743071293167,
+            -0.46701305389633924
+          ],
+          [
+            0.6780336666060713,
+            -0.358750856503143,
+            -0.6415357900436949
+          ],
+          [
+            -0.7345783350069899,
+            -0.3001067012829458,
+            -0.6085479747591203
+          ]
+        ],
+        "expected_support_torque_nm": 0.0001805050656416541,
+        "measured_effort_nm": 0.00018042272131424397,
+        "residual_nm": -8.234432741013463e-08
+      },
+      {
+        "body": "right",
+        "mass_kg": 0.004000000189989805,
+        "com_body_m": [
+          5.848543514730409e-05,
+          6.4470135839656e-05,
+          0.006664220243692398
+        ],
+        "body_rotation_world": [
+          [
+            -0.3411548668635011,
+            0.883874495712714,
+            -0.3199675493607783
+          ],
+          [
+            -0.055550794575902784,
+            -0.35875056365280705,
+            -0.9317790201012142
+          ],
+          [
+            -0.9383642501914342,
+            -0.30010649594333766,
+            0.17148943132239602
+          ]
+        ],
+        "expected_support_torque_nm": -1.2388352227463595e-05,
+        "measured_effort_nm": -1.2310722922848072e-05,
+        "residual_nm": 7.762930461552307e-08
+      }
+    ]
+  },
+  "assumptions": [
+    "Jaw child joint origin equals rigid body origin; child joint rotation identity; axis +Y.",
+    "Static gravity only; no inertial, drive transient, joint limit, or contact compensation.",
+    "Mass and COM are simulator parameters, not independently measured physical instrument properties."
+  ],
+  "runtime_status": "passed",
+  "disabled_robot_collider_count": 14,
+  "maximum_absolute_residual_nm": 1.1751535758821425e-07,
+  "implementation_sha256": {
+    "jaw_gravity_audit.py": "8ff0fb001f8d2fc8767037b8373f8d2a81ec839ac09e991b7117c5f3b07c13ce",
+    "rosota_ct_env.py": "99c75b6cfac0872f8bbdf6af15d00d456dc8d6a99fd3c2ec2dcc236c4211d2ee",
+    "contact_control.py": "38993d3752d379e0d674775238f9652033c409c97ff686becaa4446f1e4e94ee"
+  },
+  "acceptance_scope": "One static no-collision pose, four jaw bodies. Does not validate dynamic compensation or tissue force.",
+  "finding": "Left jaw raw-effort guard latches on static gravitational support torque. Compensation remains unapplied pending dynamic and loaded controls."
+}
