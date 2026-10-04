@@ -16,11 +16,12 @@ from bimanual_env import BimanualEnv
 
 class RosotaCTEnv(gym.Env):
     metadata={'render_modes':['rgb_array'],'render_fps':30}
-    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False,enhanced_determinism=False,reset_checkpoint=None):
+    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False,enhanced_determinism=False,reset_checkpoint=None,fine_settlement=False):
         if settle_policy not in ('fixed','adaptive'):raise ValueError('Unknown settlement policy')
         self.settle_policy=settle_policy
         self.enhanced_determinism=bool(enhanced_determinism)
         self.reset_checkpoint=Path(reset_checkpoint) if reset_checkpoint else None
+        self.fine_settlement=bool(fine_settlement)
         self.diagnostic_no_tool_collision=bool(diagnostic_no_tool_collision)
         self.diagnostic_zero_gravity=bool(diagnostic_zero_gravity)
         if self.diagnostic_zero_gravity and not self.diagnostic_no_tool_collision:raise ValueError('Zero gravity is restricted to the isolated sensor diagnostic')
@@ -170,9 +171,10 @@ class RosotaCTEnv(gym.Env):
         self.settlement={'policy':self.settle_policy,'measured_equilibrium':False,'physics_ticks':480}
         if self.settle_policy=='adaptive':
             from settlement import SettlementGate
-            gate=SettlementGate(self.points())
+            gate=SettlementGate(self.points(),rms_limit_m_s=1e-6 if self.fine_settlement else 1e-4,
+                p99_limit_m_s=5e-6 if self.fine_settlement else 5e-4)
             settled=False
-            for window in range(56):
+            for window in range(120 if self.fine_settlement else 56):
                 for _ in range(60):self.sim.step(render=False)
                 settled=gate.update(self.points())
                 (self.out/'settlement_progress.json').write_text(json.dumps(dict(
