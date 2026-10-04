@@ -19,6 +19,7 @@ def main():
     p.add_argument('--fine-settlement',action='store_true',help='Stricter 1 um/s RMS and 5 um/s p99 reset motion gate, up to 16 s')
     p.add_argument('--reset-checkpoint',type=Path,help='Experimental initial nodal configuration; rest shape preserved')
     p.add_argument('--enhanced-determinism',action='store_true',help='Experimental PhysX enhanced determinism setting')
+    p.add_argument('--jaw-gravity-compensation',action='store_true',help='Experimental pose-dependent jaw gravity subtraction; raw effort retained')
     p.add_argument('--headless',action='store_true')
     p.add_argument('--contact-probe',action='store_true',help='Slow axial approach, torque-limited close, reopen; not RL')
     p.add_argument('--diagnostic-jaw-no-collision',action='store_true',help='Isolate jaw sensor/drive response with all robot collisions disabled; never task validation')
@@ -79,7 +80,7 @@ def main():
             grasp_mode='solver_attachment' if a.solver_grasp or a.coupling_probe else ('rosota_attachment' if a.baseline_task else 'none'),
             workspace='appendix_patches' if a.baseline_task or a.coupling_probe else 'legacy',
             settle_policy='adaptive' if a.coupling_probe else 'fixed',
-            diagnostic_no_tool_collision=a.mount_sensor_probe or a.readback_probe or a.diagnostic_jaw_no_collision,diagnostic_zero_gravity=a.diagnostic_zero_gravity,enhanced_determinism=a.enhanced_determinism,reset_checkpoint=a.reset_checkpoint,fine_settlement=a.fine_settlement,external_every_iteration=a.external_forces_every_iteration,cutter_cad=a.cutter_cad)
+            diagnostic_no_tool_collision=a.mount_sensor_probe or a.readback_probe or a.diagnostic_jaw_no_collision,diagnostic_zero_gravity=a.diagnostic_zero_gravity,enhanced_determinism=a.enhanced_determinism,reset_checkpoint=a.reset_checkpoint,fine_settlement=a.fine_settlement,external_every_iteration=a.external_forces_every_iteration,cutter_cad=a.cutter_cad,jaw_gravity_compensation=a.jaw_gravity_compensation)
         obs,info=env.reset(seed=42);report.update(status='running',**info);save()
         if a.readback_probe:
             from readback_probe import run

@@ -7,6 +7,16 @@ from contact_control import ContactGuard
 
 
 class ContactFeedback(unittest.TestCase):
+    def test_gravity_subtraction_preserves_external_overload(self):
+        g=ContactGuard(np.zeros(6),0)
+        gravity=np.array([.0002,-.00031])
+        g.update(np.zeros(6),gravity,jaw_gravity=gravity)
+        self.assertFalse(g.pinch_latched)
+        g.update(np.zeros(6),gravity+[0,-.0004],jaw_gravity=gravity)
+        self.assertTrue(g.pinch_latched)
+        np.testing.assert_allclose(g.last['jaw_corrected_effort_nm'],[0,-.0004])
+        np.testing.assert_allclose(g.last['jaw_effort_nm'],gravity+[0,-.0004])
+
     def test_overload_latches_and_sensor_loss_fails_closed(self):
         g=ContactGuard(np.zeros(6),.001)
         for _ in range(40):g.update([.3,0,0,0,0,0],[0,0])

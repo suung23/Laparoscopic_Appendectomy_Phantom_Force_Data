@@ -2,6 +2,34 @@
 import numpy as np
 
 
+class JawGravityModel:
+    """Pose-dependent static model; does not compensate inertia or contact."""
+    def __init__(self,env):
+        from isaacsim.core.prims import SingleRigidPrim
+        self.gravity=np.zeros(3) if env.diagnostic_zero_gravity else np.array([0.,-9.81,0.])
+        self.bodies={}
+        for hand,spec in env.specs.items():
+            view=env.robots[hand]._articulation_view
+            masses=np.asarray(view.get_body_masses())[0]
+            coms=np.asarray(view.get_body_coms()[0])[0]
+            self.bodies[hand]=[]
+            for name in ('left','right'):
+                i=view.body_names.index(name)
+                body=SingleRigidPrim(prim_path=spec['root']+'/'+name,
+                    name=hand+'_'+name+'_gravity_model',reset_xform_properties=False)
+                body.initialize()
+                self.bodies[hand].append((body,float(masses[i]),coms[i].copy()))
+
+    def predict(self,hand):
+        from scipy.spatial.transform import Rotation
+        values=[]
+        for body,mass,com in self.bodies[hand]:
+            _,q=body.get_world_pose()
+            R=Rotation.from_quat(np.asarray(q)[[1,2,3,0]]).as_matrix()
+            values.append(support_torque(mass,com,R,self.gravity))
+        return np.asarray(values)
+
+
 def support_torque(mass, com_local, rotation, gravity_world):
     """Support torque about child-frame +Y hinge; COM offset from hinge origin."""
     return float(-np.cross(np.asarray(com_local,float),

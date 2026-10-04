@@ -25,8 +25,10 @@ class ContactGuard:
         self.pinch_latched = False
         self.blocked_angle = None
 
-    def update(self, wrench, jaw_efforts):
+    def update(self, wrench, jaw_efforts, jaw_gravity=None):
         w = np.asarray(wrench, float); j = np.asarray(jaw_efforts, float)
+        gravity=np.zeros(2) if jaw_gravity is None else np.asarray(jaw_gravity,float)
+        if gravity.shape!=(2,) or not np.isfinite(gravity).all():raise RuntimeError('Invalid gravity prediction')
         if w.shape != (6,) or j.shape != (2,) or not np.isfinite(w).all() or not np.isfinite(j).all():
             raise RuntimeError('Contact sensor unavailable/nonfinite')
         residual = w-self.baseline
@@ -34,11 +36,14 @@ class ContactGuard:
         force = float(np.linalg.norm(self.filtered[:3]))
         # Latch a stop: no automatic re-approach/chatter into the same surface.
         self.latched |= force > self.threshold
-        self.pinch_latched |= np.max(np.abs(j)) >= self.jaw_limit
+        corrected=j-gravity
+        self.pinch_latched |= np.max(np.abs(corrected)) >= self.jaw_limit
         self.samples += 1
         self.last = dict(mount_reaction=w.tolist(), mount_residual=self.filtered.tolist(),
             residual_force_n=force, stop_threshold_n=self.threshold, motion_latched=bool(self.latched),
             jaw_effort_nm=j.tolist(), jaw_load_proxy_n=float(np.max(np.abs(j))/.015),
+            jaw_gravity_nm=gravity.tolist(),jaw_corrected_effort_nm=corrected.tolist(),
+            jaw_gravity_compensated=jaw_gravity is not None,
             jaw_limited=bool(self.pinch_latched),
             force_source='PhysX joint reactions; local static tare, not calibrated tissue force')
         return self.last

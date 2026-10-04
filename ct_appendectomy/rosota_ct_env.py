@@ -16,7 +16,7 @@ from bimanual_env import BimanualEnv
 
 class RosotaCTEnv(gym.Env):
     metadata={'render_modes':['rgb_array'],'render_fps':30}
-    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False,enhanced_determinism=False,reset_checkpoint=None,fine_settlement=False,external_every_iteration=False,cutter_cad=None):
+    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False,enhanced_determinism=False,reset_checkpoint=None,fine_settlement=False,external_every_iteration=False,cutter_cad=None,jaw_gravity_compensation=False):
         if settle_policy not in ('fixed','adaptive'):raise ValueError('Unknown settlement policy')
         self.cutter_cad=Path(cutter_cad) if cutter_cad else None
         if self.cutter_cad and grasp_mode!='none':raise ValueError('Cutter cannot use assisted tissue grasp')
@@ -26,6 +26,7 @@ class RosotaCTEnv(gym.Env):
                 raise ValueError('Cutter asset hash mismatch')
             if manifest['units']!='metres' or manifest['open_total_deg']!=50 or not np.allclose(manifest['hinge_to_tip_m'],[0,0,.021],atol=1e-7):
                 raise ValueError('Unsupported cutter geometry contract')
+        self.jaw_gravity_compensation=bool(jaw_gravity_compensation)
         self.settle_policy=settle_policy
         self.enhanced_determinism=bool(enhanced_determinism)
         self.reset_checkpoint=Path(reset_checkpoint) if reset_checkpoint else None
@@ -213,12 +214,16 @@ class RosotaCTEnv(gym.Env):
             for h in self.specs:
                 wrench,effort=self.sensor(h)
                 samples[h].append(wrench);jaw_samples[h].append(effort)
+        self.jaw_gravity_model=None
+        if self.jaw_gravity_compensation:
+            from jaw_gravity_audit import JawGravityModel
+            self.jaw_gravity_model=JawGravityModel(self)
         self.guards={};self.hold_q={};calibration={}
         for h in self.specs:
             values=np.asarray(samples[h]);baseline=values.mean(axis=0)
             noise=float(np.linalg.norm(values[:,:3]-baseline[:3],axis=1).max())
             self.guards[h]=ContactGuard(baseline,noise,max_open_deg=self.specs[h]['open_deg'])
-            self.guards[h].update(*self.sensor(h))
+            self.update_guard(h)
             calibration[h]=dict(baseline=baseline.tolist(),max_force_residual_n=noise,
                 jaw_effort_mean_nm=np.mean(jaw_samples[h],axis=0).tolist(),
                 jaw_effort_min_nm=np.min(jaw_samples[h],axis=0).tolist(),
@@ -266,6 +271,10 @@ class RosotaCTEnv(gym.Env):
         return self.observe(),info
 
     def q(self,h):return self.robots[h].get_joint_positions(joint_indices=self.indices[h]).astype(float)
+    def update_guard(self,h):
+        gravity=self.jaw_gravity_model.predict(h) if self.jaw_gravity_model else None
+        return self.guards[h].update(*self.sensor(h),jaw_gravity=gravity)
+
     def sensor(self,h):
         robot=self.robots[h]
         wrench=np.asarray(robot.get_measured_joint_forces(),float)[self.force_rows[h]]
@@ -351,6 +360,7 @@ class RosotaCTEnv(gym.Env):
             settlement_verified=self.settlement['measured_equilibrium'],
             diagnostic_no_tool_collision=self.diagnostic_no_tool_collision,
             disabled_robot_collider_count=len(self.disabled_robot_colliders),
+            jaw_gravity_compensation=self.jaw_gravity_compensation,
             rosota_full_contract=False)
 
     def step(self,action):
@@ -398,7 +408,7 @@ class RosotaCTEnv(gym.Env):
                     self.robots[h].apply_action(ArticulationAction(joint_positions=np.array([half,-half]),joint_indices=self.jaw_indices[h]))
                 self.scope.step(scope,1/480);self.scope.apply_usd(self.stage)
                 self.sim.step(render=False)
-                for h in self.specs:self.guards[h].update(*self.sensor(h))
+                for h in self.specs:self.update_guard(h)
                 info=self.measure();self.trace.append(info)
                 if info['failure']:break
             self.sim.render()
