@@ -38,12 +38,12 @@ tokens={name:runtime/name for name in ('shared_documents','app_documents','omni_
     'omni_logs','cache','omni_cache','omni_global_cache')}
 for path in tokens.values(): path.mkdir(parents=True,exist_ok=True)
 app=SimulationApp({'headless':a.headless,'width':1280,'height':720,
-    'renderer':'RaytracedLighting','sync_loads':True,
+    'renderer':'RaytracedLighting','sync_loads':True,'hide_ui':a.headless,
     'extra_args':[f'--/app/vulkan={str(a.graphics=="vulkan").lower()}',
                   f'--/app/d3d12={str(a.graphics=="d3d12").lower()}',
                   '--/telemetry/enableNVDF=false','--/telemetry/enableSentry=false',
                   '--/telemetry/useOpenEndpoint=false','--/privacy/extraDiagnosticDataOptIn=false',
-                  '--/crashreporter/enabled=false']+
+                  '--/crashreporter/enabled=false',f'--/app/window/enabled={str(not a.headless).lower()}']+
                   [f'--/app/tokens/{name}={path.as_posix()}' for name,path in tokens.items()]})
 try:
     import numpy as np
