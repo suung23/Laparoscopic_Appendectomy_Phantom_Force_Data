@@ -1,0 +1,7 @@
+{
+  "status": "failed",
+  "error": "Paired initial states differ beyond 10 um or 10 urad",
+  "scope": "Bimanual force comparison rejected before enabled trial because initial states did not match",
+  "report_sha256": "0df9225b63f2408af8cdcfda58de1733549d3751537690d5ce2594e5935a71de",
+  "limitation": "v1 did not persist numerical reset errors before throwing; v2 adds raw initial states and error output"
+}

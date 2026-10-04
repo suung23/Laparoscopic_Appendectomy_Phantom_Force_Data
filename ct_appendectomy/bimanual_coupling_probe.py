@@ -12,9 +12,12 @@ def run(env):
         label='enabled' if enabled else 'disabled'
         initial=env.points().copy();joints=np.array([env.q(h) for h in hands]);obs=env.observe()
         start=obs['tool_pose'][:,:3,3].copy()
+        if not np.isfinite(initial).all() or not np.isfinite(joints).all():raise RuntimeError('Nonfinite reset state')
+        np.savez_compressed(env.out/('bimanual_initial_'+label+'.npz'),tissue=initial,joints=joints,rest=env.rest,tets=env.tets)
         if reference is None:reference=(initial.copy(),joints.copy())
         reset_error=dict(tissue_max_m=float(np.linalg.norm(initial-reference[0],axis=1).max()),
             joint_max_rad=float(np.abs(joints-reference[1]).max()))
+        (env.out/('bimanual_reset_'+label+'.json')).write_text(json.dumps(reset_error,indent=2),encoding='utf-8')
         if reset_error['tissue_max_m']>1e-5 or reset_error['joint_max_rad']>1e-5:
             raise RuntimeError('Paired initial states differ beyond 10 um or 10 urad')
         centers=[]
