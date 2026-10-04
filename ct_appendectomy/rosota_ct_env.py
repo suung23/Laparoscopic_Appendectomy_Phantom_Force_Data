@@ -16,10 +16,11 @@ from bimanual_env import BimanualEnv
 
 class RosotaCTEnv(gym.Env):
     metadata={'render_modes':['rgb_array'],'render_fps':30}
-    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False,enhanced_determinism=False):
+    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False,enhanced_determinism=False,reset_checkpoint=None):
         if settle_policy not in ('fixed','adaptive'):raise ValueError('Unknown settlement policy')
         self.settle_policy=settle_policy
         self.enhanced_determinism=bool(enhanced_determinism)
+        self.reset_checkpoint=Path(reset_checkpoint) if reset_checkpoint else None
         self.diagnostic_no_tool_collision=bool(diagnostic_no_tool_collision)
         self.diagnostic_zero_gravity=bool(diagnostic_zero_gravity)
         if self.diagnostic_zero_gravity and not self.diagnostic_no_tool_collision:raise ValueError('Zero gravity is restricted to the isolated sensor diagnostic')
@@ -126,6 +127,16 @@ class RosotaCTEnv(gym.Env):
         for cluster in self.config['data']['clusters']:
             cluster['indices']=permutation[np.asarray(cluster['indices'],int)].tolist()
         self.rest=cooked_rest.copy();self.tets=cooked_tets
+        if self.reset_checkpoint:
+            from reset_checkpoint import checkpoint_points
+            from pxr import Vt
+            with np.load(self.reset_checkpoint) as checkpoint:
+                initial_points,health=checkpoint_points(checkpoint,self.rest,self.tets)
+            self.mesh.GetAttribute('points').Set(Vt.Vec3fArray.FromNumpy(initial_points.astype(np.float32)))
+            (self.out/'reset_checkpoint.json').write_text(json.dumps(dict(
+                sha256=hashlib.sha256(self.reset_checkpoint.read_bytes()).hexdigest(),
+                health=health,scope='Initial nodal configuration only; not full solver-state serialization',
+                rest_shape_unchanged=True,settlement_required=self.settle_policy=='adaptive'),indent=2),encoding='utf-8')
         (self.out/'node_correspondence.json').write_text(json.dumps(dict(
             exact_geometry_and_topology=True,nodes=len(permutation),
             changed_indices=int(np.sum(permutation!=np.arange(len(permutation))))),indent=2),encoding='utf-8')

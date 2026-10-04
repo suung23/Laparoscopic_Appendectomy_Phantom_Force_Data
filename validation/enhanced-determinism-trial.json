@@ -1,0 +1,357 @@
+{
+  "status": "failed",
+  "error": "Tissue did not reach the measured reset equilibrium gate",
+  "enhanced_determinism_requested": true,
+  "adopted_as_default": false,
+  "report_sha256": "478ae25275321969f67a3b7e4580edee2b104b706969fd5743ad6da14407aa26",
+  "settlement": {
+    "policy": "adaptive",
+    "measured_equilibrium": false,
+    "physics_ticks": 3840,
+    "limits": {
+      "rms_speed_m_s": 0.0001,
+      "p99_speed_m_s": 0.0005,
+      "consecutive_windows": 4
+    },
+    "interval_s": 0.125,
+    "trace": [
+      {
+        "rms_speed_m_s": 0.002103479359628337,
+        "p99_speed_m_s": 0.005364743958119098,
+        "max_speed_m_s": 0.005720115325153152,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.002369460299863056,
+        "p99_speed_m_s": 0.0070100949259957555,
+        "max_speed_m_s": 0.007777738045327235,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0038694944769532016,
+        "p99_speed_m_s": 0.011400566498477684,
+        "max_speed_m_s": 0.012175336548347985,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0026271402303004966,
+        "p99_speed_m_s": 0.006764430539762378,
+        "max_speed_m_s": 0.007269347916211225,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.002339380852845956,
+        "p99_speed_m_s": 0.006081752953551023,
+        "max_speed_m_s": 0.0068114034412985565,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00190868491838096,
+        "p99_speed_m_s": 0.0048401882426223255,
+        "max_speed_m_s": 0.005041781380048892,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0015589552846938149,
+        "p99_speed_m_s": 0.0038256259662061013,
+        "max_speed_m_s": 0.003966524967064795,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0012972590675174708,
+        "p99_speed_m_s": 0.003486516777781502,
+        "max_speed_m_s": 0.0036428195263826747,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0012655480276948321,
+        "p99_speed_m_s": 0.0035248955395110974,
+        "max_speed_m_s": 0.0036890701313727855,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0018088088717826752,
+        "p99_speed_m_s": 0.0054024147761334105,
+        "max_speed_m_s": 0.006486639425075216,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.001856760219558095,
+        "p99_speed_m_s": 0.003846883528930857,
+        "max_speed_m_s": 0.004277973283383024,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0016798972477709902,
+        "p99_speed_m_s": 0.0030743811650890207,
+        "max_speed_m_s": 0.0037246403343212334,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.001014549239221041,
+        "p99_speed_m_s": 0.0019356717972882514,
+        "max_speed_m_s": 0.00282952272506552,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0006961713071289647,
+        "p99_speed_m_s": 0.0012416543271193234,
+        "max_speed_m_s": 0.004129380256818136,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0003969953613080557,
+        "p99_speed_m_s": 0.0011757306621680407,
+        "max_speed_m_s": 0.0019451208939743531,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0002037566472271637,
+        "p99_speed_m_s": 0.0005716508623404969,
+        "max_speed_m_s": 0.004321360903730982,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00022657303681076588,
+        "p99_speed_m_s": 0.0005623844792701838,
+        "max_speed_m_s": 0.0024885032214719692,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00031079718919844546,
+        "p99_speed_m_s": 0.0008892773075065221,
+        "max_speed_m_s": 0.0019030745652739013,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0003751138254113602,
+        "p99_speed_m_s": 0.0008731686269364823,
+        "max_speed_m_s": 0.0016245622867577432,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00022837962507455206,
+        "p99_speed_m_s": 0.0005665692963834801,
+        "max_speed_m_s": 0.0009897239176940866,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0003659596076914827,
+        "p99_speed_m_s": 0.0008730866376856977,
+        "max_speed_m_s": 0.0017111839222284243,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00038229082450026594,
+        "p99_speed_m_s": 0.0010406901338699866,
+        "max_speed_m_s": 0.002614475724932002,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00025518825659113164,
+        "p99_speed_m_s": 0.0005165510585880826,
+        "max_speed_m_s": 0.0018003327262379638,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.000290051586288337,
+        "p99_speed_m_s": 0.000598499645723707,
+        "max_speed_m_s": 0.001704364421995429,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0001863467794219425,
+        "p99_speed_m_s": 0.000326573030579474,
+        "max_speed_m_s": 0.0009283620366953069,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00027392498150436963,
+        "p99_speed_m_s": 0.0008561690712744136,
+        "max_speed_m_s": 0.0021072681058532682,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00012440196308382805,
+        "p99_speed_m_s": 0.00032907640917795127,
+        "max_speed_m_s": 0.0011718390026662178,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00027351750246971056,
+        "p99_speed_m_s": 0.0010082488252287532,
+        "max_speed_m_s": 0.00287095633123787,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00023356941659979648,
+        "p99_speed_m_s": 0.0006912705815245991,
+        "max_speed_m_s": 0.0020846629468474196,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00012651625575040056,
+        "p99_speed_m_s": 0.0003247787683382269,
+        "max_speed_m_s": 0.0015599318979193262,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00026248798958154593,
+        "p99_speed_m_s": 0.001273878271750495,
+        "max_speed_m_s": 0.002936424876358462,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00039828309704590856,
+        "p99_speed_m_s": 0.0013217326746795357,
+        "max_speed_m_s": 0.002810086857264909,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00048324612303365065,
+        "p99_speed_m_s": 0.001360660192374913,
+        "max_speed_m_s": 0.00311270515041214,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0003466298464881841,
+        "p99_speed_m_s": 0.0011891212738538773,
+        "max_speed_m_s": 0.002388706160272666,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00013517368878475586,
+        "p99_speed_m_s": 0.00029490040717154796,
+        "max_speed_m_s": 0.00033332104615317604,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00034302600952131523,
+        "p99_speed_m_s": 0.000978648360870464,
+        "max_speed_m_s": 0.0031526662861322114,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00039580385810987045,
+        "p99_speed_m_s": 0.0009108401731904106,
+        "max_speed_m_s": 0.0020752165209520753,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00018351802756845422,
+        "p99_speed_m_s": 0.0004553678019638623,
+        "max_speed_m_s": 0.0006965464012605225,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00017386054701057523,
+        "p99_speed_m_s": 0.0007898601682806181,
+        "max_speed_m_s": 0.001943757617184859,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0002983652709490515,
+        "p99_speed_m_s": 0.0009962392618851732,
+        "max_speed_m_s": 0.002500209672943177,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0003082418358078643,
+        "p99_speed_m_s": 0.0007579846613804718,
+        "max_speed_m_s": 0.0013994565915447436,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0003730248761556656,
+        "p99_speed_m_s": 0.001102410243666809,
+        "max_speed_m_s": 0.0026249649868279185,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.000252787068284641,
+        "p99_speed_m_s": 0.0004270432570699603,
+        "max_speed_m_s": 0.003178324731016659,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00041694082819432516,
+        "p99_speed_m_s": 0.0008728466941703217,
+        "max_speed_m_s": 0.0018915971747460786,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0003235591514215199,
+        "p99_speed_m_s": 0.0007120999647860925,
+        "max_speed_m_s": 0.0027244363665090993,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00034895809341597826,
+        "p99_speed_m_s": 0.0008478297629549512,
+        "max_speed_m_s": 0.0020342951346008454,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0003083034553745249,
+        "p99_speed_m_s": 0.0008901976406723092,
+        "max_speed_m_s": 0.0021067949090559277,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00034836229088833844,
+        "p99_speed_m_s": 0.0005783834869139994,
+        "max_speed_m_s": 0.0013977958258662476,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0005441086705654665,
+        "p99_speed_m_s": 0.0011734729282513647,
+        "max_speed_m_s": 0.00251834707929188,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0006103769120181611,
+        "p99_speed_m_s": 0.0011724611140373953,
+        "max_speed_m_s": 0.0024106509719828044,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00047652263556178327,
+        "p99_speed_m_s": 0.0009561510560626446,
+        "max_speed_m_s": 0.0021936574215862966,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0006258811080083755,
+        "p99_speed_m_s": 0.0016909121936523079,
+        "max_speed_m_s": 0.003328674154971672,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0004016199372301964,
+        "p99_speed_m_s": 0.0012829102108466816,
+        "max_speed_m_s": 0.00275243597795276,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0001893514880153916,
+        "p99_speed_m_s": 0.0005649189750259126,
+        "max_speed_m_s": 0.0035270967368095756,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.00044031742207553616,
+        "p99_speed_m_s": 0.0009401429956204625,
+        "max_speed_m_s": 0.002699161223091018,
+        "stable_windows": 0
+      },
+      {
+        "rms_speed_m_s": 0.0003563067963820384,
+        "p99_speed_m_s": 0.0007874274521046412,
+        "max_speed_m_s": 0.0020769373501960016,
+        "stable_windows": 0
+      }
+    ]
+  },
+  "documentation": "https://nvidia-omniverse.github.io/PhysX/physx/5.8.0/docs/Simulation.html#enhanced-determinism"
+}

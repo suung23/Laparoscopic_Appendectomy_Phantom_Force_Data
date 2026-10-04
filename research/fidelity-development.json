@@ -75,7 +75,7 @@
     "Added strict runtime comparator rejecting changed scenes/helpers, incomplete traces, and green statuses contradicted by measured errors"
   ],
   "next_actions": [
-    "Check v6 enhanced determinism option and GPU support; v5 explicit jaw/velocity reset reduces mismatch to 0.136 mm but still fails 0.01 mm tolerance",
+    "Inspect v7 explicit initial nodal checkpoint; require unchanged material rest shape, settlement, tissue health and paired matching. v6 determinism flag failed equilibrium and is not default.",
     "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",
