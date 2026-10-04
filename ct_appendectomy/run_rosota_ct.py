@@ -21,6 +21,7 @@ def main():
     p.add_argument('--enhanced-determinism',action='store_true',help='Experimental PhysX enhanced determinism setting')
     p.add_argument('--headless',action='store_true')
     p.add_argument('--contact-probe',action='store_true',help='Slow axial approach, torque-limited close, reopen; not RL')
+    p.add_argument('--diagnostic-jaw-no-collision',action='store_true',help='Isolate jaw sensor/drive response with all robot collisions disabled; never task validation')
     p.add_argument('--contact-travel-mm',type=float,default=18.,help='Use 0 for matched free-space jaw-cycle control')
     p.add_argument('--surface-approach',action='store_true',help='Aim at nearest live tissue nodes instead of axial motion')
     p.add_argument('--close-samples',type=int,default=150,help='30 Hz closure samples; allow measured jaws to reach contact')
@@ -36,6 +37,8 @@ def main():
     p.add_argument('--mount-sensor-probe',action='store_true',help='Known 0.1 N external force sensor calibration without tissue attachment')
     p.add_argument('--diagnostic-zero-gravity',action='store_true',help='Only for isolating the mount sensor failure, never a task configuration')
     a=p.parse_args()
+    if a.diagnostic_jaw_no_collision and (not a.contact_probe or a.approach_samples!=0 or a.surface_approach):
+        p.error('Collision-disabled jaw diagnostic requires --contact-probe --approach-samples 0 without surface approach')
     if a.coupling_hands=='both' and not a.coupling_probe:p.error('Both hands requires --coupling-probe')
     if a.readback_probe and any((a.mount_sensor_probe,a.coupling_probe,a.baseline_task,a.contact_probe,a.attachment_probe,a.solver_grasp)):
         p.error('Readback probe is an isolated diagnostic')
@@ -76,7 +79,7 @@ def main():
             grasp_mode='solver_attachment' if a.solver_grasp or a.coupling_probe else ('rosota_attachment' if a.baseline_task else 'none'),
             workspace='appendix_patches' if a.baseline_task or a.coupling_probe else 'legacy',
             settle_policy='adaptive' if a.coupling_probe else 'fixed',
-            diagnostic_no_tool_collision=a.mount_sensor_probe or a.readback_probe,diagnostic_zero_gravity=a.diagnostic_zero_gravity,enhanced_determinism=a.enhanced_determinism,reset_checkpoint=a.reset_checkpoint,fine_settlement=a.fine_settlement,external_every_iteration=a.external_forces_every_iteration,cutter_cad=a.cutter_cad)
+            diagnostic_no_tool_collision=a.mount_sensor_probe or a.readback_probe or a.diagnostic_jaw_no_collision,diagnostic_zero_gravity=a.diagnostic_zero_gravity,enhanced_determinism=a.enhanced_determinism,reset_checkpoint=a.reset_checkpoint,fine_settlement=a.fine_settlement,external_every_iteration=a.external_forces_every_iteration,cutter_cad=a.cutter_cad)
         obs,info=env.reset(seed=42);report.update(status='running',**info);save()
         if a.readback_probe:
             from readback_probe import run

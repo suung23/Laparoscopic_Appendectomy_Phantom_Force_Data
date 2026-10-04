@@ -18,6 +18,7 @@ def audit(report, trace):
     if len(trace) <= boundary:
         raise ValueError('Missing reopening phase')
     result = dict(scope='measured aperture commissioning, not contact/cutting validation',
+                  robot_collisions_disabled=bool(report.get('diagnostic_no_tool_collision',False)),
                   closure_tolerance_deg=2., opening_tolerance_deg=2., hands={})
     for hand, limit in [('left', 74.), ('right', 50. if report['right_tool']=='cutter' else 74.)]:
         q = np.asarray([x['jaw_position_rad'][hand] for x in trace], float)
