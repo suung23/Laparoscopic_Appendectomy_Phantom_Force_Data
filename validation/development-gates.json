@@ -102,7 +102,7 @@
     },
     {
       "id": "reset-equilibrium",
-      "status": "6.1 precooked pair meets nodal motion thresholds; readback audit and initial-state repeatability remain pending",
+      "status": "Motion threshold passes but paired states differ by millimeters; repeatable initialization is not achieved",
       "requires": [
         "measured nodal speed below specified limits",
         "repeatability across resets",
@@ -111,7 +111,7 @@
     },
     {
       "id": "solver-reaction-transfer",
-      "status": "6.1 known-load sensor and single-left-arm paired attachment diagnostic pass; full bimanual balance and contact grasp remain incomplete",
+      "status": "Known-load sensor passes; prior single-arm effect is exploratory, and matched bimanual causal comparison is rejected by reset mismatch",
       "requires": [
         "known-load sensor verification",
         "same robot trajectory and settled initial tissue",

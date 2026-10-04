@@ -1,0 +1,45 @@
+{
+  "phases": [
+    {
+      "phase": "before_initialize",
+      "max_displacement_m": 0.0,
+      "rms_displacement_m": 0.0,
+      "reordered_nodes": 0,
+      "source_sha256": [
+        "781dfe5591cf7299b2d428829f02be3e7a02fb524d80c1bf5b4f3a4baaa3619a",
+        "781dfe5591cf7299b2d428829f02be3e7a02fb524d80c1bf5b4f3a4baaa3619a"
+      ]
+    },
+    {
+      "phase": "after_cooking",
+      "max_displacement_m": 0.0,
+      "rms_displacement_m": 0.0,
+      "reordered_nodes": 0,
+      "source_sha256": [
+        "8d1fcbfe58f827404d55c67c54d1b72a6beb927754b983728a02c8b879d6b82a",
+        "8d1fcbfe58f827404d55c67c54d1b72a6beb927754b983728a02c8b879d6b82a"
+      ]
+    },
+    {
+      "phase": "after_initialize",
+      "max_displacement_m": 0.0,
+      "rms_displacement_m": 0.0,
+      "reordered_nodes": 0,
+      "source_sha256": [
+        "54f5e38b6f19bd17967466146c0cbd0dd6677826d70e3273512677f77b3849ad",
+        "54f5e38b6f19bd17967466146c0cbd0dd6677826d70e3273512677f77b3849ad"
+      ]
+    },
+    {
+      "phase": "after_settlement",
+      "max_displacement_m": 0.0077382612975992054,
+      "rms_displacement_m": 0.002331233356690691,
+      "reordered_nodes": 0,
+      "source_sha256": [
+        "26d498b07bb2e7b72428cc3053ff18846826cfda35a70e9d26cc8a494f1bdd1d",
+        "d00d76367df3fd089522a4012599fd8a5dff64e47ab6086e8fdd8ba52f2b8b80"
+      ]
+    }
+  ],
+  "scope": "Exact material-node comparison; no fitted spatial alignment"
+}

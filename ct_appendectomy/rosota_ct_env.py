@@ -136,6 +136,7 @@ class RosotaCTEnv(gym.Env):
         if not np.array_equal(self.mesh.GetAttribute('tetVertexIndices').Get(),self.tets):
             raise RuntimeError('Tissue connectivity changed again after explicit cooking')
         self.sim.play()
+        from isaacsim.core.utils.types import ArticulationAction
         self.robots={};self.indices={};self.jaw_indices={}
         for hand,s in self.specs.items():
             robot=SingleArticulation(prim_path=s['root'],name=hand,reset_xform_properties=False)
@@ -144,11 +145,16 @@ class RosotaCTEnv(gym.Env):
             self.jaw_indices[hand]=np.array([robot.get_dof_index('jaw_left'),robot.get_dof_index('jaw_right')])
             robot.set_joint_positions(s['seed'],joint_indices=self.indices[hand])
             robot.set_joint_positions(np.deg2rad([37.,-37.]),joint_indices=self.jaw_indices[hand])
+            robot.set_joint_velocities(np.zeros(robot.num_dof))
+            robot.apply_action(ArticulationAction(joint_positions=np.deg2rad([37.,-37.]),
+                joint_velocities=np.zeros(2),joint_indices=self.jaw_indices[hand]))
         from isaacsim.core.utils.types import ArticulationAction
-        for _ in range(480):
+        self._audit_tissue('before_warmup')
+        for warmup_tick in range(480):
             for hand,s in self.specs.items():
                 self.robots[hand].apply_action(ArticulationAction(joint_positions=s['seed'],joint_velocities=np.zeros(7),joint_indices=self.indices[hand]))
             self.sim.step(render=False)
+            if warmup_tick in (0,59,479):self._audit_tissue('warmup_'+str(warmup_tick+1))
         self.settlement={'policy':self.settle_policy,'measured_equilibrium':False,'physics_ticks':480}
         if self.settle_policy=='adaptive':
             from settlement import SettlementGate

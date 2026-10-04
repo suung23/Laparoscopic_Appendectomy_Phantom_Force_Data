@@ -75,7 +75,7 @@
     "Added strict runtime comparator rejecting changed scenes/helpers, incomplete traces, and green statuses contradicted by measured errors"
   ],
   "next_actions": [
-    "Finish v4 reset audit with full stage-layer reload and per-reset phase snapshots; root-only reload left 2.47 mm mismatch",
+    "Inspect v5 warmup checkpoints after explicit zero joint velocity and open-jaw targets; v4 resets match exactly through physics initialization then diverge during settlement",
     "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",
@@ -103,6 +103,7 @@
     "coupling_evidence": "validation/precooked-coupling.json",
     "readback_evidence": "validation/tissue-readback.json",
     "baseline_compatibility": "validation/precook-51-compatibility.json",
-    "paired_reset_evidence": "validation/bimanual-reset-comparison.json"
+    "paired_reset_evidence": "validation/bimanual-reset-comparison.json",
+    "phase_divergence": "validation/reset-phase-divergence.json"
   }
 }
