@@ -1,0 +1,137 @@
+{
+  "repository": "Rosota-Research/Rosota-Simulator",
+  "commit": "9135fe9eb8549d011124c8c57b7c86edeaaba735",
+  "species": "rabbit according to upstream reconstruction documentation",
+  "meshes": {
+    "appendix": {
+      "source_blob": "732ed1c15c84eea8e219a0e4283e7b48cafdd7ea",
+      "vertices": 1678,
+      "faces": 3352,
+      "axis_aligned_extent_mm": [
+        17.90846538543701,
+        65.26642799377441,
+        16.687545776367188
+      ],
+      "watertight": true
+    },
+    "bowel1": {
+      "source_blob": "b04e07b7ba787620be8ec05934da3a4228f0208a",
+      "vertices": 1594,
+      "faces": 3184,
+      "axis_aligned_extent_mm": [
+        25.556784749031067,
+        48.59556007385254,
+        16.499801635742188
+      ],
+      "watertight": true
+    },
+    "bowel2": {
+      "source_blob": "d850f7314962f8b2b71441175420c5ef2b25afcb",
+      "vertices": 636,
+      "faces": 1268,
+      "axis_aligned_extent_mm": [
+        21.64496421813965,
+        17.578317165374756,
+        11.470901489257812
+      ],
+      "watertight": true
+    },
+    "bowel3": {
+      "source_blob": "2fff8cbd5b304400a59d9cb2ec3f2a3fc4516c03",
+      "vertices": 1268,
+      "faces": 2532,
+      "axis_aligned_extent_mm": [
+        27.990387111902237,
+        23.484609603881836,
+        20.62297821044922
+      ],
+      "watertight": true
+    },
+    "cecum": {
+      "source_blob": "6b1eb55a8ceac6810bc7ada054373f882abcee27",
+      "vertices": 2634,
+      "faces": 5264,
+      "axis_aligned_extent_mm": [
+        27.99650001525879,
+        58.67444038391113,
+        24.278305053710938
+      ],
+      "watertight": true
+    },
+    "stomach": {
+      "source_blob": "a032fedd08b7703b14088c9e690352a90e7b1a62",
+      "vertices": 720,
+      "faces": 1436,
+      "axis_aligned_extent_mm": [
+        15.435463905334473,
+        18.191497802734375,
+        18.120529174804688
+      ],
+      "watertight": true
+    }
+  },
+  "appendix_cecum_closest_sampled_vertex_distance_mm": 0.5655295377963785,
+  "closest_pair_centered_world_mm": [
+    [
+      4.684508323669434,
+      -24.483312606811523,
+      -2.5523033142089844
+    ],
+    [
+      4.176080703735352,
+      -24.62717056274414,
+      -2.3507347106933594
+    ]
+  ],
+  "rabbit_camera_to_world": [
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0
+    ]
+  ],
+  "rabbit_gravity_world_m_s2": [
+    0,
+    0,
+    -9.81
+  ],
+  "human_ras_to_scene": [
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "human_gravity_scene_m_s2": [
+    0,
+    -9.81,
+    0
+  ],
+  "human_posture_assumption": "supine; not a patient-position measurement",
+  "limitations": [
+    "Captured reconstructed surfaces, not complete rabbit anatomy",
+    "Bounding-box extent is not anatomical organ length",
+    "Closest mesh vertices are not a reviewed anatomical junction",
+    "Rabbit meshes must not substitute for human CT anatomy"
+  ]
+}

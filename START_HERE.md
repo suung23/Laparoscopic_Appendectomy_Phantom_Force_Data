@@ -3,11 +3,14 @@
 이 폴더가 현재 개발 기준 저장소입니다. C:의 기존 작업 위치를 유지합니다.
 D: 이전 및 권한 변경 시도는 중단했습니다.
 
-현재 복강 탐색 장면은 `IsaacSimulator.exe` 또는 `./run-cavity.ps1`로 실행합니다.
-내시경 패널에서 회전·삽입·좌우 이동을, Rosota 집게 패널에서 개폐·전후 이동을 조작합니다.
+현재 양손 복강경 장면은 `IsaacSimulator.exe` 또는 `./run-bimanual.ps1`로 실행합니다.
+좌·우 기구 패널에서 각각 회전·기울기·삽입·축 회전·개폐를 조작합니다.
+`Both hands: approach / grasp / lift / release` 버튼은 양손 잡기 시연을 실행합니다.
+잡기는 조직이 집게 안에 있을 때 활성화되는 보조 제약입니다. 학습된 RL 정책이 아닙니다.
+내시경 제어는 `Show / hide camera controls`로 표시합니다.
 충수에는 중력과 후방 지지면을 적용했습니다. 다른 CT 장기는 고정되어 있습니다.
-자세한 범위는 `ct_appendectomy/CAVITY_EXPLORATION.md`, 검증 수치는
-`validation/ct-cavity-exploration.json`에 있습니다. 기존 RL 실행기는 이전 시험 장면을 사용합니다.
+자세한 범위는 `ct_appendectomy/BIMANUAL.md`에 있습니다.
+기존 RL 실행기는 이전 시험 장면을 사용하며, 단일 기구 탐색은 `./run-cavity.ps1`로 실행합니다.
 
 ## 파일 안내
 

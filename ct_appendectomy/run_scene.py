@@ -29,10 +29,14 @@ p.add_argument('--lock-endoscope',action='store_true',help='Restore authored end
 p.add_argument('--explore-cavity',action='store_true',help='Posterior support, supine gravity, Rosota CAD and movable scope')
 p.add_argument('--record-scan',action='store_true',help='Record camera exploration PNG frames after settling')
 p.add_argument('--disable-support',action='store_true',help='Support collision negative control')
+p.add_argument('--bimanual',action='store_true',help='Two independently controlled Rosota instruments with explicit grasp assist')
+p.add_argument('--bimanual-demo',action='store_true',help='Validate scripted two-hand approach, grasp, lift and release')
 p.add_argument('--require-appendix-visible',action='store_true',help='Require appendix semantic pixels in the captured RTX frame')
 p.add_argument('--graphics',choices=('vulkan','d3d12'),default='d3d12')
 p.add_argument('--out',type=Path,default=ROOT/'out/ct_appendectomy/isaac_probe')
 a=p.parse_args()
+if a.bimanual_demo:a.bimanual=True
+if a.bimanual:a.explore_cavity=True
 if a.explore_cavity:
     a.physics=True
     if a.forceps_probe or a.forceps_rl_smoke or a.contact_probe or a.retraction_probe or a.rl_smoke:
@@ -87,6 +91,7 @@ try:
     forceps=None
     cavity_tool=None
     scope=None
+    bimanual=None
     gravity_ready=False
     if a.explore_cavity:
         manifest=json.loads((a.scene.parent/'scene_manifest.json').read_text())
@@ -116,7 +121,7 @@ try:
             set_visibility_with_guide_purpose=True)
         if not ok: raise RuntimeError('PhysX deformable authoring failed')
         prim=stage.GetPrimAtPath(body)
-        prim.CreateAttribute('physxDeformableBody:resolution',Sdf.ValueTypeNames.UInt).Set(32)
+        prim.CreateAttribute('physxDeformableBody:resolution',Sdf.ValueTypeNames.UInt).Set(64 if a.bimanual else 32)
         if a.explore_cavity:
             prim.CreateAttribute('physxDeformableBody:solverPositionIterationCount',Sdf.ValueTypeNames.UInt).Set(64)
             prim.CreateAttribute('physxDeformableBody:linearDamping',Sdf.ValueTypeNames.Float).Set(.1)
@@ -136,7 +141,7 @@ try:
         gpu=PhysxSchema.PhysxSceneAPI.Apply(physics.GetPrim())
         gpu.CreateEnableGPUDynamicsAttr(True)
         gpu.CreateBroadphaseTypeAttr('GPU')
-        simulation=SimulationContext(stage_units_in_meters=1.,physics_dt=1/(240 if a.explore_cavity else 120),rendering_dt=1/60)
+        simulation=SimulationContext(stage_units_in_meters=1.,physics_dt=1/(480 if a.bimanual else (240 if a.explore_cavity else 120)),rendering_dt=1/60)
         # SimulationContext may re-author gravity; keep this explicitly a zero-g cook test.
         physics.CreateGravityMagnitudeAttr(0.)
         gpu.CreateEnableGPUDynamicsAttr(True)
@@ -157,8 +162,12 @@ try:
             manifest=json.loads((a.scene.parent/'scene_manifest.json').read_text())
             simulation.stop()
             if a.explore_cavity:
-                import rosota_forceps
-                cavity_tool=rosota_forceps.author(stage,body+'/sim',initial,manifest['ct_anchor_m'],a.scene.parent/'rosota_distal.usda')
+                if a.bimanual:
+                    import bimanual_tools
+                    cavity_tool=bimanual_tools.author(stage,body+'/sim',initial,np.array(manifest['ct_anchor_m']),a.scene.parent/'rosota_distal.usda')
+                else:
+                    import rosota_forceps
+                    cavity_tool=rosota_forceps.author(stage,body+'/sim',initial,manifest['ct_anchor_m'],a.scene.parent/'rosota_distal.usda')
             elif a.forceps_probe:
                 from forceps import author_forceps,move_forceps,probe_command
                 forceps=author_forceps(stage,body+'/sim',initial,manifest['ct_anchor_m'],a.disable_tool_contact)
@@ -177,7 +186,7 @@ try:
             omni.usd.get_context().open_stage(str(cooked.resolve()))
             for _ in range(30): app.update()
             stage=omni.usd.get_context().get_stage()
-            simulation=SimulationContext(stage_units_in_meters=1.,physics_dt=1/(240 if a.explore_cavity else 120),rendering_dt=1/60)
+            simulation=SimulationContext(stage_units_in_meters=1.,physics_dt=1/(480 if a.bimanual else (240 if a.explore_cavity else 120)),rendering_dt=1/60)
             physics=UsdPhysics.Scene(stage.GetPrimAtPath('/World/physicsScene'))
             physics.CreateGravityMagnitudeAttr(0.)
             PhysxSchema.PhysxSceneAPI.Apply(physics.GetPrim()).CreateEnableGPUDynamicsAttr(True)
@@ -185,6 +194,7 @@ try:
             force_gpu_zero_gravity()
             simulation.initialize_physics()
             sim_mesh=stage.GetPrimAtPath(body+'/sim')
+            if a.bimanual:bimanual=bimanual_tools.BimanualControl(stage,cavity_tool,initial)
             if retraction: retraction['translation']=UsdGeom.Xformable(stage.GetPrimAtPath('/World/RetractionHandle')).GetOrderedXformOps()[0]
             if contact: contact['translation']=UsdGeom.Xformable(stage.GetPrimAtPath('/World/BluntProbe')).GetOrderedXformOps()[0]
         simulation.play()
@@ -231,6 +241,13 @@ try:
             lift_delta=current[forceps['grip']].mean(axis=0)-forceps['closed_centroid']
             report['forceps_lift_checkpoint_m']=float(lift_delta[2])
             report['forceps_tracking_error_m']=float(np.linalg.norm(lift_delta-np.array([0,0,.008])))
+    if bimanual:
+        report['bimanual_physics']={'hex_resolution':64,'physics_dt_s':1/480,'control_dt_s':1/60}
+        np.savez_compressed(a.out/'settled_geometry.npz',simulation=bimanual.points(),
+            collision=np.asarray(stage.GetPrimAtPath(body+'/coll').GetAttribute('points').Get()))
+    if a.bimanual_demo:
+        from bimanual_demo import run as run_bimanual_demo
+        report['bimanual_demo']=run_bimanual_demo(bimanual,simulation,rep,rgb,a.out)
     # A newly attached render product may not have a host buffer on its first step.
     for capture_attempt in range(4):
         rep.orchestrator.step(rt_subframes=8,delta_time=0.0)
@@ -277,6 +294,7 @@ try:
             surface_penetration=float(max(0.,floor-collision_points[:,1].min()))
             near=int(np.count_nonzero(np.abs(final[:,1]-floor)<.0015))
             report['mode']='supine cavity exploration with Rosota CAD'
+            if bimanual:report['mode']='bimanual Rosota tools with geometry-gated grasp assist'
             report['physics_validation']='gravity settling on engineering posterior support; CT organs static'
             report['cavity_support']={'enabled':not a.disable_support,'floor_y_m':floor,
                 'simulation_cage_penetration_m':penetration,'collision_surface_penetration_m':surface_penetration,'nodes_within_1_5mm':near,
@@ -436,8 +454,11 @@ try:
         camera_op=UsdGeom.Xformable(stage.GetPrimAtPath('/World/Endoscope')).GetOrderedXformOps()[0]
         camera_pose=camera_op.Get()
         if scope:scope.create_ui()
+        if bimanual:
+            bimanual.create_ui(scope)
+            if scope:scope.window.visible=False
     forceps_controls=None
-    if a.interactive and (forceps or cavity_tool):
+    if a.interactive and (forceps or cavity_tool) and not bimanual:
         import omni.ui as ui
         forceps_window=ui.Window('Rosota laparoscopic gripper' if cavity_tool else 'Forceps contact fixture',width=340,height=180,position_x=390,position_y=80)
         with forceps_window.frame:
@@ -453,6 +474,7 @@ try:
     if a.interactive and simulation: simulation.play()
     while a.interactive and app.is_running():
         if scope:scope.update_ui()
+        if bimanual:bimanual.update_ui()
         if forceps_controls is not None:
             target=np.array([closure_slider.model.get_value_as_float(),lift_slider.model.get_value_as_float()*.001])
             forceps_controls+=np.clip(target-forceps_controls,[-.01,-.0002],[.01,.0002])

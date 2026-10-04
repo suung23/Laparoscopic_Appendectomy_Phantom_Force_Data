@@ -11,7 +11,7 @@ class IsaacLauncher {
    bool agent=String.Equals(Path.GetFileNameWithoutExtension(Application.ExecutablePath),"RobotAgent",StringComparison.OrdinalIgnoreCase);
    bool learned=File.Exists(Path.Combine(root,"out/ct_appendectomy/agent/policy.pt"));
    string agentPolicy=learned ? "--policy checkpoint --checkpoint out/ct_appendectomy/agent/policy.pt" : "--policy scripted";
-   string arguments=agent ? "ct_appendectomy/agent_runner.py "+agentPolicy+" --episodes 0 --out out/ct_appendectomy/agent_desktop" : "ct_appendectomy/run_scene.py --scene out/ct_appendectomy/cavity/ct_appendectomy.usda --explore-cavity --frames 360 --interactive --out out/ct_appendectomy/cavity_desktop";
+   string arguments=agent ? "ct_appendectomy/agent_runner.py "+agentPolicy+" --episodes 0 --out out/ct_appendectomy/agent_desktop" : "ct_appendectomy/run_scene.py --scene out/ct_appendectomy/bimanual_scene/ct_appendectomy.usda --bimanual --frames 360 --interactive --out out/ct_appendectomy/bimanual_desktop";
    var start=new ProcessStartInfo(python,arguments);
    start.WorkingDirectory=root; start.UseShellExecute=false; start.CreateNoWindow=true;
    start.EnvironmentVariables["OMNI_KIT_ACCEPT_EULA"]="YES";

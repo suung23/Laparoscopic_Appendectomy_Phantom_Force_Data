@@ -1,8 +1,9 @@
 # Supine cavity exploration
 
-Run `./run-cavity.ps1` from the repository. It prepares the CT/atlas scene and
-opens Isaac with endoscope and Rosota gripper controls. `IsaacSimulator.exe`
-opens the prepared scene. `-Headless -RecordScan` generates 90 RTX camera frames.
+Run `./run-cavity.ps1` from the repository for this single-instrument scene.
+It prepares the CT/atlas scene and opens Isaac with endoscope and Rosota gripper
+controls. `-Headless -RecordScan` generates 90 RTX camera frames.
+`IsaacSimulator.exe` now opens the newer two-hand scene described in `BIMANUAL.md`.
 
 The endoscope panel provides pan, tilt, roll, lateral motion and insertion.
 The camera light follows its optical centre. Translation is bounded to an 8 mm

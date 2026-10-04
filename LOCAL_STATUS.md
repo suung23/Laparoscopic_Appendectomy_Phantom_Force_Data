@@ -2,7 +2,17 @@
 
 2026-10-04. Internal working copy; no remote push or publication performed.
 
-Latest: cavity exploration adds posterior gravity/support for the appendix,
+Latest: two independent Rosota instruments now expose five controls per hand,
+including port-constrained motion and geometry-gated grasp assist. The scripted
+fixed-camera test acquired two distinct patches, lifted them 7.992/8.006 mm,
+released both, and passed lift/final tetrahedron-orientation checks. Maximum
+attached-patch motion at latch was 0.087 mm; post-release support penetration
+was 0.307 mm. Physics uses 6,751 nodes / 29,490 tetrahedra at 480 Hz. The 152-frame
+RTX video is a scripted test, not a learned bimanual policy. Five unit tests pass.
+See `validation/ct-bimanual-grasp.json` and `ct_appendectomy/BIMANUAL.md`.
+Rabbit mesh/frame inspection is in `validation/rosota-anatomy-frames.json`.
+
+Previous: cavity exploration adds posterior gravity/support for the appendix,
 six camera controls with a following light, and seven hash-verified private
 Rosota clean-export distal CAD parts. RTX/PhysX positive and no-support control
 runs passed their gates. Contact-surface penetration was 0.305 mm with support

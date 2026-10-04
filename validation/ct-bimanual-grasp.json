@@ -1,0 +1,136 @@
+{
+  "status": "passed",
+  "engine": "Isaac Sim 5.1 / PhysX",
+  "source_scene_sha256": "9fc25e90fdf59df1bc01e568b4fc242da1a9060e0260743654572d357297f9c7",
+  "physics": {
+    "hex_resolution": 64,
+    "physics_dt_s": 0.0020833333333333333,
+    "control_dt_s": 0.016666666666666666
+  },
+  "cooked_nodes": 6751,
+  "gravity_m_s2": [
+    0,
+    -9.81,
+    0
+  ],
+  "support_after_release": {
+    "enabled": true,
+    "floor_y_m": -0.027332229539752007,
+    "simulation_cage_penetration_m": 0.001597752794623375,
+    "collision_surface_penetration_m": 0.00030742399394512177,
+    "nodes_within_1_5mm": 332,
+    "mean_posterior_displacement_m": 0.008747261666112052,
+    "pin_drift_m": 0.00010508809043576122
+  },
+  "final_tissue_health": {
+    "tetrahedra": 29490,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 0,
+    "minimum_signed_volume_ratio": 0.6424312848034375,
+    "median_volume_ratio": 1.0056857783724593,
+    "total_absolute_volume_ratio": 1.0046324523398253,
+    "p99_absolute_volume_change": 0.11954398942644574
+  },
+  "bimanual_demo": {
+    "scripted": true,
+    "grasp_model": "geometry-gated FEM attachment assist",
+    "empty_space_rejected": true,
+    "camera_unchanged": true,
+    "two_distinct_patches": true,
+    "hands": {
+      "Right": {
+        "cluster": 5,
+        "lift_m": 0.007991926440109428,
+        "tracking_error_m": 8.204614140604936e-06
+      },
+      "Left": {
+        "cluster": 1,
+        "lift_m": 0.008005877391115064,
+        "tracking_error_m": 1.2139959433489365e-05
+      }
+    },
+    "lift_tissue_health": {
+      "tetrahedra": 29490,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.11268233096203181,
+      "median_volume_ratio": 0.9992971314827852,
+      "total_absolute_volume_ratio": 0.9933360242918651,
+      "p99_absolute_volume_change": 0.16314209615257733
+    },
+    "max_latch_step_displacement_m": 0.005303679076559615,
+    "released": true,
+    "events": [
+      {
+        "event": "grasp",
+        "hand": "Right",
+        "cluster": 5,
+        "mouth_error_m": 0.00012385564896537796
+      },
+      {
+        "event": "grasp",
+        "hand": "Left",
+        "cluster": 1,
+        "mouth_error_m": 0.0010631427172599114
+      },
+      {
+        "event": "release",
+        "hand": "Left",
+        "cluster": 1,
+        "reason": "opened"
+      },
+      {
+        "event": "release",
+        "hand": "Right",
+        "cluster": 5,
+        "reason": "opened"
+      }
+    ],
+    "latch_checks": [
+      {
+        "frame": 370,
+        "all_node_step_m": 0.003100206889354364,
+        "patch_step_m": {
+          "Right": 5.451815667315702e-05
+        }
+      },
+      {
+        "frame": 381,
+        "all_node_step_m": 0.005303679076559615,
+        "patch_step_m": {
+          "Left": 8.659803394592384e-05
+        }
+      }
+    ],
+    "recorded_frames": 152,
+    "max_grasp_patch_latch_step_m": 8.659803394592384e-05
+  },
+  "unit_checks": [
+    "independent ownership and release",
+    "live attachment offsets",
+    "empty-space rejection",
+    "invalid actions atomic",
+    "port-constrained inverse",
+    "10D velocity action grasp/release",
+    "no jaw snap on release",
+    "roll wrap"
+  ],
+  "limitations": [
+    "Explicit geometry-gated grasp assist, not force-calibrated friction-only grasp",
+    "Other CT organs remain static without coupled contact",
+    "No trained bimanual policy",
+    "Orientation checks at lift and final checkpoints, not continuous injury certification"
+  ],
+  "video": {
+    "path": "out/ct_appendectomy/bimanual_release_verified/bimanual_grasp.mp4",
+    "sha256": "697f703f85838d82f41585bed274e58ec1309b9292e25deb62769320e8827780",
+    "decoded_frames": 152,
+    "fps": 7.5,
+    "scripted_not_learned": true
+  },
+  "desktop": {
+    "window_title_returned": "Isaac Sim Python 5.1.0",
+    "startup_physics_report": "passed",
+    "manual_panel_test": "not completed: user stopped Computer Use with Escape"
+  }
+}
