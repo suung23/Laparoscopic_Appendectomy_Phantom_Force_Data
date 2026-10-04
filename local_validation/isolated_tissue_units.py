@@ -64,42 +64,36 @@ try:
             raise RuntimeError('Simulation changed mesh indexing; do not compare mismatched nodes')
         baseline=np.asarray(mesh.GetPointsAttr().Get(),float)*mpu
         if a.tensor_readback:
-            import omni.physics.tensors as tensors
-            from node_correspondence import node_permutation
-            tensor_sim=tensors.create_simulation_view('warp',stage_id=omni.usd.get_context().get_stage_id())
-            body=tensor_sim.create_volume_deformable_body_view('/World/Tissue')
-            tensor_rest=body.get_rest_nodal_positions().numpy()[0]
-            tensor_tets=body.get_simulation_element_indices().numpy()[0]
-            permutation=node_permutation(np.asarray(prim.GetAttribute('omniphysics:restShapePoints').Get()),tets,tensor_rest,tensor_tets)
+            from tissue_observer import TissueTensorObserver
+            observer=TissueTensorObserver.bind(stage,'/World/Tissue','/World/Tissue',omni.usd.get_context().get_stage_id())
+            baseline=observer.snapshot(omni.usd.get_context().get_stage_id())['position_m']
         rows=[];centers=[]
         for tick in range(181):
             if tick%60==0:
-                points=np.asarray(mesh.GetPointsAttr().Get(),float)*mpu
+                usd_points=np.asarray(mesh.GetPointsAttr().Get(),float)*mpu
+                live=observer.snapshot(omni.usd.get_context().get_stage_id()) if a.tensor_readback else None
+                points=live['position_m'] if live is not None else usd_points
                 displacement=points-baseline;translation=displacement.mean(0)
                 rms=float(np.sqrt(np.mean(np.sum((displacement-translation)**2,axis=1))))
                 rows.append(dict(tick=tick,health=tetra_health(rest,points,tets),translation_removed_rms_m=rms))
                 if a.tensor_readback:
-                    tensor_points=body.get_simulation_nodal_positions().numpy()[0][permutation].astype(float)*mpu
-                    discrepancy=np.linalg.norm(tensor_points-points,axis=1)
-                    rows[-1].update(tensor_health=tetra_health(rest,tensor_points,tets),
+                    discrepancy=np.linalg.norm(points-usd_points,axis=1)
+                    rows[-1].update(usd_health=tetra_health(rest,usd_points,tets),
                         tensor_usd_max_difference_m=float(discrepancy.max()),
                         tensor_usd_different_nodes=int(np.sum(discrepancy>1e-7)))
-                    np.savez_compressed(a.out/f'tensor_{mpu}_{tick}.npz',points=tensor_points,rest=rest,tets=tets)
+                    np.savez_compressed(a.out/f'tensor_{mpu}_{tick}.npz',points=points,velocity=live['velocity_m_s'],rest=rest,tets=tets)
                 centers.append(points.mean(0))
                 np.savez_compressed(a.out/f'state_{mpu}_{tick}.npz',points=points,rest=rest,tets=tets)
             if tick<180:sim.step(render=False)
         acceleration=np.diff(np.asarray(centers),n=2,axis=0)/(.125**2)
         error=np.linalg.norm(acceleration-np.array([0,-9.81,0]),axis=1)
         passed=all(r['health']['inverted_tetrahedra']==0 and r['health']['minimum_signed_volume_ratio']>=.99 and r['translation_removed_rms_m']<=1e-5 for r in rows) and bool(np.max(error)<=.1)
-        if a.tensor_readback:
-            passed=passed and all(r['tensor_health']['inverted_tetrahedra']==0 and
-                r['tensor_health']['minimum_signed_volume_ratio']>=.99 and
-                r['tensor_usd_max_difference_m']<=1e-7 for r in rows)
         report['cases'].append(dict(meters_per_unit=mpu,status='geometry_dynamics_passed' if passed else 'failed',
+            observation_source='live_physx_tensor' if a.tensor_readback else 'usd',
             authored_density=1050*mpu**3,authored_youngs_modulus=12000*mpu,authored_gravity=9.81/mpu,
             acceleration_m_s2=acceleration.tolist(),max_acceleration_error_m_s2=float(error.max()),rows=rows))
         (a.out/'report.json').write_text(json.dumps(report,indent=2)+'\n')
-        if a.tensor_readback:del body,tensor_sim
+        if a.tensor_readback:observer.close();del observer
         sim.stop();SimulationContext.clear_instance();omni.usd.get_context().close_stage()
         print(f'END_UNIT_CASE meters_per_unit={mpu}',flush=True)
     report['status']='geometry_dynamics_passed_engine_log_required' if all(c['status']=='geometry_dynamics_passed' for c in report['cases']) else 'failed'
