@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "scene_sha256": "62c94e72a053f4ff5d5871eecc271eeb11dfbcc85836140d989a41a97f0d7759",
+  "camera": "/World/Endoscope",
+  "sample_resolution": [
+    48,
+    27
+  ],
+  "horizontal_fov_deg": 81.20258929000894,
+  "first_hit_frame_fraction": {
+    "/World/CT/colon": 0.13271604938271606,
+    "/World/CT/duodenum": 0.0,
+    "/World/CT/iliac_artery_left": 0.0,
+    "/World/CT/iliac_artery_right": 0.0,
+    "/World/CT/iliac_vena_left": 0.0,
+    "/World/CT/iliac_vena_right": 0.0,
+    "/World/CT/iliopsoas_left": 0.0,
+    "/World/CT/iliopsoas_right": 0.0,
+    "/World/CT/liver": 0.0,
+    "/World/CT/small_bowel": 0.5162037037037037,
+    "/World/CT/urinary_bladder": 0.0,
+    "/World/Atlas/appendix/render": 0.0,
+    "/World/Atlas/mesoappendix/render": 0.0,
+    "/World/Atlas/appendicular_artery/render": 0.0,
+    "/World/BodyEnvelope/render": 0.35108024691358025
+  },
+  "background_fraction": 0.0,
+  "appendix_visible_in_sample": false,
+  "method": "Pixel-centre pinhole rays; opaque triangle first hit at default USD time",
+  "limitations": [
+    "No RTX materials, distortion, transparency or dynamic deformation",
+    "Geometric visibility does not validate clinical anatomy or realism",
+    "Small structures may fall between sampled rays"
+  ]
+}
