@@ -50,7 +50,7 @@ def main():
     if any(frames.glob('*.png')):p.error('Use a fresh output folder')
     report={'status':'starting','learned_policy':False,'policy':'geometric two-tip target tracking'}
     report['implementation_sha256']={name:hashlib.sha256((Path(__file__).parent/name).read_bytes()).hexdigest()
-        for name in ('rosota_ct_env.py','solver_grasp.py','tissue_grasp.py','coupling_probe.py','settlement.py','mount_sensor_probe.py','node_correspondence.py','readback_probe.py','bimanual_coupling_probe.py')}
+        for name in ('rosota_ct_env.py','solver_grasp.py','tissue_grasp.py','coupling_probe.py','settlement.py','mount_sensor_probe.py','node_correspondence.py','readback_probe.py','bimanual_coupling_probe.py','reset_comparison.py')}
     def save():(a.out/'report.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
     save()
     for n,d in [('WARP_CACHE_PATH','isaac-warp'),('OPTIX_CACHE_PATH','optix')]:os.environ.setdefault(n,str(ROOT/'.cache'/d))

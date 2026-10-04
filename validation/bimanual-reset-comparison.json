@@ -1,0 +1,21 @@
+{
+  "status": "mismatched",
+  "tissue_max_m": 0.005472526044376587,
+  "tissue_rms_m": 0.0016695401287038266,
+  "tissue_p99_m": 0.005088481442838896,
+  "joint_max_rad": 5.960464477539063e-08,
+  "correspondence_changed_indices": 0,
+  "tissue_tolerance_m": 1e-05,
+  "joint_tolerance_rad": 1e-05,
+  "method": "Exact rest geometry/connectivity correspondence; no alignment, scale fit or tolerance relaxation",
+  "evidence_sha256": {
+    "report.json": "dd6a55d25925fc4f91540e2d5f5dfdf61e027d057858efd6149e3847a835c72e",
+    "bimanual_initial_disabled.npz": "a4c94c53fbaaccbe67502e3023d67459bc7f509d8d1761d26d4c1851a2ea26a2",
+    "bimanual_initial_enabled.npz": "e7728213a936247d6f872edace4e2bc54fa58341236821813c6b80a1bb28b6af"
+  },
+  "layer_cache_probe": {
+    "reopened_value": 2,
+    "disk_reload_value": 1,
+    "scope": "Confirms USD cache semantics; causal fix still requires simulator paired-reset trial"
+  }
+}

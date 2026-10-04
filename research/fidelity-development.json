@@ -75,7 +75,7 @@
     "Added strict runtime comparator rejecting changed scenes/helpers, incomplete traces, and green statuses contradicted by measured errors"
   ],
   "next_actions": [
-    "Diagnose bimanual paired reset mismatch using v2 saved initial arrays; do not relax tolerances or claim paired force validation",
+    "Finish bimanual v3 after forced USD source-layer reload; v2 shows true 5.47 mm tissue reset drift, not node permutation",
     "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",
@@ -102,6 +102,7 @@
     "precook_evidence": "validation/precooked-tissue-runtime.json",
     "coupling_evidence": "validation/precooked-coupling.json",
     "readback_evidence": "validation/tissue-readback.json",
-    "baseline_compatibility": "validation/precook-51-compatibility.json"
+    "baseline_compatibility": "validation/precook-51-compatibility.json",
+    "paired_reset_evidence": "validation/bimanual-reset-comparison.json"
   }
 }

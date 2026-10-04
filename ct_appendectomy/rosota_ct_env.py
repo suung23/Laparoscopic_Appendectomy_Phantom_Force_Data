@@ -53,14 +53,22 @@ class RosotaCTEnv(gym.Env):
         self.done=True
         self.config=json.loads((self.assets/'bimanual_config.json').read_text())
         import omni.usd
-        from pxr import UsdGeom,UsdPhysics,PhysxSchema,Gf
+        from pxr import UsdGeom,UsdPhysics,PhysxSchema,Gf,Sdf
         from isaacsim.core.api import SimulationContext
         from isaacsim.core.prims import SingleArticulation
         from fr3_ct_scene import author
         self._destroy_render()
         if self.sim:self.sim.stop()
         SimulationContext.clear_instance()
-        omni.usd.get_context().open_stage(str((self.assets/'attached.usda').resolve()))
+        # USD layers survive stage closure while old prim/view references exist.
+        # Force a disk reload so prior cooking, attachment and physics edits
+        # cannot become the next episode's authored initial condition.
+        source_path=str((self.assets/'attached.usda').resolve())
+        omni.usd.get_context().close_stage()
+        source_layer=Sdf.Layer.FindOrOpen(source_path)
+        if source_layer is None:raise RuntimeError('Missing source USD layer')
+        source_layer.Reload(force=True)
+        omni.usd.get_context().open_stage(source_path)
         for _ in range(20):self.app.update()
         self.stage=omni.usd.get_context().get_stage()
         # Older authored stages used a bare Xform; modern PhysX attachments
