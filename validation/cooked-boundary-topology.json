@@ -1,0 +1,76 @@
+{
+  "status": "failed boundary topology audit",
+  "tetrahedra": 29490,
+  "unique_tetrahedra": 29462,
+  "duplicate_tetrahedra": 28,
+  "face_incidence_histogram": {
+    "1": 6856,
+    "2": 55300,
+    "3": 104,
+    "4": 42,
+    "6": 4
+  },
+  "nonmanifold_faces": 150,
+  "example_nonmanifold_faces": [
+    [
+      43,
+      45,
+      268
+    ],
+    [
+      43,
+      130,
+      293
+    ],
+    [
+      43,
+      268,
+      293
+    ],
+    [
+      45,
+      268,
+      269
+    ],
+    [
+      61,
+      63,
+      71
+    ],
+    [
+      61,
+      63,
+      108
+    ],
+    [
+      61,
+      71,
+      108
+    ],
+    [
+      63,
+      71,
+      72
+    ]
+  ],
+  "source": "Isaac 6.1 cooked tissue_after_settlement.npz",
+  "action": "Do not ignore multiply shared faces; investigate original and cooked topology before contact target validation.",
+  "phase_comparison": {
+    "before_initialize": {
+      "duplicate_tetrahedra": 28,
+      "nonmanifold_faces": 150
+    },
+    "after_cooking": {
+      "duplicate_tetrahedra": 28,
+      "nonmanifold_faces": 150
+    },
+    "after_initialize": {
+      "duplicate_tetrahedra": 28,
+      "nonmanifold_faces": 150
+    },
+    "after_settlement": {
+      "duplicate_tetrahedra": 28,
+      "nonmanifold_faces": 150
+    }
+  }
+}
