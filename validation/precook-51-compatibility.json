@@ -1,0 +1,49 @@
+{
+  "runtime": "5.1.0.0",
+  "status": "no stale readback detected",
+  "scope": "Precook reset and physics-only observation compatibility; known reaction-force defect not retested or resolved",
+  "reset": {
+    "failure": "",
+    "pin_drift_m": 8.026127085120373e-05,
+    "tissue_health": {
+      "tetrahedra": 29490,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.6386196138272392,
+      "median_volume_ratio": 1.0039079193012426,
+      "total_absolute_volume_ratio": 1.003228414918608,
+      "p99_absolute_volume_change": 0.09586828071777516
+    }
+  },
+  "trace": [
+    {
+      "sample": 0,
+      "physics_time_s": 1.262500065844506,
+      "render_only_coordinate_change_m": 0.0,
+      "pre_render_displacement_m": 5.342574841250647e-05,
+      "post_render_displacement_m": 5.342574841250647e-05
+    },
+    {
+      "sample": 1,
+      "physics_time_s": 1.387500072363764,
+      "render_only_coordinate_change_m": 0.0,
+      "pre_render_displacement_m": 7.812465788532263e-05,
+      "post_render_displacement_m": 7.812465788532263e-05
+    },
+    {
+      "sample": 2,
+      "physics_time_s": 1.512500078883022,
+      "render_only_coordinate_change_m": 0.0,
+      "pre_render_displacement_m": 9.297236844030777e-05,
+      "post_render_displacement_m": 9.297236844030777e-05
+    },
+    {
+      "sample": 3,
+      "physics_time_s": 1.63750008540228,
+      "render_only_coordinate_change_m": 0.0,
+      "pre_render_displacement_m": 0.0001278711278156563,
+      "post_render_displacement_m": 0.0001278711278156563
+    }
+  ],
+  "report_sha256": "e807a6ecc29489ddafa2b5128312774b07339f648522e32fb55eca1d484e58c2"
+}

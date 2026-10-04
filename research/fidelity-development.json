@@ -75,7 +75,7 @@
     "Added strict runtime comparator rejecting changed scenes/helpers, incomplete traces, and green statuses contradicted by measured errors"
   ],
   "next_actions": [
-    "Verify 5.1 precook compatibility and paired reset repeatability; extend force-transfer test to both arms",
+    "Complete bimanual 6.1 load-path experiment with paired initial-state tolerance; inspect per-hand force effect and mesh health",
     "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",
@@ -101,6 +101,7 @@
     "migration_audit": "validation/tissue-migration-audit.json",
     "precook_evidence": "validation/precooked-tissue-runtime.json",
     "coupling_evidence": "validation/precooked-coupling.json",
-    "readback_evidence": "validation/tissue-readback.json"
+    "readback_evidence": "validation/tissue-readback.json",
+    "baseline_compatibility": "validation/precook-51-compatibility.json"
   }
 }
