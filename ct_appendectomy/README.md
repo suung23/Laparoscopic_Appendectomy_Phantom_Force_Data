@@ -48,4 +48,12 @@ The handle attaches directly to selected FEM vertices. It is **not a surgical fo
 
 Run `./build-launcher.ps1` from the repository root to build `IsaacSimulator.exe`, then open that executable from the user desktop. The launcher starts the existing Python/Isaac installation without a terminal window and writes diagnostics to ignored `.cache/desktop-launch.log`. It uses the NVIDIA EULA acceptance already established for this local installation. Launching a GUI from an automation execution desktop may create a window invisible on the user desktop; use the desktop launcher in that case.
 
-The interactive runner selects `/World/Endoscope` again after the deformable stage reload. Mouse camera navigation may still change its pose. Restarting the scene restores the authored pose. The desktop launcher was observed opening an actual Isaac window; the final camera-selection adjustment has been syntax checked but has not been re-run in the GUI.
+The interactive runner selects `/World/Endoscope` again after the deformable stage reload. Mouse camera navigation may still change its pose. Restarting the scene restores the authored pose. The desktop launcher was observed opening an actual Isaac window; the contact extension was subsequently checked in the GUI with Endoscope selected and the authored pose restored.
+
+## Blunt-tip contact milestone
+
+`./run-ct.ps1 -Contact -Interactive` runs a 5 mm radius kinematic sphere against the base-pinned appendix. The sphere moves 12 mm over 120 frames. No grip attachment is present: tissue responds through PhysX collision. The desktop launcher uses this mode and `--lock-endoscope` to restore the authored camera pose on each interactive frame. Omit this flag when free camera navigation is desired.
+
+`--contact-probe --disable-tool-contact` repeats the same prescribed trajectory with tip collision disabled, providing a negative control. These are mechanics smoke tests, not identified tissue-response validation or surgical-force limits. Zero gravity and estimated material parameters remain. Surrounding organs are not deformable.
+
+Static triangle-mesh colliders are authored for 11 CT structures but disabled by default. `--experimental-ct-contact` enables them for diagnosis. The initial atlas graft overlaps CT anatomy: enabling all CT contacts failed the base-drift/stability gate (about 4.75 mm base drift and 91.9 mm maximum displacement). Do not use that mode for training until registration and initial penetration are repaired. The failed result is retained alongside the successful contact and negative-control reports.

@@ -1,0 +1,21 @@
+{
+  "engine": "Isaac Sim 5.1 / PhysX",
+  "mode": "blunt-tip contact",
+  "appendectomy_completed": false,
+  "appendix_patient_specific": false,
+  "registration_validated": false,
+  "cooked_nodes": 1388,
+  "gravity_m_s2": 0.0,
+  "material_identified": false,
+  "image_std": 50.57818684176783,
+  "finite_nodes": true,
+  "max_node_displacement_m": 0.09190456050564567,
+  "physics_validation": "base-pinned FEM, 12mm kinematic sphere motion; no grasp",
+  "tool_collision_enabled": true,
+  "ct_static_colliders": 11,
+  "pin_drift_m": 0.004747218163803945,
+  "mean_node_displacement_m": 0.046973924753967666,
+  "status": "failed",
+  "error_type": "RuntimeError",
+  "error": "Contact probe base drift exceeds 1mm"
+}

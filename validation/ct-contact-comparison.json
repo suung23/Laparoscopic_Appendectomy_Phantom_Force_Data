@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "collision_enabled_max_displacement_m": 0.03007802762370468,
+  "collision_disabled_max_displacement_m": 3.381852859772536e-05,
+  "contact_response_difference_m": 0.030044209095106952,
+  "ct_collision_validated": false,
+  "surgical_grasp_validated": false
+}

@@ -31,3 +31,7 @@ H100 access remains unverified. No server contents or training performance are a
 Private upstream reconstruction assets remain private and retain their existing ownership and terms. Retrieval through an authorized account does not establish permission to redistribute or relicense them. Do not apply an open-source license to this repository snapshot by inference. Public human CT/atlas provenance remains in the separate `appendectomy_lab` manifests; the CT builder explicitly imports public geometry, records hashes, and labels the appendix as an unvalidated atlas graft.
 
 Before product release, record acquisition consent/rights for reconstruction data, upstream/submodule licenses, CAD redistribution terms, model weights, dataset terms and notices. No personal identifiers, SSH credentials, or signed download links belong in manifests or reports.
+
+## Contact extension
+
+The CT path now includes a base-pinned, collision-driven blunt-tip contact probe, separate from pre-attached retraction. See `ct_appendectomy/README.md`. All-organ collision remains experimental: the provisional atlas registration creates initial overlaps and fails stability checks. Default contact mode disables those CT colliders while testing the physical tool/appendix interaction. This does not implement grasping, coupled mesentery or cutting.

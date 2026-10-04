@@ -16,14 +16,21 @@ p.add_argument('--scene',type=Path,default=ROOT/'out/ct_appendectomy/ct_appendec
 p.add_argument('--headless',action='store_true')
 p.add_argument('--frames',type=int,default=120)
 p.add_argument('--physics',action='store_true')
+p.add_argument('--contact-probe',action='store_true')
+p.add_argument('--experimental-ct-contact',action='store_true',help='Unvalidated atlas overlap can destabilize tissue')
+p.add_argument('--disable-tool-contact',action='store_true',help='Negative control for the contact probe')
 p.add_argument('--rl-smoke',action='store_true')
 p.add_argument('--retraction-probe',action='store_true',help='Prescribed FEM attachment displacement, not jaw contact')
 p.add_argument('--interactive',action='store_true',help='Keep the Isaac window open after the probe')
+p.add_argument('--lock-endoscope',action='store_true',help='Restore authored endoscope pose on each interactive frame')
 p.add_argument('--graphics',choices=('vulkan','d3d12'),default='d3d12')
 p.add_argument('--out',type=Path,default=ROOT/'out/ct_appendectomy/isaac_probe')
 a=p.parse_args()
 if a.rl_smoke: a.retraction_probe=True
-if a.retraction_probe: a.physics=True
+if a.retraction_probe or a.contact_probe: a.physics=True
+if a.contact_probe and a.retraction_probe: p.error("Choose contact or attachment retraction, not both")
+if a.disable_tool_contact and not a.contact_probe: p.error("Negative control requires --contact-probe")
+if a.experimental_ct_contact and not a.contact_probe: p.error("CT contact requires --contact-probe")
 if not a.scene.is_file(): p.error('Build the CT scene first with build_scene.py')
 if a.frames<1: p.error('--frames must be positive')
 if a.interactive and a.headless: p.error('--interactive requires a visible window')
@@ -62,6 +69,7 @@ try:
         'appendectomy_completed':False,'appendix_patient_specific':False,'registration_validated':False}
     simulation=None
     retraction=None
+    contact=None
     def force_gpu_zero_gravity():
         # SimulationContext can create its own /physicsScene in addition to the authored scene.
         for item in stage.Traverse():
@@ -107,11 +115,15 @@ try:
         report['cooked_nodes']=len(initial)
         report['gravity_m_s2']=0.
         report['material_identified']=False
-        if a.retraction_probe:
+        if a.retraction_probe or a.contact_probe:
             from attachments import author_retraction
             manifest=json.loads((a.scene.parent/'scene_manifest.json').read_text())
             simulation.stop()
-            retraction=author_retraction(stage,body+'/sim',initial,manifest['ct_anchor_m'])
+            if a.contact_probe:
+                from contact import author_contact
+                contact=author_contact(stage,body+'/sim',initial,manifest['ct_anchor_m'],a.disable_tool_contact,a.experimental_ct_contact)
+            else:
+                retraction=author_retraction(stage,body+'/sim',initial,manifest['ct_anchor_m'])
             cooked=a.out/'attached.usda'
             stage.GetRootLayer().Export(str(cooked))
             SimulationContext.clear_instance()
@@ -125,12 +137,15 @@ try:
             force_gpu_zero_gravity()
             simulation.initialize_physics()
             sim_mesh=stage.GetPrimAtPath(body+'/sim')
-            retraction['translation']=UsdGeom.Xformable(stage.GetPrimAtPath('/World/RetractionHandle')).GetOrderedXformOps()[0]
+            if retraction: retraction['translation']=UsdGeom.Xformable(stage.GetPrimAtPath('/World/RetractionHandle')).GetOrderedXformOps()[0]
+            if contact: contact['translation']=UsdGeom.Xformable(stage.GetPrimAtPath('/World/BluntProbe')).GetOrderedXformOps()[0]
         simulation.play()
     product=rep.create.render_product('/World/Endoscope',(1280,720))
     rgb=rep.AnnotatorRegistry.get_annotator('rgb')
     rgb.attach([product])
     for frame in range(a.frames):
+        if contact:
+            contact["translation"].Set(Gf.Vec3d(*(contact["origin"]+np.array([0,-.012*(frame+1)/a.frames,0]))))
         if retraction:
             lift=.01*(frame+1)/a.frames
             retraction['translation'].Set(Gf.Vec3d(*(retraction['origin']+np.array([0,0,lift]))))
@@ -155,6 +170,18 @@ try:
             report['physics_validation']='prescribed 10mm attachment retraction; not contact-based grasp'
             if report['pin_drift_m']>.001 or report['grip_lift_m']<.005:
                 raise RuntimeError('Retraction attachment did not hold base and lift tissue as commanded')
+    if contact:
+        report['mode']='blunt-tip contact' if not a.disable_tool_contact else 'contact negative control'
+        report['physics_validation']='base-pinned FEM, 12mm kinematic sphere motion; no grasp'
+        report['tool_collision_enabled']=not a.disable_tool_contact
+        report['ct_static_colliders_authored']=len(contact['colliders'])
+        report['ct_contact_enabled']=a.experimental_ct_contact
+        report['pin_drift_m']=float(np.linalg.norm(final[contact['pin']]-initial[contact['pin']],axis=1).max())
+        report['mean_node_displacement_m']=float(np.linalg.norm(final-initial,axis=1).mean())
+        if report['pin_drift_m']>.001: raise RuntimeError('Contact probe base drift exceeds 1mm')
+        if report['max_node_displacement_m']>.05: raise RuntimeError('Contact probe unstable: displacement exceeds 50mm')
+        if not a.disable_tool_contact and report['max_node_displacement_m']<.001:
+            raise RuntimeError('No measurable contact-induced tissue displacement')
     if a.rl_smoke:
         from retraction_env import AppendixRetractionEnv
         simulation.stop()
@@ -210,7 +237,13 @@ try:
     report['status']='passed'
     (a.out/'report.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
     print(json.dumps(report),flush=True)
+    camera_op=UsdGeom.Xformable(stage.GetPrimAtPath('/World/Endoscope')).GetOrderedXformOps()[0]
+    camera_pose=camera_op.Get()
+    if a.interactive and simulation: simulation.play()
     while a.interactive and app.is_running():
+        if a.lock_endoscope:
+            camera_op.Set(camera_pose)
+            if viewport: viewport.set_active_camera('/World/Endoscope')
         if simulation: simulation.step(render=True)
         else: app.update()
 except BaseException as exc:

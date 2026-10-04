@@ -2,6 +2,7 @@ param(
     [string]$AssetPython = (Join-Path $PSScriptRoot '../../work/venv/Scripts/python.exe'),
     [string]$IsaacPython = (Join-Path $PSScriptRoot '../../work/isaac-venv/Scripts/python.exe'),
     [switch]$Physics,
+    [switch]$Contact,
     [switch]$Retraction,
     [switch]$RLSmoke,
     [switch]$Interactive
@@ -14,6 +15,7 @@ foreach ($python in @($AssetPython,$IsaacPython)) {
 if ($LASTEXITCODE) { throw 'CT asset build failed' }
 $runArgs=@((Join-Path $PSScriptRoot 'ct_appendectomy/run_scene.py'))
 if ($Physics) { $runArgs+='--physics' }
+if ($Contact) { $runArgs+='--contact-probe' }
 if ($Retraction) { $runArgs+='--retraction-probe' }
 if ($RLSmoke) { $runArgs+='--rl-smoke' }
 if ($Interactive) { $runArgs+='--interactive' } else { $runArgs+='--headless' }

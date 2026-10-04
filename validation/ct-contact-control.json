@@ -1,0 +1,21 @@
+{
+  "engine": "Isaac Sim 5.1 / PhysX",
+  "mode": "contact negative control",
+  "appendectomy_completed": false,
+  "appendix_patient_specific": false,
+  "registration_validated": false,
+  "cooked_nodes": 1388,
+  "gravity_m_s2": 0.0,
+  "material_identified": false,
+  "image_std": 50.548444830452866,
+  "finite_nodes": true,
+  "max_node_displacement_m": 3.381852859772536e-05,
+  "physics_validation": "base-pinned FEM, 12mm kinematic sphere motion; no grasp",
+  "tool_collision_enabled": false,
+  "ct_static_colliders_authored": 11,
+  "ct_contact_enabled": false,
+  "pin_drift_m": 3.329901870451946e-05,
+  "mean_node_displacement_m": 3.2934313264075846e-05,
+  "frames": 120,
+  "status": "passed"
+}
