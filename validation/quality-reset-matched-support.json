@@ -1,0 +1,52 @@
+{
+  "status": "failed",
+  "error": "Invalid reset: tet_inversion",
+  "support_contact_offset_m": 0.0003,
+  "phases": {
+    "after_initialize": {
+      "tetrahedra": 48443,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.8986485508318293,
+      "median_volume_ratio": 0.999267975794733,
+      "total_absolute_volume_ratio": 0.9991168677855791,
+      "p99_absolute_volume_change": 0.0058628694457733945
+    },
+    "warmup_1": {
+      "tetrahedra": 48443,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.8498150090011151,
+      "median_volume_ratio": 0.9992681147277565,
+      "total_absolute_volume_ratio": 0.9990526193660976,
+      "p99_absolute_volume_change": 0.008621913410704667
+    },
+    "warmup_60": {
+      "tetrahedra": 48443,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 29,
+      "minimum_signed_volume_ratio": -2.449121164239394,
+      "median_volume_ratio": 1.0090297315048562,
+      "total_absolute_volume_ratio": 1.0097483887130296,
+      "p99_absolute_volume_change": 0.34802014948282
+    },
+    "warmup_480": {
+      "tetrahedra": 48443,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 14,
+      "minimum_signed_volume_ratio": -2.262091827720242,
+      "median_volume_ratio": 1.0069594373424156,
+      "total_absolute_volume_ratio": 1.0094791992762349,
+      "p99_absolute_volume_change": 0.3102373284750728
+    },
+    "after_settlement": {
+      "tetrahedra": 48443,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 12,
+      "minimum_signed_volume_ratio": -2.2035861053621915,
+      "median_volume_ratio": 1.0068643636761867,
+      "total_absolute_volume_ratio": 1.0094365830927858,
+      "p99_absolute_volume_change": 0.2907572015486506
+    }
+  }
+}
