@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 import os
+import importlib.metadata
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -16,11 +17,13 @@ def main():
     p.add_argument('--keep-scene',action='store_true',help='Retain the surrounding scene for a GPU differential test')
     p.add_argument('--exclude',choices=['/World/Atlas','/World/FR3/Right'],help='Remove one scene component only in the diagnostic')
     p.add_argument('--external-every-iteration',action='store_true',help='Test the documented TGS external-force integration option')
+    p.add_argument('--spring-probe',action='store_true',help='Diagnostic-only 300 Nm/rad drives; measure static deflection independently of reaction sensors')
     p.add_argument('--out',type=Path,required=True)
     a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True)
     if a.reset_seed and not a.robot_scene:p.error('--reset-seed requires --robot-scene')
     if a.keep_scene and not (a.robot_scene and a.gpu):p.error('--keep-scene requires --robot-scene and --gpu')
     if a.exclude and not a.keep_scene:p.error('--exclude requires --keep-scene')
+    if a.spring_probe and not (a.robot_scene and a.reset_seed):p.error('--spring-probe requires --robot-scene and --reset-seed')
     if (a.out/'report.json').exists():p.error('Use a fresh output directory')
     os.environ.setdefault('WARP_CACHE_PATH',str(ROOT/'.cache/isaac-warp'))
     os.environ.setdefault('OPTIX_CACHE_PATH',str(ROOT/'.cache/optix'))
@@ -34,6 +37,7 @@ def main():
         '--/privacy/extraDiagnosticDataOptIn=false','--/crashreporter/enabled=false']+
         [f'--/app/tokens/{k}={v.as_posix()}' for k,v in tokens.items()]})
     report=dict(status='starting',gpu=a.gpu,gravity_m_s2=0.,robot_collisions=False,
+        isaacsim_version=importlib.metadata.version('isaacsim'),
         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
     try:
         import numpy as np
@@ -90,6 +94,12 @@ def main():
             if str(prim.GetPath()).startswith(robot_path+'/') and prim.HasAPI(UsdPhysics.CollisionAPI):
                 UsdPhysics.CollisionAPI(prim).CreateCollisionEnabledAttr(False)
         sim=SimulationContext(stage_units_in_meters=1.,physics_dt=1/480,rendering_dt=1/30)
+        if a.spring_probe:
+            for i in range(1,8):
+                drive=UsdPhysics.DriveAPI(stage.GetPrimAtPath(robot_path+'/fr3_joint'+str(i)),'angular')
+                drive.CreateStiffnessAttr(300.)
+                drive.CreateDampingAttr(30.)
+            report['diagnostic_drive']=dict(stiffness_nm_rad=300.,damping_nm_s_rad=30.)
         for prim in stage.Traverse():
             if prim.IsA(UsdPhysics.Scene):
                 UsdPhysics.Scene(prim).CreateGravityMagnitudeAttr(0.)
@@ -137,12 +147,13 @@ def main():
             com=np.asarray(com)
             if com.shape!=(1,1,3):raise ValueError('Unexpected center-of-mass tensor shape')
             return point_jacobian(origins,axes,p[0]+R@com[0,0])
-        torque_response=[];torque_expected=[];torque_release=[]
+        torque_response=[];torque_expected=[];torque_release=[];spring_response=[];spring_release=[];drift=[]
         response=[];noise=[];release=[];trace=[];expected=[]
+        onset,offset,end=(240,960,1680) if a.spring_probe else (120,360,480)
         for axis in range(3):
-            samples=[];efforts=[]
-            for tick in range(480):
-                f=np.eye(3,dtype=np.float32)[axis]*(.1 if 120<=tick<360 else 0.)
+            samples=[];efforts=[];positions=[]
+            for tick in range(end):
+                f=np.eye(3,dtype=np.float32)[axis]*(.1 if onset<=tick<offset else 0.)
                 link.apply_forces(f.reshape(1,3),is_global=True)
                 sim.step(render=False)
                 force=np.asarray(robot.get_measured_joint_forces())[row,:3]
@@ -153,22 +164,37 @@ def main():
                     tau=np.asarray(robot.get_measured_joint_efforts(joint_indices=np.array(arm_indices)),float)
                     efforts.append(tau)
                     trace[-1]['projected_joint_torque_nm']=tau.tolist()
-                if tick==359:
+                    q_arm=np.asarray(robot.get_joint_positions(joint_indices=np.array(arm_indices)),float)
+                    positions.append(q_arm)
+                    trace[-1]['joint_position_rad']=q_arm.tolist()
+                if tick==offset-1:
                     _,q=link.get_world_poses()
                     R=Rotation.from_quat(np.asarray(q)[0,[1,2,3,0]]).as_matrix()
                     expected.append((R.T@(np.eye(3)[axis]*.1)).tolist())
                     if joint_frames:torque_expected.append((-load_jacobian().T@(np.eye(3)[axis]*.1)).tolist())
-            values=np.array(samples);baseline=values[88:120].mean(0)
-            response.append((values[328:360].mean(0)-baseline).tolist())
-            noise.append(float(np.linalg.norm(values[88:120]-baseline,axis=1).max()))
-            release.append(float(np.linalg.norm(values[448:480].mean(0)-baseline)))
+            values=np.array(samples);baseline=values[onset-32:onset].mean(0)
+            response.append((values[offset-32:offset].mean(0)-baseline).tolist())
+            noise.append(float(np.linalg.norm(values[onset-32:onset]-baseline,axis=1).max()))
+            release.append(float(np.linalg.norm(values[end-32:end].mean(0)-baseline)))
             if efforts:
-                tau=np.array(efforts);tare=tau[88:120].mean(0)
-                torque_response.append((tau[328:360].mean(0)-tare).tolist())
-                torque_release.append((tau[448:480].mean(0)-tare).tolist())
+                tau=np.array(efforts);tare=tau[onset-32:onset].mean(0)
+                torque_response.append((tau[offset-32:offset].mean(0)-tare).tolist())
+                torque_release.append((tau[end-32:end].mean(0)-tare).tolist())
+                if a.spring_probe:
+                    q=np.array(positions);zero=q[onset-32:onset].mean(0)
+                    spring_response.append((-300*(q[offset-32:offset].mean(0)-zero)).tolist())
+                    spring_release.append((-300*(q[end-32:end].mean(0)-zero)).tolist())
+                    drift.append(max(float(np.linalg.norm(q[t-32:t].mean(0)-q[t-64:t-32].mean(0))/(32/480)) for t in (onset,offset,end)))
+            print(f'Force fixture axis {axis} finished',flush=True)
         if joint_frames:
             from static_load_check import assess_torque
             report['projected_torque_check']=assess_torque(torque_response,torque_expected,torque_release)
+            if a.spring_probe:
+                spring=assess_torque(spring_response,torque_expected,spring_release)
+                spring.update(scope='Measured joint deflection times authored drive stiffness; zero-gravity diagnostic, not tissue force calibration',
+                    max_window_drift_rad_s=drift,stationarity_limit_rad_s=1e-5)
+                if max(drift)>1e-5:spring['status']='failed'
+                report['state_based_spring_check']=spring
         report.update(evaluate_response(response,expected,release,noise),
             selected_row=row,trace=trace,physics_ticks=len(trace))
     except Exception as e:

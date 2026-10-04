@@ -1,6 +1,7 @@
 """Preserve differential-test evidence without treating isolated passes as task validation."""
 import hashlib
 import json
+import numpy as np
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -8,6 +9,7 @@ TRIALS=['force_fixture_cpu_v1','force_fixture_gpu_v1','force_fr3_cpu_v1',
         'force_fr3_gpu_v1','force_fr3_seed_gpu_v1','force_fr3_full_gpu_v1',
         'force_fr3_no_atlas_gpu_v1','force_fr3_full_external_gpu_v1','force_fr3_no_atlas_gpu_v2']
 TRIALS += ['force_fr3_torque_full_v1','force_fr3_torque_full_v2','force_fr3_torque_no_atlas_v1']
+TRIALS += ['force_spring_full_v1','force_spring_no_atlas_v1']
 
 
 def main():
@@ -37,6 +39,13 @@ def main():
         remaining=['Separate actual dynamics from reaction reporting using a state-based known-load check or an independently instrumented solver',
             'Verify full task under gravity, tissue contact, multiple force magnitudes and poses',
             'Only then assess dynamic tissue attachment reaction and fit measured material data'])
+    pair=[ROOT/'out'/n/'report.json' for n in ('force_spring_full_v1','force_spring_no_atlas_v1')]
+    if all(p.exists() for p in pair):
+        a,b=[json.loads(p.read_text())['trace'] for p in pair]
+        if [(r['axis'],r['tick']) for r in a]!=[(r['axis'],r['tick']) for r in b]:raise ValueError('Unmatched state comparison')
+        q=[np.array([r['joint_position_rad'] for r in rows]) for rows in (a,b)]
+        report['spring_state_comparison']=dict(samples=len(a),max_joint_difference_rad=float(np.abs(q[0]-q[1]).max()),
+            interpretation='Matched trajectories despite different reported forces. Both absolute spring-force checks failed; this does not establish calibrated dynamics.')
     (ROOT/'validation/force-fixture-diagnostics.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8',newline='\n')
 
 
