@@ -1,0 +1,170 @@
+{
+  "status": "failed",
+  "mesh_sha256": "e601a3601ad3d6ce4414bf4ded7e5389678ac9e2b96931aca7ba31a784ced944",
+  "cases": [
+    {
+      "meters_per_unit": 1.0,
+      "status": "failed",
+      "authored_density": 1050.0,
+      "authored_youngs_modulus": 12000.0,
+      "authored_gravity": 9.81,
+      "acceleration_m_s2": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_acceleration_error_m_s2": 9.81,
+      "rows": [
+        {
+          "tick": 0,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9998559718213226,
+            "median_volume_ratio": 0.9999999496287533,
+            "total_absolute_volume_ratio": 0.9999999646267494,
+            "p99_absolute_volume_change": 8.344812422534926e-06
+          },
+          "translation_removed_rms_m": 0.0,
+          "tensor_health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9997859769445248,
+            "median_volume_ratio": 0.9999999303843943,
+            "total_absolute_volume_ratio": 0.9999999412483755,
+            "p99_absolute_volume_change": 3.413317623735978e-05
+          },
+          "tensor_usd_max_difference_m": 0.00012687966276751336,
+          "tensor_usd_different_nodes": 5311
+        },
+        {
+          "tick": 60,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9998559718213226,
+            "median_volume_ratio": 0.9999999496287533,
+            "total_absolute_volume_ratio": 0.9999999646267494,
+            "p99_absolute_volume_change": 8.344812422534926e-06
+          },
+          "translation_removed_rms_m": 0.0,
+          "tensor_health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9988482442024658,
+            "median_volume_ratio": 0.9999992897685056,
+            "total_absolute_volume_ratio": 1.0000001304626753,
+            "p99_absolute_volume_change": 0.00035463198141042016
+          },
+          "tensor_usd_max_difference_m": 0.08238201426293469,
+          "tensor_usd_different_nodes": 5311
+        },
+        {
+          "tick": 120,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9998559718213226,
+            "median_volume_ratio": 0.9999999496287533,
+            "total_absolute_volume_ratio": 0.9999999646267494,
+            "p99_absolute_volume_change": 8.344812422534926e-06
+          },
+          "translation_removed_rms_m": 0.0,
+          "tensor_health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9879057432779285,
+            "median_volume_ratio": 0.9999906879940992,
+            "total_absolute_volume_ratio": 0.9999899826693595,
+            "p99_absolute_volume_change": 0.0018115678000629912
+          },
+          "tensor_usd_max_difference_m": 0.3177924330172622,
+          "tensor_usd_different_nodes": 5311
+        },
+        {
+          "tick": 180,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9998559718213226,
+            "median_volume_ratio": 0.9999999496287533,
+            "total_absolute_volume_ratio": 0.9999999646267494,
+            "p99_absolute_volume_change": 8.344812422534926e-06
+          },
+          "translation_removed_rms_m": 0.0,
+          "tensor_health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9844893800992254,
+            "median_volume_ratio": 1.0000086946812246,
+            "total_absolute_volume_ratio": 1.0000040823358798,
+            "p99_absolute_volume_change": 0.004232374623343374
+          },
+          "tensor_usd_max_difference_m": 0.7062459657598793,
+          "tensor_usd_different_nodes": 5311
+        }
+      ]
+    }
+  ],
+  "tensor_pipeline": "warp_cuda",
+  "scope": "Isolated free fall with zero damping, no attachments, robot, contact or rendering. Not loaded tissue validation.",
+  "material_si": {
+    "density_kg_m3": 1050,
+    "youngs_modulus_pa": 12000,
+    "poissons_ratio": 0.45
+  },
+  "gates": {
+    "max_translation_removed_rms_m": 1e-05,
+    "max_acceleration_error_m_s2": 0.1,
+    "minimum_volume_ratio": 0.99
+  },
+  "tensor_dynamics": {
+    "rows": [
+      {
+        "tick": 0,
+        "translation_removed_rms_m": 0.0
+      },
+      {
+        "tick": 60,
+        "translation_removed_rms_m": 1.3164561064551392e-06
+      },
+      {
+        "tick": 120,
+        "translation_removed_rms_m": 1.4252261748101173e-05
+      },
+      {
+        "tick": 180,
+        "translation_removed_rms_m": 5.8932526853324874e-05
+      }
+    ],
+    "acceleration_m_s2": [
+      [
+        7.467122465051006e-05,
+        -9.800914321132751,
+        -0.00011092529681738881
+      ],
+      [
+        -0.0004557638713696466,
+        -9.792670505595868,
+        -0.0004129480038080948
+      ]
+    ],
+    "max_acceleration_error_m_s2": 0.01734040435120062,
+    "scope": "GPU tensor dynamics; USD coordinates are stale with this pipeline. No surgical validation."
+  }
+}
