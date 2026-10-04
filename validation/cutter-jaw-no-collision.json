@@ -1,0 +1,98 @@
+{
+  "scope": "measured aperture commissioning, not contact/cutting validation",
+  "robot_collisions_disabled": true,
+  "closure_tolerance_deg": 2.0,
+  "opening_tolerance_deg": 2.0,
+  "hands": {
+    "left": {
+      "closed_aperture_deg": 73.99737471313688,
+      "reopened_aperture_deg": 73.99737471313688,
+      "maximum_opening_deg": 74.0,
+      "measured_range_deg": [
+        73.99735422256936,
+        73.9975522980553
+      ],
+      "limits_ok": true,
+      "closure_guard_ticks": 2400,
+      "passed": false
+    },
+    "right": {
+      "closed_aperture_deg": -1.6488308306077494e-08,
+      "reopened_aperture_deg": 49.995044950769056,
+      "maximum_opening_deg": 50.0,
+      "measured_range_deg": [
+        -5.6686803448896555e-08,
+        49.995044950769056
+      ],
+      "limits_ok": true,
+      "closure_guard_ticks": 0,
+      "passed": true
+    }
+  },
+  "passed": false,
+  "limitations": [
+    "No-approach does not prove collision-free motion.",
+    "Joint effort is not an independent contact sensor."
+  ],
+  "disabled_robot_collider_count": 14,
+  "static_calibration": {
+    "left": {
+      "baseline": [
+        -0.22686945321038365,
+        -0.05673763121012598,
+        -0.40870541241019964,
+        -0.008427827415289357,
+        0.03365460777422413,
+        6.229796156276279e-06
+      ],
+      "max_force_residual_n": 0.0004078564935890176,
+      "jaw_effort_mean_nm": [
+        5.519860883396177e-05,
+        -0.00030947214963816805
+      ],
+      "jaw_effort_min_nm": [
+        5.484143548528664e-05,
+        -0.0003095012507401407
+      ],
+      "jaw_effort_max_nm": [
+        5.547375985770486e-05,
+        -0.00030945634352974594
+      ],
+      "jaw_effort_tare_applied": false,
+      "samples": 64,
+      "frame": "local child joint frame at tool_mount",
+      "model": "static tare only; no orientation or inertia compensation"
+    },
+    "right": {
+      "baseline": [
+        0.1616918749641627,
+        -0.16893068584613502,
+        -0.40871164854615927,
+        -0.024439209140837193,
+        -0.023369119531707838,
+        -9.439935240607156e-06
+      ],
+      "max_force_residual_n": 0.0003684354736895456,
+      "jaw_effort_mean_nm": [
+        0.00018050476842290664,
+        -1.2387882193820587e-05
+      ],
+      "jaw_effort_min_nm": [
+        0.000180422532139346,
+        -1.2449517271306831e-05
+      ],
+      "jaw_effort_max_nm": [
+        0.0001805702195269987,
+        -1.2310566489759367e-05
+      ],
+      "jaw_effort_tare_applied": false,
+      "samples": 64,
+      "frame": "local child joint frame at tool_mount",
+      "model": "static tare only; no orientation or inertia compensation"
+    }
+  },
+  "source_provenance_note": "Read-only jaw calibration and disabled-collider instrumentation was added during startup; initial implementation hash predates that imported module. Treat this as diagnostic evidence, not a frozen-source benchmark.",
+  "imported_env_instrumentation_sha256": "7ec8c5e89bf25b8d7ffddc468ed0eafdae98784ad44d8a26b0afa2964288c364",
+  "finding": "Disabling all 14 robot colliders did not change measured jaw cycle. Left static effort already exceeded the uncorrected 0.0003 Nm guard threshold.",
+  "next_validation": "Measure per-jaw mass, COM and orientation; compare predicted gravity torque against measured joint effort before introducing compensation."
+}
