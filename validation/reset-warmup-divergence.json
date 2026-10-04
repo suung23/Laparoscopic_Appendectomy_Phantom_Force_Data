@@ -1,0 +1,85 @@
+{
+  "phases": [
+    {
+      "phase": "before_initialize",
+      "max_displacement_m": 0.0,
+      "rms_displacement_m": 0.0,
+      "reordered_nodes": 0,
+      "source_sha256": [
+        "781dfe5591cf7299b2d428829f02be3e7a02fb524d80c1bf5b4f3a4baaa3619a",
+        "781dfe5591cf7299b2d428829f02be3e7a02fb524d80c1bf5b4f3a4baaa3619a"
+      ]
+    },
+    {
+      "phase": "after_cooking",
+      "max_displacement_m": 0.0,
+      "rms_displacement_m": 0.0,
+      "reordered_nodes": 0,
+      "source_sha256": [
+        "8d1fcbfe58f827404d55c67c54d1b72a6beb927754b983728a02c8b879d6b82a",
+        "8d1fcbfe58f827404d55c67c54d1b72a6beb927754b983728a02c8b879d6b82a"
+      ]
+    },
+    {
+      "phase": "after_initialize",
+      "max_displacement_m": 0.0,
+      "rms_displacement_m": 0.0,
+      "reordered_nodes": 0,
+      "source_sha256": [
+        "54f5e38b6f19bd17967466146c0cbd0dd6677826d70e3273512677f77b3849ad",
+        "54f5e38b6f19bd17967466146c0cbd0dd6677826d70e3273512677f77b3849ad"
+      ]
+    },
+    {
+      "phase": "before_warmup",
+      "max_displacement_m": 0.0,
+      "rms_displacement_m": 0.0,
+      "reordered_nodes": 0,
+      "source_sha256": [
+        "54f5e38b6f19bd17967466146c0cbd0dd6677826d70e3273512677f77b3849ad",
+        "54f5e38b6f19bd17967466146c0cbd0dd6677826d70e3273512677f77b3849ad"
+      ]
+    },
+    {
+      "phase": "warmup_1",
+      "max_displacement_m": 0.0,
+      "rms_displacement_m": 0.0,
+      "reordered_nodes": 0,
+      "source_sha256": [
+        "e3f0b59f375299ee635b35feaeac99f6f362480848dcf92b4749fc09cbb54621",
+        "e3f0b59f375299ee635b35feaeac99f6f362480848dcf92b4749fc09cbb54621"
+      ]
+    },
+    {
+      "phase": "warmup_60",
+      "max_displacement_m": 9.172270290918885e-05,
+      "rms_displacement_m": 1.66756632728336e-05,
+      "reordered_nodes": 0,
+      "source_sha256": [
+        "29ffbecb6f71ded6b18ba344bc58e19d9a6f304f36f4b5b5d091abdde24aabcc",
+        "927fdb8f56de4f9d6d978c91ed3634691ab8ac0a3342d1e3bcfbd86c3e42151c"
+      ]
+    },
+    {
+      "phase": "warmup_480",
+      "max_displacement_m": 0.00047207450931448144,
+      "rms_displacement_m": 0.00015521541493913538,
+      "reordered_nodes": 0,
+      "source_sha256": [
+        "acdffe900a90f139fe3748ac75ffcce2ac1b61f2bbf20fdf8dd1586d29ba5f29",
+        "a0b50f3883a7de946b973be314922caafb6ed62cd33addd8099e9e3332633896"
+      ]
+    },
+    {
+      "phase": "after_settlement",
+      "max_displacement_m": 0.00013561438183175176,
+      "rms_displacement_m": 4.982053846037095e-05,
+      "reordered_nodes": 0,
+      "source_sha256": [
+        "bc4ccdc932d3fd4090aa0cab562514147faaa38dea609b7398d5647e60af0ab8",
+        "bf171530704438ceb92a7aa30cda7064075ecae4da2e2ee57b6f0413bec7cef9"
+      ]
+    }
+  ],
+  "scope": "Exact material-node comparison; no fitted spatial alignment"
+}

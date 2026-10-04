@@ -75,7 +75,7 @@
     "Added strict runtime comparator rejecting changed scenes/helpers, incomplete traces, and green statuses contradicted by measured errors"
   ],
   "next_actions": [
-    "Inspect v5 warmup checkpoints after explicit zero joint velocity and open-jaw targets; v4 resets match exactly through physics initialization then diverge during settlement",
+    "Check v6 enhanced determinism option and GPU support; v5 explicit jaw/velocity reset reduces mismatch to 0.136 mm but still fails 0.01 mm tolerance",
     "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",
@@ -104,6 +104,7 @@
     "readback_evidence": "validation/tissue-readback.json",
     "baseline_compatibility": "validation/precook-51-compatibility.json",
     "paired_reset_evidence": "validation/bimanual-reset-comparison.json",
-    "phase_divergence": "validation/reset-phase-divergence.json"
+    "phase_divergence": "validation/reset-phase-divergence.json",
+    "warmup_divergence": "validation/reset-warmup-divergence.json"
   }
 }

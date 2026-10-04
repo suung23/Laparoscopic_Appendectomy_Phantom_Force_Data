@@ -14,6 +14,8 @@ def signatures(points,tets):
 
 def node_permutation(old_points,old_tets,new_points,new_tets):
     if np.shape(old_points)!=np.shape(new_points):raise ValueError('Node count changed')
+    if np.array_equal(old_points,new_points) and np.array_equal(old_tets,new_tets):
+        return np.arange(len(old_points),dtype=int)
     old=signatures(old_points,old_tets);new=signatures(new_points,new_tets)
     groups=defaultdict(list)
     for i,key in enumerate(new):groups[key].append(i)
