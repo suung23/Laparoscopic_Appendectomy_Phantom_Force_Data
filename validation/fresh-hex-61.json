@@ -1,0 +1,10 @@
+{
+  "status": "failed",
+  "hex_simulation": true,
+  "source_sha256": "9fc25e90fdf59df1bc01e568b4fc242da1a9060e0260743654572d357297f9c7",
+  "scope": "fresh cooking topology only; no mechanics validation",
+  "nodes": 6751,
+  "tetrahedra": 29490,
+  "duplicate_tetrahedra": 28,
+  "nonmanifold_faces": 150
+}

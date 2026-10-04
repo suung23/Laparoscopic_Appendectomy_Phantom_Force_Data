@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 
 p=argparse.ArgumentParser(description=__doc__)
@@ -13,9 +14,15 @@ a.out.mkdir(parents=True,exist_ok=True)
 report=dict(status='starting',hex_simulation=a.hex,source_sha256=hashlib.sha256(a.scene.read_bytes()).hexdigest(),
             scope='fresh cooking topology only; no mechanics validation')
 from isaacsim import SimulationApp
+root=Path(__file__).resolve().parents[1]
+os.environ.setdefault('WARP_CACHE_PATH',str(root/'.cache/isaac-warp'))
+os.environ.setdefault('OPTIX_CACHE_PATH',str(root/'.cache/optix'))
+tokens={n:root/'.cache/kit'/n for n in ('shared_documents','app_documents','omni_documents','omni_config','omni_logs','cache','omni_cache','omni_global_cache')}
+for path in tokens.values():path.mkdir(parents=True,exist_ok=True)
 app=SimulationApp({'headless':True,'extra_args':['--/app/vulkan=false','--/app/d3d12=true',
     '--/telemetry/enableNVDF=false','--/telemetry/enableSentry=false','--/telemetry/useOpenEndpoint=false',
-    '--/privacy/extraDiagnosticDataOptIn=false','--/crashreporter/enabled=false']})
+    '--/privacy/extraDiagnosticDataOptIn=false','--/crashreporter/enabled=false']+
+    [f'--/app/tokens/{k}={v.as_posix()}' for k,v in tokens.items()]})
 try:
     import numpy as np
     import omni.usd
