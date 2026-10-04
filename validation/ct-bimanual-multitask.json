@@ -1,0 +1,289 @@
+{
+  "status": "partial_not_surgical_validation",
+  "engine": "Isaac Sim 5.1 / PhysX GPU",
+  "date": "2026-10-04",
+  "contract": "RosotaBimanual-v1",
+  "action_dimensions": 10,
+  "state_dimensions": 31,
+  "physics_hz": 480,
+  "control_hz_simulated": 60,
+  "grasp_assist": true,
+  "approach_target_standoff_m": 0.018,
+  "approach_tolerance_m": 0.002,
+  "current_evaluation": {
+    "status": "completed",
+    "run_id": "c5a8b6f426494a0d8f276cf59e6b9b06",
+    "policy": "checkpoint",
+    "learned_policy": true,
+    "episodes": [
+      {
+        "seed": 42,
+        "task": "reach",
+        "policy": "scripted",
+        "steps": 224,
+        "return_": 5.791331157002824,
+        "terminated": true,
+        "truncated": false,
+        "reset_seconds": 17.3820357999939,
+        "step_p50_ms": 60.92994999198709,
+        "step_p95_ms": 62.75066500966204,
+        "target_patches": [
+          1,
+          5
+        ],
+        "target_lift_m": 0.007095824194223853,
+        "success": true,
+        "failure": "",
+        "hold_steps": 30,
+        "pin_drift_m": 8.083461976881855e-05,
+        "tissue_health": {
+          "tetrahedra": 29490,
+          "degenerate_rest_tetrahedra": 0,
+          "inverted_tetrahedra": 0,
+          "minimum_signed_volume_ratio": 0.6427724095299938,
+          "median_volume_ratio": 1.0060863383555023,
+          "total_absolute_volume_ratio": 1.005766885401919,
+          "p99_absolute_volume_change": 0.11274362489358539
+        },
+        "grasp_assist": true,
+        "appendectomy_completed": false
+      },
+      {
+        "seed": 42,
+        "task": "reach",
+        "policy": "checkpoint",
+        "steps": 484,
+        "return_": -0.5977452190917587,
+        "terminated": true,
+        "truncated": false,
+        "reset_seconds": 17.300759400008246,
+        "step_p50_ms": 61.20704999193549,
+        "step_p95_ms": 63.35737997869728,
+        "target_patches": [
+          1,
+          5
+        ],
+        "target_lift_m": 0.007095824194223853,
+        "success": false,
+        "failure": "tet_inversion",
+        "hold_steps": 0,
+        "pin_drift_m": 8.109487386212455e-05,
+        "tissue_health": {
+          "tetrahedra": 29490,
+          "degenerate_rest_tetrahedra": 0,
+          "inverted_tetrahedra": 2,
+          "minimum_signed_volume_ratio": -0.13900729538089138,
+          "median_volume_ratio": 1.0059012811704848,
+          "total_absolute_volume_ratio": 1.0047932098295544,
+          "p99_absolute_volume_change": 0.12493261976653051
+        },
+        "grasp_assist": true,
+        "appendectomy_completed": false
+      }
+    ],
+    "appendectomy_completed": false,
+    "render_state_max_error_m": 0.0,
+    "successes": 1
+  },
+  "training": {
+    "env_id": "RosotaBimanual-v1",
+    "observations": 31,
+    "actions": 10,
+    "task": "reach",
+    "stage_sha256": "30617828e628f577943de88c6d680ee57288336b1704b2a81e18ff8785ae46ac",
+    "config_sha256": "4244a0c3e50074691ba8975123b8bf53d7ecffc159fc372390f7dc6c6044f296",
+    "environment_sha256": "dd0322701a8308b037ec32e52b5252208ecfb6a39011df435524c009bb767e2b",
+    "gamma": 0.99,
+    "grasp_assist": true,
+    "seed": 10000,
+    "trained_steps": 1024,
+    "parameter_change_l2": 0.5781716704368591,
+    "updates": [
+      {
+        "step": 256,
+        "loss_mean": -0.02895434229867533,
+        "gradient_norm_max": 4.001413822174072
+      },
+      {
+        "step": 512,
+        "loss_mean": -0.023301164677832276,
+        "gradient_norm_max": 3.6152114868164062
+      },
+      {
+        "step": 768,
+        "loss_mean": -0.02479973845765926,
+        "gradient_norm_max": 2.895094871520996
+      },
+      {
+        "step": 1024,
+        "loss_mean": -0.02461548359133303,
+        "gradient_norm_max": 3.9540276527404785
+      }
+    ],
+    "episodes": [
+      {
+        "episode": 0,
+        "step": 900,
+        "success": false,
+        "failure": ""
+      }
+    ]
+  },
+  "checkpoint_load": {
+    "status": "passed",
+    "trained_steps": 1024,
+    "safe_load": true,
+    "incompatible_contract_rejected": true,
+    "action_shape": [
+      1,
+      10
+    ],
+    "checkpoint_sha256": "660cf624eb75e69254dad6d8e1ed22c5ce7f44ac6323d4f4fc50d05d6f6b3043"
+  },
+  "contact_baselines_failed": {
+    "convexHull": [
+      {
+        "seed": 42,
+        "task": "dual_grasp",
+        "steps": 233,
+        "return_": -2.3295793597278096,
+        "terminated": true,
+        "truncated": false,
+        "reset_seconds": 19.791631300002337,
+        "step_p50_ms": 64.59859997266904,
+        "step_p95_ms": 66.02580001344904,
+        "target_patches": [
+          1,
+          5
+        ],
+        "target_lift_m": 0.007095824194223853,
+        "success": false,
+        "failure": "tet_inversion",
+        "hold_steps": 0,
+        "pin_drift_m": 0.00010807485578353977,
+        "tissue_health": {
+          "tetrahedra": 29490,
+          "degenerate_rest_tetrahedra": 0,
+          "inverted_tetrahedra": 1,
+          "minimum_signed_volume_ratio": -0.039498289182855334,
+          "median_volume_ratio": 1.0061864911819343,
+          "total_absolute_volume_ratio": 1.0061367020158687,
+          "p99_absolute_volume_change": 0.12978352807836666
+        },
+        "grasp_assist": true,
+        "appendectomy_completed": false
+      },
+      {
+        "seed": 42,
+        "task": "retract",
+        "steps": 233,
+        "return_": 0.9997864032281711,
+        "terminated": true,
+        "truncated": false,
+        "reset_seconds": 19.751100499997847,
+        "step_p50_ms": 65.37749999552034,
+        "step_p95_ms": 68.29146000673063,
+        "target_patches": [
+          1,
+          5
+        ],
+        "target_lift_m": 0.007095824194223853,
+        "success": false,
+        "failure": "tet_inversion",
+        "hold_steps": 0,
+        "pin_drift_m": 0.00010862839554608778,
+        "tissue_health": {
+          "tetrahedra": 29490,
+          "degenerate_rest_tetrahedra": 0,
+          "inverted_tetrahedra": 1,
+          "minimum_signed_volume_ratio": -0.021550371552852204,
+          "median_volume_ratio": 1.0062384560157933,
+          "total_absolute_volume_ratio": 1.0061943715079398,
+          "p99_absolute_volume_change": 0.1278695732904694
+        },
+        "grasp_assist": true,
+        "appendectomy_completed": false
+      }
+    ],
+    "convexDecomposition": [
+      {
+        "seed": 42,
+        "task": "dual_grasp",
+        "steps": 240,
+        "return_": -2.307120783246118,
+        "terminated": true,
+        "truncated": false,
+        "reset_seconds": 18.02499470001203,
+        "step_p50_ms": 62.717199994949624,
+        "step_p95_ms": 64.91054000944132,
+        "target_patches": [
+          1,
+          5
+        ],
+        "target_lift_m": 0.007095824194223853,
+        "success": false,
+        "failure": "tet_inversion",
+        "hold_steps": 0,
+        "pin_drift_m": 0.00012193448450215064,
+        "tissue_health": {
+          "tetrahedra": 29490,
+          "degenerate_rest_tetrahedra": 0,
+          "inverted_tetrahedra": 1,
+          "minimum_signed_volume_ratio": -0.04972306585298032,
+          "median_volume_ratio": 1.0065365695149757,
+          "total_absolute_volume_ratio": 1.006313631103651,
+          "p99_absolute_volume_change": 0.13699013129769447
+        },
+        "grasp_assist": true,
+        "appendectomy_completed": false
+      },
+      {
+        "seed": 42,
+        "task": "retract",
+        "steps": 241,
+        "return_": 1.1285724992132549,
+        "terminated": true,
+        "truncated": false,
+        "reset_seconds": 17.391891900013434,
+        "step_p50_ms": 62.22110000089742,
+        "step_p95_ms": 63.88529998366721,
+        "target_patches": [
+          1,
+          5
+        ],
+        "target_lift_m": 0.007095824194223853,
+        "success": false,
+        "failure": "tet_inversion",
+        "hold_steps": 0,
+        "pin_drift_m": 0.0001146789570024158,
+        "tissue_health": {
+          "tetrahedra": 29490,
+          "degenerate_rest_tetrahedra": 0,
+          "inverted_tetrahedra": 1,
+          "minimum_signed_volume_ratio": -0.03067521539913621,
+          "median_volume_ratio": 1.0066979629923336,
+          "total_absolute_volume_ratio": 1.0066423998631526,
+          "p99_absolute_volume_change": 0.13215932086565005
+        },
+        "grasp_assist": true,
+        "appendectomy_completed": false
+      }
+    ]
+  },
+  "unit_tests_passed": {
+    "bimanual_tools": 5,
+    "bimanual_env": 4,
+    "ppo": 2
+  },
+  "immutable_source_files_verified": 42,
+  "limits": [
+    "Single CT plus atlas; appendix is not patient-specific",
+    "Contact tasks fail continuous inversion checks",
+    "PPO did not achieve approach competence",
+    "No live cutting, ligation, bleeding or full appendectomy",
+    "CT surrounding organs remain static visuals; anatomical ports unvalidated",
+    "30 Hz wall-clock target not met",
+    "Compact privileged state policy; no image-policy training",
+    "One evaluation seed is not a generalization benchmark"
+  ]
+}

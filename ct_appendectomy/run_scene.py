@@ -31,6 +31,7 @@ p.add_argument('--record-scan',action='store_true',help='Record camera explorati
 p.add_argument('--disable-support',action='store_true',help='Support collision negative control')
 p.add_argument('--bimanual',action='store_true',help='Two independently controlled Rosota instruments with explicit grasp assist')
 p.add_argument('--bimanual-demo',action='store_true',help='Validate scripted two-hand approach, grasp, lift and release')
+p.add_argument('--jaw-collision',choices=('convexHull','convexDecomposition'),default='convexHull')
 p.add_argument('--require-appendix-visible',action='store_true',help='Require appendix semantic pixels in the captured RTX frame')
 p.add_argument('--graphics',choices=('vulkan','d3d12'),default='d3d12')
 p.add_argument('--out',type=Path,default=ROOT/'out/ct_appendectomy/isaac_probe')
@@ -164,7 +165,7 @@ try:
             if a.explore_cavity:
                 if a.bimanual:
                     import bimanual_tools
-                    cavity_tool=bimanual_tools.author(stage,body+'/sim',initial,np.array(manifest['ct_anchor_m']),a.scene.parent/'rosota_distal.usda')
+                    cavity_tool=bimanual_tools.author(stage,body+'/sim',initial,np.array(manifest['ct_anchor_m']),a.scene.parent/'rosota_distal.usda',a.jaw_collision)
                 else:
                     import rosota_forceps
                     cavity_tool=rosota_forceps.author(stage,body+'/sim',initial,manifest['ct_anchor_m'],a.scene.parent/'rosota_distal.usda')
@@ -178,6 +179,9 @@ try:
                 retraction=author_retraction(stage,body+'/sim',initial,manifest['ct_anchor_m'])
             cooked=a.out/'attached.usda'
             stage.GetRootLayer().Export(str(cooked))
+            if a.bimanual:
+                from bimanual_env import save_config
+                save_config(a.out/'bimanual_config.json', cooked, cavity_tool)
             if forceps:
                 config={'stage_sha256':hashlib.sha256(cooked.read_bytes()).hexdigest(),
                         'forceps':{key:value.tolist() if isinstance(value,np.ndarray) else value for key,value in forceps.items()}}

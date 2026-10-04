@@ -60,3 +60,32 @@ RTX4090 단일 환경 1280×720 end-to-end 30 Hz를 개발 목표로 측정한�
 4. 결찰/혈관: mesoappendix 및 혈관의 기계적 연결, 혈관 개방 상태, base closure와 stump 누출을 simulator state에 연결한다. 혈관 제어 전 절단과 맹장 손상은 실패 episode가 되어야 한다.
 5. 전체 과제: 노출부터 회수까지 scripted 성공과 각 단계별 실패 사례를 재현한다. 그 다음 실제 학습 정책을 별도 seed에서 평가하고 success rate, 손상, 수행 시간 및 카메라 가림을 기록한다.
 6. 충실도/배포: 수술자 검토 및 물성/영상 기준 데이터에 대한 오차를 확인한다. 30 Hz 목표는 startup 제외 실제 action–physics–RGB loop p50/p95로 측정한다. 회사 자산으로 배포하기 전 모든 사용 자산의 권리·버전·재현 경로를 고정한다.
+
+## 양손 다중 과제 RL 통합과 새로 발견한 실패
+
+`ct_appendectomy/bimanual_env.py`에 10-action 양손 RCM, 31-state Gymnasium
+환경을 추가했다. 접근 대기, 지정 패치 양손 파지, 목표 높이 견인을 각각
+과제로 정의하고, 연속 30-step 성공 유지와 매 제어 단계의 FEM 뒤집힘 검사를
+연결했다. `ct_appendectomy/MULTITASK.md`에 실행법과 관측/행동 계약을 기록한다.
+
+기존 양손 시연의 lift/final 검사 통과는 전 구간 안정성 통과가 아니었다.
+새 검사는 접근 중 국소 tetrahedron inversion을 발견했다. 속도 감소와
+convex decomposition 실험 모두 접촉 과제를 통과시키지 못했다. 실패를
+허용하는 방향으로 기준을 변경하지 않는다. 도구–충수 전체 경로의 접촉
+위치와 FEM 품질을 먼저 수정해야 한다. 접근 대기는 조직 중심 파지가 아니라
+포트 방향 18 mm 지점으로 분리했으며, 전체 수술 성공으로 집계하지 않는다.
+
+또한 새 프로세스에서 PhysicsContext가 GPU broadphase를 덮어쓰는 문제를
+수정했다. 중력 정착 시 조직 변형이 없는 백엔드는 reset 단계에서 거부한다.
+이 수정 전 정적인 조직에서 나온 reach/grasp 성공 기록은 무효이다.
+
+원본 42개 파일은 그대로 보존한다. 접촉 과제, 조직 연결, 절단·결찰,
+환자별 일반화, 실시간 영상 관측 학습의 합격 전에는 SOTA 또는 완성된 수술
+훈련기로 표현하지 않는다.
+
+현재 실행 결과: 18 mm 접근 대기 scripted 1/1 성공(224 steps), PPO 1,024-step
+실제 업데이트·checkpoint 재로딩 통과, learned policy 0/1(484 steps에서
+tet inversion). RGB 읽기에 따른 FEM 좌표 변화 0, 제어 step p50 약 61 ms로
+30 Hz 목표 미달이다. 관련 단위 검사 11개가 통과했다. 이 결과는
+`validation/ct-bimanual-multitask.json`에 기록하며 M4/M5 전체 합격으로
+표시하지 않는다.

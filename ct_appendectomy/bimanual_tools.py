@@ -25,7 +25,7 @@ def frame(forward,up):
     return np.column_stack((x,y,z))
 
 
-def author(stage,sim_path,points,base,cad):
+def author(stage,sim_path,points,base,cad,jaw_collision='convexHull'):
     from pxr import PhysxSchema
     points=np.asarray(points,float)
     data=author_retraction(stage,sim_path,points,base)
@@ -68,11 +68,14 @@ def author(stage,sim_path,points,base,cad):
                 prim.GetReferences().AddReference(str(cad.resolve()),'/Tool/'+mesh)
                 geom=stage.GetPrimAtPath(path+'/'+mesh+'/mesh')
                 UsdPhysics.CollisionAPI.Apply(geom)
-                UsdPhysics.MeshCollisionAPI.Apply(geom).CreateApproximationAttr('convexHull')
+                approximation=jaw_collision if part!='shaft' else 'convexHull'
+                UsdPhysics.MeshCollisionAPI.Apply(geom).CreateApproximationAttr(approximation)
+                if approximation=='convexDecomposition':
+                    PhysxSchema.PhysxConvexDecompositionCollisionAPI.Apply(geom)
                 collision=PhysxSchema.PhysxCollisionAPI.Apply(geom)
                 collision.CreateContactOffsetAttr(.0002);collision.CreateRestOffsetAttr(0.)
                 UsdShade.MaterialBindingAPI.Apply(geom).Bind(material,UsdShade.Tokens.weakerThanDescendants,'physics')
-    result={'pin':data['pin'],'clusters':clusters,'axis':axis,'sim_path':sim_path}
+    result={'pin':data['pin'],'clusters':clusters,'axis':axis,'sim_path':sim_path,'jaw_collision':jaw_collision}
     # Place before PhysX registration; do not create all bodies at world origin.
     controller=BimanualControl(stage,result,points,registering=True)
     result['arms']={name:{'port':arm.port,'axes':arm.axes,'state':arm.state.copy()} for name,arm in controller.arms.items()}
