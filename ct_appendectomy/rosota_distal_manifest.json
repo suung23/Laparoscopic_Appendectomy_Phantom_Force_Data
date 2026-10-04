@@ -1,0 +1,64 @@
+{
+  "repository": "Rosota-Research/Rosota-Simulator",
+  "commit": "9135fe9eb8549d011124c8c57b7c86edeaaba735",
+  "license": "Private upstream asset; no redistribution license assumed",
+  "units": "mm",
+  "files": [
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/gripper_shaft_inner.stl",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "17330f155bba6eefffa1fd5243ffd50e078ba059",
+      "size": 143084,
+      "url": "https://api.github.com/repos/Rosota-Research/Rosota-Simulator/git/blobs/17330f155bba6eefffa1fd5243ffd50e078ba059"
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/gripper_shaft_outer.stl",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5f60728d3a6b7fa28289356a1e386afd14ad266d",
+      "size": 63884,
+      "url": "https://api.github.com/repos/Rosota-Research/Rosota-Simulator/git/blobs/5f60728d3a6b7fa28289356a1e386afd14ad266d"
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/gripper_tip_left.stl",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "90129de372cd04546aaa7f50aef6a9567d5a1d8e",
+      "size": 180684,
+      "url": "https://api.github.com/repos/Rosota-Research/Rosota-Simulator/git/blobs/90129de372cd04546aaa7f50aef6a9567d5a1d8e"
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/gripper_tip_right.stl",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3f165c011d9661259dd2f73edd6caf25f6e04017",
+      "size": 173584,
+      "url": "https://api.github.com/repos/Rosota-Research/Rosota-Simulator/git/blobs/3f165c011d9661259dd2f73edd6caf25f6e04017"
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/laparo_shaft.stl",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "633418752ef1ad937264571240675a53b1982bc2",
+      "size": 215284,
+      "url": "https://api.github.com/repos/Rosota-Research/Rosota-Simulator/git/blobs/633418752ef1ad937264571240675a53b1982bc2"
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/part_13.stl",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e2905c488ad698d3f0a8bc0db89296b1426d7691",
+      "size": 408984,
+      "url": "https://api.github.com/repos/Rosota-Research/Rosota-Simulator/git/blobs/e2905c488ad698d3f0a8bc0db89296b1426d7691"
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/part_15.stl",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8a539b9201d6a7204c0765c6814d0527761e43a3",
+      "size": 69184,
+      "url": "https://api.github.com/repos/Rosota-Research/Rosota-Simulator/git/blobs/8a539b9201d6a7204c0765c6814d0527761e43a3"
+    }
+  ]
+}

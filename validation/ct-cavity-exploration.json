@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "engine": "Isaac Sim 5.1 / PhysX",
+  "source_scene_sha256": "629b0ee9a3eaf5a14fd56e6633981cbc5a15d163bd39e53d5772c1eebecf9e21",
+  "gravity_m_s2": 9.81,
+  "support": {
+    "enabled": true,
+    "floor_y_m": -0.027332229539752007,
+    "simulation_cage_penetration_m": 0.0028211791068315506,
+    "collision_surface_penetration_m": 0.00030490942299366,
+    "nodes_within_1_5mm": 69,
+    "mean_posterior_displacement_m": 0.008612070396078373,
+    "pin_drift_m": 0.00017503565859768817
+  },
+  "no_support_control": {
+    "enabled": false,
+    "floor_y_m": -0.027332229539752007,
+    "simulation_cage_penetration_m": 0.023299960419535637,
+    "collision_surface_penetration_m": 0.02219242788851261,
+    "nodes_within_1_5mm": 35,
+    "mean_posterior_displacement_m": 0.013739476221735077,
+    "pin_drift_m": 0.0002224462267782014
+  },
+  "tissue_health": {
+    "tetrahedra": 4722,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 0,
+    "minimum_signed_volume_ratio": 0.7013048414899837,
+    "median_volume_ratio": 1.0049855478515992,
+    "total_absolute_volume_ratio": 1.0036967583508,
+    "p99_absolute_volume_change": 0.16670295444110306
+  },
+  "camera_scan": {
+    "frames": 90,
+    "travel_radius_m": 0.008,
+    "physics_paused": true,
+    "not_rl_policy": true
+  },
+  "cad": {
+    "repository": "Rosota-Research/Rosota-Simulator",
+    "commit": "9135fe9eb8549d011124c8c57b7c86edeaaba735",
+    "verified_blob_count": 7,
+    "units_conversion": 0.001,
+    "collision": "convex hull"
+  },
+  "upstream_snapshot_unchanged_files": 42,
+  "desktop_ui": {
+    "window_observed": true,
+    "pan_test_deg": 23.47,
+    "insertion_test_fraction": 0.45,
+    "jaw_closure_test_approx": 0.5,
+    "view_and_jaw_motion_observed": true
+  },
+  "video": {
+    "path": "out/ct_appendectomy/cavity_verified/endoscope_scan.mp4",
+    "sha256": "b2a59d20e042e01a848021aecf6e12b1dfe2f225484dfc5a943ccd53e55fc806",
+    "decoded_frames": 90
+  },
+  "limitations": [
+    "Engineering posterior support, not segmented peritoneum",
+    "Other CT organs and mesentery/artery remain static",
+    "No new RL policy trained on this scene",
+    "Camera free-ball checks source anatomy; full trocar path and moving tools not validated"
+  ]
+}

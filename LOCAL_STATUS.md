@@ -2,6 +2,16 @@
 
 2026-10-04. Internal working copy; no remote push or publication performed.
 
+Latest: cavity exploration adds posterior gravity/support for the appendix,
+six camera controls with a following light, and seven hash-verified private
+Rosota clean-export distal CAD parts. RTX/PhysX positive and no-support control
+runs passed their gates. Contact-surface penetration was 0.305 mm with support
+and 22.192 mm without; the supported run had zero inverted tetrahedra and
+0.175 mm base drift. Native Isaac window, camera rotation/translation and jaw
+movement were observed. See `validation/ct-cavity-exploration.json` and
+`ct_appendectomy/CAVITY_EXPLORATION.md`. Other organs remain static; this is not
+full cavity biomechanics, and the camera-scan video is not learned RL behavior.
+
 ## Reproduced on this PC
 
 The source snapshot is pinned to `9135fe9eb8549d011124c8c57b7c86edeaaba735` of the private `Rosota-Research/Rosota-Simulator` repository. This is a **partial, hash-verified snapshot, not a Git clone**. `SOURCE_MANIFEST.json` records each original file. Upstream files are unmodified; local additions include `ct_appendectomy/`, `local_validation/`, launchers and `LOCAL_*` files.
