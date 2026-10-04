@@ -1,0 +1,6 @@
+{
+  "status": "no_physx_errors_observed",
+  "counts": {},
+  "log_sha256": "8302782c89d5d7b099e9fb231877a03974afd37e42d7854945bf53aa0ca32ebc",
+  "scope": "Log-only gate, never a mechanics pass. Small-element messages do not distinguish positive tiny cells from inverted cells; inspect stored geometry separately."
+}
