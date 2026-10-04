@@ -19,6 +19,7 @@ def audit(report, trace):
         raise ValueError('Missing reopening phase')
     result = dict(scope='measured aperture commissioning, not contact/cutting validation',
                   robot_collisions_disabled=bool(report.get('diagnostic_no_tool_collision',False)),
+                  gravity_compensation_enabled=bool(report.get('jaw_gravity_compensation',False)),
                   closure_tolerance_deg=2., opening_tolerance_deg=2., hands={})
     for hand, limit in [('left', 74.), ('right', 50. if report['right_tool']=='cutter' else 74.)]:
         q = np.asarray([x['jaw_position_rad'][hand] for x in trace], float)
@@ -34,6 +35,20 @@ def audit(report, trace):
             limits_ok=limits_ok,
             closure_guard_ticks=sum(bool(x['contact'][hand]['jaw_limited']) for x in trace[:boundary]),
             passed=bool(abs(closed)<=2 and abs(reopened-limit)<=2 and limits_ok))
+        if result['gravity_compensation_enabled']:
+            contact=[x['contact'][hand] for x in trace]
+            if not all(x.get('jaw_gravity_compensated') for x in contact):
+                raise ValueError('Compensated run has missing compensation telemetry')
+            raw=np.asarray([x['jaw_effort_nm'] for x in contact],float)
+            gravity=np.asarray([x['jaw_gravity_nm'] for x in contact],float)
+            corrected=np.asarray([x['jaw_corrected_effort_nm'] for x in contact],float)
+            if not np.isfinite([raw,gravity,corrected]).all() or not np.allclose(raw-gravity,corrected,atol=1e-12,rtol=0):
+                raise ValueError('Invalid raw/gravity/corrected effort correspondence')
+            result['hands'][hand]['effort_audit']=dict(
+                peak_raw_abs_nm=np.max(np.abs(raw),axis=0).tolist(),
+                peak_corrected_abs_nm=np.max(np.abs(corrected),axis=0).tolist(),
+                p99_corrected_abs_nm=np.percentile(np.abs(corrected),99,axis=0).tolist(),
+                gravity_prediction_span_nm=np.ptp(gravity,axis=0).tolist())
     result['passed'] = report['status']=='passed' and all(h['passed'] for h in result['hands'].values())
     result['limitations'] = ['No-approach does not prove collision-free motion.',
                             'Joint effort is not an independent contact sensor.']
