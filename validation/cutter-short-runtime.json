@@ -1,0 +1,39 @@
+{
+  "status": "failed",
+  "error": "Insufficient actual tool/scope movement",
+  "right_tool": "cutter",
+  "cutting_implemented": false,
+  "steps": 8,
+  "physics_ticks_checked": 128,
+  "tip_excursion_m": [
+    0.0009887234773486853,
+    0.0009488332434557378
+  ],
+  "max_body_fk_error_m": 9.340823028428691e-07,
+  "max_bite_m": {
+    "left": -0.0004576720011640963,
+    "right": -0.000461676530665844
+  },
+  "final_jaw_position_rad": [
+    [
+      0.6457718014717102,
+      -0.6457259654998779
+    ],
+    [
+      0.4363100230693817,
+      -0.43629181385040283
+    ]
+  ],
+  "tissue_health": {
+    "tetrahedra": 29490,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 0,
+    "minimum_signed_volume_ratio": 0.8685522192698814,
+    "median_volume_ratio": 1.0002146508390828,
+    "total_absolute_volume_ratio": 0.9999328113355325,
+    "p99_absolute_volume_change": 0.045976824061642364
+  },
+  "report_sha256": "b8e94570d1eb77809751693fe33d72365005ff008e3b72a4c55bac02fb9422d4",
+  "visual_review": "Cutter present in endoscope frame; smooth organs remain unrealistic. Short run fails movement gate; not task validation.",
+  "retest": "out/ct_appendectomy/cutter_scene_61_v3/report.json"
+}
