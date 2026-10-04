@@ -1,0 +1,51 @@
+{
+  "status": "failed",
+  "comparison_limitation": "Support collision margin unspecified; matched candidate prepared separately",
+  "phases": {
+    "after_initialize": {
+      "tetrahedra": 48443,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.8986485508318293,
+      "median_volume_ratio": 0.999267975794733,
+      "total_absolute_volume_ratio": 0.9991168677855791,
+      "p99_absolute_volume_change": 0.0058628694457733945
+    },
+    "warmup_1": {
+      "tetrahedra": 48443,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.8498150090011151,
+      "median_volume_ratio": 0.9992681147277565,
+      "total_absolute_volume_ratio": 0.9990526193660976,
+      "p99_absolute_volume_change": 0.008621913410704667
+    },
+    "warmup_60": {
+      "tetrahedra": 48443,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 29,
+      "minimum_signed_volume_ratio": -2.449121164239394,
+      "median_volume_ratio": 1.0090297315048562,
+      "total_absolute_volume_ratio": 1.0097483887130296,
+      "p99_absolute_volume_change": 0.34802014948282
+    },
+    "warmup_480": {
+      "tetrahedra": 48443,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 17,
+      "minimum_signed_volume_ratio": -2.215785598485436,
+      "median_volume_ratio": 1.006751050143399,
+      "total_absolute_volume_ratio": 1.0067927527998508,
+      "p99_absolute_volume_change": 0.3423609066845146
+    },
+    "after_settlement": {
+      "tetrahedra": 48443,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 22,
+      "minimum_signed_volume_ratio": -2.112844351207413,
+      "median_volume_ratio": 1.0068462135222649,
+      "total_absolute_volume_ratio": 1.0071327769482445,
+      "p99_absolute_volume_change": 0.3365516389229079
+    }
+  }
+}
