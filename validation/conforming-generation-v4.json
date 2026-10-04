@@ -1,0 +1,31 @@
+{
+  "status": "failed",
+  "error": "Gravity settling inverted tissue",
+  "pre_attachment_points_to_rest_max_m": 3.8698562212122405e-05,
+  "attachment_reference": "explicit unstrained rest points; excludes pre-authoring simulation drift",
+  "conforming_topology": {
+    "nodes": 3530,
+    "tetrahedra": 11257,
+    "duplicate_tetrahedra": 0,
+    "nonmanifold_faces": 0
+  },
+  "tissue_health": {
+    "tetrahedra": 11257,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 28,
+    "minimum_signed_volume_ratio": -1.4939943596314778,
+    "median_volume_ratio": 1.0047570991502277,
+    "total_absolute_volume_ratio": 1.013807189709114,
+    "p99_absolute_volume_change": 0.6307290966370898
+  },
+  "cavity_support": {
+    "enabled": true,
+    "floor_y_m": -0.027332229539752007,
+    "simulation_cage_penetration_m": 0.00033220648765563965,
+    "collision_surface_penetration_m": 0.00033220648765563965,
+    "nodes_within_1_5mm": 322,
+    "mean_posterior_displacement_m": 0.009516325850643976,
+    "pin_drift_m": 0.00012985914972640021
+  },
+  "acceptance": "Rejected; rest-based attachment authoring alone does not resolve inversion."
+}
