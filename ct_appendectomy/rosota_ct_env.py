@@ -16,12 +16,13 @@ from bimanual_env import BimanualEnv
 
 class RosotaCTEnv(gym.Env):
     metadata={'render_modes':['rgb_array'],'render_fps':30}
-    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False,enhanced_determinism=False,reset_checkpoint=None,fine_settlement=False):
+    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False,enhanced_determinism=False,reset_checkpoint=None,fine_settlement=False,external_every_iteration=False):
         if settle_policy not in ('fixed','adaptive'):raise ValueError('Unknown settlement policy')
         self.settle_policy=settle_policy
         self.enhanced_determinism=bool(enhanced_determinism)
         self.reset_checkpoint=Path(reset_checkpoint) if reset_checkpoint else None
         self.fine_settlement=bool(fine_settlement)
+        self.external_every_iteration=bool(external_every_iteration)
         self.diagnostic_no_tool_collision=bool(diagnostic_no_tool_collision)
         self.diagnostic_zero_gravity=bool(diagnostic_zero_gravity)
         if self.diagnostic_zero_gravity and not self.diagnostic_no_tool_collision:raise ValueError('Zero gravity is restricted to the isolated sensor diagnostic')
@@ -104,7 +105,7 @@ class RosotaCTEnv(gym.Env):
         for prim in self.stage.Traverse():
             if prim.IsA(UsdPhysics.Scene):
                 scene=UsdPhysics.Scene(prim);scene.CreateGravityDirectionAttr(Gf.Vec3f(0,-1,0));scene.CreateGravityMagnitudeAttr(0. if self.diagnostic_zero_gravity else 9.81)
-                ps=PhysxSchema.PhysxSceneAPI.Apply(prim);ps.CreateEnableGPUDynamicsAttr(True);ps.CreateBroadphaseTypeAttr('GPU');ps.CreateEnableEnhancedDeterminismAttr(self.enhanced_determinism)
+                ps=PhysxSchema.PhysxSceneAPI.Apply(prim);ps.CreateEnableGPUDynamicsAttr(True);ps.CreateBroadphaseTypeAttr('GPU');ps.CreateEnableEnhancedDeterminismAttr(self.enhanced_determinism);ps.CreateEnableExternalForcesEveryIterationAttr(self.external_every_iteration)
         self.stage.GetRootLayer().Export(str(self.out/'scene.usda'))
         self._audit_tissue('before_initialize')
         from omni.physx import get_physx_cooking_interface

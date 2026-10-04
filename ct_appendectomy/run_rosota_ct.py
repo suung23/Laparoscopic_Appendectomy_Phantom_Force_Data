@@ -14,6 +14,7 @@ def main():
     p.add_argument('--assets',type=Path,default=ROOT/'out/ct_appendectomy/multitask_assets')
     p.add_argument('--out',type=Path,default=ROOT/'out/ct_appendectomy/rosota_articulation')
     p.add_argument('--steps',type=int,default=90)
+    p.add_argument('--external-forces-every-iteration',action='store_true',help='Experimental TGS force integration; requires force validation')
     p.add_argument('--fine-settlement',action='store_true',help='Stricter 1 um/s RMS and 5 um/s p99 reset motion gate, up to 16 s')
     p.add_argument('--reset-checkpoint',type=Path,help='Experimental initial nodal configuration; rest shape preserved')
     p.add_argument('--enhanced-determinism',action='store_true',help='Experimental PhysX enhanced determinism setting')
@@ -51,7 +52,7 @@ def main():
     a.out.mkdir(parents=True,exist_ok=True)
     frames=a.out/'frames';frames.mkdir(exist_ok=True)
     if any(frames.glob('*.png')):p.error('Use a fresh output folder')
-    report={'status':'starting','learned_policy':False,'enhanced_determinism':a.enhanced_determinism,'fine_settlement':a.fine_settlement,'policy':'geometric two-tip target tracking'}
+    report={'status':'starting','learned_policy':False,'enhanced_determinism':a.enhanced_determinism,'fine_settlement':a.fine_settlement,'external_every_iteration':a.external_forces_every_iteration,'policy':'geometric two-tip target tracking'}
     report['implementation_sha256']={name:hashlib.sha256((Path(__file__).parent/name).read_bytes()).hexdigest()
         for name in ('rosota_ct_env.py','solver_grasp.py','tissue_grasp.py','coupling_probe.py','settlement.py','mount_sensor_probe.py','node_correspondence.py','readback_probe.py','bimanual_coupling_probe.py','reset_comparison.py','reset_checkpoint.py')}
     def save():(a.out/'report.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
@@ -74,7 +75,7 @@ def main():
             grasp_mode='solver_attachment' if a.solver_grasp or a.coupling_probe else ('rosota_attachment' if a.baseline_task else 'none'),
             workspace='appendix_patches' if a.baseline_task or a.coupling_probe else 'legacy',
             settle_policy='adaptive' if a.coupling_probe else 'fixed',
-            diagnostic_no_tool_collision=a.mount_sensor_probe or a.readback_probe,diagnostic_zero_gravity=a.diagnostic_zero_gravity,enhanced_determinism=a.enhanced_determinism,reset_checkpoint=a.reset_checkpoint,fine_settlement=a.fine_settlement)
+            diagnostic_no_tool_collision=a.mount_sensor_probe or a.readback_probe,diagnostic_zero_gravity=a.diagnostic_zero_gravity,enhanced_determinism=a.enhanced_determinism,reset_checkpoint=a.reset_checkpoint,fine_settlement=a.fine_settlement,external_every_iteration=a.external_forces_every_iteration)
         obs,info=env.reset(seed=42);report.update(status='running',**info);save()
         if a.readback_probe:
             from readback_probe import run

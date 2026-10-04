@@ -75,7 +75,7 @@
     "Added strict runtime comparator rejecting changed scenes/helpers, incomplete traces, and green statuses contradicted by measured errors"
   ],
   "next_actions": [
-    "Inspect v8 stricter settlement after checkpoint restore: 1 um/s RMS, 5 um/s p99, up to 16 s. v7 paired difference was 20.3 um and failed the unchanged 10 um threshold.",
+    "Check 6.1 known-load sensor with external-forces-every-iteration before trying it for reset equilibrium; v8 strict reset gate failed at 16 s",
     "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",
@@ -106,6 +106,8 @@
     "paired_reset_evidence": "validation/bimanual-reset-comparison.json",
     "phase_divergence": "validation/reset-phase-divergence.json",
     "warmup_divergence": "validation/reset-warmup-divergence.json",
-    "checkpoint_reset_evidence": "validation/checkpoint-reset-trial.json"
+    "checkpoint_reset_evidence": "validation/checkpoint-reset-trial.json",
+    "strict_settlement_evidence": "validation/fine-settlement-failure.json",
+    "tgs_reference": "https://nvidia-omniverse.github.io/PhysX/physx/5.8.0/docs/Simulation.html"
   }
 }
