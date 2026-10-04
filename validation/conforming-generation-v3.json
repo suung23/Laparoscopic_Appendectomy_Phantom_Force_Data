@@ -1,0 +1,39 @@
+{
+  "status": "failed",
+  "error": "Gravity settling inverted tissue",
+  "conforming_topology": {
+    "nodes": 3530,
+    "tetrahedra": 11257,
+    "duplicate_tetrahedra": 0,
+    "nonmanifold_faces": 0
+  },
+  "tissue_health": {
+    "tetrahedra": 11257,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 25,
+    "minimum_signed_volume_ratio": -1.5053338839855401,
+    "median_volume_ratio": 1.005859553571858,
+    "total_absolute_volume_ratio": 1.0144903646555963,
+    "p99_absolute_volume_change": 0.6262138388563682
+  },
+  "cavity_support": {
+    "enabled": true,
+    "floor_y_m": -0.027332229539752007,
+    "simulation_cage_penetration_m": 0.0005000345408916473,
+    "collision_surface_penetration_m": 0.0005000345408916473,
+    "nodes_within_1_5mm": 327,
+    "mean_posterior_displacement_m": 0.009521147122920279,
+    "pin_drift_m": 0.0001298047935936941
+  },
+  "rest_mean_ratio_quality": {
+    "minimum": 0.04927707973776339,
+    "percentiles_1_5_50": [
+      0.08161238172188436,
+      0.10394499454880508,
+      0.20336629555778915
+    ],
+    "below_0_1": 448,
+    "definition": "12*(3*absolute_volume)^(2/3)/sum_squared_edge_lengths; regular tet=1"
+  },
+  "acceptance": "Rejected for mechanics; topology pass is insufficient."
+}
