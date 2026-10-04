@@ -1,0 +1,176 @@
+{
+  "status": "partial_not_rosota_conformant",
+  "source_commits": {
+    "simulator": "9135fe9eb8549d011124c8c57b7c86edeaaba735",
+    "platform": "cec7d11d628f1322086a7778f6bdbb1a7474fffa"
+  },
+  "immutable_source_files_verified": 42,
+  "web_access": "login page only; deployment profiles not inspected",
+  "controller_probe": {
+    "status": "passed",
+    "scope": "kinematic joint follower; no tissue, no articulation dynamics",
+    "ct_scene_integrated": false,
+    "controller": {
+      "rcm_mode": "soft",
+      "rcm_weight": 1.0,
+      "damp": 0.002,
+      "iters": 3,
+      "k_manip": 0.05,
+      "manip_hz": 60.0,
+      "k_limit": 1.0,
+      "limit_margin_deg": 15.0,
+      "rcm_fb": 0.0,
+      "rcm_fb_max": 0.005,
+      "rcm_fb_lpf_hz": 0.0,
+      "clamp_mode": "joint",
+      "post_cap": 0.002,
+      "roll_cap": 0.02,
+      "cone_mm": 0.15,
+      "tilt_cap_deg": 0.0,
+      "bite_guard_mm": -99.0,
+      "bite_guard_tau": 0.15,
+      "bite_guard_max_deg": 0.0,
+      "bite_guard_slow": 0.0,
+      "reseed_hz": 1.0,
+      "reseed_mode": "full",
+      "reseed_every": 8,
+      "roll_mode": "direct",
+      "roll_qd_max": 5.0,
+      "k_home": 0.0,
+      "k_elbow": 0.1,
+      "elbow_point": 3,
+      "kp": 500000.0,
+      "kd_ratio": 0.0333,
+      "vff": 1.0,
+      "vff_lpf_hz": 30.0,
+      "null_lpf_hz": 0.0,
+      "qd_max": 2.0,
+      "lead_s": 0.0,
+      "cmd_lpf_hz": 60.0,
+      "adm_gain": 0.0,
+      "adm_tau": 0.05,
+      "adm_k_probe": 80.0,
+      "name": "rosota-best-strict-aperture"
+    },
+    "fr3_urdf_sha256": "86ba7c2600ede7f45804c58a507954a7f5aab05a74e3a28d2b2e4a52fd9f617a",
+    "arms": {
+      "left": {
+        "ticks": 480,
+        "insertion_delta_m": 0.0014973731622306816,
+        "positive_roll_delivery_rad": 0.060011572491403986,
+        "max_bite_m": -0.0004999247965186133,
+        "max_offset_m": 7.520454760625719e-08,
+        "roll_backlog_rad": -1.1572491403939733e-05,
+        "roll_stop_reversal_passed": true
+      },
+      "right": {
+        "ticks": 480,
+        "insertion_delta_m": 0.0014973731477386282,
+        "positive_roll_delivery_rad": 0.06002161334713374,
+        "max_bite_m": -0.0004998983885380207,
+        "max_offset_m": 1.0161146268522322e-07,
+        "roll_backlog_rad": -2.1613347133693506e-05,
+        "roll_stop_reversal_passed": true
+      }
+    }
+  },
+  "legacy_ct_regression": {
+    "status": "passed",
+    "policy": "reactive geometric coverage planner",
+    "learned_policy": false,
+    "success": true,
+    "failure": "",
+    "coverage": 1.0,
+    "visited": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "target_index": 2,
+    "tool_excursion_m": [
+      0.009073044954959846,
+      0.009073044954959857
+    ],
+    "camera_changed": true,
+    "coverage_type": "paired tool-tip workspace targets",
+    "full_cavity_collision_validated": false,
+    "rosota_controller_conformant": false,
+    "scope_trocar_constrained": false,
+    "trocar": {
+      "Left": {
+        "offset_m": 0.0,
+        "bite_m": -0.00048622930109120917,
+        "tilt_rad": 0.10471975511965917,
+        "insertion_m": 0.07568220676663859,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      },
+      "Right": {
+        "offset_m": 0.0,
+        "bite_m": -0.00048622930109120874,
+        "tilt_rad": 0.10471975511966022,
+        "insertion_m": 0.07568220676663859,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    "steps": 259,
+    "frames": 23,
+    "fps": 5.0,
+    "control_step_p50_ms": 70.79180001164787,
+    "control_step_p95_ms": 74.8515899933409,
+    "tissue_health": {
+      "tetrahedra": 29490,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.6431014260083945,
+      "median_volume_ratio": 1.0061759083670734,
+      "total_absolute_volume_ratio": 1.0058210479673022,
+      "p99_absolute_volume_change": 0.11242675941681138
+    },
+    "seed": 42,
+    "engine": "Isaac Sim 5.1 / PhysX GPU",
+    "action_dimensions": 16,
+    "state_dimensions": 42
+  },
+  "video_check": {
+    "status": "passed",
+    "decoded_frames": 23,
+    "size": [
+      640,
+      360
+    ],
+    "fps": 5.0,
+    "nominal_sampling_fps": 5.0,
+    "simulated_seconds": 4.316666666666666,
+    "policy": "reactive geometric coverage planner",
+    "learned_policy": false,
+    "evaluation_status": "passed"
+  },
+  "unit_tests": 14,
+  "source_read_cache_files": [
+    "platform/README.md",
+    "simulator/CONTROLLER_STUDY.md",
+    "simulator/FR3_CONTROL_HANDOFF.md",
+    "simulator/VLA_HANDOFF.md",
+    "platform/docs/benchmarks.md",
+    "platform/docs/external-results.md",
+    "platform/docs/job-contract.md",
+    "platform/apps/api/app/services/benchmarks.py",
+    "platform/apps/api/app/services/metrics.py",
+    "simulator/isaac/vla_env.py",
+    "simulator/newton_cell/vla_env.py",
+    "simulator/rii/README.md",
+    "simulator/rii/adapter/policy.py",
+    "simulator/rii/adapter/run_eval.py"
+  ],
+  "external_submission_performed": false
+}

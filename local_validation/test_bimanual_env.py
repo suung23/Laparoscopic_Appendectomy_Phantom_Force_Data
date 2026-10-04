@@ -51,10 +51,14 @@ class EpisodeContract(unittest.TestCase):
         arms={}
         for h,x in [('Left',0.),('Right',.02)]:
             position=np.array([x,.018,0])
-            arms[h]=SimpleNamespace(port=np.array([x,.1,0]),pose=lambda pos=position: {'position_m':pos})
+            arms[h]=SimpleNamespace(port=np.array([x,.1,0]),pose=lambda pos=position: {'position_m':pos},
+                                    trocar_metrics=lambda: {'aperture_clear':True})
         e.control=SimpleNamespace(points=lambda:e.rest.copy(),centers=lambda:e.patch_reference.copy(),
                                   arms=arms,held={},data={'pin':np.array([0])})
         self.assertTrue(e._metrics()['achieved'])
+        e.control.arms['Right'].trocar_metrics=lambda: {'aperture_clear':False}
+        self.assertEqual(e._metrics()['failure'],'trocar_aperture_violation')
+        e.control.arms['Right'].trocar_metrics=lambda: {'aperture_clear':True}
         e.active_task='dual_grasp'
         self.assertFalse(e._metrics()['achieved'])
 

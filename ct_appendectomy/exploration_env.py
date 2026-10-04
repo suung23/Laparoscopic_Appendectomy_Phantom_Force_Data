@@ -96,7 +96,9 @@ class ExplorationEnv(gym.Env):
             coverage=float(self.visited.mean()),visited=self.visited.tolist(),
             target_index=int(self.index),tool_excursion_m=self.max_excursion.tolist(),
             camera_changed=self.camera_changed,coverage_type='paired tool-tip workspace targets',
-            full_cavity_collision_validated=False)
+            full_cavity_collision_validated=False, rosota_controller_conformant=False,
+            scope_trocar_constrained=False,
+            trocar={h:self.base.control.arms[h].trocar_metrics() for h in HANDS})
 
     def step(self,action):
         if self.done: raise RuntimeError('Reset before stepping')

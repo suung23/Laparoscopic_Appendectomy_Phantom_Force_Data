@@ -15,7 +15,8 @@ class ExplorationContract(unittest.TestCase):
         e.positions=lambda:np.zeros((2,3));e.initial_positions=e.positions()
         e.max_excursion=np.zeros(2);e.initial_camera=np.eye(4);e.camera_changed=False
         e.scope=SimpleNamespace(pose=np.eye(4),apply=lambda *args:e.calls.append('camera'))
-        e.base=SimpleNamespace(control=SimpleNamespace(step_action=lambda *a,**kw:e.calls.append('tools')),
+        e.base=SimpleNamespace(control=SimpleNamespace(step_action=lambda *a,**kw:e.calls.append('tools'),
+            arms={h:SimpleNamespace(trocar_metrics=lambda:{'aperture_clear':True}) for h in ('Left','Right')}),
             sim=SimpleNamespace(step=lambda **kw:e.calls.append('physics')),_metrics=lambda:{'failure':''})
         e._observe=lambda m:np.zeros(42,np.float32);e.potential=e._potential()
         return e

@@ -4,11 +4,14 @@ The mathematical pivot is exact; port anatomy and trocar compliance are separate
 """
 from dataclasses import dataclass
 import numpy as np
+from rosota_controller import aperture_metrics, trocar
 
 
 @dataclass(frozen=True)
 class InstrumentLimits:
-    tilt_rad: float = np.pi/3
+    # Explicit strict geometry profile; upstream exploratory 60 degrees is
+    # not clearance in a 6 mm aperture around a 5 mm shaft.
+    tilt_rad: float = trocar.max_tilt_rad(.00015)
     insertion_min_m: float = .03
     insertion_max_m: float = .25
     rotation_speed_rad_s: float = .4
@@ -73,3 +76,10 @@ class PortInstrument:
         rotation=self.axes@np.array([[cy,0,sy],[0,1,0],[-sy,0,cy]])@np.array([[1,0,0],[0,cp,-sp],[0,sp,cp]])@np.array([[cr,-sr,0],[sr,cr,0],[0,0,1]])
         return {'position_m':self.port+rotation[:,2]*insertion,'axes':rotation,
                 'jaw_angle_rad':float(jaw),'insertion_m':float(insertion)}
+
+    def trocar_metrics(self):
+        pose = self.pose()
+        result = aperture_metrics(self.port, self.axes[:,2], pose['position_m'], pose['axes'][:,2])
+        result['normal_source'] = 'configured tool port frame; not CT wall calibration'
+        result['controller'] = 'legacy kinematic pivot; not Rosota FR3 TipController'
+        return result

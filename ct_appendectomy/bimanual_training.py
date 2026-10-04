@@ -22,6 +22,11 @@ def train(env, steps, seed, output, checkpoint=None):
                     gamma=.99, grasp_assist=True,episode_limit=env.max_steps)
     if exploration:
         contract['exploration_sha256']=hashlib.sha256(Path(__file__).with_name('exploration_env.py').read_bytes()).hexdigest()
+    root=Path(__file__).resolve().parents[1]
+    contract['control_contract']='legacy-port-velocity-v2-strict-aperture'
+    contract['controller_dependencies_sha256']={name:hashlib.sha256((root/name).read_bytes()).hexdigest()
+        for name in ('ct_appendectomy/instrument_kinematics.py','ct_appendectomy/rosota_controller.py',
+                     'isaac/trocar.py','isaac/laparo_control.py','isaac/laparo_ik.py')}
     previous = 0
     if checkpoint:
         metadata = load_checkpoint(checkpoint, model, optimizer, expected=contract)

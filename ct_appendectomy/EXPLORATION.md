@@ -1,5 +1,12 @@
 # Bimanual exploration and physics candidate checks
 
+Control audit update: see `ROSOTA_CONTROL_AUDIT.md`. Legacy tool commands now
+use the strict 0.15 mm aperture-reserve cone and fail on measured geometric
+interference. This is not the original FR3 controller or a calibrated CT wall
+model; the moving scope still has no trocar shaft constraint. Both limitations
+are explicit in environment info. Older recordings/checkpoints predate this
+change and are not evidence of Rosota contract conformance.
+
 `ExplorationEnv` extends the existing CT/atlas scene with two independently
 actuated instruments and an actuated endoscope. It supports Gymnasium reset,
 step, RGB render and close. Pass the existing SimulationApp and the prepared

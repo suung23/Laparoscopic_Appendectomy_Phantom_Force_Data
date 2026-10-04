@@ -130,8 +130,10 @@ class BimanualEnv(gym.Env):
         reached = bool(np.all(distance < .002))
         lifted = bool(owned.all() and np.all(np.abs(delta[:, 1]-self.lift) < .0015) and np.all(np.linalg.norm(delta[:, [0, 2]], axis=1) < .003))
         achieved = {'reach': reached, 'dual_grasp': bool(owned.all()), 'retract': lifted}[self.active_task]
+        trocar = {h: self.control.arms[h].trocar_metrics() for h in HANDS}
+        if any(not x['aperture_clear'] for x in trocar.values()): failure = 'trocar_aperture_violation'
         return dict(error=targets-mouths, delta=delta, owned=owned, distance=distance,
-                    achieved=achieved, failure=failure, pin_drift_m=drift, health=health)
+                    achieved=achieved, failure=failure, pin_drift_m=drift, health=health, trocar=trocar)
 
     def _potential(self, m):
         reach = -float(np.minimum(m['distance']/.03, 2).mean())
@@ -150,7 +152,8 @@ class BimanualEnv(gym.Env):
         return dict(task=self.active_task, target_patches=self.patches.tolist(), target_lift_m=self.lift,
                     success=bool(self.hold >= 30 and not m['failure']), failure=m['failure'],
                     hold_steps=self.hold, pin_drift_m=m['pin_drift_m'], tissue_health=m['health'],
-                    grasp_assist=True, appendectomy_completed=False)
+                    grasp_assist=True, appendectomy_completed=False,
+                    trocar=m.get('trocar', {}), rosota_controller_conformant=False)
 
     def step(self, action):
         if self.done: raise RuntimeError('Call reset before stepping')
