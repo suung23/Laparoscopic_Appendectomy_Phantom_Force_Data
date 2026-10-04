@@ -112,11 +112,16 @@ def main():
             save()
         n=0;start=obs['tool_pose'][:,:3,3].copy();max_move=np.zeros(2)
         initial_tissue=env.points().copy()
-        targets=[]
-        for tip in start:
-            point=initial_tissue[np.argmin(np.linalg.norm(initial_tissue-tip,axis=1))]
-            direction=point-tip
-            targets.append(point+.002*direction/max(np.linalg.norm(direction),1e-9))
+        targets=[];surface=None;surface_trace=[]
+        if a.surface_approach:
+            from surface_target import TissueSurface
+            surface=TissueSurface(env.tets)
+            initial_surface=surface.closest(initial_tissue,start)
+            targets=[np.asarray(x['point_m'])-.002*np.asarray(x['outward_normal']) for x in initial_surface]
+            report['surface_target_initial']=initial_surface
+            report['surface_target_world_m']=[x.tolist() for x in targets]
+            report['surface_target_method']='closest exterior triangle at reset; fixed 2 mm inward diagnostic target'
+            report['surface_distance_scope']='virtual tool tip to tissue boundary; not jaw mesh contact distance'
         report['surface_approach']=a.surface_approach
         if a.baseline_task:report['policy']='scripted Rosota-style attachment-assisted grasp/pull/release'
         mechanics=[];pull_start=None;pull_measure=None;approached={h:False for h in env.specs}
@@ -195,6 +200,11 @@ def main():
             obs,reward,term,trunc,info=env.step({'tools':tools,'scope':scope})
             assert env.observation_space.contains(obs)
             max_move=np.maximum(max_move,np.linalg.norm(obs['tool_pose'][:,:3,3]-start,axis=1))
+            if surface is not None:
+                surface_trace.append(dict(step=env.steps,
+                    tip_world_m=obs['tool_pose'][:,:3,3].tolist(),
+                    boundary=surface.closest(env.points(),obs['tool_pose'][:,:3,3]),
+                    target_error_m=np.linalg.norm(obs['tool_pose'][:,:3,3]-np.asarray(targets),axis=1).tolist()))
             mechanics.append(dict(step=env.steps,held=dict(info['held_patches']),
                 pull_relative=pull_measure.measure(env.points()) if pull_measure else None,
                 **info['deformation']))
@@ -220,6 +230,14 @@ def main():
         if a.contact_probe:
             report['contact_validation']='unverified: reaction is not independent tissue contact evidence'
         report['final_jaw_position_rad']=obs['jaw_position'].tolist()
+        if surface_trace:
+            (a.out/'surface_trace.json').write_text(json.dumps(surface_trace,indent=2),encoding='utf-8')
+            report['surface_approach_complete']=all(
+                surface_trace[min(a.approach_samples,len(surface_trace))-1]['target_error_m'][i]<.0005 for i in range(2))
+            report['minimum_tip_surface_distance_m']=[min(x['boundary'][i]['distance_m'] for x in surface_trace) for i in range(2)]
+            if not report['surface_approach_complete']:
+                report['status']='failed'
+                report['task_failure']='Surface approach did not reach both diagnostic targets; no contact success claim'
         np.savez_compressed(a.out/'tissue_motion.npz',initial=initial_tissue,final=env.points())
         (a.out/'deformation_trace.json').write_text(json.dumps(mechanics),encoding='utf-8')
         report['grasp_events']=env.grasp.events
