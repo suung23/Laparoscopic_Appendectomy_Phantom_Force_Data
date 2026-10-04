@@ -1,0 +1,66 @@
+{
+  "status": "failed",
+  "error": "Invalid reset: tet_inversion",
+  "phases": {
+    "before_initialize": {
+      "tetrahedra": 11257,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 1.0,
+      "median_volume_ratio": 1.0,
+      "total_absolute_volume_ratio": 1.0,
+      "p99_absolute_volume_change": 0.0,
+      "pin_target_offset_max_m": 0.0
+    },
+    "after_initialize": {
+      "tetrahedra": 11257,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.8225344548349388,
+      "median_volume_ratio": 0.9992666184379492,
+      "total_absolute_volume_ratio": 0.9988628019481935,
+      "p99_absolute_volume_change": 0.020355993546824016,
+      "pin_target_offset_max_m": 0.0
+    },
+    "warmup_1": {
+      "tetrahedra": 11257,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.7343119732567661,
+      "median_volume_ratio": 0.9992677119204416,
+      "total_absolute_volume_ratio": 0.9988504955468409,
+      "p99_absolute_volume_change": 0.03034204583926733,
+      "pin_target_offset_max_m": 0.0
+    },
+    "warmup_60": {
+      "tetrahedra": 11257,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 8,
+      "minimum_signed_volume_ratio": -0.702666890199983,
+      "median_volume_ratio": 1.0032868498474676,
+      "total_absolute_volume_ratio": 1.0050071328556567,
+      "p99_absolute_volume_change": 0.5037142100717735,
+      "pin_target_offset_max_m": 0.0
+    },
+    "warmup_480": {
+      "tetrahedra": 11257,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 8,
+      "minimum_signed_volume_ratio": -0.7640251419442212,
+      "median_volume_ratio": 1.0022072338089463,
+      "total_absolute_volume_ratio": 1.0025728214845058,
+      "p99_absolute_volume_change": 0.5013834407352623,
+      "pin_target_offset_max_m": 0.0
+    },
+    "after_settlement": {
+      "tetrahedra": 11257,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 8,
+      "minimum_signed_volume_ratio": -0.7766838638113707,
+      "median_volume_ratio": 1.002210183257588,
+      "total_absolute_volume_ratio": 1.002552888624882,
+      "p99_absolute_volume_change": 0.4981872066162869,
+      "pin_target_offset_max_m": 0.0
+    }
+  }
+}
