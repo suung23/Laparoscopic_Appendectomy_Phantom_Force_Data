@@ -157,6 +157,15 @@ try:
         if points is None or len(points)==0: raise RuntimeError('PhysX did not cook appendix simulation nodes')
         initial=np.asarray(points,dtype=float)
         if not np.isfinite(initial).all(): raise RuntimeError('Invalid cooked nodes')
+        if a.conforming_simulation:
+            from pxr import Vt
+            rest_points=np.asarray(sim_mesh.GetAttribute('omniphysics:restShapePoints').Get(),float)
+            if rest_points.shape!=initial.shape or not np.isfinite(rest_points).all():
+                raise RuntimeError('Missing conforming rest geometry')
+            report['pre_attachment_points_to_rest_max_m']=float(np.linalg.norm(initial-rest_points,axis=1).max())
+            initial=rest_points.copy()
+            sim_mesh.GetAttribute('points').Set(Vt.Vec3fArray.FromNumpy(initial.astype(np.float32)))
+            report['attachment_reference']='explicit unstrained rest points; excludes pre-authoring simulation drift'
         report['cooked_nodes']=len(initial)
         if a.conforming_simulation:
             cells=np.asarray(sim_mesh.GetAttribute('tetVertexIndices').Get(),int).reshape(-1,4)

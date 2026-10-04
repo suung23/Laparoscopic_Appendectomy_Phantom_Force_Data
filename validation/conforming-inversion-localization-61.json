@@ -1,0 +1,68 @@
+{
+  "inverted_count": 9,
+  "cells": [
+    {
+      "tet_index": 1127,
+      "touches_pin": true,
+      "rest_center_to_pin_m": 0.00031443674400654634,
+      "current_center_above_floor_m": 0.057166478130966425,
+      "minimum_node_above_floor_m": 0.05658564530313015
+    },
+    {
+      "tet_index": 2431,
+      "touches_pin": false,
+      "rest_center_to_pin_m": 0.05728611403708306,
+      "current_center_above_floor_m": -0.00011614710092544556,
+      "minimum_node_above_floor_m": -0.00024484284222126007
+    },
+    {
+      "tet_index": 4418,
+      "touches_pin": true,
+      "rest_center_to_pin_m": 0.00027085442623392804,
+      "current_center_above_floor_m": 0.057375986594706774,
+      "minimum_node_above_floor_m": 0.05658564530313015
+    },
+    {
+      "tet_index": 4690,
+      "touches_pin": true,
+      "rest_center_to_pin_m": 0.00047183073552458505,
+      "current_center_above_floor_m": 0.0564889726229012,
+      "minimum_node_above_floor_m": 0.05552061088383198
+    },
+    {
+      "tet_index": 4692,
+      "touches_pin": true,
+      "rest_center_to_pin_m": 0.0003076060809232575,
+      "current_center_above_floor_m": 0.05739040672779083,
+      "minimum_node_above_floor_m": 0.05695492587983608
+    },
+    {
+      "tet_index": 7445,
+      "touches_pin": false,
+      "rest_center_to_pin_m": 0.03618800274440486,
+      "current_center_above_floor_m": 0.004713736940175295,
+      "minimum_node_above_floor_m": 0.003659430891275406
+    },
+    {
+      "tet_index": 8391,
+      "touches_pin": false,
+      "rest_center_to_pin_m": 0.03813416109824602,
+      "current_center_above_floor_m": 0.0029312404803931713,
+      "minimum_node_above_floor_m": 0.001994822174310684
+    },
+    {
+      "tet_index": 8524,
+      "touches_pin": false,
+      "rest_center_to_pin_m": 0.057829806818379355,
+      "current_center_above_floor_m": 2.66125425696373e-05,
+      "minimum_node_above_floor_m": -0.00010568276047706604
+    },
+    {
+      "tet_index": 8528,
+      "touches_pin": false,
+      "rest_center_to_pin_m": 0.03996137261432065,
+      "current_center_above_floor_m": 0.0019361870363354683,
+      "minimum_node_above_floor_m": 0.0015151221305131912
+    }
+  ]
+}
