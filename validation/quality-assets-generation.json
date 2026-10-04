@@ -1,0 +1,11 @@
+{
+  "status": "topology_passed",
+  "hex_simulation": false,
+  "source_sha256": "9fc25e90fdf59df1bc01e568b4fc242da1a9060e0260743654572d357297f9c7",
+  "scope": "fresh cooking topology only; no mechanics validation",
+  "explicit_mesh_sha256": "50580e5a675eb657e7ee6c2dddcf6963132db24e768071f03e8083753b03b628",
+  "nodes": 11252,
+  "tetrahedra": 48443,
+  "duplicate_tetrahedra": 0,
+  "nonmanifold_faces": 0
+}
