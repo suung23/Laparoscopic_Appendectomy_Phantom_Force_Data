@@ -76,7 +76,7 @@
   ],
   "next_actions": [
     "Keep TGS external integration disabled: 6.1 failed pin gate before force testing. Investigate independent-process reset controls while preserving paired tolerance.",
-    "Inspect full 90-step cutter v3: v2 rendered with sub-micrometre FK agreement but 8 steps did not meet movement gate; appearance still inadequate",
+    "Cutter v3 passes scripted motion commissioning; next validate blade open/close collision geometry and contact behavior, then cutting mechanics",
     "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",

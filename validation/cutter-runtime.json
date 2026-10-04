@@ -1,0 +1,43 @@
+{
+  "status": "passed",
+  "steps": 90,
+  "frames": 17,
+  "fps": 5.0,
+  "simulated_seconds": 3.0,
+  "physics_ticks_checked": 1440,
+  "tip_excursion_m": [
+    0.0030326293781399727,
+    0.0030283646192401648
+  ],
+  "scope_eye_excursion_m": 0.0009117873810656767,
+  "max_bite_m": {
+    "left": -0.0004576720011640963,
+    "right": -0.00044548997452912827
+  },
+  "max_body_fk_error_m": 1.0273573608995568e-06,
+  "tissue_health": {
+    "tetrahedra": 29490,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 0,
+    "minimum_signed_volume_ratio": 0.8689318488202897,
+    "median_volume_ratio": 1.000218382575106,
+    "total_absolute_volume_ratio": 0.9999307752938036,
+    "p99_absolute_volume_change": 0.04547434641640596
+  },
+  "final_jaw_position_rad": [
+    [
+      0.6457718014717102,
+      -0.6457258462905884
+    ],
+    [
+      0.4363100230693817,
+      -0.43628019094467163
+    ]
+  ],
+  "right_tool": "cutter",
+  "cutting_implemented": false,
+  "report_sha256": "c6daa02a07ecb71044ca794e0f5433cd0e80cb7dacdb2f6307bbfdb04a4b212f",
+  "video_sha256": "6272bfce4adea490bf50513aa364087c123ce4d2a8f0aab2a49ad690a9cb16e4",
+  "scope": "One scripted movement commissioning run; no learned policy, cutting, calibrated material, or baseline parity claim",
+  "video_timing": "17 sampled frames shown at 5 fps; 3 seconds of simulation, not exact real-time frame timing"
+}
