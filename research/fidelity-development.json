@@ -75,7 +75,7 @@
     "Added strict runtime comparator rejecting changed scenes/helpers, incomplete traces, and green statuses contradicted by measured errors"
   ],
   "next_actions": [
-    "Complete active 6.1 adaptive settlement and paired tissue coupling probe; retain fixture scope and validate 5.1 compatibility",
+    "Finish readback freshness test, verify paired reset repeatability and 5.1 compatibility, then extend reaction validation to both arms",
     "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",
@@ -99,6 +99,7 @@
     "candidate_report": "out/force_runtime_61_v4/report.json",
     "gravity_probe": "validation/runtime-gravity-probe.json",
     "migration_audit": "validation/tissue-migration-audit.json",
-    "precook_evidence": "validation/precooked-tissue-runtime.json"
+    "precook_evidence": "validation/precooked-tissue-runtime.json",
+    "coupling_evidence": "validation/precooked-coupling.json"
   }
 }

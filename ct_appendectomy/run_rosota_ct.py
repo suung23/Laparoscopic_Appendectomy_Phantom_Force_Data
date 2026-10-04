@@ -26,9 +26,12 @@ def main():
     p.add_argument('--attachment-probe',action='store_true',help='Isolated activation diagnostic, not a robot grasp')
     p.add_argument('--solver-grasp',action='store_true',help='Experimental dynamic-link attachment; remains assisted adhesion')
     p.add_argument('--coupling-probe',action='store_true',help='Paired enabled/disabled constraint load-path test, not a grasp')
+    p.add_argument('--readback-probe',action='store_true',help='Diagnostic moving anchor checks physics-only observation freshness')
     p.add_argument('--mount-sensor-probe',action='store_true',help='Known 0.1 N external force sensor calibration without tissue attachment')
     p.add_argument('--diagnostic-zero-gravity',action='store_true',help='Only for isolating the mount sensor failure, never a task configuration')
     a=p.parse_args()
+    if a.readback_probe and any((a.mount_sensor_probe,a.coupling_probe,a.baseline_task,a.contact_probe,a.attachment_probe,a.solver_grasp)):
+        p.error('Readback probe is an isolated diagnostic')
     if a.diagnostic_zero_gravity and not a.mount_sensor_probe:p.error('Zero-gravity diagnostic requires --mount-sensor-probe')
     if a.coupling_probe and (a.baseline_task or a.contact_probe or a.attachment_probe):p.error('Coupling probe is a separate diagnostic')
     if a.mount_sensor_probe and (a.baseline_task or a.contact_probe or a.attachment_probe or a.coupling_probe or a.solver_grasp):p.error('Mount sensor probe is a separate diagnostic')
@@ -45,7 +48,7 @@ def main():
     if any(frames.glob('*.png')):p.error('Use a fresh output folder')
     report={'status':'starting','learned_policy':False,'policy':'geometric two-tip target tracking'}
     report['implementation_sha256']={name:hashlib.sha256((Path(__file__).parent/name).read_bytes()).hexdigest()
-        for name in ('rosota_ct_env.py','solver_grasp.py','tissue_grasp.py','coupling_probe.py','settlement.py','mount_sensor_probe.py')}
+        for name in ('rosota_ct_env.py','solver_grasp.py','tissue_grasp.py','coupling_probe.py','settlement.py','mount_sensor_probe.py','node_correspondence.py','readback_probe.py')}
     def save():(a.out/'report.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
     save()
     for n,d in [('WARP_CACHE_PATH','isaac-warp'),('OPTIX_CACHE_PATH','optix')]:os.environ.setdefault(n,str(ROOT/'.cache'/d))
@@ -66,8 +69,11 @@ def main():
             grasp_mode='solver_attachment' if a.solver_grasp or a.coupling_probe else ('rosota_attachment' if a.baseline_task else 'none'),
             workspace='appendix_patches' if a.baseline_task or a.coupling_probe else 'legacy',
             settle_policy='adaptive' if a.coupling_probe else 'fixed',
-            diagnostic_no_tool_collision=a.mount_sensor_probe,diagnostic_zero_gravity=a.diagnostic_zero_gravity)
+            diagnostic_no_tool_collision=a.mount_sensor_probe or a.readback_probe,diagnostic_zero_gravity=a.diagnostic_zero_gravity)
         obs,info=env.reset(seed=42);report.update(status='running',**info);save()
+        if a.readback_probe:
+            from readback_probe import run
+            report.update(run(env));return
         if a.mount_sensor_probe:
             from mount_sensor_probe import run
             report.update(run(env));return

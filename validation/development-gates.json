@@ -102,7 +102,7 @@
     },
     {
       "id": "reset-equilibrium",
-      "status": "not achieved; fixed wait was not verified; adaptive 8-second trial failed",
+      "status": "6.1 precooked pair meets nodal motion thresholds; readback audit and initial-state repeatability remain pending",
       "requires": [
         "measured nodal speed below specified limits",
         "repeatability across resets",
@@ -111,14 +111,15 @@
     },
     {
       "id": "solver-reaction-transfer",
-      "status": "Dynamic attachment implemented; repeated three-axis known-load sensor tests failed, so force-based reaction validation remains unsupported",
+      "status": "6.1 known-load sensor and single-left-arm paired attachment diagnostic pass; full bimanual balance and contact grasp remain incomplete",
       "requires": [
         "known-load sensor verification",
         "same robot trajectory and settled initial tissue",
         "enabled/disabled constraint comparison",
         "force or generalized-torque balance",
         "full bimanual traction and release"
-      ]
+      ],
+      "evidence": "validation/precooked-coupling.json"
     }
   ],
   "claims_not_supported": [

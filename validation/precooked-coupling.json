@@ -1,0 +1,38 @@
+{
+  "status": "passed",
+  "acceptance_scope": "engineering reaction transfer only; not calibrated tissue mechanics or contact grasp",
+  "mount_force_effect_n": 0.0697426922681383,
+  "activation_differential_noise_n": 0.007467958896113947,
+  "grasp_assist": true,
+  "frictional_grasp": false,
+  "material_calibrated": false,
+  "runtime": "6.1.0.0",
+  "conditions": {
+    "disabled": {
+      "failure": null,
+      "physics_ticks": 800,
+      "measured_equilibrium": true,
+      "activation_max_displacement_m": 1.55267311009829e-06,
+      "held_constraint_rms_m": 0.0019508239239886182,
+      "inverted_tetrahedra_max": 0,
+      "report_sha256": "b24f68bdb5e2fffec2a2cd69c6548d340716faed300b5ac5dbf82340b0ccd931"
+    },
+    "enabled": {
+      "failure": null,
+      "physics_ticks": 800,
+      "measured_equilibrium": true,
+      "activation_max_displacement_m": 0.0008414928067567804,
+      "held_constraint_rms_m": 3.725271821061793e-05,
+      "inverted_tetrahedra_max": 0,
+      "report_sha256": "26cef546824160d0575912e42a5e85708da78dc8687fff79fca4715172ad4602"
+    }
+  },
+  "limitations": [
+    "Single left-arm idealized attachment diagnostic",
+    "Material not calibrated",
+    "Readback freshness audit pending",
+    "Repeatability of paired initial states needs explicit hashes and tolerance test",
+    "Full bimanual force balance not verified"
+  ],
+  "report_sha256": "c05be6fa31e4f60f65d25af7e5a58b79e4e1d3eccce3762abc981a5d00b28b39"
+}
