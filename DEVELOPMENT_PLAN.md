@@ -52,6 +52,8 @@ RTX4090 단일 환경 1280×720 end-to-end 30 Hz를 개발 목표로 측정한�
 
 ## 남은 개발의 구체적 통과 조건
 
+추가 M4 구현: 등록된 Gymnasium agent 환경, 자동 episode/reset, RGB+state 관측, PPO 학습·checkpoint 재개, GUI 정책 비교를 추가했다. 실제 2,048-step PPO 학습 및 저장/재로딩은 통과했으나 learned policy 평가는 0/3 성공이다 (`validation/ct-agent-training.json`). 초기 scripted 환경은 3/3 성공했고 현재 재파지 수정 후 demonstration도 성공했다. 이는 학습 가능한 실행 경로의 검증이며, 학습 수렴이나 전체 수술 성공은 아직 아니다.
+
 1. 정합: 충수 base 연결을 유지하면서 허용된 접합부 외 조직 중첩을 제거한다. 현재 약 9% 표면 샘플 중첩은 실패로 유지한다. CT에 없는 환자별 충수 형상이나 실제 복막을 추측해 ground truth로 취급하지 않는다.
 2. RCM/기구: 두 실제 shaft/jaw의 pose를 고정 port에서 계산하고 도구·장기 충돌을 켠 상태로 접근/파지/견인/해제를 검사한다. 현재 2-action fixture를 이 단계의 성공으로 대체하지 않는다.
 3. 절단: 움직이는 조직에 유한 blade가 접촉할 때만 topology를 갱신하고 위치·속도·질량과 절단면을 전달한다. 현재 offline infinite-plane split은 입력 기하 검증용이다. mesh 재구성 후 state 연속성과 reset을 검사한다.

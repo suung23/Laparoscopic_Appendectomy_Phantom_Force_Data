@@ -1,5 +1,7 @@
 # CT + atlas appendectomy scene
 
+For automatic robot-agent episodes, Gymnasium registration, PPO training and checkpoint replay, see [AGENT_TRAINING.md](AGENT_TRAINING.md). The current agent controls jaw closure and vertical lift; articulated robot-arm control remains separate work.
+
 `build_scene.py` converts the existing public TotalSegmentator s0042 reconstruction and BodyParts3D appendix, mesoappendix and appendicular artery into a USD stage. It preserves dataset/license metadata and input SHA-256 hashes in `out/ct_appendectomy/scene_manifest.json`.
 
 The source CT has **no appendix mask**. The appendix complex is an atlas graft, rigidly positioned without scale adjustment at a heuristic point on the right inferior colon. This is **not clinically validated registration**. The checked-in `profiles/s0042_hybrid.json` reduces label overlap by rotating about the fixed base and includes an internal camera initialization verified by RTX segmentation. Residual colon overlap remains. Use `--anchor X Y Z` only with a corresponding reviewed placement. The scene does not yet model insufflation, tissue cutting, bleeding or completion of appendectomy. CT provides geometry, not visible tissue colour; materials are procedural.

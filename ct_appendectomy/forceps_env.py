@@ -33,6 +33,7 @@ class AppendixForcepsEnv(AppendixRetractionEnv):
         self.held_steps=0
         self.tets=np.asarray(self.mesh.GetAttribute('tetVertexIndices').Get(),int)
         self.closed_reference=None
+        self.reference_command_lift=0.
         move_forceps(self.stage,self.forceps,0.,0.)
 
     def _observe(self):
@@ -47,7 +48,7 @@ class AppendixForcepsEnv(AppendixRetractionEnv):
         if self.closed_reference is None:
             self.tracking_error=0.
         else:
-            self.tracking_error=float(np.linalg.norm(self.current_centroid-self.closed_reference-np.array([0,0,self.command[1]])))
+            self.tracking_error=float(np.linalg.norm(self.current_centroid-self.closed_reference-np.array([0,0,self.command[1]-self.reference_command_lift])))
         return np.r_[self.command,displacement,self.pin_drift,self.tracking_error].astype(np.float32)
 
     def _info(self,success):
@@ -65,8 +66,12 @@ class AppendixForcepsEnv(AppendixRetractionEnv):
             raise ValueError('Two finite normalized actions required')
         previous_command=self.command.copy()
         self.command=np.clip(self.command+action*np.array([.025,.0002]),[0,0],[1,.016])
-        if previous_command[1]==0 and self.command[1]>0 and previous_command[0]>=.99:
+        if self.closed_reference is None and self.command[1]>previous_command[1] and previous_command[0]>=.99:
             self.closed_reference=self.current_centroid.copy()
+            self.reference_command_lift=float(previous_command[1])
+        if self.command[0]<.5:
+            self.closed_reference=None
+            self.reference_command_lift=0.
         move_forceps(self.stage,self.forceps,*self.command)
         # USD-authored kinematic jaw transforms are consumed through Kit updates.
         # Two 1/60 render ticks contain four 1/120 physics steps. A tensor-driven
@@ -74,10 +79,8 @@ class AppendixForcepsEnv(AppendixRetractionEnv):
         for _ in range(2):self.sim.step(render=True)
         obs=self._observe()
         self.steps+=1
-        if self.command[0]<.5:
-            self.closed_reference=None
         failed=self.pin_drift>.001 or self.maximum_displacement>.05 or self.health['inverted_tetrahedra']>0
-        following=self.closed_reference is not None and self.command[0]>=.99 and self.command[1]>=.008 and self.tracking_error<.004 and self.lift>=.006
+        following=self.closed_reference is not None and self.command[0]>=.99 and self.command[1]-self.reference_command_lift>=.008 and self.tracking_error<.004 and self.lift>=.006
         self.held_steps=self.held_steps+1 if following and not failed else 0
         success=self.held_steps>=10
         reward=100*(self.lift-self.previous_lift)-.001*float(action@action)

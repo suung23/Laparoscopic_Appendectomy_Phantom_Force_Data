@@ -5,4 +5,6 @@ Push-Location $PSScriptRoot
 try {
     & $compiler /nologo /target:winexe /reference:System.Windows.Forms.dll /out:IsaacSimulator.exe IsaacLauncher.cs
     if ($LASTEXITCODE) { throw 'Isaac launcher compilation failed.' }
+    & $compiler /nologo /target:winexe /reference:System.Windows.Forms.dll /out:RobotAgent.exe IsaacLauncher.cs
+    if ($LASTEXITCODE) { throw 'Robot agent launcher compilation failed.' }
 } finally { Pop-Location }

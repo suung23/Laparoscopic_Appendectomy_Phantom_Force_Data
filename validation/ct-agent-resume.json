@@ -1,0 +1,85 @@
+{
+  "status": "passed",
+  "run_id": "7d186cf9adf94f9a94eccc22fa70b3ef",
+  "appendectomy_completed": false,
+  "policy": "scripted",
+  "seed": 42,
+  "training_steps_requested": 256,
+  "episodes": [
+    {
+      "run_id": "7d186cf9adf94f9a94eccc22fa70b3ef",
+      "policy": "checkpoint",
+      "episode": 0,
+      "seed": 10042,
+      "steps": 220,
+      "return": -0.787095848169206,
+      "success": false,
+      "terminated": false,
+      "truncated": true,
+      "termination_reason": "time_limit",
+      "lift_m": 0.008604241406609273,
+      "pin_drift_m": 9.157633372516803e-05,
+      "inverted_tetrahedra": 0
+    }
+  ],
+  "env_id": "RiiAppendixContactLift-v0",
+  "state_names": [
+    "jaw_closure",
+    "command_lift_10mm",
+    "tissue_dx_10mm",
+    "tissue_dy_10mm",
+    "tissue_dz_10mm",
+    "pin_drift_mm",
+    "tracking_error_4mm",
+    "episode_fraction",
+    "held_fraction",
+    "reference_dx_10mm",
+    "reference_dy_10mm",
+    "reference_dz_10mm",
+    "reference_valid",
+    "reference_command_lift_10mm"
+  ],
+  "stage_sha256": "3da87b6c3f60d7218e31b8336e0145956cd9fe56546bc5aee30d19a40e51b7e5",
+  "config_sha256": "d2375dcd59f97979b963da75fa47f862487570c267387a1bd629af0dc1d37d58",
+  "gamma": 0.99,
+  "action_count": 2,
+  "trained_steps_before": 2048,
+  "observation_mode": "state",
+  "anatomical_randomization": false,
+  "compact_state_is_privileged": true,
+  "checkpoint_loaded": true,
+  "demo_warm_start": false,
+  "engine": "Isaac Sim 5.1 / PhysX GPU",
+  "control_dt_s": 0.03333333333333333,
+  "torch_version": "2.7.0+cpu",
+  "policy_device": "cpu",
+  "training": {
+    "steps": 256,
+    "updates": [
+      {
+        "loss_mean": 0.011735828360542655,
+        "gradient_norm_max": 49.087120056152344,
+        "steps": 256
+      }
+    ],
+    "episodes": [
+      {
+        "run_id": "7d186cf9adf94f9a94eccc22fa70b3ef",
+        "episode": 0,
+        "steps": 220,
+        "return": -0.7263343316791375,
+        "success": false,
+        "termination_reason": "time_limit"
+      }
+    ],
+    "parameter_l2_change": 0.06077951192855835,
+    "wall_seconds": 66.05610699998215
+  },
+  "checkpoint_roundtrip_passed": true,
+  "checkpoint_sha256": "4c89bb7d8155a579dfc7be1a3ced7ae24304c2b663204eadea1dd6cd23fa0891",
+  "evaluation_policy": "checkpoint",
+  "evaluation_episode_count": 1,
+  "evaluation_successes": 0,
+  "evaluation_summary_window": 1,
+  "task_mastery_claimed": false
+}

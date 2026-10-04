@@ -1,0 +1,219 @@
+{
+  "status": "passed",
+  "run_id": "39b3484fd1414432a796ddd7adf5a244",
+  "appendectomy_completed": false,
+  "policy": "scripted",
+  "seed": 42,
+  "training_steps_requested": 2048,
+  "episodes": [
+    {
+      "run_id": "39b3484fd1414432a796ddd7adf5a244",
+      "episode": 0,
+      "seed": 10042,
+      "steps": 220,
+      "return": -0.7067067890379365,
+      "success": false,
+      "terminated": false,
+      "truncated": true,
+      "termination_reason": "time_limit",
+      "lift_m": 0.017030436545610428,
+      "pin_drift_m": 0.00014986947572950083,
+      "inverted_tetrahedra": 0
+    },
+    {
+      "run_id": "39b3484fd1414432a796ddd7adf5a244",
+      "episode": 1,
+      "seed": 10043,
+      "steps": 220,
+      "return": -0.7239138510682388,
+      "success": false,
+      "terminated": false,
+      "truncated": true,
+      "termination_reason": "time_limit",
+      "lift_m": 0.009959167961416573,
+      "pin_drift_m": 8.295351896170669e-05,
+      "inverted_tetrahedra": 0
+    },
+    {
+      "run_id": "39b3484fd1414432a796ddd7adf5a244",
+      "episode": 2,
+      "seed": 10044,
+      "steps": 220,
+      "return": -0.7275116920237488,
+      "success": false,
+      "terminated": false,
+      "truncated": true,
+      "termination_reason": "time_limit",
+      "lift_m": 0.009908469201161944,
+      "pin_drift_m": 8.54667244448135e-05,
+      "inverted_tetrahedra": 0
+    }
+  ],
+  "env_id": "RiiAppendixContactLift-v0",
+  "state_names": [
+    "jaw_closure",
+    "command_lift_10mm",
+    "tissue_dx_10mm",
+    "tissue_dy_10mm",
+    "tissue_dz_10mm",
+    "pin_drift_mm",
+    "tracking_error_4mm",
+    "episode_fraction",
+    "held_fraction",
+    "reference_dx_10mm",
+    "reference_dy_10mm",
+    "reference_dz_10mm",
+    "reference_valid",
+    "reference_command_lift_10mm"
+  ],
+  "stage_sha256": "3da87b6c3f60d7218e31b8336e0145956cd9fe56546bc5aee30d19a40e51b7e5",
+  "config_sha256": "d2375dcd59f97979b963da75fa47f862487570c267387a1bd629af0dc1d37d58",
+  "gamma": 0.99,
+  "action_count": 2,
+  "trained_steps_before": 0,
+  "observation_mode": "state",
+  "anatomical_randomization": false,
+  "compact_state_is_privileged": true,
+  "checkpoint_loaded": false,
+  "demo_warm_start": true,
+  "contract_smoke": {
+    "status": "passed",
+    "render_state_error": 0.0,
+    "reset_error": 0.0,
+    "invalid_action_rejected_without_mutation": true,
+    "nonzero_height_reference_passed": true,
+    "gym_registered": true
+  },
+  "demonstration": {
+    "steps": 189,
+    "is_success": true,
+    "cloning_mse": 0.002248261123895645
+  },
+  "training": {
+    "steps": 2048,
+    "updates": [
+      {
+        "loss_mean": 0.1091197530622594,
+        "gradient_norm_max": 52.13065719604492,
+        "steps": 256
+      },
+      {
+        "loss_mean": 0.015164137541432865,
+        "gradient_norm_max": 48.95456314086914,
+        "steps": 512
+      },
+      {
+        "loss_mean": 0.016623360919766128,
+        "gradient_norm_max": 56.0640754699707,
+        "steps": 768
+      },
+      {
+        "loss_mean": 0.0036249768163543195,
+        "gradient_norm_max": 47.31085968017578,
+        "steps": 1024
+      },
+      {
+        "loss_mean": 0.12758034747093916,
+        "gradient_norm_max": 79.58049774169922,
+        "steps": 1280
+      },
+      {
+        "loss_mean": 0.029615729581564665,
+        "gradient_norm_max": 125.99053192138672,
+        "steps": 1536
+      },
+      {
+        "loss_mean": 0.015334198920754716,
+        "gradient_norm_max": 43.237884521484375,
+        "steps": 1792
+      },
+      {
+        "loss_mean": 0.03936706535751,
+        "gradient_norm_max": 74.84226989746094,
+        "steps": 2048
+      }
+    ],
+    "episodes": [
+      {
+        "run_id": "39b3484fd1414432a796ddd7adf5a244",
+        "episode": 0,
+        "steps": 220,
+        "return": -0.01579369776629235,
+        "success": false,
+        "termination_reason": "time_limit"
+      },
+      {
+        "run_id": "39b3484fd1414432a796ddd7adf5a244",
+        "episode": 1,
+        "steps": 220,
+        "return": 0.03443293513809176,
+        "success": false,
+        "termination_reason": "time_limit"
+      },
+      {
+        "run_id": "39b3484fd1414432a796ddd7adf5a244",
+        "episode": 2,
+        "steps": 220,
+        "return": -0.7075115448815188,
+        "success": false,
+        "termination_reason": "time_limit"
+      },
+      {
+        "run_id": "39b3484fd1414432a796ddd7adf5a244",
+        "episode": 3,
+        "steps": 220,
+        "return": -0.7658362210622358,
+        "success": false,
+        "termination_reason": "time_limit"
+      },
+      {
+        "run_id": "39b3484fd1414432a796ddd7adf5a244",
+        "episode": 4,
+        "steps": 149,
+        "return": 4.086429185151724,
+        "success": true,
+        "termination_reason": "success"
+      },
+      {
+        "run_id": "39b3484fd1414432a796ddd7adf5a244",
+        "episode": 5,
+        "steps": 220,
+        "return": -0.8012219300363135,
+        "success": false,
+        "termination_reason": "time_limit"
+      },
+      {
+        "run_id": "39b3484fd1414432a796ddd7adf5a244",
+        "episode": 6,
+        "steps": 220,
+        "return": -0.7516525925370519,
+        "success": false,
+        "termination_reason": "time_limit"
+      },
+      {
+        "run_id": "39b3484fd1414432a796ddd7adf5a244",
+        "episode": 7,
+        "steps": 220,
+        "return": -0.7440712033162123,
+        "success": false,
+        "termination_reason": "time_limit"
+      },
+      {
+        "run_id": "39b3484fd1414432a796ddd7adf5a244",
+        "episode": 8,
+        "steps": 220,
+        "return": -0.7120829283820885,
+        "success": false,
+        "termination_reason": "time_limit"
+      }
+    ],
+    "parameter_l2_change": 0.2995913028717041,
+    "wall_seconds": 107.63907140001538
+  },
+  "checkpoint_roundtrip_passed": true,
+  "evaluation_policy": "checkpoint",
+  "evaluation_episode_count": 3,
+  "evaluation_successes": 0,
+  "evaluation_summary_window": 3,
+  "task_mastery_claimed": false
+}

@@ -1,0 +1,12 @@
+{
+  "checkpoint_relative_path": "out\\ct_appendectomy\\agent\\policy.pt",
+  "sha256": "d9ce796aea6f052b21059f0ddd3ca68625f674276a6642d2bdda1a02f1f3f0b2",
+  "bytes": 139405,
+  "training_steps": 2048,
+  "demonstration_initialized": true,
+  "evaluation_successes": 0,
+  "evaluation_episodes": 3,
+  "uploaded": false,
+  "gui_launch_verified": false,
+  "gui_launch_error": "ShellExecuteW returned 5"
+}

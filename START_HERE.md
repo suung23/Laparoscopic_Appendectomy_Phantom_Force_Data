@@ -43,4 +43,10 @@ Run `./run-ct.ps1 -Forceps -Interactive` for the internal endoscope view and jaw
 Run `./validate-ct.ps1` for the complete local CT integration suite.
 See `ct_appendectomy/README.md` for prerequisites, API and limitations.
 
+## Robot-agent episodes and learning
+
+`./run-agent.ps1 -Policy scripted -Episodes 0` opens the automatic contact-lift agent with episode reset and a pause/resume panel. `RobotAgent.exe` is the terminal-free launcher built by `./build-launcher.ps1`; it replays a saved policy when available and otherwise uses the scripted baseline.
+
+`./run-agent.ps1 -Headless -TrainSteps 2048 -DemoWarmStart` collects a real simulator demonstration, initializes a policy by imitation, then performs PPO updates and evaluation. Omit `-DemoWarmStart` to train from random initialization. Results/checkpoints stay local in `out/ct_appendectomy/agent`. See `ct_appendectomy/AGENT_TRAINING.md` for Gymnasium integration, RGB observations, replay, resume and limitations.
+
 `DEVELOPMENT_PLAN.md` records the six development gates, execution evidence and remaining work. Current jaw-contact RL is a controlled lift task; live cutting, ligation, bleeding and a complete appendectomy episode remain unimplemented. The separate cut-topology/GPU benchmark is not wired into the Isaac procedure.

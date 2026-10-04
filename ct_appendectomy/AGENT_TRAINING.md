@@ -1,0 +1,93 @@
+# Robot-agent RL interface
+
+The current task is **contact-based appendix grasp and lift**, with two actuator commands. It does not yet control a robot arm, trocar-constrained shaft, scissors, ligature or a full appendectomy. PhysX FEM and RTX run on the local GPU; the small PPO network runs on CPU to avoid GPU contention. There is no network server or external experiment tracker.
+
+## Run on this workstation
+
+Use the repository PowerShell launchers with the existing Isaac Python 3.11 installation. Close another Isaac simulator instance before starting to avoid sharing GPU memory between independent physics processes. EULA acceptance is inherited from the already configured installation.
+
+```powershell
+# Visible scripted agent: close, hold, lift, finish, reset, repeat.
+./run-agent.ps1 -Policy scripted -Episodes 0
+
+# Repeatable finite baselines.
+./run-agent.ps1 -Headless -Policy scripted -Episodes 3
+./run-agent.ps1 -Headless -Policy random -Episodes 3
+
+# PPO from random initialization; convergence is not guaranteed by this command.
+./run-agent.ps1 -Headless -TrainSteps 4096 -Episodes 3
+
+# Optional, explicitly labelled demonstration initialization, then real PPO updates.
+./run-agent.ps1 -Headless -TrainSteps 2048 -DemoWarmStart -Episodes 3
+
+# Deterministic evaluation of the saved learned network, with the Isaac window.
+./run-agent.ps1 -Policy checkpoint -Checkpoint out/ct_appendectomy/agent/policy.pt -Episodes 0
+
+# Resume network + Adam optimizer for additional PPO interactions.
+./run-agent.ps1 -Headless -Checkpoint out/ct_appendectomy/agent/policy.pt -TrainSteps 4096
+
+# Validate an RGB + state observation path with the baseline controller.
+./run-agent.ps1 -Headless -Policy scripted -Episodes 1 -RgbObservation
+```
+
+`-Prepare` rebuilds the current CT/atlas scene and prepares a fresh cooked forceps stage. Otherwise the saved stage/config are reused and their SHA-256 contract is checked. Changing assets invalidates incompatible checkpoints. The default prepared stage is `out/ct_appendectomy/suite/forceps/attached.usda`. The launcher also prepares assets if its configuration file is missing. Public CT/atlas data and the installed Isaac environment are prerequisites, not bundled with this repository.
+
+Use `-OutputDirectory out/ct_appendectomy/my_experiment` to keep separate run reports and checkpoints. Reusing the default output directory replaces its summary and latest trajectory; JSONL journals retain run IDs.
+
+`./build-launcher.ps1` also creates `RobotAgent.exe`, a terminal-free visible agent launcher. It replays `out/ct_appendectomy/agent/policy.pt` when present, otherwise uses the scripted baseline. Its panel shows policy, episode, step, return, tissue lift and base drift, and has a pause/resume button. A scripted demonstration is labelled `scripted`; it is not a learned network. An existing incompatible checkpoint causes an error rather than silent fallback.
+
+The panel's Scripted / Random / Learned buttons select the controller for the next episode. The current episode finishes normally before switching; its log retains the actual controller name. Closing the Isaac window stops the continuous demo.
+
+Local verification on 2026-10-04: the new executable compiled, but the Windows UI launcher returned `ShellExecuteW returned 5` twice. The new panel's visible interaction is therefore unverified. Headless Python execution, Gym registration, real PPO updates, checkpoint resume and RGB-observation rollouts were verified. This launch failure is not evidence that a GUI window opened.
+
+## Environment contract
+
+Import `agent_env` **after** initializing Isaac SimulationApp. This registers `RiiAppendixContactLift-v0` with Gymnasium:
+
+```python
+import gymnasium as gym
+import agent_env
+
+agent_env.bind_simulation_app(app)  # Keep Kit out of Gym's copied spec kwargs.
+env = gym.make(
+    agent_env.ENV_ID,
+    stage_path="out/ct_appendectomy/suite/forceps/attached.usda",
+    config_path="out/ct_appendectomy/suite/forceps/forceps_config.json",
+    observation_mode="state",  # or "rgb_state"
+)
+obs, info = env.reset(seed=42)
+while True:
+    action = policy(obs)  # float32 [jaw_increment, vertical_increment], each [-1, 1]
+    obs, reward, terminated, truncated, info = env.step(action)
+    if terminated or truncated:
+        obs, info = env.reset()
+```
+
+The two normalized actions increment jaw closure by 0.025 and tool height by 0.2 mm. Closure is bounded to [0,1], height to [0,16 mm]. One action advances 1/30 simulated second through four 1/120 physics steps. This is not a free six-degree-of-freedom manipulation task.
+
+State observations contain 14 float32 values, named by `STATE_NAMES`: two actuator commands, tissue-centroid displacement xyz, pin drift, tracking error, elapsed fraction, held fraction, reference displacement xyz, reference validity and reference command height. Positions are normalized by documented 1/4/10 mm scales in `agent_env.py`. This is a compact privileged observation, not the complete FEM state and not an image policy. `rgb_state` adds uint8 360×640×3 RGB as a dictionary entry; the bundled MLP trainer accepts state observations only. Rendering does not advance physics.
+
+Success requires ten held steps after closing and commanding at least 8 mm lift relative to the grasp reference, with tissue lift at least 6 mm and tracking error below 4 mm. The first upward action after closing records the tissue/command reference at the current height; opening below 0.5 clears it, allowing regrasp after exploration. Base drift over 1 mm, node displacement over 50 mm or an inverted tetrahedron ends the episode as `tissue_stability`. These are engineering gates, not clinical injury thresholds. The external 220-action budget produces `truncated=True`; success/failure produces `terminated=True`. Invalid actions are rejected, and a finished episode must reset before further actions.
+
+Reward is +5 on success, -5 on physical failure, -0.002 per action, plus potential shaping `0.99 * Phi(next) - Phi(current)`. Phi includes closure progress (0.25) and retained lift progress (0.75). Terminal Phi is zero; a time limit retains its bootstrap value. Use gamma 0.99 with this reward version. `info.is_success` and `termination_reason` determine outcomes; return alone is not a success test.
+
+## Learning and evidence
+
+The local PPO implementation uses tanh Gaussian actions, clipped policy updates, a value baseline, GAE, gradient clipping and separate masks for termination and truncation. See the [PPO paper](https://arxiv.org/abs/1707.06347) and [Gymnasium time-limit semantics](https://gymnasium.farama.org/tutorials/gymnasium_basics/handling_time_limits/). Optional behavior cloning collects one successful real simulator demonstration; its steps and loss are reported separately from PPO interaction counts.
+
+Outputs stay under ignored `out/ct_appendectomy/agent/`: `report.json`, episode/training JSONL, the latest action/observation trajectory, `latest_endoscope.png`, and `policy.pt`. Checkpoints contain network parameters, Adam state, environment contract, asset hashes and cumulative training steps. Loading uses `torch.load(weights_only=True)` and rejects a different environment or scene. Resume is a new episode with restored model/optimizer, not a bit-exact mid-episode continuation.
+
+A successful runner status means execution and contracts passed. It does **not** mean the policy succeeded: inspect evaluation successes and per-episode outcomes. Evaluation uses separate seeds, but anatomy is fixed and those seeds do not create distinct patients; PhysX may also have small numerical nondeterminism. Do not report a few episodes here as generalization, clinical skill or full-surgery competence.
+
+One SimulationApp owns one global USD stage. Multiple Gym instances in the same process are unsupported. Actual multi-environment throughput, image-policy learning, articulated robot control and anatomical domain randomization remain later work.
+
+## Recorded local results
+
+- Initial scripted interface: 3/3 successful episodes (the earlier 13-value observation contract).
+- Current 14-value registered interface: exact initial-state reset and render-state invariance, invalid-action rejection without mutation, and nonzero-height grasp-reference checks passed. Its 189-step demonstration succeeded.
+- Final PowerShell launcher regression on the 14-value interface: 1/1 scripted success, fresh successful report, and state/action/next-state trajectory export passed (`ct-agent-scripted-current.json`).
+- Demonstration-initialized PPO: 2,048 environment steps, eight updates, nonzero parameter change, saved checkpoint reload passed. Deterministic evaluation: **0/3 successes**, all time limits. Do not label this a competent learned controller.
+- RGB+state random rollout: 220 steps, correct truncation, no inverted tetrahedra.
+- Checkpoint resume: loaded the 2,048-step model/Adam state, performed another 256 steps and saved/reloaded the 2,304-step checkpoint. Evaluation: 0/1 successes.
+
+Evidence is in `validation/ct-agent-*.json`. The primary 2,048-step policy remains at `out/ct_appendectomy/agent/policy.pt`; the resume test writes a separate checkpoint under `out/ct_appendectomy/agent_resume` and does not overwrite it.
