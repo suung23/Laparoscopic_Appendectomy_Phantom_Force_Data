@@ -40,7 +40,7 @@ def main():
         import omni.usd
         from pxr import UsdGeom,UsdPhysics,PhysxSchema,Gf
         from isaacsim.core.api import SimulationContext
-        from isaacsim.core.prims import SingleArticulation,RigidPrim
+        from isaacsim.core.prims import SingleArticulation,RigidPrim,SingleRigidPrim
         from fr3_ct_scene import body,joint
         from mount_sensor_probe import evaluate_response
         from scipy.spatial.transform import Rotation
@@ -115,9 +115,32 @@ def main():
             sim.step(render=False)
         report['reset_seed']=a.reset_seed
         report['warmup_ticks']=480
+        joint_frames=[];arm_indices=[]
+        if a.robot_scene:
+            for i in range(1,8):
+                j=UsdPhysics.RevoluteJoint(stage.GetPrimAtPath(robot_path+'/fr3_joint'+str(i)))
+                parent=SingleRigidPrim(str(j.GetBody0Rel().GetTargets()[0]),name='joint_parent_'+str(i),reset_xform_properties=False)
+                parent.initialize()
+                local_rot=j.GetLocalRot0Attr().Get()
+                local_R=Rotation.from_quat([*local_rot.GetImaginary(),local_rot.GetReal()]).as_matrix()
+                local_axis=local_R@np.eye(3)['XYZ'.index(j.GetAxisAttr().Get())]
+                joint_frames.append((parent,np.asarray(j.GetLocalPos0Attr().Get(),float),local_axis))
+                arm_indices.append(robot.get_dof_index('fr3_joint'+str(i)))
+        def load_jacobian():
+            from static_load_check import point_jacobian
+            origins=[];axes=[]
+            for parent,origin,axis in joint_frames:
+                p,q=parent.get_world_pose();R=Rotation.from_quat(np.asarray(q)[[1,2,3,0]]).as_matrix()
+                origins.append(p+R@origin);axes.append(R@axis)
+            p,q=link.get_world_poses();R=Rotation.from_quat(np.asarray(q)[0,[1,2,3,0]]).as_matrix()
+            com,_=link.get_coms()
+            com=np.asarray(com)
+            if com.shape!=(1,1,3):raise ValueError('Unexpected center-of-mass tensor shape')
+            return point_jacobian(origins,axes,p[0]+R@com[0,0])
+        torque_response=[];torque_expected=[];torque_release=[]
         response=[];noise=[];release=[];trace=[];expected=[]
         for axis in range(3):
-            samples=[]
+            samples=[];efforts=[]
             for tick in range(480):
                 f=np.eye(3,dtype=np.float32)[axis]*(.1 if 120<=tick<360 else 0.)
                 link.apply_forces(f.reshape(1,3),is_global=True)
@@ -126,14 +149,26 @@ def main():
                 samples.append(force.copy())
                 trace.append(dict(axis=axis,tick=tick,force=force.tolist(),
                     speed_m_s=float(np.linalg.norm(link.get_linear_velocities()))))
+                if joint_frames:
+                    tau=np.asarray(robot.get_measured_joint_efforts(joint_indices=np.array(arm_indices)),float)
+                    efforts.append(tau)
+                    trace[-1]['projected_joint_torque_nm']=tau.tolist()
                 if tick==359:
                     _,q=link.get_world_poses()
                     R=Rotation.from_quat(np.asarray(q)[0,[1,2,3,0]]).as_matrix()
                     expected.append((R.T@(np.eye(3)[axis]*.1)).tolist())
+                    if joint_frames:torque_expected.append((-load_jacobian().T@(np.eye(3)[axis]*.1)).tolist())
             values=np.array(samples);baseline=values[88:120].mean(0)
             response.append((values[328:360].mean(0)-baseline).tolist())
             noise.append(float(np.linalg.norm(values[88:120]-baseline,axis=1).max()))
             release.append(float(np.linalg.norm(values[448:480].mean(0)-baseline)))
+            if efforts:
+                tau=np.array(efforts);tare=tau[88:120].mean(0)
+                torque_response.append((tau[328:360].mean(0)-tare).tolist())
+                torque_release.append((tau[448:480].mean(0)-tare).tolist())
+        if joint_frames:
+            from static_load_check import assess_torque
+            report['projected_torque_check']=assess_torque(torque_response,torque_expected,torque_release)
         report.update(evaluate_response(response,expected,release,noise),
             selected_row=row,trace=trace,physics_ticks=len(trace))
     except Exception as e:

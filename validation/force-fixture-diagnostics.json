@@ -596,6 +596,315 @@
       "physics_ticks": 1440,
       "trial": "force_fr3_no_atlas_gpu_v2",
       "report_sha256": "7c4482f870f1dc4cc102347e7da4f9f2a655d621a056141050d15c1db7da40fe"
+    },
+    {
+      "status": "error",
+      "gpu": true,
+      "gravity_m_s2": 0.0,
+      "robot_collisions": false,
+      "source_sha256": "4f537d5647abd96b6286bb56343096c0d33c0ba744b765a584c693d944d624a2",
+      "robot_scene_sha256": "01efecae6aaffa3f39ec48b76f396c085069ac202eabc8c631e3c17722883c97",
+      "surrounding_scene_retained": true,
+      "excluded_component": null,
+      "external_forces_every_iteration": false,
+      "reset_seed": true,
+      "warmup_ticks": 480,
+      "error": "matmul: Input operand 1 has a mismatch in its core dimension 0, with gufunc signature (n?,k),(k,m?)->(n?,m?) (size 1 is different from 3)",
+      "trial": "force_fr3_torque_full_v1",
+      "report_sha256": "15b1113ebddcccb49e799262e56ee1ae05ac65a045c84416067c60338be23810"
+    },
+    {
+      "status": "failed",
+      "gpu": true,
+      "gravity_m_s2": 0.0,
+      "robot_collisions": false,
+      "source_sha256": "9df714df80e0dedb90dc71ef3c457dcb0e5be496c04c7d81c6c50a27a8c71b22",
+      "robot_scene_sha256": "01efecae6aaffa3f39ec48b76f396c085069ac202eabc8c631e3c17722883c97",
+      "surrounding_scene_retained": true,
+      "excluded_component": null,
+      "external_forces_every_iteration": false,
+      "reset_seed": true,
+      "warmup_ticks": 480,
+      "response_sign": -1,
+      "vector_error_n": [
+        0.04122966767641561,
+        0.014039380816809527,
+        0.04662729504436584
+      ],
+      "response_local_n": [
+        [
+          0.03909093886613846,
+          0.031352799385786057,
+          -0.039472855627536774
+        ],
+        [
+          0.034912630915641785,
+          0.007514249067753553,
+          0.08748740702867508
+        ],
+        [
+          -0.03815547376871109,
+          0.034620583057403564,
+          0.022044098004698753
+        ]
+      ],
+      "expected_local_n": [
+        [
+          -0.06182109577468989,
+          -0.0655244165644668,
+          0.04341316564249664
+        ],
+        [
+          -0.04818211182257195,
+          -0.01204696619037656,
+          -0.08679490022993919
+        ],
+        [
+          0.062101865769509816,
+          -0.07457495455610222,
+          -0.024123316954786145
+        ]
+      ],
+      "release_residual_n": [
+        2.2539266286702997e-10,
+        5.1325325933770927e-11,
+        2.782871710849122e-08
+      ],
+      "baseline_noise_n": [
+        4.095809025272956e-09,
+        3.4200040577303525e-09,
+        3.413714866340456e-09
+      ],
+      "tolerance_n": 0.005,
+      "selected_row": 8,
+      "physics_ticks": 1440,
+      "trial": "force_fr3_torque_full_v2",
+      "report_sha256": "0fb88941512a71cbd701c06b7079de7534cf3854fc4ad9c4c921abc7312637c7",
+      "projected_torque_check": {
+        "status": "failed",
+        "error_nm": [
+          0.06084668388523982,
+          0.06038901281224253,
+          0.10139797072474978
+        ],
+        "tolerance_nm": [
+          0.0006562634873604625,
+          0.000368176525458244,
+          0.0006130600353653368
+        ],
+        "release_error_nm": [
+          7.359819849104801e-08,
+          2.9416029527249693e-08,
+          2.738183746827147e-07
+        ],
+        "measured_nm": [
+          [
+            -0.03310363116765558,
+            -0.0074202903902858,
+            -0.046117117288147824,
+            0.06287487763843913,
+            0.0011059608698173462,
+            4.660628625474672e-06,
+            -4.490293239599535e-09
+          ],
+          [
+            -0.004470858684769041,
+            0.038242034345984166,
+            -0.0053657501654527096,
+            0.032458476477970066,
+            0.00047613793475372035,
+            -9.853742914955887e-07,
+            -4.031651034764797e-09
+          ],
+          [
+            -0.037608182208533236,
+            -0.02787903247349277,
+            -0.05036755181450303,
+            -0.1058331612366068,
+            -0.0010537049949929517,
+            1.1918593576965009e-05,
+            1.9989645813968426e-09
+          ]
+        ],
+        "expected_nm": [
+          [
+            -0.0201093755260278,
+            -0.0173649823240285,
+            -0.01120136740047869,
+            0.04195932673952937,
+            -0.028133567763071483,
+            0.030386422579676525,
+            2.9865411109955555e-06
+          ],
+          [
+            -0.0036918371736258566,
+            0.023506382952877044,
+            -0.002058424330481725,
+            -0.024251032903513402,
+            -0.005163580779183873,
+            0.013051726447317122,
+            -6.40946556169919e-07
+          ],
+          [
+            -0.022906363973173006,
+            0.011456985801246086,
+            -0.012761758608714681,
+            -0.03293225642223701,
+            -0.03203817939098959,
+            -0.028785778466162745,
+            7.68509879665591e-06
+          ]
+        ],
+        "scope": "Analytical virtual-work reference versus projected joint-force API; not independent force sensing"
+      },
+      "label_correction": "Original report called this drive/independent torque. Installed API uses get_dof_projected_joint_forces, which shares the reaction pipeline."
+    },
+    {
+      "status": "passed",
+      "gpu": true,
+      "gravity_m_s2": 0.0,
+      "robot_collisions": false,
+      "source_sha256": "9df714df80e0dedb90dc71ef3c457dcb0e5be496c04c7d81c6c50a27a8c71b22",
+      "robot_scene_sha256": "01efecae6aaffa3f39ec48b76f396c085069ac202eabc8c631e3c17722883c97",
+      "surrounding_scene_retained": true,
+      "removed_dependent_attachments": 8,
+      "excluded_component": "/World/Atlas",
+      "external_forces_every_iteration": false,
+      "reset_seed": true,
+      "warmup_ticks": 480,
+      "response_sign": -1,
+      "vector_error_n": [
+        2.8429908473513028e-08,
+        3.0709287870943466e-08,
+        3.789552424073107e-08
+      ],
+      "response_local_n": [
+        [
+          0.06182108074426651,
+          0.06552440673112869,
+          -0.04341314360499382
+        ],
+        [
+          0.048182085156440735,
+          0.012046977877616882,
+          0.0867948904633522
+        ],
+        [
+          -0.06210183724761009,
+          0.07457494735717773,
+          0.024123340845108032
+        ]
+      ],
+      "expected_local_n": [
+        [
+          -0.06182109577468989,
+          -0.0655244165644668,
+          0.04341316564249664
+        ],
+        [
+          -0.04818211182257195,
+          -0.01204696619037656,
+          -0.08679490022993919
+        ],
+        [
+          0.062101865769509816,
+          -0.07457495455610222,
+          -0.024123316954786145
+        ]
+      ],
+      "release_residual_n": [
+        7.767683385395685e-09,
+        2.1960511187302245e-09,
+        1.839841701212208e-08
+      ],
+      "baseline_noise_n": [
+        4.758562965889723e-08,
+        3.9501898640992295e-08,
+        4.019876342908901e-08
+      ],
+      "tolerance_n": 0.005,
+      "selected_row": 8,
+      "physics_ticks": 1440,
+      "trial": "force_fr3_torque_no_atlas_v1",
+      "report_sha256": "dfa04b7fe27aa26f71c4c01e0304c767701ac8d25e790f6a486922f82f96a39e",
+      "projected_torque_check": {
+        "status": "passed",
+        "error_nm": [
+          1.3007021112830106e-07,
+          1.9584253307707903e-07,
+          6.089252984783205e-07
+        ],
+        "tolerance_nm": [
+          0.0006562634873604625,
+          0.000368176525458244,
+          0.0006130600353653368
+        ],
+        "release_error_nm": [
+          1.6912594791508714e-07,
+          3.802427931835453e-08,
+          6.545219080120606e-07
+        ],
+        "measured_nm": [
+          [
+            -0.020109402584438385,
+            -0.017364933991586895,
+            -0.011201372596023162,
+            0.04195921006200365,
+            -0.02813356521655308,
+            0.030386409578966322,
+            2.9923665221254225e-06
+          ],
+          [
+            -0.0036918339389160337,
+            0.02350648708357994,
+            -0.002058422095380763,
+            -0.024251197090819687,
+            -0.005163591583702498,
+            0.013051705984571171,
+            -6.39302685012666e-07
+          ],
+          [
+            -0.0229063301638206,
+            0.011457541424988449,
+            -0.01276175118281131,
+            -0.032932501335324105,
+            -0.032038150416887845,
+            -0.0287857751335725,
+            7.678692960366718e-06
+          ]
+        ],
+        "expected_nm": [
+          [
+            -0.0201093755260278,
+            -0.0173649823240285,
+            -0.01120136740047869,
+            0.04195932673952937,
+            -0.028133567763071483,
+            0.030386422579676525,
+            2.9865411109955555e-06
+          ],
+          [
+            -0.0036918371736258566,
+            0.023506382952877044,
+            -0.002058424330481725,
+            -0.024251032903513402,
+            -0.005163580779183873,
+            0.013051726447317122,
+            -6.40946556169919e-07
+          ],
+          [
+            -0.022906363973173006,
+            0.011456985801246086,
+            -0.012761758608714681,
+            -0.03293225642223701,
+            -0.03203817939098959,
+            -0.028785778466162745,
+            7.68509879665591e-06
+          ]
+        ],
+        "scope": "Analytical virtual-work reference versus projected joint-force API; not independent force sensing"
+      },
+      "label_correction": "Original report called this drive/independent torque. Installed API uses get_dof_projected_joint_forces, which shares the reaction pipeline."
     }
   ],
   "interpretation": "Simple fixture and isolated FR3 pass. Full scene fails even at zero gravity. Removing Atlas and its eight dependent attachments restores the measured response. External-force-every-iteration produces near-zero reported response and is not a remedy.",
@@ -604,7 +913,7 @@
     "scope": "User-reported related GPU/particle-system issue in older releases; not confirmation of the cause or fix in this runtime"
   },
   "remaining": [
-    "Confirm causal scene/solver setting with matched clean repeats",
+    "Separate actual dynamics from reaction reporting using a state-based known-load check or an independently instrumented solver",
     "Verify full task under gravity, tissue contact, multiple force magnitudes and poses",
     "Only then assess dynamic tissue attachment reaction and fit measured material data"
   ]

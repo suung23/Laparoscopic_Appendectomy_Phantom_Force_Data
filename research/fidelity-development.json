@@ -64,10 +64,13 @@
     "Full incoming-joint reactions confirm selected tool_mount index; cause of force error still unresolved",
     "Isolated known-load fixture passes CPU/GPU; isolated FR3 also passes including task joint initialization",
     "Full-scene zero-gravity test reproduces 14-47 mN errors; removing Atlas plus dependent constraints restores accurate known-load response",
-    "TGS external-forces-every-iteration test rejected: reported force response becomes near zero"
+    "TGS external-forces-every-iteration test rejected: reported force response becomes near zero",
+    "Added analytic revolute-joint virtual-work reference at the live shaft center of mass; coordinate invariance checked",
+    "Projected torque output fails in full scene (0.060-0.101 Nm vector error) and passes without Atlas (below 0.000001 Nm)",
+    "Inspected installed API: measured joint efforts project the same reaction pipeline, so this is not independent sensing; original trial labels corrected in evidence index"
   ],
   "next_actions": [
-    "Separate deformation/attachment effects on reaction reporting; implement an independent generalized-torque load check and compare to known applied force before tissue calibration",
+    "Separate actual dynamics from reaction reporting using a state-based known-load test or independently instrumented solver; do not substitute projected joint efforts for a calibrated sensor",
     "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",
