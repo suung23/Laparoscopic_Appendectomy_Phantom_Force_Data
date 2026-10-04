@@ -1,0 +1,20 @@
+{
+  "status": "failed",
+  "error": "zero-size array to reduction operation minimum which has no identity",
+  "conforming_topology": {
+    "nodes": 3530,
+    "tetrahedra": 11257,
+    "duplicate_tetrahedra": 0,
+    "nonmanifold_faces": 0
+  },
+  "tissue_health": {
+    "tetrahedra": 11257,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 0,
+    "minimum_signed_volume_ratio": 0.0024960326174175676,
+    "median_volume_ratio": 1.0002494626859915,
+    "total_absolute_volume_ratio": 1.000562301618172,
+    "p99_absolute_volume_change": 0.14049277221743373
+  },
+  "finding": "Conforming mode left separate collision mesh empty. Next trial binds CollisionAPI to simulation tet mesh. Physics warnings remain unresolved."
+}

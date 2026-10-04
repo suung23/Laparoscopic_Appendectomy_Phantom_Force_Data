@@ -116,9 +116,10 @@ try:
     if a.physics:
         from omni.physx.scripts import deformableUtils as du
         body='/World/Atlas/appendix'
+        collision_path=body+('/sim' if a.conforming_simulation else '/coll')
         if not hasattr(du,'create_auto_volume_deformable_hierarchy'):
             raise RuntimeError('Required volume deformable API unavailable; no rigid fallback')
-        ok=du.create_auto_volume_deformable_hierarchy(stage,body,body+'/sim',body+'/coll',body+'/render',
+        ok=du.create_auto_volume_deformable_hierarchy(stage,body,body+'/sim',collision_path,body+'/render',
             simulation_hex_mesh_enabled=not a.conforming_simulation,cooking_src_simplification_enabled=False,
             set_visibility_with_guide_purpose=True)
         if not ok: raise RuntimeError('PhysX deformable authoring failed')
@@ -129,7 +130,7 @@ try:
             prim.CreateAttribute('physxDeformableBody:linearDamping',Sdf.ValueTypeNames.Float).Set(.1)
         # Explicit surgical-scale margins: auto-selected offsets are unsuitable
         # for millimetre jaws and can push tissue before physical contact.
-        tissue_collision=PhysxSchema.PhysxCollisionAPI.Apply(stage.GetPrimAtPath(body+'/coll'))
+        tissue_collision=PhysxSchema.PhysxCollisionAPI.Apply(stage.GetPrimAtPath(collision_path))
         tissue_collision.CreateContactOffsetAttr(.0005)
         tissue_collision.CreateRestOffsetAttr(0.)
         report['tissue_collision_offsets_m']={'contact':.0005,'rest':0.}
@@ -137,7 +138,7 @@ try:
             poissons_ratio=.45,dynamic_friction=.5,static_friction=.5)
         UsdShade.MaterialBindingAPI.Apply(prim).Bind(UsdShade.Material.Get(stage,'/World/TissueMaterial'),
             UsdShade.Tokens.weakerThanDescendants,'physics')
-        UsdGeom.Imageable(stage.GetPrimAtPath(body+'/coll')).CreateVisibilityAttr().Set('invisible')
+        UsdGeom.Imageable(stage.GetPrimAtPath(collision_path)).CreateVisibilityAttr().Set('invisible')
         physics=UsdPhysics.Scene.Define(stage,'/World/physicsScene')
         physics.CreateGravityMagnitudeAttr(0.)
         gpu=PhysxSchema.PhysxSceneAPI.Apply(physics.GetPrim())
@@ -258,7 +259,7 @@ try:
     if bimanual:
         report['bimanual_physics']={'hex_resolution':64,'physics_dt_s':1/480,'control_dt_s':1/60}
         np.savez_compressed(a.out/'settled_geometry.npz',simulation=bimanual.points(),
-            collision=np.asarray(stage.GetPrimAtPath(body+'/coll').GetAttribute('points').Get()))
+            collision=np.asarray(stage.GetPrimAtPath(collision_path).GetAttribute('points').Get()))
     if a.bimanual_demo:
         from bimanual_demo import run as run_bimanual_demo
         report['bimanual_demo']=run_bimanual_demo(bimanual,simulation,rep,rgb,a.out)
@@ -304,7 +305,7 @@ try:
         if a.explore_cavity:
             floor=cavity['posterior_support_y_m']
             penetration=float(max(0.,floor-final[:,1].min()))
-            collision_points=np.asarray(stage.GetPrimAtPath(body+'/coll').GetAttribute('points').Get(),dtype=float)
+            collision_points=np.asarray(stage.GetPrimAtPath(collision_path).GetAttribute('points').Get(),dtype=float)
             surface_penetration=float(max(0.,floor-collision_points[:,1].min()))
             near=int(np.count_nonzero(np.abs(final[:,1]-floor)<.0015))
             report['mode']='supine cavity exploration with Rosota CAD'
