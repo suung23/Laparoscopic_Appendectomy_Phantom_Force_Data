@@ -1,0 +1,5 @@
+# Preserve exact upstream bytes for SOURCE_MANIFEST.json verification.
+* -text
+*.stl binary
+*.ply binary
+*.npz binary

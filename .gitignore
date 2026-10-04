@@ -1,0 +1,17 @@
+.cache/
+__pycache__/
+*.pyc
+.venv*/
+assets/
+out/
+validation/*.npz
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+*-transfer.json
+private-asset-downloads.json
+*.log

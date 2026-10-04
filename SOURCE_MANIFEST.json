@@ -1,0 +1,217 @@
+{
+  "repository": "Rosota-Research/Rosota-Simulator",
+  "commit": "9135fe9eb8549d011124c8c57b7c86edeaaba735",
+  "snapshot": "partial; not a git clone",
+  "files": [
+    {
+      "path": "APPENDECTOMY_TASK.md",
+      "sha": "8e838283a9d3167d9d2c7a128fcc31a0e08b76ea",
+      "size": 22849
+    },
+    {
+      "path": "README.md",
+      "sha": "822dba198d0065f3c357f36c3f609b10fa40930e",
+      "size": 9144
+    },
+    {
+      "path": "isaac/build_deformable_usd.py",
+      "sha": "22cd57c9a689b2d949245390f708006e39bbeb77",
+      "size": 30901
+    },
+    {
+      "path": "isaac/build_surgical_cell.py",
+      "sha": "bc9a3bb3ad5502a430bfca2f7454ad670afa36d8",
+      "size": 167821
+    },
+    {
+      "path": "isaac/laparo_control.py",
+      "sha": "ce6c59f25a26548021f35a023cd243bce76e2f8d",
+      "size": 57180
+    },
+    {
+      "path": "isaac/laparo_ik.py",
+      "sha": "9c7abfd8c9f379de596d45364670a5de927c8a11",
+      "size": 25417
+    },
+    {
+      "path": "isaac/start_pose.py",
+      "sha": "07dc38e535762cee16243880e0c3cd6eab8215ea",
+      "size": 21059
+    },
+    {
+      "path": "isaac/trocar.py",
+      "sha": "9e5ef488b29478ede56838053ded7ecf890c3ab5",
+      "size": 11525
+    },
+    {
+      "path": "isaac/vla_env.py",
+      "sha": "b9e4166ae7396bb867ab98dc6ce4b7f8faa190c7",
+      "size": 144349
+    },
+    {
+      "path": "isaac/vla_rollout.py",
+      "sha": "8d14c0ddda883e9f5c8e146374c7c5a37025000c",
+      "size": 32150
+    },
+    {
+      "path": "mesh/organ_appendix.ply",
+      "sha": "732ed1c15c84eea8e219a0e4283e7b48cafdd7ea",
+      "size": 70722
+    },
+    {
+      "path": "mesh/organ_bowel1.ply",
+      "sha": "b04e07b7ba787620be8ec05934da3a4228f0208a",
+      "size": 67194
+    },
+    {
+      "path": "mesh/organ_bowel2.ply",
+      "sha": "d850f7314962f8b2b71441175420c5ef2b25afcb",
+      "size": 26957
+    },
+    {
+      "path": "mesh/organ_bowel3.ply",
+      "sha": "2fff8cbd5b304400a59d9cb2ec3f2a3fc4516c03",
+      "size": 53502
+    },
+    {
+      "path": "mesh/organ_cecum.ply",
+      "sha": "6b1eb55a8ceac6810bc7ada054373f882abcee27",
+      "size": 110874
+    },
+    {
+      "path": "mesh/organ_stomach.ply",
+      "sha": "a032fedd08b7703b14088c9e690352a90e7b1a62",
+      "size": 30485
+    },
+    {
+      "path": "newton_cell/README.md",
+      "sha": "8e1a979a2f71838e6d50f3de06c17c33c907e578",
+      "size": 20391
+    },
+    {
+      "path": "newton_cell/arms.py",
+      "sha": "38f362fbe10e7702992b7c0f09c64b624bd44b08",
+      "size": 13665
+    },
+    {
+      "path": "newton_cell/cameras.py",
+      "sha": "c46ab05a227e6afd24cd24634341c8651f54df5d",
+      "size": 10072
+    },
+    {
+      "path": "newton_cell/cell_spec.py",
+      "sha": "ee8324fdee2f92cd96628c83083ef6c9182e07d6",
+      "size": 16436
+    },
+    {
+      "path": "newton_cell/eval.py",
+      "sha": "b741df142ab772a85db409a8c78a775b48edf136",
+      "size": 3263
+    },
+    {
+      "path": "newton_cell/forces.py",
+      "sha": "b600dac9a06761153271390e44d7215fba7fdead",
+      "size": 5750
+    },
+    {
+      "path": "newton_cell/fr3_urdf.py",
+      "sha": "359ba3ada9f383d6246371fc5be38b14a08e5efa",
+      "size": 10187
+    },
+    {
+      "path": "newton_cell/grasp.py",
+      "sha": "b11c82019b2b99170435ddb53d6272554d05323c",
+      "size": 4824
+    },
+    {
+      "path": "newton_cell/layout.py",
+      "sha": "4896ef6000ed80e2b6b1893ae8332d96bd367136",
+      "size": 13655
+    },
+    {
+      "path": "newton_cell/render.py",
+      "sha": "147ccbeb490cc04ca173b1f0c8dab04d286f238b",
+      "size": 18706
+    },
+    {
+      "path": "newton_cell/rollout.py",
+      "sha": "c2613942d42f706d499ea4ed0d0e4e935f5fdae4",
+      "size": 5218
+    },
+    {
+      "path": "newton_cell/scene.py",
+      "sha": "324558d7fe70ebf785fba61f1f88db852897b111",
+      "size": 24956
+    },
+    {
+      "path": "newton_cell/sim.py",
+      "sha": "cd742c615b4800b86faa18d77be9dd7627920217",
+      "size": 11776
+    },
+    {
+      "path": "newton_cell/tool_urdf.py",
+      "sha": "b3cda17353bb2c32d8b9617b4d0a14c1dd594fe7",
+      "size": 14206
+    },
+    {
+      "path": "newton_cell/urdf_meshes.py",
+      "sha": "eb288db179541b41241a19fc423fced7d95f98e5",
+      "size": 5151
+    },
+    {
+      "path": "newton_cell/view.py",
+      "sha": "2facbedb742bf4920d6c59408062a8f5ebcc37be",
+      "size": 21555
+    },
+    {
+      "path": "newton_cell/vla_env.py",
+      "sha": "8d87e294ea88d57743d674367cdd87466a0a2850",
+      "size": 21818
+    },
+    {
+      "path": "sim/rollout_viewer.py",
+      "sha": "81445035af157fc0407a9d815e03e586e9034f8f",
+      "size": 10441
+    },
+    {
+      "path": "sim/scene.py",
+      "sha": "cc00f618bb5505b91c1c09255f9663b7d2acb362",
+      "size": 15684
+    },
+    {
+      "path": "tet/appendix.npz",
+      "sha": "406cdaa4231b2190f051777191b3b6ac7dda0b1a",
+      "size": 197568
+    },
+    {
+      "path": "tet/bowel1.npz",
+      "sha": "8210ad84ad0c4e1fdcdd73bee224fdcf6bec6cd8",
+      "size": 197524
+    },
+    {
+      "path": "tet/bowel2.npz",
+      "sha": "c3b58bb9c9a3a4d3aa279e87060acb7e27c111b8",
+      "size": 74872
+    },
+    {
+      "path": "tet/bowel3.npz",
+      "sha": "b8d663e03865ea8a76ed617c8d27dd0cccf0b021",
+      "size": 153596
+    },
+    {
+      "path": "tet/cecum.npz",
+      "sha": "b2611e1b2eff8b2cf3ca5121ba819ceb427c1700",
+      "size": 349544
+    },
+    {
+      "path": "tet/stomach.npz",
+      "sha": "671e5aa5f2b71b767c9165c9f3f4e075b9966532",
+      "size": 84384
+    },
+    {
+      "path": "phantom.stl",
+      "sha": "df88090b8acf645ae9c973a75046669fc3b8f0cf",
+      "size": 19385600
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "scope": "tissue-only rest stability; no instruments, rendering, cutting, or clinical validation",
+  "upstream_commit": "9135fe9eb8549d011124c8c57b7c86edeaaba735",
+  "upstream_hashes_verified": 42,
+  "device": "NVIDIA GeForce RTX 4090",
+  "python": "3.12.14",
+  "versions": {
+    "newton": "1.4.0",
+    "warp-lang": "1.15.0",
+    "numpy": "2.5.3",
+    "trimesh": "5.1.1",
+    "scipy": "1.18.1"
+  },
+  "particles": 11962,
+  "tetrahedra": 43956,
+  "solver": "SolverVBD",
+  "iterations": 10,
+  "substeps": 8,
+  "self_contact": false,
+  "mass_floor_ratio": 0.25,
+  "frames": 120,
+  "sim_seconds": 2.0,
+  "wall_seconds_including_kernel_compile": 17.330979199992726,
+  "finite": true,
+  "pinned_max_drift_mm": 0.0,
+  "final_max_speed_m_s": 0.0052046142518520355,
+  "orientation_flipped_tetrahedra": 0,
+  "organs": {
+    "cecum": {
+      "mean_displacement_mm": 0.024797840043902397,
+      "max_displacement_mm": 0.15884025394916534
+    },
+    "bowel1": {
+      "mean_displacement_mm": 0.020448606461286545,
+      "max_displacement_mm": 0.21422076225280762
+    },
+    "bowel2": {
+      "mean_displacement_mm": 0.00028948960243724287,
+      "max_displacement_mm": 0.018537523224949837
+    },
+    "bowel3": {
+      "mean_displacement_mm": 0.02897750586271286,
+      "max_displacement_mm": 0.26874813437461853
+    },
+    "stomach": {
+      "mean_displacement_mm": 0.024057015776634216,
+      "max_displacement_mm": 0.1269991546869278
+    },
+    "appendix": {
+      "mean_displacement_mm": 2.21891450881958,
+      "max_displacement_mm": 5.296423435211182
+    }
+  },
+  "criteria": {
+    "finite": true,
+    "pin_drift_below_mm": 0.001,
+    "final_speed_below_m_s": 0.05,
+    "orientation_flips": 0
+  },
+  "passed": true
+}

@@ -1,0 +1,36 @@
+# RII laparoscopic simulator
+
+이 폴더가 현재 개발 기준 저장소입니다. C:의 기존 작업 위치를 유지합니다.
+D: 이전 및 권한 변경 시도는 중단했습니다.
+
+## 파일 안내
+
+- `LOCAL_STATUS.md`: 실제 검증 범위, 제한 사항, 남은 개발 단계
+- `validate-local.ps1`: 로컬 GPU 조직 안정성 검증 실행
+- `local_validation/`: 로컬 검증 코드
+- `validation/tissue-baseline.json`: 기존 RTX 4090 검증 결과
+- `SOURCE_MANIFEST.json`: 원본 커밋 및 42개 파일 해시
+- `LOCAL_ENVIRONMENT.txt`: 실행 환경 패키지 버전
+- `LOCAL_DEPENDENCY_LICENSES.json`: 의존성 라이선스 메타데이터
+- `isaac/`, `newton_cell/`, `sim/`: 원본 시뮬레이션 코드
+- `mesh/`, `tet/`, `phantom.stl`: 확보한 원본 기하 자산
+- `README.md`, `APPENDECTOMY_TASK.md`: 원본 저장소 문서
+
+## 실행
+
+이 폴더에서 PowerShell로 `./validate-local.ps1`을 실행합니다.
+다른 Python 환경을 사용할 경우 `-Python <python.exe 경로>`를 지정합니다.
+현재 기본 환경은 작업 루트의 `work/venv`이며 Git에 포함하지 않습니다.
+
+이 저장소는 부분 스냅샷입니다. 조직 안정성 검증을 통과했으나
+전체 로봇·내시경 영상·물리 절단을 검증한 완성 시뮬레이터는 아닙니다.
+원본 데이터와 문서의 출처 및 권리는 그대로 유지합니다.
+
+## 주변 작업과 구분
+
+같은 `outputs` 아래의 `appendectomy_lab`은 CT/해부학 뷰어,
+`laparo_rl`은 초기 MuJoCo 실험입니다. 이 저장소와 별도로 보존합니다.
+SSH 키, 임시 다운로드 파일, 캐시 및 가상환경은 이 저장소에 포함하지 않습니다.
+
+GitHub 비공개 저장소: https://github.com/Rosota-Intelligence-Institute/rii-laparoscopic-simulator
+이번 정리는 로컬 커밋이며 원격 업로드는 수행하지 않습니다.
