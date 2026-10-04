@@ -37,6 +37,9 @@ class BimanualEnv(gym.Env):
         if self.config['version'] != 1: raise ValueError('Unsupported asset version')
         if hashlib.sha256(self.stage_path.read_bytes()).hexdigest() != self.config['stage_sha256']:
             raise ValueError('Stage/config mismatch')
+        self.physics_dt=float(self.config['physics_dt'])
+        if self.physics_dt not in (1/480,1/960,1/1920):
+            raise ValueError('Unvalidated physics time-step profile')
         self.action_space = spaces.Box(-1., 1., (10,), np.float32)
         # joints/held 12, mouth-to-target 6, patch displacement 6, goal 1,
         # selected-patch ownership 2, task one-hot 3, remaining time 1.
@@ -69,7 +72,7 @@ class BimanualEnv(gym.Env):
         omni.usd.get_context().open_stage(str(self.stage_path.resolve()))
         for _ in range(30): self.app.update()
         stage = omni.usd.get_context().get_stage()
-        self.sim = SimulationContext(stage_units_in_meters=1., physics_dt=1/480, rendering_dt=1/60)
+        self.sim = SimulationContext(stage_units_in_meters=1., physics_dt=self.physics_dt, rendering_dt=1/60)
         for prim in stage.Traverse():
             if prim.IsA(UsdPhysics.Scene):
                 physics = UsdPhysics.Scene(prim)

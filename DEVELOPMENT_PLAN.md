@@ -89,3 +89,21 @@ tet inversion). RGB 읽기에 따른 FEM 좌표 변화 0, 제어 step p50 약 61
 30 Hz 목표 미달이다. 관련 단위 검사 11개가 통과했다. 이 결과는
 `validation/ct-bimanual-multitask.json`에 기록하며 M4/M5 전체 합격으로
 표시하지 않는다.
+
+## 양팔·내시경 탐색과 Newton 접촉 후보
+
+`ExplorationEnv`에 16-action(양팔 10 + scope 6), 42-state 및 RGB 관측을
+구현했다. 기하 기반 제어기는 충수 주변 7개 paired tool-tip 목표를 모두
+방문했고 양팔 끝단이 각각 9.07 mm 이동했다. 내시경도 함께 움직였으며
+FEM 뒤집힘은 관측되지 않았다. 실제 PPO 256-step 업데이트와 checkpoint
+로드를 검사했으나 학습 정책은 초기 목표만 방문하고 시간 초과했다.
+
+Newton 1.4 CUDA VBD의 별도 5,940-tet atlas 접촉 시험은 960 Hz / 32 iterations
+설정에서 접촉 활성·비활성 모두 뒤집힘 0으로 통과했다. 기본 설정 및
+CUDA Graph 재생은 실패하여 채택하지 않았다. 구형 도구 coupon 결과이며
+실제 CAD 집게나 Isaac 장면에 통합된 엔진이라고 표현하지 않는다.
+Isaac의 960 Hz / 128 iterations CAD 접촉 과제 역시 실패했다.
+
+근거: `validation/ct-exploration-physics.json`, 실행법:
+`ct_appendectomy/EXPLORATION.md`. 복강 전체 충돌 회피, 시각 기반 탐색,
+다환자 일반화, 전체 수술 및 SOTA 성능은 여전히 미검증이다.

@@ -1,0 +1,326 @@
+{
+  "status": "partial_not_SOTA_or_surgical_validation",
+  "date": "2026-10-04",
+  "exploration_reference": {
+    "status": "passed",
+    "policy": "reactive geometric coverage planner",
+    "learned_policy": false,
+    "success": true,
+    "failure": "",
+    "coverage": 1.0,
+    "visited": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "target_index": 2,
+    "tool_excursion_m": [
+      0.009073044954959846,
+      0.009073044954959857
+    ],
+    "camera_changed": true,
+    "coverage_type": "paired tool-tip workspace targets",
+    "full_cavity_collision_validated": false,
+    "steps": 259,
+    "frames": 23,
+    "fps": 5.0,
+    "control_step_p50_ms": 71.18670002091676,
+    "control_step_p95_ms": 77.24676000361796,
+    "tissue_health": {
+      "tetrahedra": 29490,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.6427149073354519,
+      "median_volume_ratio": 1.0062069188487095,
+      "total_absolute_volume_ratio": 1.0058425372417887,
+      "p99_absolute_volume_change": 0.11266365567991168
+    },
+    "seed": 42,
+    "engine": "Isaac Sim 5.1 / PhysX GPU",
+    "action_dimensions": 16,
+    "state_dimensions": 42
+  },
+  "exploration_ppo": {
+    "status": "failed",
+    "policy": "PPO",
+    "learned_policy": true,
+    "success": false,
+    "failure": "",
+    "coverage": 0.14285714285714285,
+    "visited": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "target_index": 3,
+    "tool_excursion_m": [
+      0.028900328769595675,
+      0.010986163698481315
+    ],
+    "camera_changed": true,
+    "coverage_type": "paired tool-tip workspace targets",
+    "full_cavity_collision_validated": false,
+    "steps": 600,
+    "frames": 51,
+    "fps": 5.0,
+    "control_step_p50_ms": 63.43219999689609,
+    "control_step_p95_ms": 65.84389500058023,
+    "tissue_health": {
+      "tetrahedra": 29490,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.6428870663736906,
+      "median_volume_ratio": 1.006160431486088,
+      "total_absolute_volume_ratio": 1.0059335047548035,
+      "p99_absolute_volume_change": 0.11259438471161463
+    },
+    "seed": 42,
+    "engine": "Isaac Sim 5.1 / PhysX GPU",
+    "action_dimensions": 16,
+    "state_dimensions": 42
+  },
+  "training": {
+    "env_id": "RosotaExploration-v1",
+    "observations": 42,
+    "actions": 16,
+    "task": "local_exploration",
+    "stage_sha256": "30617828e628f577943de88c6d680ee57288336b1704b2a81e18ff8785ae46ac",
+    "config_sha256": "4244a0c3e50074691ba8975123b8bf53d7ecffc159fc372390f7dc6c6044f296",
+    "environment_sha256": "4bfee8a7038d808173ec9fc48852477770d26063ffdd2a66565ae6ff44d8083d",
+    "gamma": 0.99,
+    "grasp_assist": true,
+    "episode_limit": 600,
+    "exploration_sha256": "a3b01a93c72fa5011e0ac05372a9dc3cf1d7cda1b58373990a878bab31aabbfc",
+    "seed": 10000,
+    "trained_steps": 256,
+    "parameter_change_l2": 0.21315403282642365,
+    "updates": [
+      {
+        "step": 256,
+        "loss_mean": -0.03593819396337494,
+        "gradient_norm_max": 3.647644519805908
+      }
+    ],
+    "episodes": []
+  },
+  "video_checks": {
+    "reference": {
+      "status": "passed",
+      "decoded_frames": 23,
+      "size": [
+        640,
+        360
+      ],
+      "fps": 5.0,
+      "nominal_sampling_fps": 5.0,
+      "simulated_seconds": 4.316666666666666,
+      "policy": "reactive geometric coverage planner",
+      "learned_policy": false
+    },
+    "ppo": {
+      "status": "passed",
+      "decoded_frames": 51,
+      "size": [
+        640,
+        360
+      ],
+      "fps": 5.0,
+      "nominal_sampling_fps": 5.0,
+      "simulated_seconds": 10.0,
+      "policy": "PPO",
+      "learned_policy": true,
+      "evaluation_status": "failed"
+    }
+  },
+  "newton_default_failed": {
+    "status": "failed",
+    "engine": "Newton 1.4.0 / Warp CUDA VBD",
+    "scope": "dual spherical contact coupon",
+    "isaac_integrated": false,
+    "cad_jaws": false,
+    "nodes": 1614,
+    "tetrahedra": 5940,
+    "source_sha256": "1706f6459b47735bd3f32f0f7597f0d50b5650e3e136b1bf46efff055cea7803",
+    "runs": [
+      {
+        "contact_enabled": false,
+        "worst_inverted_tetrahedra": 7,
+        "minimum_volume_ratio": -0.30042445879685065,
+        "pin_drift_m": 6.8761391812641345e-09,
+        "wall_seconds_including_kernel_load": 57.217610399995465,
+        "simulated_seconds": 3.5
+      },
+      {
+        "contact_enabled": true,
+        "worst_inverted_tetrahedra": 13,
+        "minimum_volume_ratio": -5.542909508858808,
+        "pin_drift_m": 6.8761391812641345e-09,
+        "wall_seconds_including_kernel_load": 7.827810499991756,
+        "simulated_seconds": 3.5
+      }
+    ],
+    "contact_effect_max_m": 0.014402015134692192,
+    "contact_effect_p95_m": 0.011204924434423447
+  },
+  "newton_precision_candidate": {
+    "status": "passed",
+    "engine": "Newton 1.4.0 / Warp CUDA VBD",
+    "scope": "dual spherical contact coupon",
+    "isaac_integrated": false,
+    "cad_jaws": false,
+    "substeps": 16,
+    "iterations": 32,
+    "nodes": 1614,
+    "tetrahedra": 5940,
+    "source_sha256": "1706f6459b47735bd3f32f0f7597f0d50b5650e3e136b1bf46efff055cea7803",
+    "runs": [
+      {
+        "contact_enabled": false,
+        "worst_inverted_tetrahedra": 0,
+        "minimum_volume_ratio": 0.7251433753611435,
+        "pin_drift_m": 6.8761391812641345e-09,
+        "wall_seconds_including_kernel_load": 106.6872982000059,
+        "simulated_seconds": 3.5
+      },
+      {
+        "contact_enabled": true,
+        "worst_inverted_tetrahedra": 0,
+        "minimum_volume_ratio": 0.700297452797201,
+        "pin_drift_m": 6.8761391812641345e-09,
+        "wall_seconds_including_kernel_load": 72.48639480001293,
+        "simulated_seconds": 3.5
+      }
+    ],
+    "contact_effect_max_m": 0.006345053669065237,
+    "contact_effect_p95_m": 0.0038476940244436264
+  },
+  "newton_cuda_graph_failed": {
+    "status": "failed",
+    "engine": "Newton 1.4.0 / Warp CUDA VBD",
+    "scope": "dual spherical contact coupon",
+    "isaac_integrated": false,
+    "cad_jaws": false,
+    "substeps": 16,
+    "iterations": 32,
+    "cuda_graph": true,
+    "nodes": 1614,
+    "tetrahedra": 5940,
+    "source_sha256": "1706f6459b47735bd3f32f0f7597f0d50b5650e3e136b1bf46efff055cea7803",
+    "runs": [
+      {
+        "contact_enabled": false,
+        "worst_inverted_tetrahedra": 0,
+        "minimum_volume_ratio": 0.7257292061816164,
+        "pin_drift_m": 6.8761391812641345e-09,
+        "wall_seconds_including_kernel_load": 44.19746009999653,
+        "simulated_seconds": 3.5
+      },
+      {
+        "contact_enabled": true,
+        "worst_inverted_tetrahedra": 4,
+        "minimum_volume_ratio": -0.5745946445897302,
+        "pin_drift_m": 6.8761391812641345e-09,
+        "wall_seconds_including_kernel_load": 10.270078999979887,
+        "simulated_seconds": 3.5
+      }
+    ],
+    "contact_effect_max_m": 0.013560350984334946,
+    "contact_effect_p95_m": 0.011476906016469002
+  },
+  "physx_precision_contact_failed": {
+    "status": "completed",
+    "run_id": "cc3b8053f08b4113aab9aa4f3844ee17",
+    "policy": "scripted",
+    "learned_policy": false,
+    "episodes": [
+      {
+        "seed": 42,
+        "task": "dual_grasp",
+        "policy": "scripted",
+        "steps": 239,
+        "return_": -2.358791756632544,
+        "terminated": true,
+        "truncated": false,
+        "reset_seconds": 83.12845100002596,
+        "step_p50_ms": 101.97459999471903,
+        "step_p95_ms": 110.95370999246369,
+        "target_patches": [
+          1,
+          5
+        ],
+        "target_lift_m": 0.007095824194223853,
+        "success": false,
+        "failure": "tet_inversion",
+        "hold_steps": 0,
+        "pin_drift_m": 3.268280352436013e-05,
+        "tissue_health": {
+          "tetrahedra": 29490,
+          "degenerate_rest_tetrahedra": 0,
+          "inverted_tetrahedra": 1,
+          "minimum_signed_volume_ratio": -0.0389745124883242,
+          "median_volume_ratio": 1.0040418692892839,
+          "total_absolute_volume_ratio": 1.0033768096895157,
+          "p99_absolute_volume_change": 0.10642631475763946
+        },
+        "grasp_assist": true,
+        "appendectomy_completed": false
+      },
+      {
+        "seed": 42,
+        "task": "retract",
+        "policy": "scripted",
+        "steps": 238,
+        "return_": 1.0172273905484577,
+        "terminated": true,
+        "truncated": false,
+        "reset_seconds": 31.879039399995236,
+        "step_p50_ms": 98.57530001318082,
+        "step_p95_ms": 103.33379001240245,
+        "target_patches": [
+          1,
+          5
+        ],
+        "target_lift_m": 0.007095824194223853,
+        "success": false,
+        "failure": "tet_inversion",
+        "hold_steps": 0,
+        "pin_drift_m": 3.30913060375387e-05,
+        "tissue_health": {
+          "tetrahedra": 29490,
+          "degenerate_rest_tetrahedra": 0,
+          "inverted_tetrahedra": 1,
+          "minimum_signed_volume_ratio": -0.00847220469590728,
+          "median_volume_ratio": 1.0041626129013006,
+          "total_absolute_volume_ratio": 1.0035398140027225,
+          "p99_absolute_volume_change": 0.10544484632495096
+        },
+        "grasp_assist": true,
+        "appendectomy_completed": false
+      }
+    ],
+    "appendectomy_completed": false,
+    "successes": 0,
+    "by_policy": {
+      "scripted": {
+        "episodes": 2,
+        "successes": 0
+      }
+    }
+  },
+  "immutable_source_files_verified": 42,
+  "exploration_unit_tests_passed": 3,
+  "checkpoint_load_passed": true,
+  "newton_integrated_in_isaac": false,
+  "video_sha256": {
+    "exploration": "2f5846f99768c02ee139744cad977e4f4be39e303cdf26b9f50d8b4236fa0d71",
+    "exploration_ppo": "99bd201bbcd7b63cb4c2baf45e192cdf1b1e4d508feb8b14e42e8aaf92dc2d9f"
+  }
+}

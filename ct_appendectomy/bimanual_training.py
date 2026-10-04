@@ -10,13 +10,18 @@ from ppo_agent import ActorCritic, advantages, update, save_checkpoint, load_che
 def train(env, steps, seed, output, checkpoint=None):
     torch.set_num_threads(2)
     torch.manual_seed(seed)
-    model = ActorCritic(observations=31, actions=10)
+    core=getattr(env,'base',env)
+    exploration=core is not env
+    observations=int(env.observation_space.shape[0]);actions=int(env.action_space.shape[0])
+    model = ActorCritic(observations=observations, actions=actions)
     optimizer = torch.optim.Adam(model.parameters(), lr=3e-4)
-    contract = dict(env_id='RosotaBimanual-v1', observations=31, actions=10,
-                    task=env.task, stage_sha256=env.config['stage_sha256'],
-                    config_sha256=hashlib.sha256((env.assets/'bimanual_config.json').read_bytes()).hexdigest(),
+    contract = dict(env_id='RosotaExploration-v1' if exploration else 'RosotaBimanual-v1', observations=observations, actions=actions,
+                    task='local_exploration' if exploration else env.task, stage_sha256=core.config['stage_sha256'],
+                    config_sha256=hashlib.sha256((core.assets/'bimanual_config.json').read_bytes()).hexdigest(),
                     environment_sha256=hashlib.sha256(Path(__file__).with_name('bimanual_env.py').read_bytes()).hexdigest(),
-                    gamma=.99, grasp_assist=True)
+                    gamma=.99, grasp_assist=True,episode_limit=env.max_steps)
+    if exploration:
+        contract['exploration_sha256']=hashlib.sha256(Path(__file__).with_name('exploration_env.py').read_bytes()).hexdigest()
     previous = 0
     if checkpoint:
         metadata = load_checkpoint(checkpoint, model, optimizer, expected=contract)
@@ -40,7 +45,7 @@ def train(env, steps, seed, output, checkpoint=None):
                     episode+=1
                     obs,_=env.reset(seed=seed+episode)
             batch['advantage'],batch['return']=advantages(batch['reward'],batch['value'],batch['next_value'],batch['terminated'],batch['ended'])
-            records.append(dict(step=total,**update(model,optimizer,batch)))
+            records.append(dict(step=total,**update(model,optimizer,{k:np.asarray(v) for k,v in batch.items()})))
             save_checkpoint(output/'policy.pt',model,optimizer,dict(contract,trained_steps=previous+total))
             delta = float(torch.linalg.vector_norm(torch.cat([p.detach().flatten() for p in model.parameters()])-initial))
             if not np.isfinite(delta) or delta == 0.: raise RuntimeError('PPO did not update parameters')
