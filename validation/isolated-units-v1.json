@@ -1,0 +1,230 @@
+{
+  "status": "failed",
+  "mesh_sha256": "e601a3601ad3d6ce4414bf4ded7e5389678ac9e2b96931aca7ba31a784ced944",
+  "cases": [
+    {
+      "meters_per_unit": 1.0,
+      "status": "failed",
+      "acceleration_m_s2": [
+        [
+          7.46534396009763e-05,
+          -9.798522864352956,
+          -0.00011089850885533075
+        ],
+        [
+          -0.00045565285336852165,
+          -9.790281088961382,
+          -0.0004128467192785198
+        ]
+      ],
+      "max_acceleration_error_m_s2": 0.019728494987842658,
+      "rows": [
+        {
+          "tick": 0,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9966407341726699,
+            "median_volume_ratio": 0.9992676906485385,
+            "total_absolute_volume_ratio": 0.9992677004918483,
+            "p99_absolute_volume_change": 0.0007596924176701446
+          },
+          "translation_removed_rms_m": 0.0
+        },
+        {
+          "tick": 60,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.943915893294032,
+            "median_volume_ratio": 0.9992668938635019,
+            "total_absolute_volume_ratio": 0.9992678919146348,
+            "p99_absolute_volume_change": 0.0010158468150502549
+          },
+          "translation_removed_rms_m": 1.4021846899610967e-06
+        },
+        {
+          "tick": 120,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.7478576637701881,
+            "median_volume_ratio": 0.9992588515776357,
+            "total_absolute_volume_ratio": 0.9992577735197385,
+            "p99_absolute_volume_change": 0.002537388230323937
+          },
+          "translation_removed_rms_m": 1.4377284329552281e-05
+        },
+        {
+          "tick": 180,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.42184380289867407,
+            "median_volume_ratio": 0.9992757539547764,
+            "total_absolute_volume_ratio": 0.99927177750222,
+            "p99_absolute_volume_change": 0.005333152407867984
+          },
+          "translation_removed_rms_m": 5.903661872370567e-05
+        }
+      ]
+    },
+    {
+      "meters_per_unit": 0.01,
+      "status": "failed",
+      "acceleration_m_s2": [
+        [
+          -2.1474859799843594e-05,
+          -9.798465388296986,
+          -4.2218391479564126e-05
+        ],
+        [
+          -0.0008702685657047875,
+          -9.790978185775302,
+          -0.00031797629483279623
+        ]
+      ],
+      "max_acceleration_error_m_s2": 0.019044366429458354,
+      "rows": [
+        {
+          "tick": 0,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.996639752160244,
+            "median_volume_ratio": 0.999267781135438,
+            "total_absolute_volume_ratio": 0.9992677961526908,
+            "p99_absolute_volume_change": 0.0007480325714437441
+          },
+          "translation_removed_rms_m": 0.0
+        },
+        {
+          "tick": 60,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9439346395175069,
+            "median_volume_ratio": 0.9992694467176955,
+            "total_absolute_volume_ratio": 0.9992694552762512,
+            "p99_absolute_volume_change": 0.0009923127694570614
+          },
+          "translation_removed_rms_m": 1.3034558957877672e-06
+        },
+        {
+          "tick": 120,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.7480692898492431,
+            "median_volume_ratio": 0.9992503985630197,
+            "total_absolute_volume_ratio": 0.9992557151164283,
+            "p99_absolute_volume_change": 0.0022556307478468055
+          },
+          "translation_removed_rms_m": 1.7325998211124827e-05
+        },
+        {
+          "tick": 180,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.42883466737855813,
+            "median_volume_ratio": 0.9992487569753146,
+            "total_absolute_volume_ratio": 0.9992421781988934,
+            "p99_absolute_volume_change": 0.005503341977331741
+          },
+          "translation_removed_rms_m": 9.283900144236823e-05
+        }
+      ]
+    },
+    {
+      "meters_per_unit": 0.1,
+      "status": "failed",
+      "acceleration_m_s2": [
+        [
+          -8.169164657777335e-05,
+          -9.798862815813834,
+          -8.482792494472253e-05
+        ],
+        [
+          -0.0002542766175453136,
+          -9.791313828346413,
+          -0.00013932528352518752
+        ]
+      ],
+      "max_acceleration_error_m_s2": 0.018688420992695316,
+      "rows": [
+        {
+          "tick": 0,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9966380180011222,
+            "median_volume_ratio": 0.9992676320148631,
+            "total_absolute_volume_ratio": 0.999267675189478,
+            "p99_absolute_volume_change": 0.0007486509534598873
+          },
+          "translation_removed_rms_m": 0.0
+        },
+        {
+          "tick": 60,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9438670334572783,
+            "median_volume_ratio": 0.999267197204224,
+            "total_absolute_volume_ratio": 0.9992669078021852,
+            "p99_absolute_volume_change": 0.0010444560615284423
+          },
+          "translation_removed_rms_m": 1.4426643205786808e-06
+        },
+        {
+          "tick": 120,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.7482756175385084,
+            "median_volume_ratio": 0.9992554739084256,
+            "total_absolute_volume_ratio": 0.9992590712145543,
+            "p99_absolute_volume_change": 0.0021521704165142113
+          },
+          "translation_removed_rms_m": 1.2871025430159083e-05
+        },
+        {
+          "tick": 180,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.42107880432085837,
+            "median_volume_ratio": 0.9992371394095557,
+            "total_absolute_volume_ratio": 0.9992314046391427,
+            "p99_absolute_volume_change": 0.005370183128923765
+          },
+          "translation_removed_rms_m": 8.831303752840269e-05
+        }
+      ]
+    }
+  ],
+  "scope": "Isolated free fall with zero damping, no attachments, robot, contact or rendering. Not loaded tissue validation.",
+  "material_si": {
+    "density_kg_m3": 1050,
+    "youngs_modulus_pa": 12000,
+    "poissons_ratio": 0.45
+  },
+  "gates": {
+    "max_translation_removed_rms_m": 1e-05,
+    "max_acceleration_error_m_s2": 0.1,
+    "minimum_volume_ratio": 0.99
+  }
+}

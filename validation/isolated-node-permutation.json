@@ -1,0 +1,7 @@
+{
+  "exact_tetrahedral_vertex_coordinates_unchanged": true,
+  "nodes": 5311,
+  "tetrahedra": 22312,
+  "permutation": "reverse node order; map each index i to N-1-i",
+  "scope": "Geometry/control invariance only; runtime comparison pending"
+}
