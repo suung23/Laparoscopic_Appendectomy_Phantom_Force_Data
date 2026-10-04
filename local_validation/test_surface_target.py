@@ -7,6 +7,12 @@ from surface_target import TissueSurface
 
 
 class SurfaceTargets(unittest.TestCase):
+    def test_submillimetre_surface_distance(self):
+        p=np.array([[0,0,0],[1,0,0],[0,1,0],[0,0,1]],float)*.0001
+        r=TissueSurface([[0,1,2,3]]).closest(p,[[.00002,.00002,-.00001]])[0]
+        np.testing.assert_allclose(r['point_m'],[.00002,.00002,0],atol=1e-14)
+        self.assertAlmostEqual(r['distance_m'],.00001,places=14)
+
     def test_face_interior_and_outward_normal_independent_of_winding(self):
         p=np.array([[0,0,0],[1,0,0],[0,1,0],[0,0,1]],float)
         for tet in ([[0,1,2,3]],[[1,0,2,3]]):

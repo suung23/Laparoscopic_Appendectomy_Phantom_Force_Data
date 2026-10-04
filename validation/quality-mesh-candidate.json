@@ -1,0 +1,33 @@
+{
+  "status": "geometric_candidate",
+  "source_sha256": "9fc25e90fdf59df1bc01e568b4fc242da1a9060e0260743654572d357297f9c7",
+  "tool": "tetgen",
+  "version": "0.8.3",
+  "license": "Python wrapper MIT; underlying TetGen AGPLv3/commercial. Offline experiment, not linked into simulator.",
+  "license_reference": "https://tetgen.pyvista.org/index.html",
+  "options": {
+    "order": 1,
+    "minratio": 1.5,
+    "mindihedral": 10.0,
+    "steinerleft": 50000,
+    "quality": true,
+    "nomergefacet": true,
+    "nomergevertex": true
+  },
+  "nodes": 11252,
+  "tetrahedra": 48443,
+  "duplicate_tetrahedra": 0,
+  "boundary_node_to_source_max_m": 3.060853754034475e-17,
+  "relative_volume_error": 0.0,
+  "mean_ratio_min": 0.012952999440705078,
+  "mean_ratio_percentiles_1_5_50": [
+    0.1365410242025187,
+    0.4583386713970326,
+    0.7940828970201654
+  ],
+  "cells_below_mean_ratio_0_1": 160,
+  "limitations": [
+    "One-way boundary-node distance, not a bidirectional Hausdorff bound.",
+    "No physics, material, attachment or force validation yet."
+  ]
+}

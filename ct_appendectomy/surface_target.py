@@ -18,9 +18,12 @@ class TissueSurface:
         points=np.asarray(points,float);tips=np.asarray(tips,float).reshape(-1,3)
         if not np.isfinite(points).all() or not np.isfinite(tips).all():raise ValueError('Nonfinite geometry')
         triangles=points[self.faces]
+        scale=float(np.ptp(points,axis=0).max());origin=points.mean(0)
+        if scale<=0:raise ValueError('Zero-size tissue geometry')
+        normalized=(triangles-origin)/scale
         rows=[]
         for tip in tips:
-            closest=trimesh.triangles.closest_point(triangles,np.broadcast_to(tip,(len(triangles),3)))
+            closest=trimesh.triangles.closest_point(normalized,np.broadcast_to((tip-origin)/scale,(len(triangles),3)))*scale+origin
             distances=np.linalg.norm(closest-tip,axis=1);i=int(np.argmin(distances))
             tri=triangles[i];normal=np.cross(tri[1]-tri[0],tri[2]-tri[0])
             length=np.linalg.norm(normal)
