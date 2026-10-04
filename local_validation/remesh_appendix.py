@@ -43,17 +43,29 @@ scale=float(np.ptp(points,axis=0).max());origin=points.mean(0)
 normalized=trimesh.Trimesh((points-origin)/scale,faces,process=False)
 _,dist,_=trimesh.proximity.closest_point(normalized,(nodes[boundary_nodes]-origin)/scale)
 dist*=scale
+boundary=trimesh.Trimesh((nodes-origin)/scale,surface.faces,process=False)
+boundary.remove_unreferenced_vertices()
+source_samples=np.concatenate([points,points[faces].mean(1)])
+_,reverse_dist,_=trimesh.proximity.closest_point(boundary,(source_samples-origin)/scale)
+reverse_dist*=scale
+boundary_centers=nodes[surface.faces].mean(1)
+_,center_dist,_=trimesh.proximity.closest_point(normalized,(boundary_centers-origin)/scale)
+center_dist*=scale
+boundary_closed=bool(boundary.is_watertight and boundary.is_winding_consistent)
 duplicates=len(cells)-len(np.unique(np.sort(cells,axis=1),axis=0))
 volume_error=abs(np.abs(vol).sum()-abs(source.volume))/abs(source.volume)
-report=dict(status='geometric_candidate' if not duplicates and np.all(np.abs(vol)>1e-15) and dist.max()<1e-6 and volume_error<1e-5 else 'failed',
+report=dict(status='geometric_candidate' if not duplicates and np.all(np.abs(vol)>1e-15) and max(dist.max(),reverse_dist.max(),center_dist.max())<1e-6 and volume_error<1e-5 and boundary_closed else 'failed',
     source_sha256=hashlib.sha256(a.scene.read_bytes()).hexdigest(),tool='tetgen',version=tetgen.__version__,
     license='Python wrapper MIT; underlying TetGen AGPLv3/commercial. Offline experiment, not linked into simulator.',
     license_reference='https://tetgen.pyvista.org/index.html',options=options,
     nodes=len(nodes),tetrahedra=len(cells),duplicate_tetrahedra=duplicates,
     boundary_node_to_source_max_m=float(dist.max()),relative_volume_error=float(volume_error),
+    source_vertex_and_face_center_to_boundary_max_m=float(reverse_dist.max()),
+    boundary_face_center_to_source_max_m=float(center_dist.max()),
+    boundary_closed_and_consistent=boundary_closed,
     mean_ratio_min=float(quality.min()),mean_ratio_percentiles_1_5_50=np.percentile(quality,[1,5,50]).tolist(),
     cells_below_mean_ratio_0_1=int((quality<.1).sum()),
-    limitations=['One-way boundary-node distance, not a bidirectional Hausdorff bound.','No physics, material, attachment or force validation yet.'])
+    limitations=['Bidirectional vertex and face-centroid samples, not a continuous Hausdorff proof.','No physics, material, attachment or force validation yet.'])
 np.savez_compressed(a.out/'mesh.npz',points=nodes,tets=cells)
 (a.out/'report.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
 print(json.dumps(report,indent=2))
