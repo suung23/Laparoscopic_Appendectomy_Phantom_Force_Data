@@ -1,5 +1,5 @@
 {
-  "objective": "Restore native Rosota baseline before claiming a CT surgical simulator extension",
+  "objective": "Validated real-video appearance, calibrated tissue mechanics, and bimanual laparoscopic RL beyond the native Rosota baseline",
   "full_baseline_parity": false,
   "gates": [
     {
@@ -10,28 +10,102 @@
     {
       "id": "reference-runtime",
       "status": "passed one native scripted episode; see rosota-reference-runtime.json",
-      "requires": ["original dynamic FR3 pair", "motorized grasper and cutter", "six FEM organs", "endoscope and D405 RGB/stereo/depth", "completed scored rollout"]
+      "requires": [
+        "original dynamic FR3 pair",
+        "motorized grasper and cutter",
+        "six FEM organs",
+        "endoscope and D405 RGB/stereo/depth",
+        "completed scored rollout"
+      ]
     },
     {
       "id": "ct-contract-parity",
       "status": "incomplete",
-      "requires": ["same action and observation contract", "right cutter", "full collision geometry", "camera calibration and stereo/depth", "same task stage evaluation", "multi-seed reference comparison"]
+      "requires": [
+        "same action and observation contract",
+        "right cutter",
+        "full collision geometry",
+        "camera calibration and stereo/depth",
+        "same task stage evaluation",
+        "multi-seed reference comparison"
+      ]
     },
     {
       "id": "ct-grasp-traction-release",
       "status": "one assisted trial passed; repeated-seed and unloaded-control validation pending; see ct-grasp-validation.json",
-      "requires": ["live tissue inside jaw mouth", "explicitly labelled assistance", "both hands hold during traction", "non-rigid deformation relative to pre-pull state", "zero inverted tets at every physics tick", "measured recovery after release", "unloaded matched control"]
+      "requires": [
+        "live tissue inside jaw mouth",
+        "explicitly labelled assistance",
+        "both hands hold during traction",
+        "non-rigid deformation relative to pre-pull state",
+        "zero inverted tets at every physics tick",
+        "measured recovery after release",
+        "unloaded matched control"
+      ]
     },
     {
       "id": "material-validation",
       "status": "not achieved",
-      "requires": ["measured force-displacement reference", "mesh and time-step convergence", "compression and traction calibration", "two-way grasp reaction transfer to robot joints", "rate dependence", "organ-organ contact", "mesoappendix coupling"]
+      "requires": [
+        "measured force-displacement reference",
+        "mesh and time-step convergence",
+        "compression and traction calibration",
+        "two-way grasp reaction transfer to robot joints",
+        "rate dependence",
+        "organ-organ contact",
+        "mesoappendix coupling"
+      ]
     },
     {
       "id": "surgical-topology",
       "status": "not achieved",
-      "requires": ["mechanical cutting changes topology", "stump and mesoappendix behavior", "hemostasis model", "expert assessment"]
+      "requires": [
+        "mechanical cutting changes topology",
+        "stump and mesoappendix behavior",
+        "hemostasis model",
+        "expert assessment"
+      ]
+    },
+    {
+      "id": "real-video-provenance",
+      "status": "one clinical Open-H/CMR episode downloaded and audited",
+      "requires": [
+        "revision-pinned source and license",
+        "video and telemetry integrity",
+        "surgery-level held-out split",
+        "anatomy and sensor semantics checked"
+      ]
+    },
+    {
+      "id": "real-video-appearance",
+      "status": "not achieved; first liver texture experiment is outside current endoscope field of view",
+      "requires": [
+        "visible target-specific material comparison",
+        "camera and light calibration",
+        "specular/diffuse separation with uncertainty",
+        "temporally stable surface attachment",
+        "held-out real-video evaluation",
+        "expert blinded visual review"
+      ]
+    },
+    {
+      "id": "rl-validation",
+      "status": "not achieved",
+      "requires": [
+        "multiple seeds and held-out anatomy",
+        "unassisted contact task baseline",
+        "policy performance and failure confidence intervals",
+        "wall-clock throughput and reproducible resets",
+        "comparison with original Rosota and LapGym",
+        "no reward improvement via invalid tissue physics"
+      ]
     }
   ],
-  "claims_not_supported": ["SOTA", "clinical fidelity", "patient-specific appendix reconstructed from CT", "friction-only grasp", "complete appendectomy"]
+  "claims_not_supported": [
+    "SOTA",
+    "clinical fidelity",
+    "patient-specific appendix reconstructed from CT",
+    "friction-only grasp",
+    "complete appendectomy"
+  ]
 }

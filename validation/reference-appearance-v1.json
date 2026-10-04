@@ -1,0 +1,36 @@
+{
+  "mesh": "/World/CT/liver",
+  "vertices": 19366,
+  "triangles": 38732,
+  "uv_interpolation": "faceVarying",
+  "geometry_unchanged": true,
+  "roughness": 0.32,
+  "roughness_calibrated": false,
+  "uv_repeat": 8.0,
+  "source_revision": "e29dda7cabf2a2626634c7822db27695553ae523",
+  "source_video_sha256": "791617b48ac97ef33c2ce49e1d5e5ddd8f886e474d8efc14d7bbafcb2bf5d677",
+  "source_scene_sha256": "26acbec1de64c3d125e6606cf245995bd6956517acbb5068ca6d588892bb1233",
+  "source_frame_time_s": 12.0,
+  "source_roi_xyxy": [
+    1400,
+    690,
+    1800,
+    870
+  ],
+  "attribution": "CMR Surgical / Open-H-Embodiment, hosted by NVIDIA",
+  "license": "CC-BY-4.0",
+  "measured_albedo": false,
+  "measured_brdf": false,
+  "physical_scale_calibrated": false,
+  "limitations": [
+    "Baked lighting remains in colour texture",
+    "Mirrored tiling can repeat visible features",
+    "No subsurface or wet-film calibration",
+    "Clinical donor differs from CT subject",
+    "Liver-only appearance experiment; not a patient-specific reconstruction"
+  ],
+  "runtime_render_passed": true,
+  "target_visible_fraction": 0,
+  "appearance_validation_passed": false,
+  "rejection_reason": "Target liver has zero visible pixels in current endoscope camera; this render cannot demonstrate the new material. Mirrored observed-colour patch retains baked lighting and repeats. Do not count as fidelity improvement."
+}
