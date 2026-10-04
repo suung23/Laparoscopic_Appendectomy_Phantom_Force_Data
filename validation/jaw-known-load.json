@@ -1,0 +1,106 @@
+{
+  "status": "passed",
+  "scope": "known simulated torque response; not tissue force or complete controller validation",
+  "tolerance_nm": 2e-05,
+  "checks": [
+    {
+      "hand": "left",
+      "jaw": "left",
+      "magnitude_nm": 0.0001,
+      "response_nm": -9.99894981960652e-05,
+      "expected_nm": -0.0001,
+      "error_nm": 1.050180393479829e-08,
+      "release_nm": -3.339720082549838e-12,
+      "passed": true,
+      "loaded_above_guard": false
+    },
+    {
+      "hand": "left",
+      "jaw": "left",
+      "magnitude_nm": 0.0004,
+      "response_nm": -0.00039995817679152614,
+      "expected_nm": -0.0004,
+      "error_nm": 4.182320847387648e-08,
+      "release_nm": 4.100100913225643e-12,
+      "passed": true,
+      "loaded_above_guard": true
+    },
+    {
+      "hand": "left",
+      "jaw": "right",
+      "magnitude_nm": 0.0001,
+      "response_nm": 9.998955943172922e-05,
+      "expected_nm": 0.0001,
+      "error_nm": 1.0440568270784286e-08,
+      "release_nm": 2.3099686246483796e-10,
+      "passed": true,
+      "loaded_above_guard": false
+    },
+    {
+      "hand": "left",
+      "jaw": "right",
+      "magnitude_nm": 0.0004,
+      "response_nm": 0.0003999581306371783,
+      "expected_nm": 0.0004,
+      "error_nm": 4.186936282174394e-08,
+      "release_nm": -3.238325980559466e-11,
+      "passed": true,
+      "loaded_above_guard": true
+    },
+    {
+      "hand": "right",
+      "jaw": "left",
+      "magnitude_nm": 0.0001,
+      "response_nm": -9.998956504210406e-05,
+      "expected_nm": -0.0001,
+      "error_nm": 1.043495789594868e-08,
+      "release_nm": 5.4569682106375694e-12,
+      "passed": true,
+      "loaded_above_guard": false
+    },
+    {
+      "hand": "right",
+      "jaw": "left",
+      "magnitude_nm": 0.0004,
+      "response_nm": -0.00039995854789471295,
+      "expected_nm": -0.0004,
+      "error_nm": 4.1452105287067675e-08,
+      "release_nm": -6.859933325698692e-12,
+      "passed": true,
+      "loaded_above_guard": true
+    },
+    {
+      "hand": "right",
+      "jaw": "right",
+      "magnitude_nm": 0.0001,
+      "response_nm": 9.998968366280243e-05,
+      "expected_nm": 0.0001,
+      "error_nm": 1.0316337197574673e-08,
+      "release_nm": 1.942129788371333e-10,
+      "passed": true,
+      "loaded_above_guard": false
+    },
+    {
+      "hand": "right",
+      "jaw": "right",
+      "magnitude_nm": 0.0004,
+      "response_nm": 0.0003999578267898928,
+      "expected_nm": 0.0004,
+      "error_nm": 4.217321010723798e-08,
+      "release_nm": -3.442638324561132e-11,
+      "passed": true,
+      "loaded_above_guard": true
+    }
+  ],
+  "raw_evidence_sha256": "39cea08602e33ad31d1f2bdac0ad5eee4308172b8df9e5365f216c6f70424d8f",
+  "source_sha256": {
+    "jaw_load_probe.py": "2629254b6a0c96bed2a41af0d331b231b55342146eb6fc834468963e24bbcd76",
+    "jaw_gravity_audit.py": "ed97e8cce766bfd99d4ceaf2dbf07c2fd3392819e86fe7b4e7aacc7dfd85a0f2",
+    "contact_control.py": "71d7aa39c5fea1849405d52c827d2c056dc747c1d3ce95618b2b4f46529c0daa",
+    "rosota_ct_env.py": "404cdb55c28e1277313b6ef3161b2af91d1e83a66acbfeaf31053083d5cdf8b4"
+  },
+  "limitations": [
+    "Static open-jaw fixture, one applied sign per jaw; dynamic loaded contact not validated.",
+    "Threshold crossing is measured; controller latch and release were not exercised by this probe."
+  ]
+}
