@@ -1,0 +1,165 @@
+{
+  "engine": "Isaac Sim 5.1 / PhysX",
+  "mode": "hinged forceps contact probe",
+  "appendectomy_completed": false,
+  "appendix_patient_specific": false,
+  "registration_validated": false,
+  "source_scene_sha256": "26acbec1de64c3d125e6606cf245995bd6956517acbb5068ca6d588892bb1233",
+  "tissue_collision_offsets_m": {
+    "contact": 0.0005,
+    "rest": 0.0
+  },
+  "cooked_nodes": 1313,
+  "gravity_m_s2": 0.0,
+  "material_identified": false,
+  "forceps_trajectory": [
+    {
+      "frame": 1,
+      "closure": 0.006944444444444445,
+      "command_lift_m": 0.0,
+      "max_displacement_m": 0.0018897960913156894
+    },
+    {
+      "frame": 48,
+      "closure": 0.33333333333333337,
+      "command_lift_m": 0.0,
+      "max_displacement_m": 0.006134984438603098
+    },
+    {
+      "frame": 96,
+      "closure": 0.6666666666666667,
+      "command_lift_m": 0.0,
+      "max_displacement_m": 0.005893189633133835
+    },
+    {
+      "frame": 144,
+      "closure": 1.0,
+      "command_lift_m": 0.0,
+      "max_displacement_m": 0.004791704406587937
+    },
+    {
+      "frame": 192,
+      "closure": 1.0,
+      "command_lift_m": 0.0,
+      "max_displacement_m": 0.004634499605160156
+    },
+    {
+      "frame": 240,
+      "closure": 1.0,
+      "command_lift_m": 0.001333333333333333,
+      "max_displacement_m": 0.004078307506801077
+    },
+    {
+      "frame": 288,
+      "closure": 1.0,
+      "command_lift_m": 0.003999999999999999,
+      "max_displacement_m": 0.006932935979476596
+    },
+    {
+      "frame": 336,
+      "closure": 1.0,
+      "command_lift_m": 0.006666666666666665,
+      "max_displacement_m": 0.009751073139118853
+    },
+    {
+      "frame": 384,
+      "closure": 0.7999999999999998,
+      "command_lift_m": 0.008,
+      "max_displacement_m": 0.010733171961473978
+    },
+    {
+      "frame": 432,
+      "closure": 0.3999999999999999,
+      "command_lift_m": 0.008,
+      "max_displacement_m": 0.010540632605654139
+    },
+    {
+      "frame": 480,
+      "closure": 0.0,
+      "command_lift_m": 0.008,
+      "max_displacement_m": 0.015124524565982053
+    }
+  ],
+  "forceps_lift_checkpoint_m": 0.007332716072941649,
+  "forceps_tracking_error_m": 0.0010731875369527281,
+  "camera_ground_truth": {
+    "resolution": [
+      1280,
+      720
+    ],
+    "semantic_frame_fraction": {
+      "BACKGROUND": 0.0,
+      "UNLABELLED": 0.004997829861111111,
+      "iliac_artery_right": 0.0039800347222222225,
+      "appendicular_artery": 0.0042361111111111115,
+      "mesoappendix": 0.031689453125,
+      "iliac_vena_right": 0.0020106336805555554,
+      "appendix": 0.0952951388888889,
+      "iliopsoas_right": 0.012242838541666667,
+      "urinary_bladder": 0.002348090277777778,
+      "small_bowel": 0.022137586805555557,
+      "colon": 0.25029188368055555,
+      "body_envelope": 0.5707703993055555
+    },
+    "depth_finite_fraction": 1.0,
+    "appendix_visibility_gate_passed": true,
+    "threshold_frame_fraction": 0.005,
+    "clinical_view_validated": false
+  },
+  "image_std": 92.01272223481783,
+  "finite_nodes": true,
+  "max_node_displacement_m": 0.015124524565982053,
+  "tissue_health": {
+    "tetrahedra": 4722,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 0,
+    "minimum_signed_volume_ratio": 0.7040427799548147,
+    "median_volume_ratio": 0.9998631781920537,
+    "total_absolute_volume_ratio": 0.9992391718519743,
+    "p99_absolute_volume_change": 0.17786395539090483
+  },
+  "physics_validation": "close/hold/lift/open with two collision jaws; no grip attachment",
+  "tool_collision_enabled": true,
+  "pin_drift_m": 9.206219214485829e-05,
+  "forceps_grasp_lift_passed": true,
+  "forceps_geometry": {
+    "jaw_length_m": 0.018,
+    "closed_angle_rad": 0.4714490935754501,
+    "local_tissue_diameter_m": 0.014350399910937945,
+    "clinical_cad": false
+  },
+  "forceps_reset_render_state_error": 0.0,
+  "forceps_rl_validation": {
+    "status": "passed",
+    "steps_to_success": 189,
+    "reset_max_error": 0.0,
+    "render_state_error": 0.0,
+    "invalid_action_rejected": true,
+    "terminal_guard": true,
+    "time_limit_truncates": true,
+    "success_info": {
+      "task": "hinged-jaw contact lift fixture",
+      "is_success": true,
+      "appendectomy_completed": false,
+      "appendix_severed": false,
+      "privileged_state_observation": true,
+      "grip_attachment_present": false,
+      "trocar_constraint_integrated": false,
+      "lift_m": 0.007603261555577147,
+      "pin_drift_m": 8.534011763610021e-05,
+      "tracking_error_m": 0.0010362686851530694,
+      "tissue_health": {
+        "tetrahedra": 4722,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.6703245493645665,
+        "median_volume_ratio": 0.9989740130293305,
+        "total_absolute_volume_ratio": 0.9953526114194119,
+        "p99_absolute_volume_change": 0.1617912880425672
+      }
+    },
+    "trained_policy": false
+  },
+  "frames": 480,
+  "status": "passed"
+}

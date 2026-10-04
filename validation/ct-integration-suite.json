@@ -1,0 +1,36 @@
+{
+  "appendectomy_completed": false,
+  "timing_includes_startup": true,
+  "status": "passed",
+  "clinical_validation": false,
+  "cases": [
+    {
+      "case": "render",
+      "status": "passed",
+      "wall_seconds": 59.8635352,
+      "source_scene_sha256": "26acbec1de64c3d125e6606cf245995bd6956517acbb5068ca6d588892bb1233",
+      "report": "out\\ct_appendectomy\\suite\\render\\report.json"
+    },
+    {
+      "case": "forceps",
+      "status": "passed",
+      "wall_seconds": 84.8681353,
+      "source_scene_sha256": "26acbec1de64c3d125e6606cf245995bd6956517acbb5068ca6d588892bb1233",
+      "report": "out\\ct_appendectomy\\suite\\forceps\\report.json"
+    },
+    {
+      "case": "forceps-control",
+      "status": "passed",
+      "wall_seconds": 67.8986131,
+      "source_scene_sha256": "26acbec1de64c3d125e6606cf245995bd6956517acbb5068ca6d588892bb1233",
+      "report": "out\\ct_appendectomy\\suite\\forceps-control\\report.json"
+    },
+    {
+      "case": "retraction",
+      "status": "passed",
+      "wall_seconds": 67.8706052,
+      "source_scene_sha256": "26acbec1de64c3d125e6606cf245995bd6956517acbb5068ca6d588892bb1233",
+      "report": "out\\ct_appendectomy\\suite\\retraction\\report.json"
+    }
+  ]
+}

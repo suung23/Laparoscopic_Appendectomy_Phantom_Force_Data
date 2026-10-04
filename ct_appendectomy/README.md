@@ -2,14 +2,14 @@
 
 `build_scene.py` converts the existing public TotalSegmentator s0042 reconstruction and BodyParts3D appendix, mesoappendix and appendicular artery into a USD stage. It preserves dataset/license metadata and input SHA-256 hashes in `out/ct_appendectomy/scene_manifest.json`.
 
-The source CT has **no appendix mask**. The appendix complex is an atlas graft, translated without scale adjustment to a heuristic point on the right inferior colon. This is **not clinically validated registration**. Use `--anchor X Y Z` to provide a reviewed base position in centred RAS metres. The scene does not yet model insufflation, tissue cutting, bleeding or completion of appendectomy. CT provides geometry, not visible tissue colour; materials are procedural.
+The source CT has **no appendix mask**. The appendix complex is an atlas graft, rigidly positioned without scale adjustment at a heuristic point on the right inferior colon. This is **not clinically validated registration**. The checked-in `profiles/s0042_hybrid.json` reduces label overlap by rotating about the fixed base and includes an internal camera initialization verified by RTX segmentation. Residual colon overlap remains. Use `--anchor X Y Z` only with a corresponding reviewed placement. The scene does not yet model insufflation, tissue cutting, bleeding or completion of appendectomy. CT provides geometry, not visible tissue colour; materials are procedural.
 
 ## Build
 
 Use the existing asset-processing Python environment (numpy, scipy, trimesh, usd-core):
 
 ```powershell
-python ct_appendectomy/build_scene.py --source ../appendectomy_lab/assets
+python ct_appendectomy/build_scene.py --source ../appendectomy_lab/assets --placement ct_appendectomy/profiles/s0042_hybrid.json
 ```
 
 ## Isaac Sim 5.1
@@ -52,8 +52,43 @@ The interactive runner selects `/World/Endoscope` again after the deformable sta
 
 ## Blunt-tip contact milestone
 
-`./run-ct.ps1 -Contact -Interactive` runs a 5 mm radius kinematic sphere against the base-pinned appendix. The sphere moves 12 mm over 120 frames. No grip attachment is present: tissue responds through PhysX collision. The desktop launcher uses this mode and `--lock-endoscope` to restore the authored camera pose on each interactive frame. Omit this flag when free camera navigation is desired.
+`./run-ct.ps1 -Contact -Interactive` runs a 5 mm radius kinematic sphere against the base-pinned appendix. The sphere moves 12 mm over 120 frames. No grip attachment is present: tissue responds through PhysX collision. The desktop launcher now uses the hinged-forceps fixture described below, with `--lock-endoscope` to restore the authored camera pose on each interactive frame. Omit this flag when free camera navigation is desired.
 
 `--contact-probe --disable-tool-contact` repeats the same prescribed trajectory with tip collision disabled, providing a negative control. These are mechanics smoke tests, not identified tissue-response validation or surgical-force limits. Zero gravity and estimated material parameters remain. Surrounding organs are not deformable.
 
 Static triangle-mesh colliders are authored for 11 CT structures but disabled by default. `--experimental-ct-contact` enables them for diagnosis. The initial atlas graft overlaps CT anatomy: enabling all CT contacts failed the base-drift/stability gate (about 4.75 mm base drift and 91.9 mm maximum displacement). Do not use that mode for training until registration and initial penetration are repaired. The failed result is retained alongside the successful contact and negative-control reports.
+
+## Internal camera and CT-derived visual enclosure
+
+The earlier Endoscope camera looked at isolated organs against an empty background. The raw experimental builder pose approaches from 70 mm medial, 55 mm anterior and 25 mm superior; it failed the visibility audit. The checked-in profile instead uses a collision-free anterior-hemisphere initialization at a 65 mm target distance. Both use a 14 mm focal length and camera-mounted lighting. The builder checks that the camera lies inside the visual body enclosure and outside every CT organ mesh. This is not a calibrated trocar trajectory.
+
+`body_envelope.py` extracts the largest filled body cross-section at HU > -500 on downsampled source CT, then creates an inner surface with a 10 mm inset. The NIfTI affine and the existing CT centering transform preserve alignment with the organ meshes. The source CT SHA-256 is verified. This requires nibabel, scipy, scikit-image, trimesh and rtree in the asset environment.
+
+This enclosure is a **visual approximation derived from the body contour**, not a peritoneal segmentation, a physical abdominal wall or a pneumoperitoneum model. It has no collider. A tested atlas peritoneum surface was open and did not enclose the scene, so it is not used as a substitute for a closed cavity. Patient-specific cavity segmentation, registration, wall mechanics, insufflation and calibrated laparoscopic optics remain future work. Camera placement is anatomical initialization, not validated port calibration.
+
+## Evidence-driven scene preparation
+
+`fit_atlas.py` optimizes only rigid rotation about the existing base, using signed distance fields from CT masks. It preserves CT organ geometry and records mask/CT/atlas hashes. `anatomy_audit.py` then checks sampled atlas vertices against actual triangle meshes; the distance-field optimizer alone is not a registration pass. `plan_camera.py` searches camera centres inside the visual envelope and outside organ meshes without hiding geometry. It does not validate the shaft or port path.
+
+The runner captures RGB, semantic IDs and metric depth from the same render product. `--require-appendix-visible` requires the appendix to occupy at least 0.5 percent of that frame; this is an engineering visibility gate, not a clinical camera assessment. Ground-truth arrays stay in ignored `out/`. The validated static profile produced 9.44 percent appendix coverage at 1280×720.
+
+`--forceps-probe` adds two hinged collision jaws with a close/hold/lift/open sequence and no grip attachment. `--disable-tool-contact` is its negative control. This is a fixture experiment, not yet a trocar-constrained clinical instrument. `instrument_kinematics.py` separately implements a bounded RCM command model; integration with physical jaws remains pending. `tissue_metrics.py` records tetrahedron inversion and volume ratios, in addition to displacement and base drift.
+
+`--forceps-rl-smoke` exercises the two-action `AppendixForcepsEnv` (jaw closure and vertical lift), including RGB rendering without advancing time, reset, invalid-action rejection and termination. It is a contact-lift fixture with privileged observations, not a complete surgical policy. A saved baseline must pass the entire smoke report before it is treated as validated. Command-line helper: `./run-ct.ps1 -ForcepsRLSmoke`.
+
+The action increments closure by 0.025 and vertical position by 0.2 mm per normalized unit, bounded to [0, 1] and [0, 16 mm]. Two rendered 1/60-second ticks synchronize kinematic jaw commands with four 1/120-second physics steps. The seven-value privileged observation contains the two commands, three centroid displacements, base drift and grasp tracking error. Success requires ten consecutive held steps with closure at least 0.99, commanded lift at least 8 mm, tissue lift at least 6 mm and tracking error below 4 mm. Base drift over 1 mm, displacement over 50 mm or tetrahedron inversion terminates with failure. These are fixture criteria, not clinical injury thresholds. The episode limit is 220 actions. The scripted baseline succeeds in 189 actions; no learned policy is claimed.
+
+`./run-ct.ps1 -Forceps -Interactive` opens the physical fixture with sliders for jaw closure and lift. It starts after the scripted close/lift/open probe. The initial tool is already positioned at the tissue; free approach, shaft collision and port-constrained manipulation are not implemented in this fixture.
+
+The updated desktop probe passed and its Isaac window was enumerated on Windows. The UI automation tool failed to activate that window twice, so the new slider interaction and visible desktop presentation remain unverified; saved RTX image validation does not substitute for that check.
+
+`./validate-ct.ps1` rebuilds the checked-in profile and sequentially runs render-only, contact RL, a matching collision-disabled negative control and the original attachment RL regression on the same scene hash. It requires fresh successful JSON reports, checks the control does not move tissue by more than 0.5 mm or falsely pass grasp, and stops at a failure. Output and per-case logs stay in ignored `out/ct_appendectomy/suite` and `.cache`. Timing includes startup/cooking and is not a frame-rate benchmark.
+
+## Isolated cut topology and GPU mechanics
+
+```powershell
+python ct_appendectomy/cut_benchmark.py --source out/ct_appendectomy/appendix.ply --out out/ct_appendectomy/cut_topology_voxel
+python ct_appendectomy/cut_gpu_probe.py --source out/ct_appendectomy/cut_topology_voxel/cut_mesh.npz --out out/ct_appendectomy/cut_gpu
+```
+
+Use the asset/Newton Python 3.12 environment for these commands. They do not run inside Isaac's Python 3.11 environment. The topology benchmark remeshes the closed atlas surface as a 2 mm voxel solid and splits it along an infinite plane. The GPU test advances the already separated tetrahedra using Newton VBD. It checks volume, disconnection, fixed-side drift and free-side translation. This is **not live cutting**, a hollow appendix model, finite-blade tissue fracture or coupled appendectomy. The PhysX-cooked tetrahedra failed the input manifold gate and are not silently repaired by deleting cells.

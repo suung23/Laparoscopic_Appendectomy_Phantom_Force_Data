@@ -1,0 +1,32 @@
+{
+  "engine": "Newton 1.4 / Warp CUDA VBD",
+  "scope": "post-cut disconnected solid FEM coupon",
+  "source_sha256": "93d0e8aa55eec15898611e4ef6cfc5e884c2ca76fd5ba2756df526430843c6aa",
+  "device": "NVIDIA GeForce RTX 4090",
+  "simulated_seconds": 2.0,
+  "wall_seconds_including_kernel_load": 12.764669199998025,
+  "fixed_half_max_drift_m": 0.0,
+  "free_half_mean_displacement_m": [
+    0.0,
+    -3.725792119269045e-09,
+    0.020000450313091278
+  ],
+  "expected_free_displacement_m": [
+    0,
+    0,
+    0.02
+  ],
+  "tissue_health": {
+    "tetrahedra": 13044,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 0,
+    "minimum_signed_volume_ratio": 0.9999990686758432,
+    "median_volume_ratio": 1.0,
+    "total_absolute_volume_ratio": 1.0000000015458306,
+    "p99_absolute_volume_change": 2.328310393373556e-07
+  },
+  "live_cut_during_step": false,
+  "isaac_coupling": false,
+  "appendectomy_completed": false,
+  "status": "passed"
+}

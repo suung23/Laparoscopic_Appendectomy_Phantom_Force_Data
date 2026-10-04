@@ -40,7 +40,7 @@ def mesh_prim(stage, path, mesh, color, roughness=.32):
     return obj
 
 
-def build(source, output, anchor=None):
+def build(source, output, anchor=None, placement=None, camera_eye=None):
     source, output = Path(source), Path(output)
     output.mkdir(parents=True, exist_ok=True)
     ctmeta = json.loads((source/'ct.json').read_text())
@@ -70,7 +70,25 @@ def build(source, output, anchor=None):
             raise ValueError('Anchor must contain three finite coordinates in metres')
         if np.linalg.norm(target-colon.centroid)>1.:
             raise ValueError('Anchor is over one metre from the colon; check coordinate units')
-    offset = target - atlas_base
+    atlas_rotation=np.diag([-1.,-1.,1.])
+    placement_data=None
+    if placement is not None:
+        placement_data=json.loads(Path(placement).read_text(encoding='utf-8'))
+        atlas_rotation=np.asarray(placement_data['rotation'],float)
+        if atlas_rotation.shape!=(3,3) or not np.isfinite(atlas_rotation).all():
+            raise ValueError('Invalid atlas rotation')
+        if not np.allclose(atlas_rotation.T@atlas_rotation,np.eye(3),atol=1e-6) or not np.isclose(np.linalg.det(atlas_rotation),1):
+            raise ValueError('Atlas transform must be a proper rigid rotation')
+        if placement_data['ct_sha256']!=ctmeta['ct_sha256'] or not np.allclose(placement_data['atlas_base_m'],atlas_base):
+            raise ValueError('Placement source mismatch')
+        if placement_data.get('atlas_sha256')!=digest(source/'anatomy.glb'):
+            raise ValueError('Placement atlas hash mismatch; regenerate the fit')
+        if not np.allclose(placement_data['ct_anchor_m'],target):
+            raise ValueError('Placement anchor mismatch')
+    offset = target - atlas_rotation @ atlas_base
+    atlas_transform_m=np.eye(4)
+    atlas_transform_m[:3,:3]=atlas_rotation
+    atlas_transform_m[:3,3]=offset
     stage = Usd.Stage.CreateNew(str(output/'ct_appendectomy.usda'))
     world = UsdGeom.Xform.Define(stage, '/World')
     stage.SetDefaultPrim(world.GetPrim())
@@ -86,7 +104,7 @@ def build(source, output, anchor=None):
         structures.append({'name':name,'source':'CT','triangles':len(mesh.faces)})
     for key in ('appendix_FJ2565','mesoappendix_FJ3397','appendicular_artery_FJ3410'):
         mesh=atlas.geometry[key].copy()
-        mesh.apply_translation(offset)
+        mesh.apply_transform(atlas_transform_m)
         name=key.split('_FJ')[0]
         UsdGeom.Xform.Define(stage,'/World/Atlas/'+name)
         color=(.72,.3,.25) if name=='appendix' else (.72,.52,.27)
@@ -95,12 +113,27 @@ def build(source, output, anchor=None):
         obj.GetPrim().SetCustomDataByKey('source','BodyParts3D atlas; heuristic placement, not CT segmentation')
         mesh.export(output/(name+'.ply'))
         structures.append({'name':name,'source':'atlas','triangles':len(mesh.faces)})
+    from body_envelope import build_envelope
+    ct_path=source.parent/'public_ct/s0042/ct.nii.gz'
+    if digest(ct_path)!=ctmeta['ct_sha256']: raise ValueError('CT source hash mismatch')
+    envelope=build_envelope(ct_path,ctmeta['world_from_RAS'])
+    mesh_prim(stage,'/World/BodyEnvelope/render',envelope,(.48,.20,.18),roughness=.55)
+    structures.append({'name':'body_envelope','source':'CT body contour inset 10mm; visual approximation, not peritoneal segmentation','triangles':len(envelope.faces)})
     camera=UsdGeom.Camera.Define(stage,'/World/Endoscope')
-    aim=appendix.centroid+offset
-    eye=aim+np.array([0,.11,.06])
+    aim=atlas_rotation @ appendix.centroid+offset
+    eye=aim+np.array([-.07,.055,.025])
+    if camera_eye is None and placement_data:
+        camera_eye=placement_data.get('camera_eye_m')
+    if camera_eye is not None:
+        eye=np.asarray(camera_eye,float)
+        if eye.shape!=(3,) or not np.isfinite(eye).all(): raise ValueError('Invalid camera eye')
+    camera_inside=[name for name,mesh in ct.geometry.items() if mesh.contains([eye])[0]]
+    camera_inside_envelope=bool(envelope.contains([eye])[0])
+    if not camera_inside_envelope: raise ValueError('Camera outside CT-derived visual body envelope')
+    if camera_inside: raise ValueError('Endoscope intersects CT organ interiors: '+','.join(camera_inside))
     view=Gf.Matrix4d().SetLookAt(Gf.Vec3d(*eye),Gf.Vec3d(*aim),Gf.Vec3d(0,0,1))
     UsdGeom.Xformable(camera).AddTransformOp().Set(view.GetInverse())
-    camera.CreateFocalLengthAttr(18)
+    camera.CreateFocalLengthAttr(14)
     camera.CreateHorizontalApertureAttr(24)
     camera.CreateVerticalApertureAttr(13.5)
     camera.CreateClippingRangeAttr(Gf.Vec2f(.001,2))
@@ -118,7 +151,12 @@ def build(source, output, anchor=None):
         'appendix_is_patient_specific':False,'registration_validated':False,
         'placement_method':'manual anchor' if anchor is not None else 'heuristic right inferior colon',
         'atlas_base_m':atlas_base.tolist(),'ct_anchor_m':target.tolist(),'atlas_translation_m':offset.tolist(),
+        'atlas_rotation':atlas_rotation.tolist(),'atlas_orientation':'CT collision-constrained rigid initialization; not registered' if placement_data else 'heuristic 180-degree axial rotation directing graft medially; not registered',
+        'placement_fit':placement_data,
         'camera_eye_m':eye.tolist(),'camera_aim_m':aim.tolist(),'structures':structures,
+        'camera_inside_ct_organs':camera_inside,
+        'camera_placement':'explicit collision-checked initialization; not port calibrated' if camera_eye is not None else 'medial/anterior approach toward right lower quadrant; not port calibrated',
+        'body_envelope':{'source':'CT body contour','ct_sha256':ctmeta['ct_sha256'],'inset_mm':10,'peritoneum_segmentation':False,'physical_cavity':False,'camera_inside':camera_inside_envelope},
         'appearance':'procedural material, not measured tissue colour',
         'limitations':['No insufflation model','No validated anatomy registration','No cutting or bleeding in exported asset scene']}
     stage.GetRootLayer().customLayerData={'scene_type':'CT + atlas hybrid; registration unvalidated'}
@@ -133,5 +171,7 @@ if __name__=='__main__':
     p.add_argument('--source',type=Path,default=ROOT.parent/'appendectomy_lab'/'assets')
     p.add_argument('--out',type=Path,default=ROOT/'out'/'ct_appendectomy')
     p.add_argument('--anchor',type=float,nargs=3,help='Reviewed attachment location in centred RAS metres')
+    p.add_argument('--placement',type=Path,help='Unvalidated constrained atlas fit JSON')
+    p.add_argument('--camera-eye',type=float,nargs=3,help='Explicit camera eye in centred RAS metres')
     a=p.parse_args()
-    build(a.source,a.out,a.anchor)
+    build(a.source,a.out,a.anchor,a.placement,a.camera_eye)

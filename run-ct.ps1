@@ -3,6 +3,8 @@ param(
     [string]$IsaacPython = (Join-Path $PSScriptRoot '../../work/isaac-venv/Scripts/python.exe'),
     [switch]$Physics,
     [switch]$Contact,
+    [switch]$Forceps,
+    [switch]$ForcepsRLSmoke,
     [switch]$Retraction,
     [switch]$RLSmoke,
     [switch]$Interactive
@@ -11,11 +13,13 @@ $ErrorActionPreference='Stop'
 foreach ($python in @($AssetPython,$IsaacPython)) {
     if (-not (Test-Path -LiteralPath $python)) { throw 'Python environment missing; supply -AssetPython and -IsaacPython.' }
 }
-& $AssetPython (Join-Path $PSScriptRoot 'ct_appendectomy/build_scene.py')
+& $AssetPython (Join-Path $PSScriptRoot 'ct_appendectomy/build_scene.py') --placement (Join-Path $PSScriptRoot 'ct_appendectomy/profiles/s0042_hybrid.json')
 if ($LASTEXITCODE) { throw 'CT asset build failed' }
 $runArgs=@((Join-Path $PSScriptRoot 'ct_appendectomy/run_scene.py'))
 if ($Physics) { $runArgs+='--physics' }
 if ($Contact) { $runArgs+='--contact-probe' }
+if ($Forceps) { $runArgs+='--forceps-probe'; $runArgs+='--frames'; $runArgs+='480' }
+if ($ForcepsRLSmoke) { $runArgs+='--forceps-rl-smoke'; $runArgs+='--frames'; $runArgs+='480' }
 if ($Retraction) { $runArgs+='--retraction-probe' }
 if ($RLSmoke) { $runArgs+='--rl-smoke' }
 if ($Interactive) { $runArgs+='--interactive' } else { $runArgs+='--headless' }

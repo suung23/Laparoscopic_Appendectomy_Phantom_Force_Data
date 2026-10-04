@@ -39,5 +39,8 @@ GitHub 비공개 저장소: https://github.com/Rosota-Intelligence-Institute/rii
 
 `ct_appendectomy/` contains the CT + appendix Isaac Sim pipeline.
 Run `./run-ct.ps1 -RLSmoke` for GPU FEM and Gymnasium checks.
-Run `./run-ct.ps1 -Retraction -Interactive` for the visible scripted retraction scene.
+Run `./run-ct.ps1 -Forceps -Interactive` for the internal endoscope view and jaw-contact controls.
+Run `./validate-ct.ps1` for the complete local CT integration suite.
 See `ct_appendectomy/README.md` for prerequisites, API and limitations.
+
+`DEVELOPMENT_PLAN.md` records the six development gates, execution evidence and remaining work. Current jaw-contact RL is a controlled lift task; live cutting, ligation, bleeding and a complete appendectomy episode remain unimplemented. The separate cut-topology/GPU benchmark is not wired into the Isaac procedure.

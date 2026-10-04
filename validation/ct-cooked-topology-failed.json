@@ -1,0 +1,7 @@
+{
+  "status": "failed",
+  "scope": "input mesh topology gate",
+  "error": "Non-manifold tetrahedral mesh",
+  "source_sha256": "082359aeb9db3f11dc66fd35dd9f9dc018a3f0d691c0ba9a0997c52ae93ec608",
+  "appendectomy_completed": false
+}

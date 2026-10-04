@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "method": "rigid rotation about fixed heuristic colon anchor using downsampled CT mask SDF",
+  "registration_validated": false,
+  "appendix_patient_specific": false,
+  "ct_sha256": "981d7e9b343e7c168c45dfec23abc7ae37c26235e72ad933c007273d6abe64ee",
+  "mask_sha256": {
+    "colon.nii.gz": "4592c2aaf92622f881604bbdf218396869a3ae258878fe44f656306eaadc4af3",
+    "duodenum.nii.gz": "563d89c4a81411fadef84594c544a22d253e4a07199147041fe0ae4323bccdcb",
+    "iliac_artery_left.nii.gz": "b3b5fcb72d88e16224b6b45f086c7a2c17a7bee0afc4c631898dcae084274114",
+    "iliac_artery_right.nii.gz": "e880e287f0d98a0f28f18320edef6da916f8861e25e751ea9d68550c609c2bdd",
+    "iliac_vena_left.nii.gz": "c3f1e24d4f76ab5ff90ce651614d7572d142cde0a2a1b00c656da292f3df67fb",
+    "iliac_vena_right.nii.gz": "3869ec16bdb35a4593920a8a7775311878d76e5cd93a957eac6d60c6afc6b40d",
+    "iliopsoas_left.nii.gz": "8a235e8331817a38f864b83f03c51ff39398e19cd546568687f19c5fc5e48669",
+    "iliopsoas_right.nii.gz": "138c52d87b39c81346442a863ab829a0bc8176ccb48519cd192b903d04c1ac88",
+    "liver.nii.gz": "b404be21422a74ee58511031bd6d51ec4dad84fdccdc943c3ae348f809f854e6",
+    "small_bowel.nii.gz": "bbade854edf4a68b14074c85b3bb6752bfba4e4085ef3ce3e400b38e7783307e",
+    "urinary_bladder.nii.gz": "e1510a3a7f0ff3e6f157a813c95f68f420999f54ff59c2013461a7616ed44a73"
+  },
+  "atlas_base_m": [
+    -0.07944491577148438,
+    0.017841136932373047,
+    -0.020901439666748046
+  ],
+  "ct_anchor_m": [
+    0.128426513671875,
+    0.033,
+    -0.02025
+  ],
+  "rotation": [
+    [
+      0.3624658357300754,
+      -0.3689717005003237,
+      -0.855849520744387
+    ],
+    [
+      -0.5989710396949393,
+      -0.7957652304386567,
+      0.08939458390570879
+    ],
+    [
+      -0.7140393627351793,
+      0.480226594697556,
+      -0.5094410723625724
+    ]
+  ],
+  "translation_m": [
+    0.1459169689726343,
+    0.0014806281461938048,
+    -0.09619263730233675
+  ],
+  "optimizer_converged": true,
+  "metrics": {
+    "objective": 0.8504488988164867,
+    "sample_count": 3072,
+    "distal_penetration_over_0_5mm_fraction": 0.022660098522167486,
+    "body_depth_below_12mm_fraction": 0.0,
+    "minimum_organ_clearance_mm": -3.319188117980957
+  },
+  "limitations": [
+    "3mm distance-field sampling; mesh parity audit still required",
+    "Base is heuristic, not a reviewed cecal landmark",
+    "No insufflation or organ displacement modeled"
+  ],
+  "camera_eye_m": [
+    0.16644123043475945,
+    0.05221106709810362,
+    0.010478637404385482
+  ],
+  "camera_validation": "Geometric initialization and RTX visibility only; no validated trocar path",
+  "atlas_sha256": "85bb383edac0175c2792424e9dcd41096f55efc238b8fab908b695ac6f034a16"
+}

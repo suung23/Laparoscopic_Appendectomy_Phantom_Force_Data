@@ -1,0 +1,52 @@
+{
+  "engine": "Isaac Sim 5.1 / PhysX",
+  "mode": "hinged forceps contact probe",
+  "appendectomy_completed": false,
+  "appendix_patient_specific": false,
+  "registration_validated": false,
+  "cooked_nodes": 1313,
+  "gravity_m_s2": 0.0,
+  "material_identified": false,
+  "forceps_lift_checkpoint_m": 0.010150090504724246,
+  "forceps_tracking_error_m": 0.0022925203630119514,
+  "camera_ground_truth": {
+    "resolution": [
+      1280,
+      720
+    ],
+    "semantic_frame_fraction": {
+      "BACKGROUND": 0.0,
+      "UNLABELLED": 0.011077473958333334,
+      "iliac_artery_right": 0.004626736111111111,
+      "urinary_bladder": 0.002348090277777778,
+      "iliopsoas_right": 0.01725043402777778,
+      "iliac_vena_right": 0.0021180555555555558,
+      "appendicular_artery": 0.0046484375,
+      "mesoappendix": 0.047522786458333334,
+      "appendix": 0.049654947916666664,
+      "small_bowel": 0.021527777777777778,
+      "body_envelope": 0.5891048177083333,
+      "colon": 0.25012044270833333
+    },
+    "depth_finite_fraction": 1.0,
+    "appendix_visibility_gate_passed": true,
+    "threshold_frame_fraction": 0.005,
+    "clinical_view_validated": false
+  },
+  "image_std": 92.1702361033872,
+  "finite_nodes": true,
+  "max_node_displacement_m": 0.05772657288745023,
+  "physics_validation": "close/hold/lift/open with two collision jaws; no grip attachment",
+  "tool_collision_enabled": true,
+  "pin_drift_m": 0.00033540254385684703,
+  "forceps_grasp_lift_passed": true,
+  "forceps_geometry": {
+    "jaw_length_m": 0.018,
+    "closed_angle_rad": 0.5194404446356433,
+    "local_tissue_diameter_m": 0.01322516734947328,
+    "clinical_cad": false
+  },
+  "status": "failed",
+  "error_type": "RuntimeError",
+  "error": "Forceps contact stability gate failed"
+}

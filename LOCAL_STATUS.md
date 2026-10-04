@@ -34,4 +34,12 @@ Before product release, record acquisition consent/rights for reconstruction dat
 
 ## Contact extension
 
-The CT path now includes a base-pinned, collision-driven blunt-tip contact probe, separate from pre-attached retraction. See `ct_appendectomy/README.md`. All-organ collision remains experimental: the provisional atlas registration creates initial overlaps and fails stability checks. Default contact mode disables those CT colliders while testing the physical tool/appendix interaction. This does not implement grasping, coupled mesentery or cutting.
+The CT path includes both a base-pinned blunt-tip probe and a hinged-jaw contact-lift fixture, separate from pre-attached retraction. See `ct_appendectomy/README.md`. All-organ collision remains experimental: the provisional atlas registration creates initial overlaps and fails stability checks. Default contact mode disables those CT colliders while testing physical tool/appendix interaction. Coupled mesentery and live cutting remain unimplemented.
+
+## Internal view, jaw RL and cut research milestone
+
+The checked-in CT/atlas placement profile and camera produce an internal 1280×720 RTX view with approximately 9.4 percent appendix coverage. The camera centre is outside CT organ meshes and inside a CT-derived visual envelope. This envelope is not segmented peritoneum or a pressure-driven abdominal wall. About 9 percent of sampled appendix vertices still overlap the colon; anatomical registration is not approved.
+
+Two hinged, ridged collision jaws lift the base-pinned deformable appendix without a grip attachment. The separate two-action Gym task passes a scripted close/hold/lift baseline, exact initial-observation reset, non-advancing RGB render, invalid-input rejection and terminal/truncation checks. It has no trained policy or integrated trocar constraint. RCM mathematics is tested separately. Current cooked node count is 1,313; the 1,388-node count above belongs to the earlier scene.
+
+A separate conforming solid voxel mesh supports an offline planar tetrahedral split. Newton CUDA validates mechanical independence of the already-separated halves. This does not yet update a live Isaac mesh, simulate a finite blade, create a hollow stump, ligate vessels or complete appendectomy. `DEVELOPMENT_PLAN.md` and validation JSON files record both successful and failed experiments. All six product milestones remain open.

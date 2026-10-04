@@ -8,7 +8,7 @@ class IsaacLauncher {
    string root=AppDomain.CurrentDomain.BaseDirectory;
    string python=Path.GetFullPath(Path.Combine(root,"../../work/isaac-venv/Scripts/python.exe"));
    if(!File.Exists(python)) throw new FileNotFoundException("Isaac Python environment missing",python);
-   var start=new ProcessStartInfo(python,"ct_appendectomy/run_scene.py --contact-probe --interactive --lock-endoscope --out out/ct_appendectomy/desktop_probe");
+   var start=new ProcessStartInfo(python,"ct_appendectomy/run_scene.py --forceps-probe --frames 480 --require-appendix-visible --interactive --lock-endoscope --out out/ct_appendectomy/desktop_probe");
    start.WorkingDirectory=root; start.UseShellExecute=false; start.CreateNoWindow=true;
    start.EnvironmentVariables["OMNI_KIT_ACCEPT_EULA"]="YES";
    start.RedirectStandardOutput=true; start.RedirectStandardError=true;

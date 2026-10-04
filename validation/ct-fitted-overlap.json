@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "scene_sha256": "91b01de665379e16b96684d4324a069684e4b6af388db2681f5608cf2608365b",
+  "method": "Deterministic vertex samples, two-ray parity, not volume overlap",
+  "registration_validated": false,
+  "structures": {
+    "/World/Atlas/appendix/render": {
+      "sample_count": 128,
+      "ct_overlap": {
+        "/World/CT/colon": {
+          "inside_sample_fraction": 0.09375,
+          "distal_inside_sample_fraction": 0.07258064516129033,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/duodenum": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliac_artery_left": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliac_artery_right": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliac_vena_left": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliac_vena_right": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliopsoas_left": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliopsoas_right": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/liver": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/small_bowel": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/urinary_bladder": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        }
+      }
+    },
+    "/World/Atlas/mesoappendix/render": {
+      "sample_count": 128,
+      "ct_overlap": {
+        "/World/CT/colon": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/duodenum": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliac_artery_left": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliac_artery_right": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliac_vena_left": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliac_vena_right": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliopsoas_left": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliopsoas_right": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/liver": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/small_bowel": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/urinary_bladder": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        }
+      }
+    },
+    "/World/Atlas/appendicular_artery/render": {
+      "sample_count": 128,
+      "ct_overlap": {
+        "/World/CT/colon": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/duodenum": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliac_artery_left": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliac_artery_right": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliac_vena_left": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliac_vena_right": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliopsoas_left": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/iliopsoas_right": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/liver": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/small_bowel": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        },
+        "/World/CT/urinary_bladder": {
+          "inside_sample_fraction": 0.0,
+          "distal_inside_sample_fraction": 0.0,
+          "parity_disagreement_fraction": 0.0,
+          "target_watertight": true
+        }
+      }
+    }
+  }
+}

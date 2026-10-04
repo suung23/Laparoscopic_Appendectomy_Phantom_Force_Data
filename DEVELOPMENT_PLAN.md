@@ -1,0 +1,60 @@
+# 충수절제 시뮬레이터 개발·검증 계획
+
+2026-10-04. 목표는 CT 해부학 기반 복강 내시경 영상과 도구–조직 상호작용을 갖춘 appendectomy RL 환경이다. 완료는 아래 단계별 실행 증거로 판정한다. 외과적 타당성과 물성 정확성은 별도 전문가/실험 검증을 요구하며 코드 테스트로 대체하지 않는다.
+
+## M1 — 해부학과 실제 내부 시야 (진행 중)
+
+1. CT/atlas 좌표, 충수의 맹장 부착, 장기 중첩을 수치로 진단한다.
+2. camera/port와 scope shaft를 분리하고 도구 진입 경로의 충돌을 검사한다.
+3. 임시 body contour와 실제 복막·기복 상태를 구분한다. 카메라 조정으로 해결되지 않는 장기 가림은 노출 과제로 다룬다.
+4. Isaac RGB·semantic segmentation·depth와 현재 시야 검사를 같은 장면에서 저장한다.
+5. 합격: 투시/장기 숨김 없이 충수 작업 부위가 실제 RGB에 나타남, camera 조직 침투 없음, 재시작 시 동일 시야, geometry/optics 파라미터와 한계 기록. 임상적인 port 타당성은 전문가 확인 전 pending.
+
+## M2 — 기구와 물리 접촉
+
+두 기구의 shaft/jaw, 포트 기반 RCM 및 속도/행동 제한을 구현한다. 접촉 파지와 보조 attachment를 구분한다. 접근–닫기–견인–열기 시퀀스, 비접촉 negative control, 관통/미끄러짐/핀 drift를 측정한다. 실제 물성 데이터가 없으면 estimated로 유지한다.
+
+## M3 — 조직 연결·절단·결찰
+
+맹장–충수–mesoappendix–혈관의 연결 상태를 물리 표현에 연결한다. SOFA 및 MPM 후보를 동일 coupon 실험으로 비교한 뒤 solver를 결정한다. 실제 topology 분리, 절단 표면 갱신, ligation constraint, 비의도 손상, 초기 topology로의 reset을 검증한다. 시각적인 절단 gesture는 합격이 아니다.
+
+## M4 — 수술 과제와 RL
+
+노출·혈관 제어·base closure·절제·회수·최종 검사의 simulator state와 성공/실패를 정의한다. Gymnasium seed/reset/step, terminated/truncated, RGB와 privileged state 분리, 잘못된 action 거절을 검증한다. scripted 성공·실패 baseline 후 작은 학습 실험으로 환경이 실제 학습 가능한지 확인한다.
+
+## M5 — 충실도와 성능
+
+RTX4090 단일 환경 1280×720 end-to-end 30 Hz를 개발 목표로 측정한다. p50/p95, VRAM, physics/render/transfer 지연을 분리한다. 수술 영상과 광학/재질을 비교하고 해부학 변이 및 seed별 회귀 검사를 수행한다. 느린 물리 정밀 모드와 학습 모드의 차이를 기록한다.
+
+## M6 — 배포 가능한 회사 자산
+
+설치/실행 자동화, 버전 고정, asset provenance/개별 라이선스, 재현 가능한 평가 명령, 실패 기록, 문서를 정리한다. 개인정보·키·사용자 대화·원본 환자 식별정보는 저장소에 넣지 않는다. 사용자 요청 없는 공개 배포는 하지 않는다.
+
+## 완료 현황
+
+- 기존 재현 결과: PhysX sphere 접촉 및 attachment 견인, 견인 Gym API.
+- 실패 확인: 실험 카메라의 충수 가시성 0 sampled pixels; CT/atlas overlap으로 전체 장기 접촉 불안정.
+- 미완료: M1–M6 전체 합격. 진행 결과는 아래에 증거 파일과 함께 추가한다.
+
+참고: research/REFERENCE_REVIEW.md, research/IMPLEMENTATION_DECISION.md.
+
+## 2026-10-04 실행 증거
+
+- M1: CT mask distance field에 따른 고정 부착점 회전 최적화, mesh overlap 검사, 내부 camera 탐색을 구현했다. 실제 RTX 1280×720에서 충수 9.44% 화면 점유율과 RGB/semantic/depth 출력을 확인했다 (`validation/ct-internal-view.json`, `ct-internal-view.png`). 원래 충수 표면 샘플 약 30%가 대장 안에 있었고, 수정 후 약 9%로 감소했다. 중첩이 남아 있어 해부학 정합 합격은 아니다 (`ct-fitted-overlap.json`).
+- M2: 두 hinged jaw의 실제 충돌, inner ridges, close/hold/lift/open 및 negative control을 구현했다. 자동 deformable collision margin이 첫 프레임 큰 변위를 유발해 contact 0.5 mm / rest 0 mm로 명시했다. 실패한 실행 결과도 validation에 보존한다. RCM 수학 모델은 구현·단위 검증했으나 jaw 물리와의 통합은 아직 별도 작업이다.
+- M3: offline planar tetrahedral split, 양쪽 닫힌 절단면, 체적 보존, velocity interpolation을 구현했다. 2 mm atlas voxel volume에서 연결 성분 1→2와 체적 오차 0을 확인했다 (`ct-cut-topology.json`). 이후 Newton CUDA에서 고정측 drift 0, 자유측 약 20.00045 mm 이동, inverted tetrahedra 0을 확인했다 (`ct-cut-gpu.json`). 실행 중 절단, finite blade, damage law, 혈관/결찰 및 Isaac 연결은 아직 구현하지 않았다.
+- 추가 발견: 현재 PhysX 자동 생성 volume mesh는 절단 입력 topology 검사에서 non-manifold face를 포함했다 (`ct-cooked-topology-failed.json`). 그대로 절단 엔진에 투입하지 않고 별도 conforming volume을 사용했다. Cook/finite-state 성공은 절단용 mesh 적합성 인증이 아니다.
+- M2/M4: 같은 profile의 접촉 RL 시험에서 scripted baseline이 189 action 후 약 7.60 mm lift로 성공했다. 초기 관측 reset 오차와 RGB 획득에 따른 상태 변화는 모두 0이었다. 잘못된 action, 종료 후 action, time-limit truncation 검사도 통과했다 (`ct-forceps-rl.json`). 접촉을 끈 동일 480-frame 대조 시험은 최대 변위 약 0.0338 mm, lift 0, grasp 성공 false였다 (`ct-forceps-negative-control.json`). 물성 식별, 실제 손상 한계, image policy 학습을 검증한 결과는 아니다.
+- M6: 원본 42개 파일의 Git blob hash 일치, 해부학·카메라·RCM·체적·절단 관련 단위 시험 13개 통과. `validate-ct.ps1`은 같은 source scene hash의 렌더·접촉 RL·negative control·기존 견인 RL을 순서대로 실행하고 report freshness와 성공 상태를 확인한다. 실패 실험과 미완료 기능을 숨기지 않고 함께 보존한다.
+- 통합 suite 4개 모두 통과 (`ct-integration-suite.json`). 데스크톱 launcher도 새 forceps probe를 통과했고 `Isaac Sim Python 5.1.0` 창이 Windows 목록에 나타났다. 다만 UI 제어 도구의 `failed to activate captured window`가 재시도에서도 발생해 이번 GUI의 사용자 화면 표시·슬라이더 조작은 검증하지 못했다. RTX 저장 영상 검증과 GUI 검증을 구분한다.
+
+전체 M1–M6를 완료로 표시하지 않는다. 다음 통합 순서는 RCM/jaw 통합 → 정합·기복 및 조직 연결 → live topology update → ligation/vascular state → 전체 과제/학습/성능 검증이다.
+
+## 남은 개발의 구체적 통과 조건
+
+1. 정합: 충수 base 연결을 유지하면서 허용된 접합부 외 조직 중첩을 제거한다. 현재 약 9% 표면 샘플 중첩은 실패로 유지한다. CT에 없는 환자별 충수 형상이나 실제 복막을 추측해 ground truth로 취급하지 않는다.
+2. RCM/기구: 두 실제 shaft/jaw의 pose를 고정 port에서 계산하고 도구·장기 충돌을 켠 상태로 접근/파지/견인/해제를 검사한다. 현재 2-action fixture를 이 단계의 성공으로 대체하지 않는다.
+3. 절단: 움직이는 조직에 유한 blade가 접촉할 때만 topology를 갱신하고 위치·속도·질량과 절단면을 전달한다. 현재 offline infinite-plane split은 입력 기하 검증용이다. mesh 재구성 후 state 연속성과 reset을 검사한다.
+4. 결찰/혈관: mesoappendix 및 혈관의 기계적 연결, 혈관 개방 상태, base closure와 stump 누출을 simulator state에 연결한다. 혈관 제어 전 절단과 맹장 손상은 실패 episode가 되어야 한다.
+5. 전체 과제: 노출부터 회수까지 scripted 성공과 각 단계별 실패 사례를 재현한다. 그 다음 실제 학습 정책을 별도 seed에서 평가하고 success rate, 손상, 수행 시간 및 카메라 가림을 기록한다.
+6. 충실도/배포: 수술자 검토 및 물성/영상 기준 데이터에 대한 오차를 확인한다. 30 Hz 목표는 startup 제외 실제 action–physics–RGB loop p50/p95로 측정한다. 회사 자산으로 배포하기 전 모든 사용 자산의 권리·버전·재현 경로를 고정한다.

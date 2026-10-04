@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "source_sha256": "1706f6459b47735bd3f32f0f7597f0d50b5650e3e136b1bf46efff055cea7803",
+  "scope": "offline planar split of solid appendix tetrahedra; not a live surgical cut",
+  "mesh_preparation": "2mm filled atlas voxels, conforming six-tet cube subdivision; block boundary approximation",
+  "plane_normal": [
+    1,
+    0,
+    0
+  ],
+  "plane_offset_m": 0.136,
+  "input_nodes": 1614,
+  "output_nodes": 3652,
+  "input_tetrahedra": 5940,
+  "output_tetrahedra": 13044,
+  "relative_volume_error": 0.0,
+  "components_before": 1,
+  "components_after": 2,
+  "halves": [
+    {
+      "side": -1,
+      "watertight": true,
+      "tetrahedra": 5562
+    },
+    {
+      "side": 1,
+      "watertight": true,
+      "tetrahedra": 7482
+    }
+  ],
+  "live_solver_integrated": false,
+  "finite_blade": false,
+  "damage_law_validated": false,
+  "appendectomy_completed": false,
+  "status": "passed"
+}

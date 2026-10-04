@@ -1,0 +1,81 @@
+{
+  "engine": "Isaac Sim 5.1 / PhysX",
+  "mode": "FEM retraction + Gymnasium",
+  "appendectomy_completed": false,
+  "appendix_patient_specific": false,
+  "registration_validated": false,
+  "source_scene_sha256": "26acbec1de64c3d125e6606cf245995bd6956517acbb5068ca6d588892bb1233",
+  "tissue_collision_offsets_m": {
+    "contact": 0.0005,
+    "rest": 0.0
+  },
+  "cooked_nodes": 1313,
+  "gravity_m_s2": 0.0,
+  "material_identified": false,
+  "camera_ground_truth": {
+    "resolution": [
+      1280,
+      720
+    ],
+    "semantic_frame_fraction": {
+      "BACKGROUND": 0.0,
+      "UNLABELLED": 0.0005707465277777778,
+      "iliac_artery_right": 0.0039800347222222225,
+      "mesoappendix": 0.036083984375,
+      "iliopsoas_right": 0.011043836805555556,
+      "iliac_vena_right": 0.0020106336805555554,
+      "appendicular_artery": 0.004532335069444444,
+      "appendix": 0.09918511284722223,
+      "small_bowel": 0.021996527777777778,
+      "colon": 0.2500271267361111,
+      "body_envelope": 0.5682215711805556,
+      "urinary_bladder": 0.002348090277777778
+    },
+    "depth_finite_fraction": 1.0,
+    "appendix_visibility_gate_passed": true,
+    "threshold_frame_fraction": 0.005,
+    "clinical_view_validated": false
+  },
+  "image_std": 91.8585821321805,
+  "finite_nodes": true,
+  "max_node_displacement_m": 0.012132460316196794,
+  "tissue_health": {
+    "tetrahedra": 4722,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 0,
+    "minimum_signed_volume_ratio": 0.6875791624471462,
+    "median_volume_ratio": 0.9987141742864049,
+    "total_absolute_volume_ratio": 0.9926165944125946,
+    "p99_absolute_volume_change": 0.10988227507922922
+  },
+  "physics_validation": "prescribed 10mm attachment retraction; not contact-based grasp",
+  "pin_drift_m": 0.000101746545945869,
+  "grip_lift_m": 0.010003784886346413,
+  "rl_validation": {
+    "status": "passed",
+    "steps_to_success": 101,
+    "return": 2.008365157766196,
+    "reset_max_error": 0.0,
+    "rgb_shape": [
+      360,
+      640,
+      3
+    ],
+    "render_state_error": 0.0,
+    "invalid_action_rejected": true,
+    "terminal_guard": true,
+    "time_limit_truncates": true,
+    "success_info": {
+      "task": "pre-attached appendix retraction",
+      "is_success": true,
+      "appendectomy_completed": false,
+      "appendix_severed": false,
+      "privileged_state_observation": true,
+      "contact_based_grasp": false,
+      "lift_m": 0.010093751578376843,
+      "pin_drift_m": 8.864626529974397e-05
+    }
+  },
+  "frames": 120,
+  "status": "passed"
+}

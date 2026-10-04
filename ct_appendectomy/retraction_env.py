@@ -56,20 +56,28 @@ class AppendixRetractionEnv(gym.Env):
         self.q0=np.asarray(self.mesh.GetAttribute('points').Get(),float).copy()
         if self.q0.ndim!=2 or not len(self.q0): raise RuntimeError('Cooked deformable nodes unavailable')
         self.pin=np.asarray(self.stage.GetPrimAtPath('/World/BaseAttachment').GetAttribute('omniphysics:vtxIndicesSrc0').Get(),int)
-        self.grip=np.asarray(self.stage.GetPrimAtPath('/World/GripAttachment').GetAttribute('omniphysics:vtxIndicesSrc0').Get(),int)
-        self.op=UsdGeom.Xformable(self.stage.GetPrimAtPath('/World/RetractionHandle')).GetOrderedXformOps()[0]
-        self.origin=np.asarray(self.op.Get(),float).copy()
-        self.command=np.zeros(3)
+        self._bind_stage()
         self.steps=0
         self.previous_lift=0.
         self.done=False
         self.sim.play()
+        for _ in range(getattr(self,'reset_settle_steps',0)):
+            self.sim.step(render=True)
         if self.render_mode=='rgb_array':
             import omni.replicator.core as rep
             self.product=rep.create.render_product('/World/Endoscope',(640,360))
             self.rgb=rep.AnnotatorRegistry.get_annotator('rgb')
             self.rgb.attach([self.product])
-        return self._observe(),self._info(False)
+        observation=self._observe()
+        self.previous_lift=self.lift
+        return observation,self._info(False)
+
+    def _bind_stage(self):
+        from pxr import UsdGeom
+        self.grip=np.asarray(self.stage.GetPrimAtPath('/World/GripAttachment').GetAttribute('omniphysics:vtxIndicesSrc0').Get(),int)
+        self.op=UsdGeom.Xformable(self.stage.GetPrimAtPath('/World/RetractionHandle')).GetOrderedXformOps()[0]
+        self.origin=np.asarray(self.op.Get(),float).copy()
+        self.command=np.zeros(3)
 
     def _observe(self):
         q=np.asarray(self.mesh.GetAttribute('points').Get(),float)
@@ -113,7 +121,7 @@ class AppendixRetractionEnv(gym.Env):
         import omni.replicator.core as rep
         # Pause: image acquisition must not advance the controlled physical state.
         self.sim.pause()
-        rep.orchestrator.step(rt_subframes=4,pause_timeline=True)
+        rep.orchestrator.step(rt_subframes=4,pause_timeline=True,delta_time=0.0)
         pixels=np.asarray(self.rgb.get_data())
         if not self.done: self.sim.play()
         if pixels.shape[:2]!=(360,640): raise RuntimeError('Missing endoscope image')

@@ -1,0 +1,35 @@
+{
+  "engine": "Isaac Sim 5.1 / PhysX",
+  "mode": "render only",
+  "appendectomy_completed": false,
+  "appendix_patient_specific": false,
+  "registration_validated": false,
+  "source_scene_sha256": "26acbec1de64c3d125e6606cf245995bd6956517acbb5068ca6d588892bb1233",
+  "camera_ground_truth": {
+    "resolution": [
+      1280,
+      720
+    ],
+    "semantic_frame_fraction": {
+      "BACKGROUND": 0.0,
+      "UNLABELLED": 0.0,
+      "iliac_artery_right": 0.0039800347222222225,
+      "small_bowel": 0.022114800347222224,
+      "colon": 0.25190104166666666,
+      "urinary_bladder": 0.002348090277777778,
+      "iliac_vena_right": 0.0020106336805555554,
+      "mesoappendix": 0.027127821180555556,
+      "appendix": 0.09442165798611112,
+      "iliopsoas_right": 0.012298177083333334,
+      "appendicular_artery": 0.0029047309027777778,
+      "body_envelope": 0.5808930121527778
+    },
+    "depth_finite_fraction": 1.0,
+    "appendix_visibility_gate_passed": true,
+    "threshold_frame_fraction": 0.005,
+    "clinical_view_validated": false
+  },
+  "image_std": 92.0168744994756,
+  "frames": 8,
+  "status": "passed"
+}
