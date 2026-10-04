@@ -121,8 +121,19 @@ class RosotaCTEnv(gym.Env):
         self.stage.GetRootLayer().Export(str(self.out/'scene.usda'))
         self._audit_tissue('before_initialize')
         from omni.physx import get_physx_cooking_interface
-        if not get_physx_cooking_interface().cook_auto_deformable_body('/World/Atlas/appendix'):
-            raise RuntimeError('Explicit pre-initialization tissue cooking failed')
+        tissue_root=self.stage.GetPrimAtPath('/World/Atlas/appendix')
+        self.tissue_generation='automatic' if 'PhysxAutoDeformableBodyAPI' in tissue_root.GetAppliedSchemas() else 'explicit'
+        if self.tissue_generation=='automatic':
+            if not get_physx_cooking_interface().cook_auto_deformable_body('/World/Atlas/appendix'):
+                raise RuntimeError('Explicit pre-initialization tissue cooking failed')
+        else:
+            from surface_target import TissueSurface
+            TissueSurface(self.tets)
+            if len(np.unique(np.sort(self.tets,axis=1),axis=0))!=len(self.tets):
+                raise RuntimeError('Duplicate explicit tetrahedra')
+            manual_health=tetra_health(self.rest,self.points(),self.tets)
+            if manual_health['degenerate_rest_tetrahedra'] or manual_health['inverted_tetrahedra']:
+                raise RuntimeError('Invalid explicit tissue geometry')
         self._audit_tissue('after_cooking')
         # Cooking can permute nodes; attachment indices must follow the exact
         # rest-geometry/topology permutation, never nearest-point guesses.
@@ -360,6 +371,7 @@ class RosotaCTEnv(gym.Env):
             settlement_verified=self.settlement['measured_equilibrium'],
             diagnostic_no_tool_collision=self.diagnostic_no_tool_collision,
             disabled_robot_collider_count=len(self.disabled_robot_colliders),
+            tissue_generation=self.tissue_generation,
             jaw_gravity_compensation=self.jaw_gravity_compensation,
             rosota_full_contract=False)
 
