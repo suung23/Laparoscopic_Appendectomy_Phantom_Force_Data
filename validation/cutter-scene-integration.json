@@ -1,0 +1,13 @@
+{
+  "status": "failed before physics",
+  "reason": "Cutter authoring referenced a missing contact material; corrected to the existing bimanual material",
+  "report_sha256": "1d4d88ff0118cf7db8b4b413a700aa068e64a9bb5031f7cf3666881f9c2b6d13",
+  "retest": "out/ct_appendectomy/cutter_scene_61_v2/report.json",
+  "limitations": [
+    "Cutting not implemented",
+    "Convex-hull distal collision approximation",
+    "Inherited distal masses are engineering approximations",
+    "No assisted grasp with cutter",
+    "Right cutter remains optional until runtime verification"
+  ]
+}

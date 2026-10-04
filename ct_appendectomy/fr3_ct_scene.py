@@ -2,13 +2,13 @@
 
 Engineering fixture placement, not measured robot-to-patient calibration.
 URDF inertias and joint geometry are preserved. Full arm CAD/collision is absent;
-the existing Rosota distal CAD is retained on both hands (right is a grasper).
+Default tools are graspers; an explicit verified cutter CAD enables the right cutter.
 """
 import math
 import xml.etree.ElementTree as ET
 from pathlib import Path
 import numpy as np
-from pxr import Gf,Sdf,UsdGeom,UsdPhysics,PhysxSchema
+from pxr import Gf,Sdf,UsdGeom,UsdPhysics,PhysxSchema,UsdShade
 from probe_rosota_controller import build_chain
 from laparo_ik import rpy_to_R
 from rosota_controller import STRICT_CFG
@@ -45,11 +45,15 @@ def joint(stage,path,parent,child,Tlocal,fixed=False,lo=-180,hi=180,axis='Z',kp=
     return j
 
 
-def author(stage,config,fr3_urdf,out,patches=None):
+def author(stage,config,fr3_urdf,out,patches=None,cutter_cad=None):
     source=ET.parse(fr3_urdf).getroot();specs={}
     for hand,label in [('left','Left'),('right','Right')]:
         # Both current CAD tools are graspers. Do not label the right as a cutter.
-        chain=build_chain(fr3_urdf,'left',out/(hand+'_chain.urdf'))
+        is_cutter=hand=='right' and cutter_cad is not None
+        tool_hand='right' if is_cutter else 'left'
+        open_deg=50. if is_cutter else 74.
+        hinge_to_tip=.021 if is_cutter else .014
+        chain=build_chain(fr3_urdf,tool_hand,out/(hand+'_chain.urdf'))
         seed=np.array([0.,-.785,0.,-2.356,0.,1.571,.785])
         if hand=='right':seed*=np.array([-1,1,-1,1,-1,1,-1])
         a=config['arms'][label];from instrument_kinematics import PortInstrument
@@ -101,20 +105,32 @@ def author(stage,config,fr3_urdf,out,patches=None):
             UsdPhysics.DriveAPI(j.GetPrim(),'angular').CreateTargetPositionAttr(float(np.rad2deg(seed[i])))
             parent=path;frames.append(T.copy())
         # CAD is authored around the jaw hinge, 14 mm behind the virtual mouth.
-        mount=np.eye(4);mount[:3,:3]=desired['axes'];mount[:3,3]=desired['position_m']-.014*desired['axes'][:,2]
+        mount=np.eye(4);mount[:3,:3]=desired['axes'];mount[:3,3]=desired['position_m']-hinge_to_tip*desired['axes'][:,2]
         for part in ('shaft','left','right'):
             old_path='/World/Bimanual/'+label+'/'+part;new_path=root+'/'+part
             Sdf.CopySpec(stage.GetRootLayer(),old_path,stage.GetRootLayer(),new_path)
             prim=stage.GetPrimAtPath(new_path)
             UsdPhysics.RigidBodyAPI(prim).CreateKinematicEnabledAttr(False)
-            half=float(old.state[4]);sign=1 if part=='left' else -1
+            if is_cutter:
+                for child in list(prim.GetChildren()):stage.RemovePrim(child.GetPath())
+                parts=['cutter_tip_'+part] if part!='shaft' else ['laparo_shaft','part_13','part_15','gripper_shaft_inner','gripper_shaft_outer']
+                for mesh_name in parts:
+                    mesh_root=stage.DefinePrim(new_path+'/'+mesh_name)
+                    mesh_root.GetReferences().AddReference(str(Path(cutter_cad).resolve()),'/Tool/'+mesh_name)
+                    mesh=stage.GetPrimAtPath(new_path+'/'+mesh_name+'/mesh')
+                    UsdPhysics.CollisionAPI.Apply(mesh)
+                    UsdPhysics.MeshCollisionAPI.Apply(mesh).CreateApproximationAttr('convexHull')
+                    collision=PhysxSchema.PhysxCollisionAPI.Apply(mesh)
+                    collision.CreateContactOffsetAttr(.0002);collision.CreateRestOffsetAttr(0.)
+                    UsdShade.MaterialBindingAPI.Apply(mesh).Bind(UsdShade.Material.Get(stage,'/World/Bimanual/ContactMaterial'),UsdShade.Tokens.weakerThanDescendants,'physics')
+            half=np.deg2rad(open_deg/2) if is_cutter else float(old.state[4]);sign=1 if part=='left' else -1
             M=mount.copy()
             if part!='shaft':M[:3,:3]=mount[:3,:3]@rpy_to_R(0,sign*half,0)
             pose(stage,new_path,M)
             if part=='shaft':joint(stage,root+'/tool_mount',parent,new_path,np.linalg.inv(T)@mount,True)
             else:
                 j=joint(stage,root+'/jaw_'+part,root+'/shaft',new_path,np.eye(4),axis='Y',
-                        lo=0 if sign>0 else -37,hi=37 if sign>0 else 0,kp=200.,kd=10.)
+                        lo=0 if sign>0 else -open_deg/2,hi=open_deg/2 if sign>0 else 0,kp=200.,kd=10.)
                 UsdPhysics.DriveAPI(j.GetPrim(),'angular').CreateTargetPositionAttr(float(sign*np.rad2deg(half)))
                 # N.m cap acts in the physics solver, independent of policy or
                 # sensor latency. Engineering limit, not a tissue-force claim.
@@ -122,5 +138,6 @@ def author(stage,config,fr3_urdf,out,patches=None):
             stage.RemovePrim(old_path)
         specs[hand]=dict(root=root,chain=chain,base=base,port=port,
                          workspace_shift=desired['position_m']-legacy_position,
-                         normal=desired['axes'][:,2],seed=seed,mount_to_tip=np.array([0,0,.014]))
+                         normal=desired['axes'][:,2],seed=seed,mount_to_tip=np.array([0,0,hinge_to_tip]),
+                         tool_hand=tool_hand,tool_kind='cutter' if is_cutter else 'grasper',open_deg=open_deg)
     return specs

@@ -7,6 +7,18 @@ from rosota_ct_env import RosotaCTEnv
 
 
 class ActionValidation(unittest.TestCase):
+    def test_cutter_cannot_capture_assisted_tissue(self):
+        with self.assertRaisesRegex(ValueError,'Cutter cannot'):
+            RosotaCTEnv(None,None,None,None,grasp_mode='solver_attachment',cutter_cad='unused.usda')
+
+    def test_changed_cutter_asset_is_rejected(self):
+        import tempfile,json
+        with tempfile.TemporaryDirectory() as folder:
+            p=Path(folder)/'tool.usda';p.write_text('changed')
+            p.with_name('manifest.json').write_text(json.dumps({'usd_sha256':'wrong'}))
+            with self.assertRaisesRegex(ValueError,'hash mismatch'):
+                RosotaCTEnv(None,None,None,None,cutter_cad=p)
+
     def test_zero_gravity_requires_isolated_non_grasp_fixture(self):
         with self.assertRaises(ValueError):
             RosotaCTEnv(None,None,None,None,diagnostic_zero_gravity=True)

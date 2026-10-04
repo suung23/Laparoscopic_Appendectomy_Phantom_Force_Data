@@ -1,6 +1,6 @@
 """CT scene with measured PhysX FR3 joints and the original Rosota controller.
 
-Engineering port/base placement; both distal tools are currently graspers.
+Engineering port/base placement; right cutter is optional and cutting is unimplemented.
 Scope has a geometric RCM but no shaft-organ collision body. No clinical claim.
 """
 import hashlib
@@ -16,8 +16,16 @@ from bimanual_env import BimanualEnv
 
 class RosotaCTEnv(gym.Env):
     metadata={'render_modes':['rgb_array'],'render_fps':30}
-    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False,enhanced_determinism=False,reset_checkpoint=None,fine_settlement=False,external_every_iteration=False):
+    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False,enhanced_determinism=False,reset_checkpoint=None,fine_settlement=False,external_every_iteration=False,cutter_cad=None):
         if settle_policy not in ('fixed','adaptive'):raise ValueError('Unknown settlement policy')
+        self.cutter_cad=Path(cutter_cad) if cutter_cad else None
+        if self.cutter_cad and grasp_mode!='none':raise ValueError('Cutter cannot use assisted tissue grasp')
+        if self.cutter_cad:
+            manifest=json.loads(self.cutter_cad.with_name('manifest.json').read_text())
+            if hashlib.sha256(self.cutter_cad.read_bytes()).hexdigest()!=manifest['usd_sha256']:
+                raise ValueError('Cutter asset hash mismatch')
+            if manifest['units']!='metres' or manifest['open_total_deg']!=50 or not np.allclose(manifest['hinge_to_tip_m'],[0,0,.021],atol=1e-7):
+                raise ValueError('Unsupported cutter geometry contract')
         self.settle_policy=settle_policy
         self.enhanced_determinism=bool(enhanced_determinism)
         self.reset_checkpoint=Path(reset_checkpoint) if reset_checkpoint else None
@@ -84,7 +92,7 @@ class RosotaCTEnv(gym.Env):
         UsdPhysics.RigidBodyAPI.Apply(anchor).CreateKinematicEnabledAttr(True)
         UsdPhysics.MassAPI.Apply(anchor).CreateMassAttr(.01)
         self.specs=author(self.stage,self.config['data'],self.fr3_urdf,self.out,
-            patches=self.target_patches if self.workspace=='appendix_patches' else None)
+            patches=self.target_patches if self.workspace=='appendix_patches' else None,cutter_cad=self.cutter_cad)
         if self.diagnostic_no_tool_collision:
             for prim in self.stage.Traverse():
                 if str(prim.GetPath()).startswith('/World/FR3/') and prim.HasAPI(UsdPhysics.CollisionAPI):
@@ -158,9 +166,9 @@ class RosotaCTEnv(gym.Env):
             self.indices[hand]=np.array([robot.get_dof_index('fr3_joint'+str(i)) for i in range(1,8)])
             self.jaw_indices[hand]=np.array([robot.get_dof_index('jaw_left'),robot.get_dof_index('jaw_right')])
             robot.set_joint_positions(s['seed'],joint_indices=self.indices[hand])
-            robot.set_joint_positions(np.deg2rad([37.,-37.]),joint_indices=self.jaw_indices[hand])
+            robot.set_joint_positions(np.deg2rad([s['open_deg']/2,-s['open_deg']/2]),joint_indices=self.jaw_indices[hand])
             robot.set_joint_velocities(np.zeros(robot.num_dof))
-            robot.apply_action(ArticulationAction(joint_positions=np.deg2rad([37.,-37.]),
+            robot.apply_action(ArticulationAction(joint_positions=np.deg2rad([s['open_deg']/2,-s['open_deg']/2]),
                 joint_velocities=np.zeros(2),joint_indices=self.jaw_indices[hand]))
         from isaacsim.core.utils.types import ArticulationAction
         self._audit_tissue('before_warmup')
@@ -187,11 +195,11 @@ class RosotaCTEnv(gym.Env):
             (self.out/'settlement.json').write_text(json.dumps(self.settlement,indent=2),encoding='utf-8')
             if not settled:raise RuntimeError('Tissue did not reach the measured reset equilibrium gate')
         self.sim.render()
-        self.controllers={h:RosotaArmController(s['chain'],s['base'],s['port'],s['normal'],self.q(h),hand='left') for h,s in self.specs.items()}
+        self.controllers={h:RosotaArmController(s['chain'],s['base'],s['port'],s['normal'],self.q(h),hand=s['tool_hand']) for h,s in self.specs.items()}
         self.control=self.controllers  # Shared RGB renderer's initialized-state guard.
         self.reference=self.points().copy();self.steps=0
         self.goal=np.array([self.controllers[h].pose(self.q(h))[0] for h in self.specs])+np.array([[.003,0,0],[-.003,0,0]])
-        self.trace=[];self.jaw_open={h:74. for h in self.specs}
+        self.trace=[];self.jaw_open={h:s['open_deg'] for h,s in self.specs.items()}
         self.initial_q=np.array([self.q(h) for h in self.specs]);self.initial_scope=self.scope.pose.copy()
         from contact_control import ContactGuard
         self.force_rows={};samples={h:[] for h in self.specs}
@@ -324,7 +332,7 @@ class RosotaCTEnv(gym.Env):
             jaw_position_rad={h:self.robots[h].get_joint_positions(joint_indices=self.jaw_indices[h]).tolist() for h in self.specs},
             tissue_health=health,pin_drift_m=drift,controller='original Rosota TipController strict aperture',
             plant='PhysX dynamic articulations with measured joint feedback',
-            calibrated_ports=False,right_tool='grasper; cutter pending',scope_shaft_collision=False,
+            calibrated_ports=False,right_tool=self.specs['right']['tool_kind'],cutting_implemented=False,scope_shaft_collision=False,
             commissioning_retreat_m=.015 if self.workspace=='legacy' else .018,workspace=self.workspace,
             grasp_assist=self.grasp_mode!='none' or bool(self.grasp.held),
             grasp_mode=self.grasp_mode,held_patches={h:v['cluster'] for h,v in self.grasp.held.items()},
@@ -355,7 +363,7 @@ class RosotaCTEnv(gym.Env):
                         if h not in self.hold_q:self.hold_q[h]=self.q(h)
                         self.controllers[h].remaining-=1
                         result=dict(joint_target=self.hold_q[h],joint_velocity_ff=np.zeros(7),
-                            gripper_target_deg=self.controllers[h].row[6]*.74,rot_rejected=np.zeros(2))
+                            gripper_target_deg=self.controllers[h].row[6]*self.controllers[h].open_deg/100,rot_rejected=np.zeros(2))
                     else:result=self.controllers[h].tick(self.q(h))
                     rejected[h]+=result['rot_rejected']
                     self.robots[h].apply_action(ArticulationAction(joint_positions=result['joint_target'],

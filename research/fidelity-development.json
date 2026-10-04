@@ -76,7 +76,7 @@
   ],
   "next_actions": [
     "Keep TGS external integration disabled: 6.1 failed pin gate before force testing. Investigate independent-process reset controls while preserving paired tolerance.",
-    "Integrate verified 21 mm cutter hinge-frame CAD as an explicit right-tool configuration; validate axis, collision and aperture before cutting claims",
+    "Inspect cutter scene v2 after contact material binding correction; validate measured tip FK, trocar and 50-degree jaws, then inspect rendered frame",
     "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",
