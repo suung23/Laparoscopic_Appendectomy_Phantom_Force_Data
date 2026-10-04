@@ -25,6 +25,12 @@ class ContactFeedback(unittest.TestCase):
         g.update(np.zeros(6),[0,0])
         self.assertGreaterEqual(g.jaw_target(0,20,30,1/480),29)
 
+    def test_cutter_limit_applies_even_when_load_guard_blocks_closure(self):
+        g=ContactGuard(np.zeros(6),0,max_open_deg=50)
+        g.update(np.zeros(6),[.001,0])
+        self.assertEqual(g.jaw_target(0,50,50,1/480),50)
+        self.assertEqual(g.jaw_target(74,50,50,1/480),50)
+
     def test_noise_floor_not_misreported_as_contact(self):
         g=ContactGuard(np.ones(6),.04)
         for _ in range(40):g.update([1.1,1,1,1,1,1],[0,0])

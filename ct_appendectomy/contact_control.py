@@ -8,13 +8,15 @@ import numpy as np
 
 
 class ContactGuard:
-    def __init__(self, baseline, noise_n, stop_n=.15, jaw_effort_nm=.0003):
+    def __init__(self, baseline, noise_n, stop_n=.15, jaw_effort_nm=.0003,max_open_deg=74.):
         self.baseline = np.asarray(baseline, float).copy()
         if self.baseline.shape != (6,) or not np.isfinite(self.baseline).all():
             raise ValueError('Finite six-axis baseline required')
         if not np.isfinite([noise_n, stop_n, jaw_effort_nm]).all() or noise_n < 0 or min(stop_n, jaw_effort_nm) <= 0:
             raise ValueError('Invalid thresholds')
         self.threshold = max(stop_n, 8*noise_n)
+        if not np.isfinite(max_open_deg) or not 0<max_open_deg<=180:raise ValueError('Invalid tool opening limit')
+        self.max_open_deg=float(max_open_deg)
         self.jaw_limit = jaw_effort_nm
         self.filtered = np.zeros(6)
         self.latched = False
@@ -54,4 +56,4 @@ class ContactGuard:
             if self.pinch_latched:
                 if self.blocked_angle is None:self.blocked_angle = measured_deg+.25
                 target = max(target, self.blocked_angle)
-        return float(np.clip(target, 0, 74))
+        return float(np.clip(target, 0, self.max_open_deg))

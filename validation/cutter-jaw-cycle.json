@@ -1,0 +1,36 @@
+{
+  "scope": "measured aperture commissioning, not contact/cutting validation",
+  "closure_tolerance_deg": 2.0,
+  "opening_tolerance_deg": 2.0,
+  "hands": {
+    "left": {
+      "closed_aperture_deg": 73.99737471313688,
+      "reopened_aperture_deg": 73.99737471313688,
+      "maximum_opening_deg": 74.0,
+      "measured_range_deg": [
+        73.99735422256936,
+        73.9975522980553
+      ],
+      "limits_ok": true,
+      "closure_guard_ticks": 2400,
+      "passed": false
+    },
+    "right": {
+      "closed_aperture_deg": -1.6488308306077494e-08,
+      "reopened_aperture_deg": 49.995044950769056,
+      "maximum_opening_deg": 50.0,
+      "measured_range_deg": [
+        -5.6686803448896555e-08,
+        49.995044950769056
+      ],
+      "limits_ok": true,
+      "closure_guard_ticks": 0,
+      "passed": true
+    }
+  },
+  "passed": false,
+  "limitations": [
+    "No-approach does not prove collision-free motion.",
+    "Joint effort is not an independent contact sensor."
+  ]
+}

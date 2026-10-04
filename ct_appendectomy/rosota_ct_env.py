@@ -212,7 +212,7 @@ class RosotaCTEnv(gym.Env):
         for h in self.specs:
             values=np.asarray(samples[h]);baseline=values.mean(axis=0)
             noise=float(np.linalg.norm(values[:,:3]-baseline[:3],axis=1).max())
-            self.guards[h]=ContactGuard(baseline,noise)
+            self.guards[h]=ContactGuard(baseline,noise,max_open_deg=self.specs[h]['open_deg'])
             self.guards[h].update(*self.sensor(h))
             calibration[h]=dict(baseline=baseline.tolist(),max_force_residual_n=noise,
                 samples=64,frame='local child joint frame at tool_mount',
