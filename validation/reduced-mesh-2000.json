@@ -1,0 +1,45 @@
+{
+  "status": "failed",
+  "source_sha256": "9fc25e90fdf59df1bc01e568b4fc242da1a9060e0260743654572d357297f9c7",
+  "tool": "tetgen",
+  "version": "0.8.3",
+  "license": "Python wrapper MIT; underlying TetGen AGPLv3/commercial. Offline experiment, not linked into simulator.",
+  "license_reference": "https://tetgen.pyvista.org/index.html",
+  "options": {
+    "order": 1,
+    "minratio": 1.5,
+    "mindihedral": 10.0,
+    "steinerleft": 50000,
+    "quality": true,
+    "nomergefacet": true,
+    "nomergevertex": true
+  },
+  "simplification": {
+    "tool": "fast_simplification",
+    "version": "0.2.0",
+    "original_faces": 7072,
+    "target_faces": 2000,
+    "actual_faces": 2000
+  },
+  "nodes": 9484,
+  "tetrahedra": 41084,
+  "duplicate_tetrahedra": 0,
+  "boundary_node_to_source_max_m": 0.00022991184339858802,
+  "relative_volume_error": 0.0052266862060050085,
+  "source_vertex_and_face_center_to_boundary_max_m": 0.0002374796936670043,
+  "boundary_face_center_to_source_max_m": 0.0002276517809994218,
+  "boundary_closed_and_consistent": true,
+  "mean_ratio_min": 0.0053617052423374206,
+  "mean_ratio_percentiles_1_5_50": [
+    0.13727882729119495,
+    0.347974153732266,
+    0.7630627866530508
+  ],
+  "cells_below_mean_ratio_0_1": 211,
+  "positive_cells_below_sdk_determinant_threshold": 34038,
+  "minimum_absolute_volume_m3": 2.869763576710053e-17,
+  "limitations": [
+    "Bidirectional vertex and face-centroid samples, not a continuous Hausdorff proof.",
+    "No physics, material, attachment or force validation yet."
+  ]
+}
