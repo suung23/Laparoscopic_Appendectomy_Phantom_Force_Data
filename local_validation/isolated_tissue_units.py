@@ -10,6 +10,7 @@ p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--mesh',type=Path,required=True)
 p.add_argument('--out',type=Path,required=True)
 p.add_argument('--units',type=float,nargs='+',default=[1.,.01,.1],help='Meters per simulation length unit')
+p.add_argument('--tensor-readback',action='store_true',help='Compare independent PhysX tensor and USD buffers')
 a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True)
 if any(v<=0 for v in a.units):p.error('Units must be positive')
 root=Path(__file__).resolve().parents[1]
@@ -60,6 +61,14 @@ try:
         if not np.array_equal(np.asarray(mesh.GetTetVertexIndicesAttr().Get(),int),tets):
             raise RuntimeError('Simulation changed mesh indexing; do not compare mismatched nodes')
         baseline=np.asarray(mesh.GetPointsAttr().Get(),float)*mpu
+        if a.tensor_readback:
+            import omni.physics.tensors as tensors
+            from node_correspondence import node_permutation
+            tensor_sim=tensors.create_simulation_view('torch')
+            body=tensor_sim.create_volume_deformable_body_view('/World/Tissue')
+            tensor_rest=body.get_rest_nodal_positions().cpu().numpy()[0]
+            tensor_tets=body.get_simulation_element_indices().cpu().numpy()[0]
+            permutation=node_permutation(np.asarray(prim.GetAttribute('omniphysics:restShapePoints').Get()),tets,tensor_rest,tensor_tets)
         rows=[];centers=[]
         for tick in range(181):
             if tick%60==0:
@@ -67,6 +76,13 @@ try:
                 displacement=points-baseline;translation=displacement.mean(0)
                 rms=float(np.sqrt(np.mean(np.sum((displacement-translation)**2,axis=1))))
                 rows.append(dict(tick=tick,health=tetra_health(rest,points,tets),translation_removed_rms_m=rms))
+                if a.tensor_readback:
+                    tensor_points=body.get_simulation_nodal_positions().cpu().numpy()[0][permutation].astype(float)*mpu
+                    discrepancy=np.linalg.norm(tensor_points-points,axis=1)
+                    rows[-1].update(tensor_health=tetra_health(rest,tensor_points,tets),
+                        tensor_usd_max_difference_m=float(discrepancy.max()),
+                        tensor_usd_different_nodes=int(np.sum(discrepancy>1e-7)))
+                    np.savez_compressed(a.out/f'tensor_{mpu}_{tick}.npz',points=tensor_points,rest=rest,tets=tets)
                 centers.append(points.mean(0))
                 np.savez_compressed(a.out/f'state_{mpu}_{tick}.npz',points=points,rest=rest,tets=tets)
             if tick<180:sim.step(render=False)
@@ -77,6 +93,7 @@ try:
             authored_density=1050*mpu**3,authored_youngs_modulus=12000*mpu,authored_gravity=9.81/mpu,
             acceleration_m_s2=acceleration.tolist(),max_acceleration_error_m_s2=float(error.max()),rows=rows))
         (a.out/'report.json').write_text(json.dumps(report,indent=2)+'\n')
+        if a.tensor_readback:del body,tensor_sim
         sim.stop();SimulationContext.clear_instance();omni.usd.get_context().close_stage()
         print(f'END_UNIT_CASE meters_per_unit={mpu}',flush=True)
     report['status']='geometry_dynamics_passed_engine_log_required' if all(c['status']=='geometry_dynamics_passed' for c in report['cases']) else 'failed'

@@ -1,0 +1,91 @@
+{
+  "status": "failed",
+  "mesh_sha256": "954f948bb2d1f67f2d71d4523f2769006c964c5a3f77b623fe722cc29ce17950",
+  "cases": [
+    {
+      "meters_per_unit": 1.0,
+      "status": "failed",
+      "authored_density": 1050.0,
+      "authored_youngs_modulus": 12000.0,
+      "authored_gravity": 9.81,
+      "acceleration_m_s2": [
+        [
+          7.465334420660978e-05,
+          -9.798522864400653,
+          -0.00011089855935823065
+        ],
+        [
+          -0.0004556534594033207,
+          -9.790281090038775,
+          -0.0004128464415125702
+        ]
+      ],
+      "max_acceleration_error_m_s2": 0.019728493919158104,
+      "rows": [
+        {
+          "tick": 0,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9754391449267403,
+            "median_volume_ratio": 0.9992676895391802,
+            "total_absolute_volume_ratio": 0.9992685895705355,
+            "p99_absolute_volume_change": 0.0007594918359057767
+          },
+          "translation_removed_rms_m": 0.0
+        },
+        {
+          "tick": 60,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.7916700161344589,
+            "median_volume_ratio": 0.9992669075501737,
+            "total_absolute_volume_ratio": 0.999267104790207,
+            "p99_absolute_volume_change": 0.0009928864970763626
+          },
+          "translation_removed_rms_m": 1.4024036302220033e-06
+        },
+        {
+          "tick": 120,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.2670488203463069,
+            "median_volume_ratio": 0.999258666250527,
+            "total_absolute_volume_ratio": 0.9992521837432597,
+            "p99_absolute_volume_change": 0.002374948135052265
+          },
+          "translation_removed_rms_m": 1.4394974871268328e-05
+        },
+        {
+          "tick": 180,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 1,
+            "minimum_signed_volume_ratio": -0.5975279063838763,
+            "median_volume_ratio": 0.999276234032551,
+            "total_absolute_volume_ratio": 0.9992586677324439,
+            "p99_absolute_volume_change": 0.004962227265203954
+          },
+          "translation_removed_rms_m": 5.9110200085687976e-05
+        }
+      ]
+    }
+  ],
+  "scope": "Isolated free fall with zero damping, no attachments, robot, contact or rendering. Not loaded tissue validation.",
+  "material_si": {
+    "density_kg_m3": 1050,
+    "youngs_modulus_pa": 12000,
+    "poissons_ratio": 0.45
+  },
+  "gates": {
+    "max_translation_removed_rms_m": 1e-05,
+    "max_acceleration_error_m_s2": 0.1,
+    "minimum_volume_ratio": 0.99
+  }
+}

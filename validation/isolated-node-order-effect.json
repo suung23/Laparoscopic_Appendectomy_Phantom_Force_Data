@@ -1,0 +1,42 @@
+{
+  "status": "index_dependence_observed",
+  "scope": "USD coordinate observation only; independent tensor readback pending",
+  "cases": [
+    {
+      "order": "original",
+      "worst_runtime_indices": [
+        5309,
+        5310,
+        5308
+      ],
+      "original_geometry_indices": [
+        5309,
+        5310,
+        5308
+      ],
+      "residual_m": [
+        0.0001684540427059497,
+        0.00017001702133810515,
+        0.00017298421615524685
+      ]
+    },
+    {
+      "order": "reversed",
+      "worst_runtime_indices": [
+        5308,
+        5310,
+        5309
+      ],
+      "original_geometry_indices": [
+        2,
+        0,
+        1
+      ],
+      "residual_m": [
+        0.000217663038281299,
+        0.00022347559823949697,
+        0.00022882911292510191
+      ]
+    }
+  ]
+}
