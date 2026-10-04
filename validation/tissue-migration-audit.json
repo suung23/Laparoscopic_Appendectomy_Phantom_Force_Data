@@ -1,0 +1,43 @@
+{
+  "phases": [
+    {
+      "phase": "before_initialize",
+      "nodes": 6751,
+      "connectivity_unchanged": true,
+      "indexed_displacement_m": 0.0,
+      "nearest_original_distance_m": 0.0,
+      "pin_target_error_m": 3.360580764861755e-05,
+      "anchor_displacement_m": 0.0,
+      "capture_sha256": "781dfe5591cf7299b2d428829f02be3e7a02fb524d80c1bf5b4f3a4baaa3619a"
+    },
+    {
+      "phase": "after_initialize",
+      "nodes": 6751,
+      "connectivity_unchanged": false,
+      "indexed_displacement_m": 0.07461810254798854,
+      "nearest_original_distance_m": 0.005608015714132205,
+      "pin_target_error_m": 0.03615001121464897,
+      "anchor_displacement_m": 0.0,
+      "capture_sha256": "88f21610ff7655b696e7966501cfcbc495fbacaabc683badceae7329d9c2c212"
+    },
+    {
+      "phase": "after_settlement",
+      "nodes": 6751,
+      "connectivity_unchanged": false,
+      "indexed_displacement_m": 0.07457873343550786,
+      "nearest_original_distance_m": 0.011068081524684859,
+      "pin_target_error_m": 3.360457499793913e-05,
+      "anchor_displacement_m": 0.0,
+      "capture_sha256": "4b162e0e7cfb26e5cd9132d41ad44ec7ee84a498999c9bfa9ef5cf7c43026b7d"
+    }
+  ],
+  "scope": "Root-cause evidence for node permutation; task repair not yet validated",
+  "exact_permutation": {
+    "nodes": 6751,
+    "changed_indices": 610,
+    "rest_coordinates_exact": true,
+    "tetrahedral_connectivity_preserved": true,
+    "method": "rest coordinate plus incident tetrahedron signatures; final complete connectivity equivalence required"
+  },
+  "repair_validation": "in progress: out/ct_appendectomy/migration_remap_61_v1/report.json"
+}

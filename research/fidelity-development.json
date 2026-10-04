@@ -75,7 +75,7 @@
     "Added strict runtime comparator rejecting changed scenes/helpers, incomplete traces, and green statuses contradicted by measured errors"
   ],
   "next_actions": [
-    "Diagnose 6.1 attachment and nodal correspondence: gravity-on reset has 36.16 mm pin drift and 95 inverted tetrahedra; retain 5.1 default",
+    "Finish gravity-on permutation repair test; verify attachment updates reach PhysX and no tetrahedra invert",
     "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",
@@ -97,6 +97,7 @@
     "baseline_report": "out/force_runtime_51_v4/report.json",
     "comparison_tool": "local_validation/compare_force_runtimes.py",
     "candidate_report": "out/force_runtime_61_v4/report.json",
-    "gravity_probe": "validation/runtime-gravity-probe.json"
+    "gravity_probe": "validation/runtime-gravity-probe.json",
+    "migration_audit": "validation/tissue-migration-audit.json"
   }
 }

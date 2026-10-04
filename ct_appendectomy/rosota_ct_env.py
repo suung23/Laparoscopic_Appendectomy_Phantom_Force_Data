@@ -51,6 +51,7 @@ class RosotaCTEnv(gym.Env):
         if options:raise ValueError('No reset options')
         super().reset(seed=seed)
         self.done=True
+        self.config=json.loads((self.assets/'bimanual_config.json').read_text())
         import omni.usd
         from pxr import UsdGeom,UsdPhysics,PhysxSchema,Gf
         from isaacsim.core.api import SimulationContext
@@ -92,10 +93,30 @@ class RosotaCTEnv(gym.Env):
                 scene=UsdPhysics.Scene(prim);scene.CreateGravityDirectionAttr(Gf.Vec3f(0,-1,0));scene.CreateGravityMagnitudeAttr(0. if self.diagnostic_zero_gravity else 9.81)
                 ps=PhysxSchema.PhysxSceneAPI.Apply(prim);ps.CreateEnableGPUDynamicsAttr(True);ps.CreateBroadphaseTypeAttr('GPU')
         self.stage.GetRootLayer().Export(str(self.out/'scene.usda'))
+        self._audit_tissue('before_initialize')
         self.sim.initialize_physics()
+        self._audit_tissue('after_initialize')
         if not np.isclose(self.sim.get_physics_dt(),1/480):raise RuntimeError('Wrong physics interval')
-        # PhysX cooking may replace/reorder the authored FEM buffers.
-        self.rest=self.points().copy();self.tets=np.asarray(self.mesh.GetAttribute('tetVertexIndices').Get(),int)
+        # Cooking can permute nodes; attachment indices must follow the exact
+        # rest-geometry/topology permutation, never nearest-point guesses.
+        from node_correspondence import node_permutation
+        cooked_rest=np.asarray(self.mesh.GetAttribute('omniphysics:restShapePoints').Get(),float)
+        cooked_tets=np.asarray(self.mesh.GetAttribute('tetVertexIndices').Get(),int)
+        authored=np.load(self.out/'tissue_before_initialize.npz')
+        permutation=node_permutation(authored['rest'],authored['tets'],cooked_rest,cooked_tets)
+        for prim in self.stage.Traverse():
+            rel=prim.GetRelationship('omniphysics:src0')
+            if rel and self.mesh.GetPath() in rel.GetTargets():
+                attr=prim.GetAttribute('omniphysics:vtxIndicesSrc0')
+                if attr and attr.Get() is not None:
+                    attr.Set(permutation[np.asarray(attr.Get(),int)].tolist())
+        self.pin=permutation[self.pin]
+        for cluster in self.config['data']['clusters']:
+            cluster['indices']=permutation[np.asarray(cluster['indices'],int)].tolist()
+        self.rest=cooked_rest.copy();self.tets=cooked_tets
+        (self.out/'node_correspondence.json').write_text(json.dumps(dict(
+            exact_geometry_and_topology=True,nodes=len(permutation),
+            changed_indices=int(np.sum(permutation!=np.arange(len(permutation))))),indent=2),encoding='utf-8')
         self.sim.play()
         self.robots={};self.indices={};self.jaw_indices={}
         for hand,s in self.specs.items():
@@ -178,6 +199,7 @@ class RosotaCTEnv(gym.Env):
                 return Rotation.from_quat(np.asarray(q)[[1,2,3,0]]).as_matrix(),np.asarray(p)
             self.grasp=SolverTissueGrasp(self.stage,self.config['data']['clusters'],self.grasp_links,read_link)
         self.deformation=DeformationMeasure(self.points(),self.tets)
+        self._audit_tissue('after_settlement')
         info=self.measure()
         (self.out/'reset_diagnostics.json').write_text(json.dumps(info,indent=2),encoding='utf-8')
         if info['failure']:self.done=True;raise RuntimeError('Invalid reset: '+info['failure'])
@@ -191,6 +213,27 @@ class RosotaCTEnv(gym.Env):
         efforts=np.asarray(robot.get_measured_joint_efforts(joint_indices=self.jaw_indices[h]),float)
         if not np.isfinite(wrench).all() or not np.isfinite(efforts).all():raise RuntimeError('Invalid contact sensor')
         return wrench,efforts
+    def _audit_tissue(self,label):
+        """Persist actual buffers and attachment coordinates for runtime migration diagnosis."""
+        import omni.usd
+        from pxr import UsdGeom
+        prim=self.stage.GetPrimAtPath('/World/BaseAttachment')
+        indices=np.asarray(prim.GetAttribute('omniphysics:vtxIndicesSrc0').Get(),int)
+        targets=np.asarray(prim.GetAttribute('omniphysics:localPositionsSrc1').Get(),float)
+        anchor=prim.GetRelationship('omniphysics:src1').GetTargets()[0]
+        transform=np.asarray(UsdGeom.Xformable(self.stage.GetPrimAtPath(anchor)).ComputeLocalToWorldTransform(0)).T
+        world_targets=targets@transform[:3,:3].T+transform[:3,3]
+        points=self.points().copy()
+        rest=np.asarray(self.mesh.GetAttribute('omniphysics:restShapePoints').Get(),float)
+        tets=np.asarray(self.mesh.GetAttribute('tetVertexIndices').Get(),int)
+        np.savez_compressed(self.out/('tissue_'+label+'.npz'),points=points,rest=rest,tets=tets,
+            pin=indices,target_world=world_targets,anchor_world=transform)
+        summary=dict(label=label,nodes=len(points),tetrahedra=len(tets),
+            pin_target_error_m=float(np.linalg.norm(points[indices]-world_targets,axis=1).max()),
+            points_sha256=hashlib.sha256(points.tobytes()).hexdigest(),
+            tets_sha256=hashlib.sha256(tets.tobytes()).hexdigest())
+        (self.out/('tissue_'+label+'.json')).write_text(json.dumps(summary,indent=2),encoding='utf-8')
+
     def points(self):return np.asarray(self.mesh.GetAttribute('points').Get(),float)
     def observe(self):
         poses=[];qs=[]
