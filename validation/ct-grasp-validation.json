@@ -1,0 +1,421 @@
+{
+  "scope": "CT engineering grasp and deformation trials; native reference is evaluated separately",
+  "current_source_sha256": {
+    "fr3_ct_scene.py": "737118d37d4ed14b30f638e6d5c4953c77772660135ecf469e8a4d2af6a1e649",
+    "rosota_ct_env.py": "c860245119cefbeac0f68f28a4e0e78b74120cabf210558ed2966ca83dff098c",
+    "run_rosota_ct.py": "1efb89b3c3e5314c6f823af257df62460ea11de2be4944ae71618a4d94bdc8b6",
+    "tissue_grasp.py": "247ea6e3fc31db1dbfd997e31600351de43daaaa0e60b18fdb1aa329cfaad753",
+    "deformation_metrics.py": "cdf092143468c62cc190e5e5a5ca67bddf37b0dbb0c152b069c70edeb50e4713",
+    "attachment_probe.py": "02efa266aab474f1ca095b31a4ef1e5f2b9b9db36ec17a62bdb0edd2d34a06e8",
+    "contact_control.py": "5bff1649875152b13b7d25fb376326fb369707b1ae03c2e722b41ccfae40c49c",
+    "rosota_controller.py": "e7a9e3f69b398cd236fb19e37630d166b0c5bc7482f46861821a240ad6c7950a"
+  },
+  "trials": [
+    {
+      "run": "rosota_baseline_grasp_v1",
+      "status": "failed",
+      "failure": "tet_inversion",
+      "task_failure": "Incomplete dual grasp/deformation/release",
+      "steps": 239,
+      "physics_ticks_checked": 3820,
+      "grasp_events": [
+        {
+          "event": "capture",
+          "hand": "left",
+          "cluster": 0,
+          "evidence": "measured jaw-effort latch plus live mouth geometry"
+        }
+      ],
+      "peak_held_hands": 1,
+      "contact_summary": {
+        "left": {
+          "peak_residual_n": 0.03651446198332404,
+          "stopped": false,
+          "jaw_limit_ticks": 2
+        },
+        "right": {
+          "peak_residual_n": 0.05279789158363719,
+          "stopped": false,
+          "jaw_limit_ticks": 0
+        }
+      },
+      "maximum_inverted_tetrahedra": 665,
+      "minimum_volume_ratio_all_ticks": -3.09307623687673,
+      "max_pin_drift_m": 3.0032747263813897e-05
+    },
+    {
+      "run": "rosota_baseline_grasp_v2",
+      "status": "failed",
+      "failure": "",
+      "task_failure": "Incomplete dual grasp/pull deformation/release recovery",
+      "steps": 450,
+      "physics_ticks_checked": 7200,
+      "grasp_events": [],
+      "peak_held_hands": 0,
+      "pull_deformation_rms_m": 0.0,
+      "post_release_residual_rms_m": 0.0024812078131284266,
+      "recovery_fraction": null,
+      "contact_summary": {
+        "left": {
+          "peak_residual_n": 0.028725720922383912,
+          "stopped": false,
+          "jaw_limit_ticks": 1952
+        },
+        "right": {
+          "peak_residual_n": 0.0539409855060284,
+          "stopped": false,
+          "jaw_limit_ticks": 0
+        }
+      },
+      "recovery_reference": "legacy pre-pull held shape; does not isolate unloaded recovery",
+      "maximum_inverted_tetrahedra": 0,
+      "minimum_volume_ratio_all_ticks": 0.6393038773717826,
+      "max_pin_drift_m": 3.0123956962117123e-05
+    },
+    {
+      "run": "rosota_baseline_grasp_v3",
+      "status": "incomplete",
+      "failure": "",
+      "grasp_geometry": {
+        "left": {
+          "target_patch": 1,
+          "centre_in_shaft_frame_m": [
+            0.01769369952091451,
+            -0.004630174641369191,
+            0.024502859169336026
+          ],
+          "distance_m": 0.030576062981003668
+        },
+        "right": {
+          "target_patch": 4,
+          "centre_in_shaft_frame_m": [
+            -0.015901017311721364,
+            -0.00532193068649308,
+            0.03257157498572745
+          ],
+          "distance_m": 0.036634311714980605
+        }
+      }
+    },
+    {
+      "run": "rosota_baseline_grasp_v4",
+      "status": "failed",
+      "failure": "tet_inversion",
+      "task_failure": "Incomplete dual grasp/pull deformation/release recovery",
+      "steps": 249,
+      "physics_ticks_checked": 3982,
+      "phase_ends": [
+        361,
+        511,
+        571,
+        661
+      ],
+      "grasp_events": [],
+      "peak_held_hands": 0,
+      "pull_deformation_rms_m": 0.0,
+      "post_release_residual_rms_m": null,
+      "recovery_fraction": null,
+      "grasp_geometry": {
+        "left": {
+          "target_patch": 1,
+          "centre_in_shaft_frame_m": [
+            0.0021446681005791663,
+            -0.0018374067412775812,
+            0.0020101883781812055
+          ],
+          "distance_m": 0.0034664855560508166
+        },
+        "right": {
+          "target_patch": 4,
+          "centre_in_shaft_frame_m": [
+            -0.0027704454101658395,
+            -0.0005160615508803673,
+            0.005845791278221201
+          ],
+          "distance_m": 0.0064896042224108766
+        }
+      },
+      "contact_summary": {
+        "left": {
+          "peak_residual_n": 0.0701880672668374,
+          "stopped": false,
+          "jaw_limit_ticks": 156
+        },
+        "right": {
+          "peak_residual_n": 0.05778142010249044,
+          "stopped": false,
+          "jaw_limit_ticks": 0
+        }
+      },
+      "recovery_reference": "legacy pre-pull held shape; does not isolate unloaded recovery",
+      "maximum_inverted_tetrahedra": 1,
+      "minimum_volume_ratio_all_ticks": -0.005566952490637363,
+      "max_pin_drift_m": 3.006543194524261e-05
+    },
+    {
+      "run": "rosota_baseline_grasp_v5",
+      "status": "failed",
+      "failure": "tet_inversion",
+      "task_failure": "Incomplete dual grasp/pull deformation/release recovery",
+      "steps": 391,
+      "physics_ticks_checked": 6254,
+      "phase_ends": [
+        367,
+        517,
+        577,
+        667
+      ],
+      "grasp_events": [
+        {
+          "event": "capture",
+          "hand": "left",
+          "cluster": 1,
+          "evidence": "live mouth geometry with contact-envelope floor; explicit attachment approximation",
+          "jaw_contact_latched": false
+        }
+      ],
+      "peak_held_hands": 1,
+      "pull_deformation_rms_m": 0.0,
+      "post_release_residual_rms_m": null,
+      "recovery_fraction": null,
+      "grasp_geometry": {
+        "left": {
+          "target_patch": 1,
+          "centre_in_shaft_frame_m": [
+            0.0023500099010345457,
+            -0.0015934285514073174,
+            0.0037900033153560227
+          ],
+          "distance_m": 0.004735576650610784
+        },
+        "right": {
+          "target_patch": 4,
+          "centre_in_shaft_frame_m": [
+            -0.0008770076264137745,
+            -0.0009771356996289653,
+            0.004337991972672326
+          ],
+          "distance_m": 0.004532340555082643
+        }
+      },
+      "contact_summary": {
+        "left": {
+          "peak_residual_n": 0.05133812027540216,
+          "stopped": false,
+          "jaw_limit_ticks": 0
+        },
+        "right": {
+          "peak_residual_n": 0.05886689363019199,
+          "stopped": false,
+          "jaw_limit_ticks": 0
+        }
+      },
+      "recovery_reference": "legacy pre-pull held shape; does not isolate unloaded recovery",
+      "maximum_inverted_tetrahedra": 896,
+      "minimum_volume_ratio_all_ticks": -6.963228119166411,
+      "max_pin_drift_m": 3.0051007378835797e-05
+    },
+    {
+      "run": "rosota_baseline_grasp_v6",
+      "status": "failed",
+      "failure": "",
+      "task_failure": "Incomplete dual grasp/pull deformation/release recovery",
+      "steps": 662,
+      "physics_ticks_checked": 10592,
+      "phase_ends": [
+        362,
+        512,
+        572,
+        662
+      ],
+      "grasp_events": [
+        {
+          "event": "capture",
+          "hand": "left",
+          "cluster": 1,
+          "evidence": "live mouth geometry with contact-envelope floor; explicit attachment approximation",
+          "jaw_contact_latched": false
+        },
+        {
+          "event": "capture",
+          "hand": "right",
+          "cluster": 4,
+          "evidence": "live mouth geometry with contact-envelope floor; explicit attachment approximation",
+          "jaw_contact_latched": false
+        },
+        {
+          "event": "release",
+          "hand": "left",
+          "cluster": 1
+        },
+        {
+          "event": "release",
+          "hand": "right",
+          "cluster": 4
+        }
+      ],
+      "peak_held_hands": 2,
+      "pull_deformation_rms_m": 0.0008331235743467905,
+      "post_release_residual_rms_m": 0.0013138493853594986,
+      "recovery_fraction": -0.5770162144188762,
+      "grasp_geometry": {
+        "left": {
+          "target_patch": 1,
+          "centre_in_shaft_frame_m": [
+            0.003529041416387602,
+            -0.0002549891885040214,
+            0.004552029466704713
+          ],
+          "distance_m": 0.005765424968775582
+        },
+        "right": {
+          "target_patch": 4,
+          "centre_in_shaft_frame_m": [
+            -0.0017640671899039311,
+            0.0008271497244582329,
+            0.005712803921932693
+          ],
+          "distance_m": 0.006035912388994429
+        }
+      },
+      "contact_summary": {
+        "left": {
+          "peak_residual_n": 0.05280294893655148,
+          "stopped": false,
+          "jaw_limit_ticks": 0
+        },
+        "right": {
+          "peak_residual_n": 0.060608834512844253,
+          "stopped": false,
+          "jaw_limit_ticks": 0
+        }
+      },
+      "recovery_reference": "legacy pre-pull held shape; does not isolate unloaded recovery",
+      "maximum_inverted_tetrahedra": 0,
+      "minimum_volume_ratio_all_ticks": 0.5189969253679322,
+      "max_pin_drift_m": 2.9943968927257656e-05
+    },
+    {
+      "run": "rosota_baseline_grasp_v7",
+      "status": "passed",
+      "failure": "",
+      "steps": 739,
+      "physics_ticks_checked": 11824,
+      "phase_ends": [
+        364,
+        514,
+        574,
+        739
+      ],
+      "grasp_events": [
+        {
+          "event": "capture",
+          "hand": "left",
+          "cluster": 1,
+          "evidence": "live mouth geometry with contact-envelope floor; explicit attachment approximation",
+          "jaw_contact_latched": false
+        },
+        {
+          "event": "capture",
+          "hand": "right",
+          "cluster": 4,
+          "evidence": "live mouth geometry with contact-envelope floor; explicit attachment approximation",
+          "jaw_contact_latched": false
+        },
+        {
+          "event": "release",
+          "hand": "left",
+          "cluster": 1
+        },
+        {
+          "event": "release",
+          "hand": "right",
+          "cluster": 4
+        }
+      ],
+      "peak_held_hands": 2,
+      "pull_deformation_rms_m": 0.0007787509215014934,
+      "post_release_residual_rms_m": 0.0005252620238021827,
+      "post_release_held_reference_rms_m": 0.001132123375311101,
+      "loaded_free_reference_rms_m": 0.0015352680568094202,
+      "recovery_reference": "settled ungrasped reset shape; pull increment uses the separate pre-pull held shape",
+      "withdraw_samples": [
+        589,
+        649
+      ],
+      "recovery_fraction": 0.6578695026757885,
+      "grasp_geometry": {
+        "left": {
+          "target_patch": 1,
+          "centre_in_shaft_frame_m": [
+            0.003205029962412587,
+            0.0003951421529095247,
+            0.012991746289144191
+          ],
+          "distance_m": 0.013387076828884646
+        },
+        "right": {
+          "target_patch": 4,
+          "centre_in_shaft_frame_m": [
+            -0.0012763862370988133,
+            3.582232009283811e-05,
+            0.013567789383850759
+          ],
+          "distance_m": 0.013627742066439522
+        }
+      },
+      "contact_summary": {
+        "left": {
+          "peak_residual_n": 0.05010550232463694,
+          "stopped": false,
+          "jaw_limit_ticks": 2523
+        },
+        "right": {
+          "peak_residual_n": 0.06017791007860281,
+          "stopped": false,
+          "jaw_limit_ticks": 0
+        }
+      },
+      "maximum_inverted_tetrahedra": 0,
+      "minimum_volume_ratio_all_ticks": 0.530749937156241,
+      "max_pin_drift_m": 2.99960826497816e-05
+    }
+  ],
+  "isolated_attachment_trials": [
+    {
+      "run": "attachment_activation_v1",
+      "status": "failed",
+      "ticks": 1,
+      "maximum_node_change_m": 0.011065543041779279,
+      "maximum_inverted_tetrahedra": 853
+    },
+    {
+      "run": "attachment_activation_v2",
+      "status": "failed",
+      "ticks": 1,
+      "maximum_node_change_m": 0.019367148468805058,
+      "maximum_inverted_tetrahedra": 374
+    },
+    {
+      "run": "attachment_activation_v3",
+      "status": "passed",
+      "ticks": 8,
+      "maximum_node_change_m": 0.0005347428540210843,
+      "maximum_inverted_tetrahedra": 0
+    }
+  ],
+  "latest_trial_passed": true,
+  "full_rosota_parity": false,
+  "material_calibrated": false,
+  "matched_unloaded_control": false,
+  "friction_only_grasp": false,
+  "clinical_validation": false,
+  "limitations": [
+    "Right tool remains a grasper in CT mode.",
+    "CT camera remains occluded; native rabbit reference has the restored endoscope view.",
+    "Grasp uses explicit rigid patch constraints, not friction-only tissue contact.",
+    "The kinematic patch follower does not feed its attachment reaction back to robot joints.",
+    "No physical tissue severing, mesoappendix or bleeding model.",
+    "An incomplete/interrupted trial is not a successful trial."
+  ]
+}

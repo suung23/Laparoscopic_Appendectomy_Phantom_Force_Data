@@ -45,7 +45,7 @@ def joint(stage,path,parent,child,Tlocal,fixed=False,lo=-180,hi=180,axis='Z',kp=
     return j
 
 
-def author(stage,config,fr3_urdf,out):
+def author(stage,config,fr3_urdf,out,patches=None):
     source=ET.parse(fr3_urdf).getroot();specs={}
     for hand,label in [('left','Left'),('right','Right')]:
         # Both current CAD tools are graspers. Do not label the right as a cutter.
@@ -58,6 +58,11 @@ def author(stage,config,fr3_urdf,out):
         # Free-space controller commissioning starts 15 mm further withdrawn.
         # This is explicit placement, not a collision toggle or successful grasp.
         desired['position_m']=desired['position_m']-.015*desired['axes'][:,2]
+        legacy_position=desired['position_m'].copy()
+        if patches is not None:
+            nodes=np.asarray(stage.GetPrimAtPath(config['sim_path']).GetAttribute('points').Get(),float)
+            patch=config['clusters'][patches[0 if hand=='left' else 1]]
+            desired['position_m']=nodes[patch['indices']].mean(0)-.018*desired['axes'][:,2]
         p,R=chain.fk(seed);Rtip=R@chain.R_f2t
         target_R=desired['axes']@np.diag([-1.,1.,-1.])
         base=np.eye(4);base[:3,:3]=target_R@Rtip.T
@@ -116,5 +121,6 @@ def author(stage,config,fr3_urdf,out):
                 UsdPhysics.DriveAPI(j.GetPrim(),'angular').CreateMaxForceAttr(.00045)
             stage.RemovePrim(old_path)
         specs[hand]=dict(root=root,chain=chain,base=base,port=port,
+                         workspace_shift=desired['position_m']-legacy_position,
                          normal=desired['axes'][:,2],seed=seed,mount_to_tip=np.array([0,0,.014]))
     return specs

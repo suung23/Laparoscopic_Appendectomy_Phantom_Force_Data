@@ -19,7 +19,14 @@ def main():
     p.add_argument('--surface-approach',action='store_true',help='Aim at nearest live tissue nodes instead of axial motion')
     p.add_argument('--close-samples',type=int,default=150,help='30 Hz closure samples; allow measured jaws to reach contact')
     p.add_argument('--approach-samples',type=int,default=150,help='0 skips approach for a free-space jaw-cycle control')
+    p.add_argument('--grasp-probe','--baseline-task',dest='baseline_task',action='store_true',
+        help='Experimental CT assisted grasp/pull/release; not full Rosota baseline parity')
+    p.add_argument('--grasp-approach-samples',type=int,default=240)
+    p.add_argument('--attachment-probe',action='store_true',help='Isolated activation diagnostic, not a robot grasp')
     a=p.parse_args()
+    if a.steps<1:p.error('--steps must be positive')
+    if a.grasp_approach_samples<1:p.error('--grasp-approach-samples must be positive')
+    if a.baseline_task and a.contact_probe:p.error('Choose baseline task or contact probe')
     if a.surface_approach and not a.contact_probe:p.error('--surface-approach requires --contact-probe')
     if a.close_samples<1:p.error('--close-samples must be positive')
     if a.approach_samples<0:p.error('--approach-samples must be nonnegative')
@@ -44,8 +51,13 @@ def main():
         import numpy as np
         from PIL import Image,ImageDraw
         from rosota_ct_env import RosotaCTEnv
-        env=RosotaCTEnv(app,a.assets,a.fr3_urdf,a.out,max_steps=a.steps)
+        env=RosotaCTEnv(app,a.assets,a.fr3_urdf,a.out,max_steps=a.steps,
+            grasp_mode='rosota_attachment' if a.baseline_task else 'none',
+            workspace='appendix_patches' if a.baseline_task else 'legacy')
         obs,info=env.reset(seed=42);report.update(status='running',**info);save()
+        if a.attachment_probe:
+            from attachment_probe import run
+            report.update(run(env));return
         if a.contact_probe:
             report['policy']=('scripted live-surface approach/close/reopen probe' if a.surface_approach
                 else 'scripted free-space jaw-cycle control' if a.approach_samples==0
@@ -61,6 +73,16 @@ def main():
             direction=point-tip
             targets.append(point+.002*direction/max(np.linalg.norm(direction),1e-9))
         report['surface_approach']=a.surface_approach
+        if a.baseline_task:report['policy']='scripted Rosota-style attachment-assisted grasp/pull/release'
+        mechanics=[];pull_start=None;pull_measure=None;approached={h:False for h in env.specs}
+        approach_end=a.grasp_approach_samples
+        if a.baseline_task:
+            # Gravity settlement changes the target after fixture authoring.
+            # Budget the path from measured live tissue, with 7.2 mm margin.
+            distance=max(x['distance_m'] for x in info['grasp_geometry'].values())
+            approach_end=max(approach_end,int(np.ceil(distance/.00012))+60)
+        close_end=approach_end+150;pull_end=close_end+60
+        withdraw_start=pull_end+15;withdraw_end=withdraw_start+60;release_end=withdraw_end+90
         def capture():
             nonlocal n
             before=env.points().copy();rgb=env.render()
@@ -73,6 +95,10 @@ def main():
                 for i,h in enumerate(env.specs):
                     g=env.guards[h]
                     d.text((8,323+17*i),f'{h}: mount {g.last["residual_force_n"]:.3f} N | arm stop={g.latched} | jaw hold={g.pinch_latched}',fill='white')
+            if a.baseline_task:
+                d.rectangle((0,320,640,360),fill=(15,20,25))
+                d.text((8,323),f'ROSOTA ATTACHMENT ASSIST | held: {list(env.grasp.held)}',fill='white')
+                d.text((8,340),'Measured robot motion -> FEM patch constraints -> tissue deformation',fill='white')
             im.save(frames/f'{n:05d}.png');n+=1
         capture()
         for step in range(a.steps):
@@ -94,11 +120,47 @@ def main():
                     for i in range(2):
                         delta=obs['tool_pose'][i,:3,:3].T@(targets[i]-obs['tool_pose'][i,:3,3])
                         tools[i,0,:3]=delta*min(1.,.00012/max(np.linalg.norm(delta),1e-9))
+            if a.baseline_task:
+                tools[:,:,:6]=0;scope[:]=0
+                tools[:,:,6]=100 if step<approach_end or step>=pull_end else 0
+                if step<approach_end:
+                    for i,patch in enumerate(env.target_patches):
+                        h=list(env.specs)[i]
+                        local=np.asarray(info['grasp_geometry'][h]['centre_in_shaft_frame_m'])
+                        # Stop once the patch enters the mouth, before driving
+                        # the rigid tip to the centre of deformable tissue.
+                        if np.all(np.abs(local)<[.0035,.003,.0045]):approached[h]=True
+                        if approached[h]:continue
+                        target=env.points()[env.config['data']['clusters'][patch]['indices']].mean(0)
+                        delta=obs['tool_pose'][i,:3,:3].T@(target-obs['tool_pose'][i,:3,3])
+                        tools[i,0,:3]=delta*min(1.,.00012/max(np.linalg.norm(delta),1e-9))
+                if step==close_end:
+                    from deformation_metrics import DeformationMeasure
+                    pull_start=obs['tool_pose'][:,:3,3].copy()
+                    pull_measure=DeformationMeasure(env.points(),env.tets)
+                if close_end<=step<pull_end:
+                    for i,h in enumerate(env.specs):
+                        if h in env.grasp.held:
+                            goal=pull_start[i]+np.array([0,.002*(step-close_end+1)/60,0])
+                            tools[i,0,:3]=obs['tool_pose'][i,:3,:3].T@(goal-obs['tool_pose'][i,:3,3])
+                if withdraw_start<=step<withdraw_end:
+                    # Open first, then withdraw 7.2 mm along each shaft's
+                    # outward tool axis, so the recovery state is unloaded.
+                    tools[:,0,2]=.00012
             obs,reward,term,trunc,info=env.step({'tools':tools,'scope':scope})
             assert env.observation_space.contains(obs)
             max_move=np.maximum(max_move,np.linalg.norm(obs['tool_pose'][:,:3,3]-start,axis=1))
+            mechanics.append(dict(step=env.steps,held=dict(info['held_patches']),
+                pull_relative=pull_measure.measure(env.points()) if pull_measure else None,
+                **info['deformation']))
+            if a.baseline_task and env.steps%30==0:
+                (a.out/'progress.json').write_text(json.dumps(dict(step=env.steps,
+                    phase_ends=[approach_end,close_end,pull_end,release_end],
+                    geometry=info['grasp_geometry'],held=info['held_patches'],
+                    jaws=info['jaw_position_rad'],failure=info['failure'])),encoding='utf-8')
             if step%6==0 or env.done:capture()
             if env.done:break
+            if a.baseline_task and env.steps>=release_end:break
         report.update(**info,status='passed' if not info['failure'] else 'failed',steps=env.steps,
             frames=n,fps=5.,control_hz=30,physics_hz=480,simulated_seconds=env.steps/30,
             physics_ticks_checked=len(env.trace),tip_excursion_m=max_move.tolist(),
@@ -114,7 +176,35 @@ def main():
             report['contact_validation']='unverified: reaction is not independent tissue contact evidence'
         report['final_jaw_position_rad']=obs['jaw_position'].tolist()
         np.savez_compressed(a.out/'tissue_motion.npz',initial=initial_tissue,final=env.points())
-        if not a.contact_probe and not info['failure'] and (min(max_move)<.001 or report['scope_eye_excursion_m']<.0001):
+        (a.out/'deformation_trace.json').write_text(json.dumps(mechanics),encoding='utf-8')
+        report['grasp_events']=env.grasp.events
+        if a.baseline_task:
+            report['peak_held_hands']=max(len(x['held']) for x in mechanics)
+            report['peak_nonrigid_rms_m']=max(x['nonrigid_rms_m'] for x in mechanics)
+            loaded=[x['pull_relative']['nonrigid_rms_m'] for x in mechanics
+                if close_end<x['step']<=pull_end and x['pull_relative'] and len(x['held'])==2]
+            peak=max(loaded,default=0.)
+            final=mechanics[-1]['pull_relative']
+            held_residual=final['nonrigid_rms_m'] if final else None
+            loaded_free=[x['nonrigid_rms_m'] for x in mechanics
+                if close_end<x['step']<=pull_end and len(x['held'])==2]
+            free_peak=max(loaded_free,default=0.)
+            residual=mechanics[-1]['nonrigid_rms_m']
+            report['pull_deformation_rms_m']=peak
+            report['post_release_residual_rms_m']=residual
+            report['post_release_held_reference_rms_m']=held_residual
+            report['loaded_free_reference_rms_m']=free_peak
+            report['recovery_reference']='settled ungrasped reset shape; pull increment uses the separate pre-pull held shape'
+            report['recovery_fraction']=1-residual/free_peak if free_peak>0 else None
+            report['withdraw_samples']=[withdraw_start,withdraw_end]
+            report['material_calibrated']=False
+            report['acceptance_scope']='single engineering assisted grasp/pull/release; not full Rosota parity'
+            report['phase_ends']=[approach_end,close_end,pull_end,release_end]
+            if (env.steps<release_end or report['peak_held_hands']<2 or env.grasp.held
+                    or peak<.0001 or report['recovery_fraction'] is None
+                    or report['recovery_fraction']<.1):
+                report['status']='failed';report['task_failure']='Incomplete dual grasp/pull deformation/release recovery'
+        if not a.baseline_task and not a.contact_probe and not info['failure'] and (min(max_move)<.001 or report['scope_eye_excursion_m']<.0001):
             raise RuntimeError('Insufficient actual tool/scope movement')
         (a.out/'physics_trace.json').write_text(json.dumps(env.trace),encoding='utf-8')
     except Exception as exc:

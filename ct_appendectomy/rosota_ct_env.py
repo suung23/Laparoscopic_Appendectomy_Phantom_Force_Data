@@ -16,7 +16,11 @@ from bimanual_env import BimanualEnv
 
 class RosotaCTEnv(gym.Env):
     metadata={'render_modes':['rgb_array'],'render_fps':30}
-    def __init__(self,app,assets,fr3_urdf,out,max_steps=300):
+    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy'):
+        if grasp_mode not in ('none','rosota_attachment'):raise ValueError('Unknown grasp model')
+        self.grasp_mode=grasp_mode
+        if workspace not in ('legacy','appendix_patches'):raise ValueError('Unknown workspace')
+        self.workspace=workspace;self.target_patches=[1,4]
         self.app=app;self.assets=Path(assets);self.fr3_urdf=Path(fr3_urdf);self.out=Path(out)
         self.out.mkdir(parents=True,exist_ok=True)
         self.config=json.loads((self.assets/'bimanual_config.json').read_text())
@@ -33,6 +37,7 @@ class RosotaCTEnv(gym.Env):
             'jaw_effort':spaces.Box(-np.inf,np.inf,(2,2),np.float32),
             'jaw_contact_hold':spaces.MultiBinary(2),
             'contact_stop':spaces.MultiBinary(2),
+            'tissue_held':spaces.MultiBinary(2),
             'goal_position':spaces.Box(-np.inf,np.inf,(2,3),np.float32)})
         self.max_steps=max_steps;self.sim=None;self.rgb=self.product=None;self.done=True
 
@@ -51,10 +56,12 @@ class RosotaCTEnv(gym.Env):
         omni.usd.get_context().open_stage(str((self.assets/'attached.usda').resolve()))
         for _ in range(20):self.app.update()
         self.stage=omni.usd.get_context().get_stage()
-        self.specs=author(self.stage,self.config['data'],self.fr3_urdf,self.out)
+        self.specs=author(self.stage,self.config['data'],self.fr3_urdf,self.out,
+            patches=self.target_patches if self.workspace=='appendix_patches' else None)
         for c in self.config['data']['clusters']:
             self.stage.GetPrimAtPath(c['path']+'Attachment').GetAttribute('omniphysics:attachmentEnabled').Set(False)
         camera=np.asarray(UsdGeom.Xformable(self.stage.GetPrimAtPath('/World/Endoscope')).GetOrderedXformOps()[0].Get()).T
+        camera[:3,3]+=np.mean([s['workspace_shift'] for s in self.specs.values()],axis=0)
         self.scope=TrocarScope(camera);self.scope.apply_usd(self.stage)
         self.mesh=self.stage.GetPrimAtPath(self.config['data']['sim_path'])
         self.rest=self.points().copy();self.tets=np.asarray(self.mesh.GetAttribute('tetVertexIndices').Get(),int)
@@ -107,6 +114,23 @@ class RosotaCTEnv(gym.Env):
                 samples=64,frame='local child joint frame at tool_mount',
                 model='static tare only; no orientation or inertia compensation')
         (self.out/'contact_calibration.json').write_text(json.dumps(calibration,indent=2),encoding='utf-8')
+        from tissue_grasp import TissueGrasp
+        from deformation_metrics import DeformationMeasure
+        from isaacsim.core.prims import SingleRigidPrim
+        self.grip_bodies={}
+        for i,c in enumerate(self.config['data']['clusters']):
+            body=SingleRigidPrim(prim_path=c['path'],name='grip_handle_'+str(i),reset_xform_properties=False)
+            body.initialize();self.grip_bodies[c['path']]=body
+        def write_grip_pose(c,R,p):
+            # A USD edit is a next-tick kinematic target. Activation needs the
+            # actual PhysX pose in place NOW, before enabling its constraint.
+            rotation=Gf.Matrix3d(np.asarray(R).T.tolist()).ExtractRotation().GetQuat()
+            quaternion=np.array([rotation.GetReal(),*rotation.GetImaginary()])
+            self.grip_bodies[c['path']].set_world_pose(position=np.asarray(p),orientation=quaternion)
+        self.grasp=TissueGrasp(self.stage,self.config['data']['clusters'],
+            preferred=dict(zip(self.specs,self.target_patches)) if self.workspace=='appendix_patches' else None,
+            pose_writer=write_grip_pose)
+        self.deformation=DeformationMeasure(self.points(),self.tets)
         info=self.measure()
         (self.out/'reset_diagnostics.json').write_text(json.dumps(info,indent=2),encoding='utf-8')
         if info['failure']:self.done=True;raise RuntimeError('Invalid reset: '+info['failure'])
@@ -132,16 +156,18 @@ class RosotaCTEnv(gym.Env):
                 'jaw_effort':np.asarray([g.last['jaw_effort_nm'] for g in self.guards.values()],np.float32),
                 'jaw_contact_hold':np.asarray([g.pinch_latched for g in self.guards.values()],np.int8),
                 'contact_stop':np.asarray([g.latched for g in self.guards.values()],np.int8),
+                'tissue_held':np.asarray([h in self.grasp.held for h in self.specs],np.int8),
                 'scope_pose':self.scope.pose.astype(np.float32),'goal_position':self.goal.astype(np.float32)}
 
     def measure(self):
         from pxr import UsdGeom
         from tissue_metrics import tetra_health
-        ports={};mismatch=[]
+        ports={};mismatch=[];tool_frames={}
         for h,s in self.specs.items():
             # Compare actual rigid-body USD readback against FK of measured q.
             M=np.asarray(UsdGeom.Xformable(self.stage.GetPrimAtPath(s['root']+'/shaft')).ComputeLocalToWorldTransform(0)).T
             tip=M[:3,3]+M[:3,:3]@s['mount_to_tip'];axis=M[:3,2]
+            tool_frames[h]=(tip,M[:3,:3])
             ports[h]=aperture_metrics(s['port'],s['normal'],tip,axis)
             fk=self.controllers[h].pose(self.q(h))[0];mismatch.append(float(np.linalg.norm(tip-fk)))
         tissue=self.points();health=tetra_health(self.rest,tissue,self.tets)
@@ -152,14 +178,24 @@ class RosotaCTEnv(gym.Env):
         if max(mismatch)>.0005:failure='joint_body_pose_mismatch'
         if health['inverted_tetrahedra']:failure='tet_inversion'
         if drift>.001:failure='pin_drift'
+        grasp_geometry={}
+        if self.workspace=='appendix_patches':
+            for h,index in zip(self.specs,self.target_patches):
+                tip,axes=tool_frames[h]
+                centre=tissue[self.config['data']['clusters'][index]['indices']].mean(0)
+                grasp_geometry[h]=dict(target_patch=index,centre_in_shaft_frame_m=((centre-tip)@axes).tolist(),
+                    distance_m=float(np.linalg.norm(centre-tip)))
         return dict(failure=failure,trocar=ports,scope_trocar=scope,body_fk_error_m=mismatch,
+            grasp_geometry=grasp_geometry,
             contact={h:g.last.copy() for h,g in self.guards.items()},
             jaw_position_rad={h:self.robots[h].get_joint_positions(joint_indices=self.jaw_indices[h]).tolist() for h in self.specs},
             tissue_health=health,pin_drift_m=drift,controller='original Rosota TipController strict aperture',
             plant='PhysX dynamic articulations with measured joint feedback',
             calibrated_ports=False,right_tool='grasper; cutter pending',scope_shaft_collision=False,
-            commissioning_retreat_m=.015,
-            grasp_assist=False,rosota_full_contract=False)
+            commissioning_retreat_m=.015 if self.workspace=='legacy' else .018,workspace=self.workspace,
+            grasp_assist=self.grasp_mode=='rosota_attachment' or bool(self.grasp.held),
+            grasp_mode=self.grasp_mode,held_patches={h:v['cluster'] for h,v in self.grasp.held.items()},
+            rosota_full_contract=False)
 
     def step(self,action):
         if self.done:raise RuntimeError('Reset required')
@@ -175,6 +211,9 @@ class RosotaCTEnv(gym.Env):
         rejected={h:np.zeros(2) for h in self.specs}
         try:
             for tick in range(16):
+                # Both hands act on the same pre-step state. Reading USD's
+                # FEM buffer once avoids four identical host conversions.
+                grasp_points=self.points() if self.grasp_mode=='rosota_attachment' else None
                 for h in self.specs:
                     guard=self.guards[h]
                     if guard.latched:
@@ -188,7 +227,17 @@ class RosotaCTEnv(gym.Env):
                         joint_velocities=result['joint_velocity_ff'],joint_indices=self.indices[h]))
                     jaws=self.robots[h].get_joint_positions(joint_indices=self.jaw_indices[h])
                     measured=float(np.rad2deg(jaws[0]-jaws[1]))
-                    self.jaw_open[h]=guard.jaw_target(result['gripper_target_deg'],self.jaw_open[h],measured,1/480)
+                    if self.grasp_mode=='rosota_attachment':
+                        from pxr import UsdGeom
+                        s=self.specs[h]
+                        M=np.asarray(UsdGeom.Xformable(self.stage.GetPrimAtPath(s['root']+'/shaft')).ComputeLocalToWorldTransform(0)).T
+                        tip=M[:3,3]+M[:3,:3]@s['mount_to_tip']
+                        hit=self.grasp.probe(h,grasp_points,tip,M[:3,:3])
+                        if hit and self.controllers[h].row[6]<=0:result['gripper_target_deg']=max(result['gripper_target_deg'],hit[1])
+                        self.grasp.update(h,grasp_points,tip,M[:3,:3],self.controllers[h].row[6],guard.pinch_latched,measured)
+                    if h in self.grasp.held and self.controllers[h].row[6]<=0:
+                        self.jaw_open[h]=self.grasp.held[h]['jaw_deg']
+                    else:self.jaw_open[h]=guard.jaw_target(result['gripper_target_deg'],self.jaw_open[h],measured,1/480)
                     half=np.deg2rad(self.jaw_open[h]/2)
                     self.robots[h].apply_action(ArticulationAction(joint_positions=np.array([half,-half]),joint_indices=self.jaw_indices[h]))
                 self.scope.step(scope,1/480);self.scope.apply_usd(self.stage)
@@ -204,12 +253,15 @@ class RosotaCTEnv(gym.Env):
         terminated=bool(info['failure']);truncated=self.steps>=self.max_steps and not terminated
         self.done=terminated or truncated
         info.update(rot_rejected={h:x.tolist() for h,x in rejected.items()},distance_m=distance.tolist())
+        info['deformation']=self.deformation.measure(self.points())
         reward=-float(distance.mean())/.01-(5. if terminated else 0.)
         return obs,reward,terminated,truncated,info
 
     render=BimanualEnv.render
     _destroy_render=BimanualEnv._destroy_render
     def close(self):
+        if hasattr(self,'grasp'):
+            for hand in list(self.grasp.held):self.grasp.release(hand)
         self._destroy_render()
         if self.sim:self.sim.stop()
         self.done=True

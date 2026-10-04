@@ -1,0 +1,37 @@
+{
+  "objective": "Restore native Rosota baseline before claiming a CT surgical simulator extension",
+  "full_baseline_parity": false,
+  "gates": [
+    {
+      "id": "reference-provenance",
+      "status": "passed",
+      "evidence": "42 source files and 56 restored CAD/scene assets match pinned Git blob hashes"
+    },
+    {
+      "id": "reference-runtime",
+      "status": "passed one native scripted episode; see rosota-reference-runtime.json",
+      "requires": ["original dynamic FR3 pair", "motorized grasper and cutter", "six FEM organs", "endoscope and D405 RGB/stereo/depth", "completed scored rollout"]
+    },
+    {
+      "id": "ct-contract-parity",
+      "status": "incomplete",
+      "requires": ["same action and observation contract", "right cutter", "full collision geometry", "camera calibration and stereo/depth", "same task stage evaluation", "multi-seed reference comparison"]
+    },
+    {
+      "id": "ct-grasp-traction-release",
+      "status": "one assisted trial passed; repeated-seed and unloaded-control validation pending; see ct-grasp-validation.json",
+      "requires": ["live tissue inside jaw mouth", "explicitly labelled assistance", "both hands hold during traction", "non-rigid deformation relative to pre-pull state", "zero inverted tets at every physics tick", "measured recovery after release", "unloaded matched control"]
+    },
+    {
+      "id": "material-validation",
+      "status": "not achieved",
+      "requires": ["measured force-displacement reference", "mesh and time-step convergence", "compression and traction calibration", "two-way grasp reaction transfer to robot joints", "rate dependence", "organ-organ contact", "mesoappendix coupling"]
+    },
+    {
+      "id": "surgical-topology",
+      "status": "not achieved",
+      "requires": ["mechanical cutting changes topology", "stump and mesoappendix behavior", "hemostasis model", "expert assessment"]
+    }
+  ],
+  "claims_not_supported": ["SOTA", "clinical fidelity", "patient-specific appendix reconstructed from CT", "friction-only grasp", "complete appendectomy"]
+}
