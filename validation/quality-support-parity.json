@@ -1,0 +1,6 @@
+{
+  "parent_stage_sha256": "3039011571269bdd41816c45c73b3a2efe40355a58dffc089b4337d370559551",
+  "stage_sha256": "3521feb2e3b797ed23486cf9a06d42b1667135b38ee8af1058743fbadaa080fa",
+  "change": "Explicit support contact offset 0.0003 m, rest offset 0 m; all tissue geometry retained",
+  "mechanics_verified": false
+}

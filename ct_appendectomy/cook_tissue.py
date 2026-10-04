@@ -64,6 +64,10 @@ try:
     np.savez_compressed(a.out/'mesh.npz',points=points,tets=cells)
     if a.prepare_bimanual:
         if report['status']!='topology_passed':raise RuntimeError('Reject invalid explicit mesh')
+        support=stage.GetPrimAtPath('/World/PosteriorSupport/render')
+        if not support:raise RuntimeError('Missing posterior support')
+        support_api=PhysxSchema.PhysxCollisionAPI.Apply(support)
+        support_api.CreateContactOffsetAttr(.0003);support_api.CreateRestOffsetAttr(0.)
         du.add_deformable_material(stage,'/World/TissueMaterial',density=1050.,youngs_modulus=12000.,poissons_ratio=.45,dynamic_friction=.5,static_friction=.5)
         UsdShade.MaterialBindingAPI.Apply(stage.GetPrimAtPath(root)).Bind(UsdShade.Material.Get(stage,'/World/TissueMaterial'),UsdShade.Tokens.weakerThanDescendants,'physics')
         collision_api=PhysxSchema.PhysxCollisionAPI.Apply(mesh)
