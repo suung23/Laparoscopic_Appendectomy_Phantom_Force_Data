@@ -61,10 +61,13 @@
     "Bounded D4D intake retained only four right-camera images; unusable for calibrated reconstruction",
     "Measured reset gate implemented; tissue failed eight-second settlement trial",
     "Three-axis 0.1 N loads repeated with collisions disabled: mount vector errors 0.014 to 0.047 N; sensor calibration failed",
-    "Full incoming-joint reactions confirm selected tool_mount index; cause of force error still unresolved"
+    "Full incoming-joint reactions confirm selected tool_mount index; cause of force error still unresolved",
+    "Isolated known-load fixture passes CPU/GPU; isolated FR3 also passes including task joint initialization",
+    "Full-scene zero-gravity test reproduces 14-47 mN errors; removing Atlas plus dependent constraints restores accurate known-load response",
+    "TGS external-forces-every-iteration test rejected: reported force response becomes near zero"
   ],
   "next_actions": [
-    "Isolate force application and joint-reaction reporting in a minimal articulated fixture; compare CPU/GPU and static force balance",
+    "Separate deformation/attachment effects on reaction reporting; implement an independent generalized-torque load check and compare to known applied force before tissue calibration",
     "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",

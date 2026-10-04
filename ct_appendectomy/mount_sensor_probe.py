@@ -62,6 +62,7 @@ def run(env):
         acceptance_scope='simulated mount sensor only; collision-free fixture, not tissue-force validation',
         applied_force_n=.1,physics_ticks=len(rows),tissue_attachment_enabled=False,
         tool_collisions_enabled=False,material_calibrated=False,trace=rows,
+        diagnostic_zero_gravity=env.diagnostic_zero_gravity,
         force_row=env.force_rows[hand],joint_indices=dict(metadata.joint_indices),
         joint_names=list(metadata.joint_names),snapshots=snapshots)
     (env.out/'known_load_sensor.json').write_text(json.dumps(result,indent=2),encoding='utf-8')

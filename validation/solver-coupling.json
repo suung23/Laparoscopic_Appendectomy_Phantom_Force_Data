@@ -199,6 +199,50 @@
         "jaw_right": 9,
         "tool_mount": 7
       }
+    },
+    {
+      "trial": "mount_sensor_zero_g_v1",
+      "method": "Full scene, zero gravity, no robot collisions; same mount-force error persists",
+      "status": "failed",
+      "error": null,
+      "report_sha256": "063eabd6e1e1cb42edde4acd64f50f98067f2bbe583d63b2798c5384f8004fcd",
+      "implementation_sha256": {
+        "rosota_ct_env.py": "3d57d2a13e1b0ace926e4631c1b1193431647829db8da8fcba74f79b25194526",
+        "solver_grasp.py": "38e072dc68e042db0deaedda5036edb99d4731f223c1aa406fc618b96837b217",
+        "tissue_grasp.py": "247ea6e3fc31db1dbfd997e31600351de43daaaa0e60b18fdb1aa329cfaad753",
+        "coupling_probe.py": "fb21da4a1a5a9b96a305fbdb3190a090d4ff8b95c7c3c841046b3dfd1c4d4710",
+        "settlement.py": "4081a8302e679915f16fd8276651f957f6cfc85c716052ebbeda3927810f27c0",
+        "mount_sensor_probe.py": "a22a7e021191f3ae8154c3754e3ea52dc2a47ee5f5b84741340870dc9ba95f52"
+      },
+      "baseline_noise_n": [
+        3.3831375488027404e-09,
+        4.086618535083943e-09,
+        3.5200066436992754e-09
+      ],
+      "vector_error_n": [
+        0.041229684212156045,
+        0.014039381265606667,
+        0.046627285331357834
+      ],
+      "release_residual_n": [
+        4.7440198531498535e-11,
+        8.509737299072119e-11,
+        2.789139445845952e-08
+      ],
+      "tolerance_n": 0.005,
+      "force_row": 8,
+      "joint_indices": {
+        "fr3_joint1": 0,
+        "fr3_joint2": 1,
+        "fr3_joint3": 2,
+        "fr3_joint4": 3,
+        "fr3_joint5": 4,
+        "fr3_joint6": 5,
+        "fr3_joint7": 6,
+        "jaw_left": 8,
+        "jaw_right": 9,
+        "tool_mount": 7
+      }
     }
   ],
   "remaining": [

@@ -12,6 +12,7 @@ METHODS={
     'mount_sensor_v1':'Known 0.1 N rigid-link force on/off without tissue attachments',
     'mount_sensor_v2':'Three-axis 0.1 N loads; robot collisions disabled in diagnostic only',
     'mount_sensor_v3':'Repeat three-axis loads with all incoming joint wrenches and poses recorded'}
+METHODS['mount_sensor_zero_g_v1']='Full scene, zero gravity, no robot collisions; same mount-force error persists'
 
 
 def summarize():

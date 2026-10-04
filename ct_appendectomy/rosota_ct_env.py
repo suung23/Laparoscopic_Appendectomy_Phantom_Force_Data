@@ -16,10 +16,12 @@ from bimanual_env import BimanualEnv
 
 class RosotaCTEnv(gym.Env):
     metadata={'render_modes':['rgb_array'],'render_fps':30}
-    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False):
+    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False):
         if settle_policy not in ('fixed','adaptive'):raise ValueError('Unknown settlement policy')
         self.settle_policy=settle_policy
         self.diagnostic_no_tool_collision=bool(diagnostic_no_tool_collision)
+        self.diagnostic_zero_gravity=bool(diagnostic_zero_gravity)
+        if self.diagnostic_zero_gravity and not self.diagnostic_no_tool_collision:raise ValueError('Zero gravity is restricted to the isolated sensor diagnostic')
         if self.diagnostic_no_tool_collision and grasp_mode!='none':raise ValueError('Collision-free sensor fixture cannot be a grasp task')
         if grasp_mode not in ('none','rosota_attachment','solver_attachment'):raise ValueError('Unknown grasp model')
         self.grasp_mode=grasp_mode
@@ -81,7 +83,7 @@ class RosotaCTEnv(gym.Env):
         self.sim=SimulationContext(stage_units_in_meters=1.,physics_dt=1/480,rendering_dt=1/30)
         for prim in self.stage.Traverse():
             if prim.IsA(UsdPhysics.Scene):
-                scene=UsdPhysics.Scene(prim);scene.CreateGravityDirectionAttr(Gf.Vec3f(0,-1,0));scene.CreateGravityMagnitudeAttr(9.81)
+                scene=UsdPhysics.Scene(prim);scene.CreateGravityDirectionAttr(Gf.Vec3f(0,-1,0));scene.CreateGravityMagnitudeAttr(0. if self.diagnostic_zero_gravity else 9.81)
                 ps=PhysxSchema.PhysxSceneAPI.Apply(prim);ps.CreateEnableGPUDynamicsAttr(True);ps.CreateBroadphaseTypeAttr('GPU')
         self.stage.GetRootLayer().Export(str(self.out/'scene.usda'))
         self.sim.initialize_physics()

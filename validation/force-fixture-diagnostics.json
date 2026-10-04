@@ -1,0 +1,611 @@
+{
+  "scope": "Known-load rigid-link reaction diagnostics; not tissue-force calibration",
+  "tissue_mechanics_validated": false,
+  "task_force_sensor_validated": false,
+  "experiments": [
+    {
+      "status": "passed",
+      "gpu": false,
+      "gravity_m_s2": 0.0,
+      "source_sha256": "5b288cd87f1f0350eb73878f1f927529a3591e2cbfbaf3e335031e3eb5c9781e",
+      "response_sign": -1,
+      "vector_error_n": [
+        2.8312206273861662e-08,
+        2.8312206273861662e-08,
+        2.8312206273861662e-08
+      ],
+      "response_local_n": [
+        [
+          -0.09999997168779373,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -0.09999997168779373,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          -0.09999997168779373
+        ]
+      ],
+      "expected_local_n": [
+        [
+          0.1,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1
+        ]
+      ],
+      "release_residual_n": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "baseline_noise_n": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "tolerance_n": 0.005,
+      "selected_row": 2,
+      "physics_ticks": 1440,
+      "trial": "force_fixture_cpu_v1",
+      "report_sha256": "6bdad0059af22b7ab576c8476d6b9c21fff76fa0348cf3c4a56755e0db6a5f5e",
+      "robot_collisions": false,
+      "collision_scope_note": "Earlier label referred to robot colliders only"
+    },
+    {
+      "status": "passed",
+      "gpu": true,
+      "gravity_m_s2": 0.0,
+      "source_sha256": "5b288cd87f1f0350eb73878f1f927529a3591e2cbfbaf3e335031e3eb5c9781e",
+      "response_sign": -1,
+      "vector_error_n": [
+        3.579486017924341e-08,
+        3.576278687078549e-08,
+        3.579486017924341e-08
+      ],
+      "response_local_n": [
+        [
+          -0.09999996423721313,
+          0.0,
+          -1.5149556054083746e-09
+        ],
+        [
+          0.0,
+          -0.09999996423721313,
+          0.0
+        ],
+        [
+          1.5149556054083746e-09,
+          0.0,
+          -0.09999996423721313
+        ]
+      ],
+      "expected_local_n": [
+        [
+          0.1,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1
+        ]
+      ],
+      "release_residual_n": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "baseline_noise_n": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "tolerance_n": 0.005,
+      "selected_row": 2,
+      "physics_ticks": 1440,
+      "trial": "force_fixture_gpu_v1",
+      "report_sha256": "18e6d99a8d0ee71ed06fe92af1649de20abfc20a5eb09ce6080a6b7620dd1a9b",
+      "robot_collisions": false,
+      "collision_scope_note": "Earlier label referred to robot colliders only"
+    },
+    {
+      "status": "failed",
+      "gpu": false,
+      "gravity_m_s2": 0.0,
+      "source_sha256": "f4a6b4f551da60e6b5f6ed3b099cb77a9fa726def83666986858e7f04dad97e3",
+      "robot_scene_sha256": "01efecae6aaffa3f39ec48b76f396c085069ac202eabc8c631e3c17722883c97",
+      "response_sign": -1,
+      "vector_error_n": [
+        0.05190228087421327,
+        2.267084180597367e-08,
+        1.0385801147920324e-08
+      ],
+      "response_local_n": [
+        [
+          0.04400599002838135,
+          0.06552135944366455,
+          0.005347061902284622
+        ],
+        [
+          0.048162732273340225,
+          0.012049742974340916,
+          0.08680526167154312
+        ],
+        [
+          -0.06211129203438759,
+          0.07457136362791061,
+          0.02411012537777424
+        ]
+      ],
+      "expected_local_n": [
+        [
+          -0.061826617922629314,
+          -0.065527955652937,
+          0.04339995788242119
+        ],
+        [
+          -0.04816274798753584,
+          -0.012049759115592112,
+          -0.08680525912377267
+        ],
+        [
+          0.062111300909870874,
+          -0.07457136125830337,
+          -0.024110130222939192
+        ]
+      ],
+      "release_residual_n": [
+        0.05190226808190346,
+        5.083289789098444e-09,
+        3.920544167090867e-10
+      ],
+      "baseline_noise_n": [
+        0.06505171209573746,
+        2.6279476372792487e-08,
+        2.9106017152003005e-08
+      ],
+      "tolerance_n": 0.005,
+      "selected_row": 8,
+      "physics_ticks": 1440,
+      "trial": "force_fr3_cpu_v1",
+      "report_sha256": "986e306e23a851983dee5620d1dd8425879d91bd7c06c362707e46a84c30fd04",
+      "limitation": "First axis began before initialization transient settled; later axes passed",
+      "robot_collisions": false,
+      "collision_scope_note": "Earlier label referred to robot colliders only"
+    },
+    {
+      "status": "passed",
+      "gpu": true,
+      "gravity_m_s2": 0.0,
+      "source_sha256": "5e8ba8c3d13d9623d913deb8fbc31f0e330fdb9e81d490f387a103d28d5e3c90",
+      "robot_scene_sha256": "01efecae6aaffa3f39ec48b76f396c085069ac202eabc8c631e3c17722883c97",
+      "warmup_ticks": 480,
+      "response_sign": -1,
+      "vector_error_n": [
+        3.775419786260646e-08,
+        1.138481020878227e-08,
+        3.110617567213713e-08
+      ],
+      "response_local_n": [
+        [
+          0.061826594173908234,
+          0.06552794575691223,
+          -0.04339994862675667
+        ],
+        [
+          0.0481627956032753,
+          0.012049765326082706,
+          0.08680522441864014
+        ],
+        [
+          -0.062111273407936096,
+          0.07457135617733002,
+          0.024110160768032074
+        ]
+      ],
+      "expected_local_n": [
+        [
+          -0.06182658843659688,
+          -0.06552798037122448,
+          0.043399962566344256
+        ],
+        [
+          -0.048162795627675885,
+          -0.012049757715340037,
+          -0.08680523288562922
+        ],
+        [
+          0.062111302653474226,
+          -0.07457135322034271,
+          -0.024110150592134547
+        ]
+      ],
+      "release_residual_n": [
+        9.112945953404505e-09,
+        3.5808400689063546e-09,
+        1.6645854694630202e-09
+      ],
+      "baseline_noise_n": [
+        3.658403713302505e-08,
+        2.942691423868382e-08,
+        3.48280586592864e-08
+      ],
+      "tolerance_n": 0.005,
+      "selected_row": 8,
+      "physics_ticks": 1440,
+      "trial": "force_fr3_gpu_v1",
+      "report_sha256": "46696cd73af47819b0b4fbc5c61d2c5a3acef892eabd12a6f98bac13002d447c",
+      "robot_collisions": false,
+      "collision_scope_note": "Earlier label referred to robot colliders only"
+    },
+    {
+      "status": "passed",
+      "gpu": true,
+      "gravity_m_s2": 0.0,
+      "source_sha256": "4165bdad6ef2ff151b48f9aad5da315fc724c1cf9b925f43e54c7b3f51b36eba",
+      "robot_scene_sha256": "01efecae6aaffa3f39ec48b76f396c085069ac202eabc8c631e3c17722883c97",
+      "reset_seed": true,
+      "warmup_ticks": 480,
+      "response_sign": -1,
+      "vector_error_n": [
+        2.518109770911938e-08,
+        2.6799087176601987e-08,
+        3.265842132390242e-08
+      ],
+      "response_local_n": [
+        [
+          0.061821095645427704,
+          0.0655243992805481,
+          -0.04341314733028412
+        ],
+        [
+          0.04818208888173103,
+          0.012046976014971733,
+          0.0867948904633522
+        ],
+        [
+          -0.06210184469819069,
+          0.07457494735717773,
+          0.024123340845108032
+        ]
+      ],
+      "expected_local_n": [
+        [
+          -0.06182109577468989,
+          -0.0655244165644668,
+          0.04341316564249664
+        ],
+        [
+          -0.04818211182257195,
+          -0.01204696619037656,
+          -0.08679490022993919
+        ],
+        [
+          0.062101865769509816,
+          -0.07457495455610222,
+          -0.024123316954786145
+        ]
+      ],
+      "release_residual_n": [
+        7.633339293988683e-09,
+        2.507687613118037e-09,
+        1.9656923200273013e-08
+      ],
+      "baseline_noise_n": [
+        5.15238944842622e-08,
+        4.2404877831359045e-08,
+        3.7076159031812495e-08
+      ],
+      "tolerance_n": 0.005,
+      "selected_row": 8,
+      "physics_ticks": 1440,
+      "trial": "force_fr3_seed_gpu_v1",
+      "report_sha256": "6648043af63a25d64e7e391b1663934dc74eefdbb1fa939a8fdadddd9efe6d63",
+      "robot_collisions": false,
+      "collision_scope_note": "Earlier label referred to robot colliders only"
+    },
+    {
+      "status": "failed",
+      "gpu": true,
+      "gravity_m_s2": 0.0,
+      "source_sha256": "94f5fd8e76c70ab43c3e6dcfab4b0864aea4ae6499dd440e1fb4bbdedf9b192a",
+      "robot_scene_sha256": "01efecae6aaffa3f39ec48b76f396c085069ac202eabc8c631e3c17722883c97",
+      "surrounding_scene_retained": true,
+      "reset_seed": true,
+      "warmup_ticks": 480,
+      "response_sign": -1,
+      "vector_error_n": [
+        0.04122966767641561,
+        0.014039380666467371,
+        0.04662729504436584
+      ],
+      "response_local_n": [
+        [
+          0.03909093886613846,
+          0.031352799385786057,
+          -0.039472855627536774
+        ],
+        [
+          0.034912630915641785,
+          0.007514249533414841,
+          0.08748740702867508
+        ],
+        [
+          -0.03815547376871109,
+          0.034620583057403564,
+          0.022044098004698753
+        ]
+      ],
+      "expected_local_n": [
+        [
+          -0.06182109577468989,
+          -0.0655244165644668,
+          0.04341316564249664
+        ],
+        [
+          -0.04818211182257195,
+          -0.01204696619037656,
+          -0.08679490022993919
+        ],
+        [
+          0.062101865769509816,
+          -0.07457495455610222,
+          -0.024123316954786145
+        ]
+      ],
+      "release_residual_n": [
+        5.3349720474660245e-11,
+        1.5080203752404486e-10,
+        2.785498764978911e-08
+      ],
+      "baseline_noise_n": [
+        4.380114937418966e-09,
+        3.8405070235114636e-09,
+        2.9501947551580088e-09
+      ],
+      "tolerance_n": 0.005,
+      "selected_row": 8,
+      "physics_ticks": 1440,
+      "trial": "force_fr3_full_gpu_v1",
+      "report_sha256": "b877e679c554d4cfa7bf5ea9b92e4e4f25ba477ac911c513d7ae2aca6d2c4500",
+      "robot_collisions": false,
+      "collision_scope_note": "Earlier label referred to robot colliders only"
+    },
+    {
+      "status": "passed",
+      "gpu": true,
+      "gravity_m_s2": 0.0,
+      "robot_collisions": false,
+      "source_sha256": "447219ca9191e531f285f40d4965b62c9db85d6c4984d610775bcf66448574bd",
+      "robot_scene_sha256": "01efecae6aaffa3f39ec48b76f396c085069ac202eabc8c631e3c17722883c97",
+      "surrounding_scene_retained": true,
+      "excluded_component": "/World/Atlas",
+      "reset_seed": true,
+      "warmup_ticks": 480,
+      "response_sign": -1,
+      "vector_error_n": [
+        2.518109770911938e-08,
+        2.6799087176601987e-08,
+        3.265842132390242e-08
+      ],
+      "response_local_n": [
+        [
+          0.061821095645427704,
+          0.0655243992805481,
+          -0.04341314733028412
+        ],
+        [
+          0.04818208888173103,
+          0.012046976014971733,
+          0.0867948904633522
+        ],
+        [
+          -0.06210184469819069,
+          0.07457494735717773,
+          0.024123340845108032
+        ]
+      ],
+      "expected_local_n": [
+        [
+          -0.06182109577468989,
+          -0.0655244165644668,
+          0.04341316564249664
+        ],
+        [
+          -0.04818211182257195,
+          -0.01204696619037656,
+          -0.08679490022993919
+        ],
+        [
+          0.062101865769509816,
+          -0.07457495455610222,
+          -0.024123316954786145
+        ]
+      ],
+      "release_residual_n": [
+        7.633339293988683e-09,
+        2.507687613118037e-09,
+        1.9656923200273013e-08
+      ],
+      "baseline_noise_n": [
+        5.15238944842622e-08,
+        4.2404877831359045e-08,
+        3.7076159031812495e-08
+      ],
+      "tolerance_n": 0.005,
+      "selected_row": 8,
+      "physics_ticks": 1440,
+      "trial": "force_fr3_no_atlas_gpu_v1",
+      "report_sha256": "b7c9e4369acdcc99ce2434cf6a401a85ad9faa013817bc8ae79634deed1f413c",
+      "limitation": "Removed tissue left invalid attachment targets; needs clean repeat"
+    },
+    {
+      "status": "failed",
+      "gpu": true,
+      "gravity_m_s2": 0.0,
+      "robot_collisions": false,
+      "source_sha256": "e04fefff163afefdde881d9792c3cc457ed47681dbb017dcd540ebe6e5566c36",
+      "robot_scene_sha256": "01efecae6aaffa3f39ec48b76f396c085069ac202eabc8c631e3c17722883c97",
+      "surrounding_scene_retained": true,
+      "excluded_component": null,
+      "external_forces_every_iteration": true,
+      "reset_seed": true,
+      "warmup_ticks": 480,
+      "response_sign": 1,
+      "vector_error_n": [
+        0.10000000065685737,
+        0.10000000010437973,
+        0.09999999786863868
+      ],
+      "response_local_n": [
+        [
+          -1.8593482309370302e-10,
+          1.7553247744217515e-09,
+          8.715375088286237e-10
+        ],
+        [
+          -4.844764589506667e-10,
+          4.129105946049094e-10,
+          3.318945118735428e-10
+        ],
+        [
+          -3.4634695111890323e-10,
+          -2.8223894332768396e-09,
+          -1.0017373597293044e-09
+        ]
+      ],
+      "expected_local_n": [
+        [
+          -0.06182109577468989,
+          -0.0655244165644668,
+          0.04341316564249664
+        ],
+        [
+          -0.04818211182257195,
+          -0.01204696619037656,
+          -0.08679490022993919
+        ],
+        [
+          0.06210182137050244,
+          -0.07457493841428335,
+          -0.02412348115368204
+        ]
+      ],
+      "release_residual_n": [
+        1.7070596672330574e-11,
+        1.2719342072642359e-11,
+        1.4977628859380587e-10
+      ],
+      "baseline_noise_n": [
+        4.380114937418966e-09,
+        3.6317688856257746e-09,
+        2.2962149959226963e-09
+      ],
+      "tolerance_n": 0.005,
+      "selected_row": 8,
+      "physics_ticks": 1440,
+      "trial": "force_fr3_full_external_gpu_v1",
+      "report_sha256": "d9bfc7a92b6ca4c1e213596144d6677e5ce49a8acd427eb0d202b8c40b7ba1d3"
+    },
+    {
+      "status": "passed",
+      "gpu": true,
+      "gravity_m_s2": 0.0,
+      "robot_collisions": false,
+      "source_sha256": "e04fefff163afefdde881d9792c3cc457ed47681dbb017dcd540ebe6e5566c36",
+      "robot_scene_sha256": "01efecae6aaffa3f39ec48b76f396c085069ac202eabc8c631e3c17722883c97",
+      "surrounding_scene_retained": true,
+      "removed_dependent_attachments": 8,
+      "excluded_component": "/World/Atlas",
+      "external_forces_every_iteration": false,
+      "reset_seed": true,
+      "warmup_ticks": 480,
+      "response_sign": -1,
+      "vector_error_n": [
+        2.518109770911938e-08,
+        2.6799087176601987e-08,
+        3.265842132390242e-08
+      ],
+      "response_local_n": [
+        [
+          0.061821095645427704,
+          0.0655243992805481,
+          -0.04341314733028412
+        ],
+        [
+          0.04818208888173103,
+          0.012046976014971733,
+          0.0867948904633522
+        ],
+        [
+          -0.06210184469819069,
+          0.07457494735717773,
+          0.024123340845108032
+        ]
+      ],
+      "expected_local_n": [
+        [
+          -0.06182109577468989,
+          -0.0655244165644668,
+          0.04341316564249664
+        ],
+        [
+          -0.04818211182257195,
+          -0.01204696619037656,
+          -0.08679490022993919
+        ],
+        [
+          0.062101865769509816,
+          -0.07457495455610222,
+          -0.024123316954786145
+        ]
+      ],
+      "release_residual_n": [
+        7.633339293988683e-09,
+        2.507687613118037e-09,
+        1.9656923200273013e-08
+      ],
+      "baseline_noise_n": [
+        5.15238944842622e-08,
+        4.2404877831359045e-08,
+        3.7076159031812495e-08
+      ],
+      "tolerance_n": 0.005,
+      "selected_row": 8,
+      "physics_ticks": 1440,
+      "trial": "force_fr3_no_atlas_gpu_v2",
+      "report_sha256": "7c4482f870f1dc4cc102347e7da4f9f2a655d621a056141050d15c1db7da40fe"
+    }
+  ],
+  "interpretation": "Simple fixture and isolated FR3 pass. Full scene fails even at zero gravity. Removing Atlas and its eight dependent attachments restores the measured response. External-force-every-iteration produces near-zero reported response and is not a remedy.",
+  "related_public_report": {
+    "url": "https://forums.developer.nvidia.com/t/get-measured-joint-forces-gives-wrong-values-if-gpu-is-used-instead-of-cpu/307612",
+    "scope": "User-reported related GPU/particle-system issue in older releases; not confirmation of the cause or fix in this runtime"
+  },
+  "remaining": [
+    "Confirm causal scene/solver setting with matched clean repeats",
+    "Verify full task under gravity, tissue contact, multiple force magnitudes and poses",
+    "Only then assess dynamic tissue attachment reaction and fit measured material data"
+  ]
+}

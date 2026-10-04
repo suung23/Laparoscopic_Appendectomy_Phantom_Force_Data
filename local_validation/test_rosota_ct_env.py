@@ -7,6 +7,13 @@ from rosota_ct_env import RosotaCTEnv
 
 
 class ActionValidation(unittest.TestCase):
+    def test_zero_gravity_requires_isolated_non_grasp_fixture(self):
+        with self.assertRaises(ValueError):
+            RosotaCTEnv(None,None,None,None,diagnostic_zero_gravity=True)
+        with self.assertRaises(ValueError):
+            RosotaCTEnv(None,None,None,None,diagnostic_zero_gravity=True,
+                diagnostic_no_tool_collision=True,grasp_mode='solver_attachment')
+
     def test_invalid_second_hand_or_scope_is_rejected_before_any_plant_access(self):
         e=object.__new__(RosotaCTEnv);e.done=False
         # Deliberately no plant/controller: validation must finish before any access.
