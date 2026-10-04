@@ -75,7 +75,7 @@
     "Added strict runtime comparator rejecting changed scenes/helpers, incomplete traces, and green statuses contradicted by measured errors"
   ],
   "next_actions": [
-    "Repair still fails with 1.73 mm pin drift and 38 inverted tetrahedra. Verify post-initialization attachment edits reach PhysX; retain original failures.",
+    "Complete active 6.1 adaptive settlement and paired tissue coupling probe; retain fixture scope and validate 5.1 compatibility",
     "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",
@@ -90,7 +90,7 @@
   "runtime_comparison": {
     "installed_baseline": "5.1.0.0",
     "candidate": "6.1.0.0",
-    "candidate_status": "Rigid reaction fixture passes; gravity-on reset fails: 36.16 mm pin drift and 95 inverted tetrahedra. Not promoted.",
+    "candidate_status": "Explicit precook and remap before initialization passes gravity-on reset (0 inversions, 0.067 mm pin drift) and 0.1 N shaft force fixture. Coupling/equilibrium validation still pending.",
     "official_bug_reply": "https://forums.developer.nvidia.com/t/computation-of-the-forces-between-rigid-and-soft-bodies-with-joint-data/320668",
     "installation_docs": "https://docs.isaacsim.omniverse.nvidia.com/latest/installation/install_python.html",
     "causal_match_confirmed": false,
@@ -98,6 +98,7 @@
     "comparison_tool": "local_validation/compare_force_runtimes.py",
     "candidate_report": "out/force_runtime_61_v4/report.json",
     "gravity_probe": "validation/runtime-gravity-probe.json",
-    "migration_audit": "validation/tissue-migration-audit.json"
+    "migration_audit": "validation/tissue-migration-audit.json",
+    "precook_evidence": "validation/precooked-tissue-runtime.json"
   }
 }

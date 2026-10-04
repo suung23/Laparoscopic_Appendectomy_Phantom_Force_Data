@@ -94,9 +94,10 @@ class RosotaCTEnv(gym.Env):
                 ps=PhysxSchema.PhysxSceneAPI.Apply(prim);ps.CreateEnableGPUDynamicsAttr(True);ps.CreateBroadphaseTypeAttr('GPU')
         self.stage.GetRootLayer().Export(str(self.out/'scene.usda'))
         self._audit_tissue('before_initialize')
-        self.sim.initialize_physics()
-        self._audit_tissue('after_initialize')
-        if not np.isclose(self.sim.get_physics_dt(),1/480):raise RuntimeError('Wrong physics interval')
+        from omni.physx import get_physx_cooking_interface
+        if not get_physx_cooking_interface().cook_auto_deformable_body('/World/Atlas/appendix'):
+            raise RuntimeError('Explicit pre-initialization tissue cooking failed')
+        self._audit_tissue('after_cooking')
         # Cooking can permute nodes; attachment indices must follow the exact
         # rest-geometry/topology permutation, never nearest-point guesses.
         from node_correspondence import node_permutation
@@ -117,6 +118,13 @@ class RosotaCTEnv(gym.Env):
         (self.out/'node_correspondence.json').write_text(json.dumps(dict(
             exact_geometry_and_topology=True,nodes=len(permutation),
             changed_indices=int(np.sum(permutation!=np.arange(len(permutation))))),indent=2),encoding='utf-8')
+        self.sim.initialize_physics()
+        self._audit_tissue('after_initialize')
+        if not np.isclose(self.sim.get_physics_dt(),1/480):raise RuntimeError('Wrong physics interval')
+        if not np.array_equal(self.mesh.GetAttribute('omniphysics:restShapePoints').Get(),self.rest):
+            raise RuntimeError('Tissue rest nodes changed again after explicit cooking')
+        if not np.array_equal(self.mesh.GetAttribute('tetVertexIndices').Get(),self.tets):
+            raise RuntimeError('Tissue connectivity changed again after explicit cooking')
         self.sim.play()
         self.robots={};self.indices={};self.jaw_indices={}
         for hand,s in self.specs.items():

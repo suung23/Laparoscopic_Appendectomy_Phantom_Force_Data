@@ -1,0 +1,49 @@
+{
+  "runtime": "6.1.0.0",
+  "scope": "Gravity-on reset and collision-free 0.1 N shaft sensor fixture; not grasp, calibrated material, or equilibrium validation",
+  "reset": {
+    "failure": "",
+    "pin_drift_m": 6.721131613429324e-05,
+    "tissue_health": {
+      "tetrahedra": 29490,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.8663299531455229,
+      "median_volume_ratio": 1.000226311531728,
+      "total_absolute_volume_ratio": 0.9998193384862141,
+      "p99_absolute_volume_change": 0.04686986144500748
+    }
+  },
+  "node_correspondence": {
+    "exact_geometry_and_topology": true,
+    "nodes": 6751,
+    "changed_indices": 610
+  },
+  "known_load": {
+    "status": "passed",
+    "vector_error_n": [
+      7.128699170585435e-08,
+      1.1024293413609076e-07,
+      5.896754208930887e-06
+    ],
+    "release_residual_n": [
+      2.1567961009444208e-08,
+      5.290996332890618e-08,
+      8.803992731911651e-06
+    ],
+    "physics_ticks": 1440,
+    "diagnostic_zero_gravity": false
+  },
+  "source_sha256": {
+    "rosota_ct_env.py": "643afe0fc28fa7c892643eacd858667c7ea8079c6a1eebbfae5965f9afb1f99c",
+    "node_correspondence.py": "5b6d7e03e7121c00dfef07d7065764342b0effcdd7804a6ac91e94d45a542c3e",
+    "mount_sensor_probe.py": "a22a7e021191f3ae8154c3754e3ea52dc2a47ee5f5b84741340870dc9ba95f52"
+  },
+  "evidence_sha256": {
+    "report.json": "7b22368f841cbc72a0d22959224fec39f5412fd6bd5873078edae0ca462119ca",
+    "reset_diagnostics.json": "ed2cd8faa81db8a14cd32b9057794f9c6bf7e124abce05918138abb19e486a07",
+    "known_load_sensor.json": "2d8c29a0cc1a62c497b71af4b6b2dd9731a79b0d70d7e2d57390f331ba67cd64",
+    "node_correspondence.json": "0a15e34977d9dc2861b891c4033feef57c197fea6ad0debeda07ff0cfd773380"
+  },
+  "default_runtime_changed": false
+}
