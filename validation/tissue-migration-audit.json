@@ -39,5 +39,19 @@
     "tetrahedral_connectivity_preserved": true,
     "method": "rest coordinate plus incident tetrahedron signatures; final complete connectivity equivalence required"
   },
-  "repair_validation": "in progress: out/ct_appendectomy/migration_remap_61_v1/report.json"
+  "repair_validation": {
+    "status": "failed reset",
+    "pin_drift_m": 0.0017272892819236779,
+    "tissue_health": {
+      "tetrahedra": 29490,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 38,
+      "minimum_signed_volume_ratio": -0.9608172517075872,
+      "median_volume_ratio": 0.9949130806080069,
+      "total_absolute_volume_ratio": 0.9728651711720715,
+      "p99_absolute_volume_change": 0.5067659024607566
+    },
+    "report_sha256": "b0eb770635a64ca567cae6321fbb16c46c6f178035fda3edfdb82a675d9aecf9",
+    "next": "Check whether post-initialization attachment index edits reach PhysX; rebuild pre-initialization bindings if required"
+  }
 }
