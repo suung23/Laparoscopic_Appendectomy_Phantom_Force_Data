@@ -1,0 +1,371 @@
+{
+  "source": {
+    "count": 42,
+    "mismatches": [],
+    "passed": true
+  },
+  "assets": {
+    "count": 56,
+    "mismatches": [],
+    "passed": true
+  },
+  "ct_baseline_parity": false,
+  "material_calibrated": false,
+  "physical_severing": false,
+  "learned_policy": false,
+  "scenes": {
+    "scene_soft.usd": true,
+    "surgical_cell.usd": true
+  },
+  "completed": true,
+  "force_model_fit": {
+    "left": {
+      "rms_f": 0.9165144225754448,
+      "rms_t": 0.16828749091181266,
+      "c": [
+        -0.056369281869469746,
+        -0.028943216976726638,
+        1.0133703175113962
+      ]
+    },
+    "right": {
+      "rms_f": 1.61122870019753,
+      "rms_t": 0.7557150576167092,
+      "c": [
+        -0.11595751756405429,
+        0.034040167841913105,
+        0.37245961874630296
+      ]
+    }
+  },
+  "camera_frames": {
+    "endoscope": 94,
+    "d405": 94,
+    "d405depth": 94,
+    "d405right": 94
+  },
+  "correct_video_fps": 3.75,
+  "playback_video": "endoscope_realtime.mp4",
+  "episodes": [
+    {
+      "steps": 95,
+      "duration_s": 25.066667556762695,
+      "grasped_frac": 0.7894736842105263,
+      "grasp_events": 1,
+      "max_lift_mm": 10.209843516349792,
+      "trocar_violation": "",
+      "rcm_excursion_steps": 0,
+      "rcm_excursion_frac": 0.0,
+      "success": true,
+      "grasp_lift_success": true,
+      "stages_completed": 5,
+      "stages_total": 5,
+      "task_progress": 1.0,
+      "failed_stage": "",
+      "stage_grasp": true,
+      "stage_lift": true,
+      "stage_at_site": true,
+      "stage_jaw_on_tissue": true,
+      "stage_cut": true,
+      "stage_grasp_step": 20,
+      "stage_lift_step": 31,
+      "stage_at_site_step": 31,
+      "stage_jaw_on_tissue_step": 34,
+      "stage_cut_step": 74,
+      "stage_grasp_t_s": 5.333333492279053,
+      "stage_lift_t_s": 8.266666412353516,
+      "stage_at_site_t_s": 8.266666412353516,
+      "stage_jaw_on_tissue_t_s": 9.066666603088379,
+      "stage_cut_t_s": 19.733333587646484,
+      "grasp_frac": 0.5,
+      "grasp_in_band_frac": 0.7894736842105263,
+      "cut_frac": 0.6428571343421936,
+      "cut_count": 1,
+      "min_right_tip_to_resect_mm": 0.3567753010429442,
+      "jaw_on_tissue_frac": 0.5578947368421052,
+      "max_jaw_tissue_mm": 16.472622752189636,
+      "appendix_severed": false,
+      "resection_gesture": false,
+      "resection_events": 0,
+      "resection_approach_frac": 0.0,
+      "min_right_tip_to_pin_mm": 11.32808905094862,
+      "resection_success": true,
+      "min_tip_to_appendix_mm": 0.3826312313321978,
+      "tissue_disturbance_mm": 7.2447448037564754,
+      "rcm_err_p95_mm": 0.2132371955667622,
+      "rcm_err_max_mm": 0.5004446720704436,
+      "trocar_bite_p95_mm": -0.07753486570436534,
+      "trocar_on_rubber_frac": 0.010526315789473684,
+      "track_lag_p95_mm": 0.260510433872696,
+      "peak_tip_force_n": 33.89113235473633,
+      "peak_grip_force_mn": 29.999999329447746,
+      "peak_torsion_mnm": 273.97146821022034,
+      "episode": 0,
+      "wall_s": 408.7,
+      "realtime_factor": 0.061
+    }
+  ],
+  "aggregate": {
+    "steps": 95.0,
+    "duration_s": 25.066667556762695,
+    "grasped_frac": 0.7894736842105263,
+    "grasp_events": 1.0,
+    "max_lift_mm": 10.209843516349792,
+    "rcm_excursion_steps": 0.0,
+    "rcm_excursion_frac": 0.0,
+    "success": 1.0,
+    "grasp_lift_success": 1.0,
+    "stages_completed": 5.0,
+    "stages_total": 5.0,
+    "task_progress": 1.0,
+    "stage_grasp": 1.0,
+    "stage_lift": 1.0,
+    "stage_at_site": 1.0,
+    "stage_jaw_on_tissue": 1.0,
+    "stage_cut": 1.0,
+    "stage_grasp_step": 20.0,
+    "stage_lift_step": 31.0,
+    "stage_at_site_step": 31.0,
+    "stage_jaw_on_tissue_step": 34.0,
+    "stage_cut_step": 74.0,
+    "stage_grasp_t_s": 5.333333492279053,
+    "stage_lift_t_s": 8.266666412353516,
+    "stage_at_site_t_s": 8.266666412353516,
+    "stage_jaw_on_tissue_t_s": 9.066666603088379,
+    "stage_cut_t_s": 19.733333587646484,
+    "grasp_frac": 0.5,
+    "grasp_in_band_frac": 0.7894736842105263,
+    "cut_frac": 0.6428571343421936,
+    "cut_count": 1.0,
+    "min_right_tip_to_resect_mm": 0.3567753010429442,
+    "jaw_on_tissue_frac": 0.5578947368421052,
+    "max_jaw_tissue_mm": 16.472622752189636,
+    "appendix_severed": 0.0,
+    "resection_gesture": 0.0,
+    "resection_events": 0.0,
+    "resection_approach_frac": 0.0,
+    "min_right_tip_to_pin_mm": 11.32808905094862,
+    "resection_success": 1.0,
+    "min_tip_to_appendix_mm": 0.3826312313321978,
+    "tissue_disturbance_mm": 7.2447448037564754,
+    "rcm_err_p95_mm": 0.2132371955667622,
+    "rcm_err_max_mm": 0.5004446720704436,
+    "trocar_bite_p95_mm": -0.07753486570436534,
+    "trocar_on_rubber_frac": 0.010526315789473684,
+    "track_lag_p95_mm": 0.260510433872696,
+    "peak_tip_force_n": 33.89113235473633,
+    "peak_grip_force_mn": 29.999999329447746,
+    "peak_torsion_mnm": 273.97146821022034,
+    "episode": 0.0,
+    "wall_s": 408.7,
+    "realtime_factor": 0.061,
+    "success_rate": 1.0,
+    "resection_success_rate": 1.0,
+    "grasp_lift_success_rate": 1.0,
+    "stage_grasp_rate": 1.0,
+    "stage_lift_rate": 1.0,
+    "stage_at_site_rate": 1.0,
+    "stage_jaw_on_tissue_rate": 1.0,
+    "stage_cut_rate": 1.0,
+    "n_episodes": 1
+  },
+  "saved_channels": {
+    "t": [
+      95
+    ],
+    "left_ins": [
+      95
+    ],
+    "right_ins": [
+      95
+    ],
+    "left_grip_cmd": [
+      95
+    ],
+    "left_grip_meas": [
+      95
+    ],
+    "right_grip_cmd": [
+      95
+    ],
+    "right_grip_meas": [
+      95
+    ],
+    "left_rcm_err": [
+      95
+    ],
+    "right_rcm_err": [
+      95
+    ],
+    "left_bite": [
+      95
+    ],
+    "right_bite": [
+      95
+    ],
+    "left_lag": [
+      95
+    ],
+    "right_lag": [
+      95
+    ],
+    "f_bend_x": [
+      95
+    ],
+    "f_bend_y": [
+      95
+    ],
+    "f_axial": [
+      95
+    ],
+    "f_torsion": [
+      95
+    ],
+    "f_grip": [
+      95
+    ],
+    "f_grip_raw": [
+      95
+    ],
+    "appendix_lift": [
+      95
+    ],
+    "appendix_moved": [
+      95
+    ],
+    "left_tip_to_appendix": [
+      95
+    ],
+    "right_tip_to_pin": [
+      95
+    ],
+    "grasp_frac": [
+      95
+    ],
+    "right_tip_to_resect": [
+      95
+    ],
+    "right_jaw_tissue": [
+      95
+    ],
+    "cut_frac": [
+      95
+    ],
+    "left_tip_pose_rig": [
+      95,
+      4,
+      4
+    ],
+    "right_tip_pose_rig": [
+      95,
+      4,
+      4
+    ],
+    "left_rcm4": [
+      95,
+      4
+    ],
+    "right_rcm4": [
+      95,
+      4
+    ],
+    "left_joint_pos": [
+      95,
+      7
+    ],
+    "right_joint_pos": [
+      95,
+      7
+    ],
+    "left_wrench_tool": [
+      95,
+      6
+    ],
+    "left_grasped": [
+      95
+    ],
+    "right_grasped": [
+      95
+    ],
+    "contact": [
+      95
+    ],
+    "grasp_in_band": [
+      95
+    ],
+    "right_tissue_in_jaw": [
+      95
+    ],
+    "cut_done": [
+      95
+    ],
+    "action": [
+      94,
+      2,
+      8,
+      7
+    ],
+    "endoscope_rgb": [
+      95,
+      720,
+      1280,
+      3
+    ],
+    "d405_rgb": [
+      95,
+      480,
+      848,
+      3
+    ],
+    "d405_depth": [
+      95,
+      480,
+      848
+    ],
+    "d405_right_rgb": [
+      95,
+      480,
+      848,
+      3
+    ],
+    "meta_endoscope_K": [
+      3,
+      3
+    ],
+    "meta_d405_K": [
+      3,
+      3
+    ],
+    "meta_T_world_rig": [
+      4,
+      4
+    ],
+    "meta_endoscope_T_rig_cam": [
+      4,
+      4
+    ],
+    "meta_d405_T_rig_cam": [
+      4,
+      4
+    ],
+    "image_every": []
+  },
+  "core_channels_finite": true,
+  "joint_excursion_rad": {
+    "left": 0.6262578964233398,
+    "right": 1.5739918947219849
+  },
+  "rgb_nonblank": {
+    "endoscope": true,
+    "d405": true
+  },
+  "depth_valid_fraction": 1.0,
+  "reference_runtime_verified": true,
+  "limits": [
+    "Native reference is rabbit anatomy; CT extension is a separate scene.",
+    "Original grasp is attachment-assisted; cutting is a gesture, never tissue division.",
+    "Runtime verification does not imply task success or calibrated tissue mechanics.",
+    "Force model residuals must be assessed before using its output as contact-force ground truth.",
+    "Original default video fps ignores chunk length; use control_hz/chunk/image_every."
+  ]
+}

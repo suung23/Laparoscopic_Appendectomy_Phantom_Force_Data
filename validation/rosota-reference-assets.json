@@ -1,0 +1,287 @@
+{
+  "repository": "Rosota-Research/Rosota-Simulator",
+  "commit": "9135fe9eb8549d011124c8c57b7c86edeaaba735",
+  "private_assets_not_for_redistribution": true,
+  "verified_files": [
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/Composant2_part_1.stl",
+      "sha": "e0fa1686ff83f0b3340000641681e7bae2ddec6a",
+      "size": 713084
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/Composant3_part_1.stl",
+      "sha": "b860bded4610881257c5b8988605825d322d7876",
+      "size": 1033684
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/Composant4_part_1.stl",
+      "sha": "37fb64242ed71e134e5e10221bfa46405d222b60",
+      "size": 844784
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/Vis_t_te_tronconique_JIS_B_1111_M3_x_4_H_Acier_inoxydable_A2_Standard_v1_part_1.stl",
+      "sha": "9c7e534a2ce00c1f30b3fd66dd4267a7ffa48f01",
+      "size": 320884
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/connector_F_part_1.stl",
+      "sha": "627c4241a2262e03a082a624b4b8b7bcf0433db3",
+      "size": 100584
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/connector_F_part_1_1.stl",
+      "sha": "aafce3ea64cda909c759c4b7f4565e7795e797fb",
+      "size": 100584
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/gripper_shaft_inner.stl",
+      "sha": "17330f155bba6eefffa1fd5243ffd50e078ba059",
+      "size": 143084
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/gripper_shaft_outer.stl",
+      "sha": "5f60728d3a6b7fa28289356a1e386afd14ad266d",
+      "size": 63884
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/gripper_tip_left.stl",
+      "sha": "90129de372cd04546aaa7f50aef6a9567d5a1d8e",
+      "size": 180684
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/gripper_tip_right.stl",
+      "sha": "3f165c011d9661259dd2f73edd6caf25f6e04017",
+      "size": 173584
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/handle.stl",
+      "sha": "04048fba278cf4ced681a749163d4fd96daa7524",
+      "size": 1505984
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/handle_actuated.stl",
+      "sha": "56796292d97fd6d4a5b1692f8421e4f1ffcaf42e",
+      "size": 1180784
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/handle_cover.stl",
+      "sha": "8defa5396d8da8eb373974be2ff385bd33be2750",
+      "size": 29084
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/handle_linkage.stl",
+      "sha": "c1abced81c96855134b611e08587bf7a3ef884b5",
+      "size": 64284
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/housing_cover.stl",
+      "sha": "1a75e2ac67f09b3f199706e9dc2581cede967a79",
+      "size": 126684
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/laparo_shaft.stl",
+      "sha": "633418752ef1ad937264571240675a53b1982bc2",
+      "size": 215284
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/main_housing.stl",
+      "sha": "a8583ea6de1a80537bec52784669ff680cb5b24e",
+      "size": 811484
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/motor_cover.stl",
+      "sha": "69d49e7173340b61c8575795a61740c4e64a84a2",
+      "size": 36684
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/motor_handle_linkage.stl",
+      "sha": "fab1ae4898a37b3de779dc3b5ef7861d1b8895c4",
+      "size": 21084
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/motor_linkage.stl",
+      "sha": "2bed17180b26b80be0f5b33e679dac1c5e4d720e",
+      "size": 136884
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/part_10.stl",
+      "sha": "b568dcfdfe260c5441b99abd36b1e36e7c87be16",
+      "size": 643384
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/part_11.stl",
+      "sha": "d093e3c3c057a4998e79aaa6eabb5a8403d609cd",
+      "size": 1298784
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/part_13.stl",
+      "sha": "e2905c488ad698d3f0a8bc0db89296b1426d7691",
+      "size": 408984
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/part_15.stl",
+      "sha": "8a539b9201d6a7204c0765c6814d0527761e43a3",
+      "size": 69184
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/servo_motor_sts3215_v10_v1_part_1.stl",
+      "sha": "6e8c25279d3a961ebf8206f3f16ffcb9e08baf1c",
+      "size": 225384
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/vis_part_1.stl",
+      "sha": "a3ef9387bcc71c025a55f49cc977034564dde146",
+      "size": 180684
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_gripper_urdf_new/motorized_laparo_gripper_urdf/meshes/vis_part_1_1.stl",
+      "sha": "d60dd377fb10750f23bfe3169ee5f2ac054c0fb8",
+      "size": 68584
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/Composant2_part_1.stl",
+      "sha": "e0fa1686ff83f0b3340000641681e7bae2ddec6a",
+      "size": 713084
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/Composant3_part_1.stl",
+      "sha": "b860bded4610881257c5b8988605825d322d7876",
+      "size": 1033684
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/Composant4_part_1.stl",
+      "sha": "37fb64242ed71e134e5e10221bfa46405d222b60",
+      "size": 844784
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/Vis_t_te_tronconique_JIS_B_1111_M3_x_4_H_Acier_inoxydable_A2_Standard_v1_part_1.stl",
+      "sha": "9c7e534a2ce00c1f30b3fd66dd4267a7ffa48f01",
+      "size": 320884
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/connector_F_part_1.stl",
+      "sha": "627c4241a2262e03a082a624b4b8b7bcf0433db3",
+      "size": 100584
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/connector_F_part_1_1.stl",
+      "sha": "aafce3ea64cda909c759c4b7f4565e7795e797fb",
+      "size": 100584
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/cutter_tip_left.stl",
+      "sha": "9d46e9773d17fcf9ecec88b7b6e034526d8d886d",
+      "size": 82484
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/cutter_tip_right.stl",
+      "sha": "78a89843b71cb929a6f34e61ef061b242a9372ee",
+      "size": 78784
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/gripper_shaft_inner.stl",
+      "sha": "bc9ca27320df5a457defdf9d7bca735dabb352c6",
+      "size": 143084
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/gripper_shaft_outer.stl",
+      "sha": "cdaeb6733e8e3f12cf1990628b5e7ae1e366600d",
+      "size": 63884
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/handle.stl",
+      "sha": "04048fba278cf4ced681a749163d4fd96daa7524",
+      "size": 1505984
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/handle_actuated.stl",
+      "sha": "56796292d97fd6d4a5b1692f8421e4f1ffcaf42e",
+      "size": 1180784
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/handle_cover.stl",
+      "sha": "8defa5396d8da8eb373974be2ff385bd33be2750",
+      "size": 29084
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/handle_linkage.stl",
+      "sha": "c1abced81c96855134b611e08587bf7a3ef884b5",
+      "size": 64284
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/housing_cover.stl",
+      "sha": "1a75e2ac67f09b3f199706e9dc2581cede967a79",
+      "size": 126684
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/laparo_shaft.stl",
+      "sha": "3ba64e61eb837e3edcc581d3e44aff2f42bb6edd",
+      "size": 215284
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/main_housing.stl",
+      "sha": "a8583ea6de1a80537bec52784669ff680cb5b24e",
+      "size": 811484
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/motor_cover.stl",
+      "sha": "69d49e7173340b61c8575795a61740c4e64a84a2",
+      "size": 36684
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/motor_handle_linkage.stl",
+      "sha": "fab1ae4898a37b3de779dc3b5ef7861d1b8895c4",
+      "size": 21084
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/motor_linkage.stl",
+      "sha": "2bed17180b26b80be0f5b33e679dac1c5e4d720e",
+      "size": 136884
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/part_10.stl",
+      "sha": "b568dcfdfe260c5441b99abd36b1e36e7c87be16",
+      "size": 643384
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/part_11.stl",
+      "sha": "d093e3c3c057a4998e79aaa6eabb5a8403d609cd",
+      "size": 1298784
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/part_13.stl",
+      "sha": "76d04db01a71e77447b2a2580e4e4baa13b2f05f",
+      "size": 408984
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/part_15.stl",
+      "sha": "17dfe6d00c87d7217d53a2a5d6afd3e4356b1d41",
+      "size": 69184
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/servo_motor_sts3215_v10_v1_part_1.stl",
+      "sha": "6e8c25279d3a961ebf8206f3f16ffcb9e08baf1c",
+      "size": 225384
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/vis_part_1.stl",
+      "sha": "a3ef9387bcc71c025a55f49cc977034564dde146",
+      "size": 180684
+    },
+    {
+      "path": "laparo_endeffector/motorized_laparo_cutter_urdf/motorized_laparo_cutter_urdf/meshes/vis_part_1_1.stl",
+      "sha": "d60dd377fb10750f23bfe3169ee5f2ac054c0fb8",
+      "size": 68584
+    },
+    {
+      "path": "mesh/endoscope.ply",
+      "sha": "6a82fc81a2b661dc6f345126fd7748bc48424ad8",
+      "size": 4359
+    },
+    {
+      "path": "mesh/field.ply",
+      "sha": "7f59229affe0074d5e174fa0a6e39d8abe5be36b",
+      "size": 9612066
+    }
+  ]
+}

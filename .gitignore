@@ -14,6 +14,9 @@ id_rsa*
 id_ed25519*
 *-transfer.json
 private-asset-downloads.json
+/laparo_endeffector/
+/mesh/endoscope.ply
+/mesh/field.ply
 *.log
 
 /IsaacSimulator.exe
