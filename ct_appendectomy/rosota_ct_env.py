@@ -128,6 +128,7 @@ class RosotaCTEnv(gym.Env):
                 raise RuntimeError('Explicit pre-initialization tissue cooking failed')
         else:
             from surface_target import TissueSurface
+            from tissue_metrics import tetra_health
             TissueSurface(self.tets)
             if len(np.unique(np.sort(self.tets,axis=1),axis=0))!=len(self.tets):
                 raise RuntimeError('Duplicate explicit tetrahedra')
