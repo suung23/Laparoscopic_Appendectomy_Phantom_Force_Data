@@ -119,3 +119,20 @@ failed with tissue inversion and remains a recorded contact failure; withdrawal
 for commissioning is not a fix for grasp/contact. Ports/base poses remain
 engineering placements, both tips are graspers, and full arm/scope collisions,
 force-limited grasp, right cutter and complete policy observations remain open.
+
+## Contact-feedback follow-up (2026-10-04)
+
+The dynamic CT path now reads actual tool-mount reactions and jaw efforts.
+It applies a 0.00045 N.m jaw drive cap, measured-effort closure latch at
+0.0003 N.m, anti-windup, reopening, and a separate mount-reaction arm hold.
+RL observations expose jaw position/effort and hold flags. A first surface
+contact experiment failed with a tet inversion; reducing the cap and adding
+the jaw latch resolved that tested left-contact case. The extended repeat
+passed 5,760 physics checks over 12 simulated seconds, with left closure
+inhibition and both jaws reopening. Right closure completed without a
+contact latch; this is not demonstrated bimanual tissue grasping.
+
+See `ct_appendectomy/CONTACT_CONTROL.md`. Calibrated tissue force, Cartesian
+impedance, sustained traction, a second validated contact site, and image-only
+autonomous grasp remain open. Static-tare mount residuals must not be treated
+as ground-truth tissue-force rewards or clinical limits.

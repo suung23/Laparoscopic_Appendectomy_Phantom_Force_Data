@@ -111,6 +111,9 @@ def author(stage,config,fr3_urdf,out):
                 j=joint(stage,root+'/jaw_'+part,root+'/shaft',new_path,np.eye(4),axis='Y',
                         lo=0 if sign>0 else -37,hi=37 if sign>0 else 0,kp=200.,kd=10.)
                 UsdPhysics.DriveAPI(j.GetPrim(),'angular').CreateTargetPositionAttr(float(sign*np.rad2deg(half)))
+                # N.m cap acts in the physics solver, independent of policy or
+                # sensor latency. Engineering limit, not a tissue-force claim.
+                UsdPhysics.DriveAPI(j.GetPrim(),'angular').CreateMaxForceAttr(.00045)
             stage.RemovePrim(old_path)
         specs[hand]=dict(root=root,chain=chain,base=base,port=port,
                          normal=desired['axes'][:,2],seed=seed,mount_to_tip=np.array([0,0,.014]))

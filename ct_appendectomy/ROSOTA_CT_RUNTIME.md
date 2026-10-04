@@ -7,6 +7,11 @@ call the unchanged upstream `laparo_control.TipController` at 480 Hz.
 Targets go through articulation drives; policy steps never teleport joints.
 Joint positions are explicitly initialized only at reset.
 
+The contact-feedback extension is documented in `CONTACT_CONTROL.md`:
+measured jaw-effort closure inhibition, torque caps, reopening, and separate
+mount-reaction arm stops. The historical free-space evidence below does not
+by itself validate tissue contact.
+
 ## What the new path actually connects
 
 - FR3 joint origins, limits, masses, centres of mass and inertia tensors come
@@ -46,6 +51,10 @@ second-arm or scope input is rejected before either controller is changed.
 
 Observations contain measured joint positions `(2,7)`, measured-joint FK tool
 poses `(2,4,4)`, scope pose `(4,4)` and goal positions `(2,3)`, all float32.
+The contact extension adds float32 `contact_residual` `(2,6)`, `jaw_position`
+and `jaw_effort` `(2,2)`, plus int8 `contact_stop` and `jaw_contact_hold` `(2,)`.
+These force channels are measured joint reactions, not calibrated tissue
+forces. Translation requests are capped at 3.6 mm/s for contact commissioning.
 The reward is negative mean tip-to-goal distance / 10 mm, with an additional
 failure penalty. Physical invalidity terminates; the episode limit truncates.
 This is a privileged-state reaching environment. It is not a pixel-trained
@@ -78,8 +87,9 @@ camera-to-shaft extrinsics. RCM geometry is enforced; tissue clearance and
 abdominal-wall reaction forces are not validated.
 
 The robot drive gains come from the simulator controller profile and are not
-hardware FR3 gains. No force-limited grasp/latch, cutting, haemostasis, full
-Rosota force/camera observation contract or platform submission is claimed.
+hardware FR3 gains. A measured-effort jaw closure latch is implemented, but
+sustained tissue grasp/traction, cutting, haemostasis, the full Rosota
+force/camera observation contract and platform submission remain unvalidated.
 `rosota_full_contract=False` remains explicit in the results.
 
 ## Local run

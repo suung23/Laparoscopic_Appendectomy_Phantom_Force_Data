@@ -28,12 +28,18 @@ class RosotaCTEnv(gym.Env):
         self.observation_space=spaces.Dict({'joint_position':spaces.Box(-np.inf,np.inf,(2,7),np.float32),
             'tool_pose':spaces.Box(-np.inf,np.inf,(2,4,4),np.float32),
             'scope_pose':spaces.Box(-np.inf,np.inf,(4,4),np.float32),
+            'contact_residual':spaces.Box(-np.inf,np.inf,(2,6),np.float32),
+            'jaw_position':spaces.Box(-np.inf,np.inf,(2,2),np.float32),
+            'jaw_effort':spaces.Box(-np.inf,np.inf,(2,2),np.float32),
+            'jaw_contact_hold':spaces.MultiBinary(2),
+            'contact_stop':spaces.MultiBinary(2),
             'goal_position':spaces.Box(-np.inf,np.inf,(2,3),np.float32)})
         self.max_steps=max_steps;self.sim=None;self.rgb=self.product=None;self.done=True
 
     def reset(self,*,seed=None,options=None):
         if options:raise ValueError('No reset options')
         super().reset(seed=seed)
+        self.done=True
         import omni.usd
         from pxr import UsdGeom,UsdPhysics,PhysxSchema,Gf
         from isaacsim.core.api import SimulationContext
@@ -80,16 +86,40 @@ class RosotaCTEnv(gym.Env):
         self.sim.render()
         self.controllers={h:RosotaArmController(s['chain'],s['base'],s['port'],s['normal'],self.q(h),hand='left') for h,s in self.specs.items()}
         self.control=self.controllers  # Shared RGB renderer's initialized-state guard.
-        self.reference=self.points().copy();self.steps=0;self.done=False
+        self.reference=self.points().copy();self.steps=0
         self.goal=np.array([self.controllers[h].pose(self.q(h))[0] for h in self.specs])+np.array([[.003,0,0],[-.003,0,0]])
         self.trace=[];self.jaw_open={h:74. for h in self.specs}
         self.initial_q=np.array([self.q(h) for h in self.specs]);self.initial_scope=self.scope.pose.copy()
+        from contact_control import ContactGuard
+        self.force_rows={};samples={h:[] for h in self.specs}
+        for h,robot in self.robots.items():
+            self.force_rows[h]=int(robot._articulation_view._metadata.joint_indices['tool_mount'])+1
+        for _ in range(64):
+            self.sim.step(render=False)
+            for h in self.specs:samples[h].append(self.sensor(h)[0])
+        self.guards={};self.hold_q={};calibration={}
+        for h in self.specs:
+            values=np.asarray(samples[h]);baseline=values.mean(axis=0)
+            noise=float(np.linalg.norm(values[:,:3]-baseline[:3],axis=1).max())
+            self.guards[h]=ContactGuard(baseline,noise)
+            self.guards[h].update(*self.sensor(h))
+            calibration[h]=dict(baseline=baseline.tolist(),max_force_residual_n=noise,
+                samples=64,frame='local child joint frame at tool_mount',
+                model='static tare only; no orientation or inertia compensation')
+        (self.out/'contact_calibration.json').write_text(json.dumps(calibration,indent=2),encoding='utf-8')
         info=self.measure()
         (self.out/'reset_diagnostics.json').write_text(json.dumps(info,indent=2),encoding='utf-8')
         if info['failure']:self.done=True;raise RuntimeError('Invalid reset: '+info['failure'])
+        self.done=False
         return self.observe(),info
 
     def q(self,h):return self.robots[h].get_joint_positions(joint_indices=self.indices[h]).astype(float)
+    def sensor(self,h):
+        robot=self.robots[h]
+        wrench=np.asarray(robot.get_measured_joint_forces(),float)[self.force_rows[h]]
+        efforts=np.asarray(robot.get_measured_joint_efforts(joint_indices=self.jaw_indices[h]),float)
+        if not np.isfinite(wrench).all() or not np.isfinite(efforts).all():raise RuntimeError('Invalid contact sensor')
+        return wrench,efforts
     def points(self):return np.asarray(self.mesh.GetAttribute('points').Get(),float)
     def observe(self):
         poses=[];qs=[]
@@ -97,6 +127,11 @@ class RosotaCTEnv(gym.Env):
             q=self.q(h);p,R,_=self.controllers[h].pose(q);T=np.eye(4);T[:3,:3]=R;T[:3,3]=p
             poses.append(T);qs.append(q)
         return {'joint_position':np.asarray(qs,np.float32),'tool_pose':np.asarray(poses,np.float32),
+                'contact_residual':np.asarray([g.filtered for g in self.guards.values()],np.float32),
+                'jaw_position':np.asarray([self.robots[h].get_joint_positions(joint_indices=self.jaw_indices[h]) for h in self.specs],np.float32),
+                'jaw_effort':np.asarray([g.last['jaw_effort_nm'] for g in self.guards.values()],np.float32),
+                'jaw_contact_hold':np.asarray([g.pinch_latched for g in self.guards.values()],np.int8),
+                'contact_stop':np.asarray([g.latched for g in self.guards.values()],np.int8),
                 'scope_pose':self.scope.pose.astype(np.float32),'goal_position':self.goal.astype(np.float32)}
 
     def measure(self):
@@ -118,6 +153,8 @@ class RosotaCTEnv(gym.Env):
         if health['inverted_tetrahedra']:failure='tet_inversion'
         if drift>.001:failure='pin_drift'
         return dict(failure=failure,trocar=ports,scope_trocar=scope,body_fk_error_m=mismatch,
+            contact={h:g.last.copy() for h,g in self.guards.items()},
+            jaw_position_rad={h:self.robots[h].get_joint_positions(joint_indices=self.jaw_indices[h]).tolist() for h in self.specs},
             tissue_health=health,pin_drift_m=drift,controller='original Rosota TipController strict aperture',
             plant='PhysX dynamic articulations with measured joint feedback',
             calibrated_ports=False,right_tool='grasper; cutter pending',scope_shaft_collision=False,
@@ -129,20 +166,34 @@ class RosotaCTEnv(gym.Env):
         if not isinstance(action,dict) or set(action)!={'tools','scope'}:raise ValueError('tools and scope required')
         tools=check_chunk(action['tools'],1);scope=np.asarray(action['scope'],float)
         if scope.shape!=(4,) or not np.isfinite(scope).all() or np.any(np.abs(scope)>1):raise ValueError('Invalid scope action')
+        # Contact commissioning profile: cap requested travel to 3.6 mm/s.
+        for row in tools[:,0]:
+            distance=np.linalg.norm(row[:3])
+            if distance>.00012:row[:3]*=.00012/distance
         from isaacsim.core.utils.types import ArticulationAction
         for i,h in enumerate(self.specs):self.controllers[h].begin_substep(tools[i,0],self.q(h))
         rejected={h:np.zeros(2) for h in self.specs}
         try:
             for tick in range(16):
                 for h in self.specs:
-                    result=self.controllers[h].tick(self.q(h));rejected[h]+=result['rot_rejected']
+                    guard=self.guards[h]
+                    if guard.latched:
+                        if h not in self.hold_q:self.hold_q[h]=self.q(h)
+                        self.controllers[h].remaining-=1
+                        result=dict(joint_target=self.hold_q[h],joint_velocity_ff=np.zeros(7),
+                            gripper_target_deg=self.controllers[h].row[6]*.74,rot_rejected=np.zeros(2))
+                    else:result=self.controllers[h].tick(self.q(h))
+                    rejected[h]+=result['rot_rejected']
                     self.robots[h].apply_action(ArticulationAction(joint_positions=result['joint_target'],
                         joint_velocities=result['joint_velocity_ff'],joint_indices=self.indices[h]))
-                    self.jaw_open[h]+=float(np.clip(result['gripper_target_deg']-self.jaw_open[h],-250/480,250/480))
+                    jaws=self.robots[h].get_joint_positions(joint_indices=self.jaw_indices[h])
+                    measured=float(np.rad2deg(jaws[0]-jaws[1]))
+                    self.jaw_open[h]=guard.jaw_target(result['gripper_target_deg'],self.jaw_open[h],measured,1/480)
                     half=np.deg2rad(self.jaw_open[h]/2)
                     self.robots[h].apply_action(ArticulationAction(joint_positions=np.array([half,-half]),joint_indices=self.jaw_indices[h]))
                 self.scope.step(scope,1/480);self.scope.apply_usd(self.stage)
                 self.sim.step(render=False)
+                for h in self.specs:self.guards[h].update(*self.sensor(h))
                 info=self.measure();self.trace.append(info)
                 if info['failure']:break
             self.sim.render()

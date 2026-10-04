@@ -1,0 +1,231 @@
+{
+  "status": "passed for left contact closure/reopen and free-space negative control",
+  "learned_policy": false,
+  "clinical_validation": false,
+  "bimanual_tissue_grasp_validated": false,
+  "jaw_drive_cap_nm": 0.00045,
+  "jaw_trip_nm": 0.0003,
+  "mount_residual_trip_n": 0.15,
+  "force_model": "measured joint reactions, local static tare; not calibrated tissue force",
+  "runs": {
+    "contact_baseline_v1": {
+      "status": "passed",
+      "failure": "",
+      "steps": 30,
+      "physics_ticks": 480,
+      "arms": {
+        "left": {
+          "peak_jaw_effort_nm": 6.824272986705182e-07,
+          "peak_mount_residual_n": 0.03418419080719288,
+          "jaw_hold_ticks": 0,
+          "first_hold_s": null,
+          "min_jaw_deg": null,
+          "final_jaw_deg": null,
+          "final_hold": false,
+          "max_port_bite_m": -0.0004509090591626342
+        },
+        "right": {
+          "peak_jaw_effort_nm": 5.424303139989206e-07,
+          "peak_mount_residual_n": 0.023900907417045078,
+          "jaw_hold_ticks": 0,
+          "first_hold_s": null,
+          "min_jaw_deg": null,
+          "final_jaw_deg": null,
+          "final_hold": false,
+          "max_port_bite_m": -0.0004598058351733469
+        }
+      },
+      "maximum_inverted_tets": 0,
+      "minimum_signed_volume_ratio": 0.6440473618144217,
+      "report_sha256": "717f9b8e071c0769b172d80a343d65c093324d5529fe7e6c682f31c7feb8a701",
+      "trace_sha256": "ae763e502c42bd2bd9816592a44558ba986e0cde2d91d4e6279d5b109cb5f255"
+    },
+    "contact_probe_v1": {
+      "status": "passed",
+      "failure": "",
+      "steps": 300,
+      "physics_ticks": 4800,
+      "arms": {
+        "left": {
+          "peak_jaw_effort_nm": 6.667986554020899e-07,
+          "peak_mount_residual_n": 0.031224791738364104,
+          "jaw_hold_ticks": 0,
+          "first_hold_s": null,
+          "min_jaw_deg": null,
+          "final_jaw_deg": null,
+          "final_hold": false,
+          "max_port_bite_m": -0.00044329380201611193
+        },
+        "right": {
+          "peak_jaw_effort_nm": 5.46500473319611e-07,
+          "peak_mount_residual_n": 0.045864760613502954,
+          "jaw_hold_ticks": 0,
+          "first_hold_s": null,
+          "min_jaw_deg": null,
+          "final_jaw_deg": null,
+          "final_hold": false,
+          "max_port_bite_m": -0.0004584398320122661
+        }
+      },
+      "maximum_inverted_tets": 0,
+      "minimum_signed_volume_ratio": 0.6429382393123606,
+      "report_sha256": "a41efbf04b8914c0c5aeb0a2de1a4e2f860405f26d19d0e5f16f76a2d1bbad5e",
+      "trace_sha256": "bc5262e82c93856d4bbcd67dd315a7b30d7f570e2c0c9ead13df361637ee8fdf"
+    },
+    "contact_surface_v1": {
+      "status": "failed",
+      "failure": "tet_inversion",
+      "steps": 226,
+      "physics_ticks": 3611,
+      "arms": {
+        "left": {
+          "peak_jaw_effort_nm": 0.0007161175599321723,
+          "peak_mount_residual_n": 0.04552447867115046,
+          "jaw_hold_ticks": 0,
+          "first_hold_s": null,
+          "min_jaw_deg": 25.431969464147883,
+          "final_jaw_deg": 25.431969464147883,
+          "final_hold": false,
+          "max_port_bite_m": -0.00044063910091005727
+        },
+        "right": {
+          "peak_jaw_effort_nm": 5.411507686403638e-07,
+          "peak_mount_residual_n": 0.027762908107535806,
+          "jaw_hold_ticks": 0,
+          "first_hold_s": null,
+          "min_jaw_deg": 24.887315665579077,
+          "final_jaw_deg": 24.887315665579077,
+          "final_hold": false,
+          "max_port_bite_m": -0.00042002520481003577
+        }
+      },
+      "maximum_inverted_tets": 1,
+      "minimum_signed_volume_ratio": -0.1984417180523184,
+      "report_sha256": "afe6014abba028f75cef26c1bee8666669eed61960d88cde7a0a124af1f27b05",
+      "trace_sha256": "6c7c86943de1d52bf5af4013cc9f774d0ad31496a7a183846c6187f0509a8dab"
+    },
+    "contact_surface_v2": {
+      "status": "passed",
+      "failure": "",
+      "steps": 300,
+      "physics_ticks": 4800,
+      "arms": {
+        "left": {
+          "peak_jaw_effort_nm": 0.0003437156556174159,
+          "peak_mount_residual_n": 0.04497884339806231,
+          "jaw_hold_ticks": 288,
+          "first_hold_s": 7.402083333333334,
+          "min_jaw_deg": 27.489909729940955,
+          "final_jaw_deg": 73.99482022238729,
+          "final_hold": false,
+          "max_port_bite_m": -0.0004409926252365768
+        },
+        "right": {
+          "peak_jaw_effort_nm": 5.418714295046811e-07,
+          "peak_mount_residual_n": 0.029387569568849428,
+          "jaw_hold_ticks": 0,
+          "first_hold_s": null,
+          "min_jaw_deg": 15.450495789404973,
+          "final_jaw_deg": 73.994929505414,
+          "final_hold": false,
+          "max_port_bite_m": -0.00041943055834285084
+        }
+      },
+      "maximum_inverted_tets": 0,
+      "minimum_signed_volume_ratio": 0.47205251545172916,
+      "report_sha256": "98cf6a6225afafc0c2bfc28bf49f005fdc3eddd9e27ebcc7635d032a89c9eb65",
+      "trace_sha256": "2c52cf2984d42738a32cf0f200c502a84119ba12f83ca940381b55d16a63b1ae"
+    },
+    "contact_surface_v3": {
+      "status": "passed",
+      "failure": "",
+      "steps": 360,
+      "physics_ticks": 5760,
+      "arms": {
+        "left": {
+          "peak_jaw_effort_nm": 0.00031493150163441896,
+          "peak_mount_residual_n": 0.044220270148489976,
+          "jaw_hold_ticks": 1255,
+          "first_hold_s": 7.3875,
+          "min_jaw_deg": 27.758190169028946,
+          "final_jaw_deg": 73.99481680729271,
+          "final_hold": false,
+          "max_port_bite_m": -0.0004399790247710377
+        },
+        "right": {
+          "peak_jaw_effort_nm": 5.418665409706591e-07,
+          "peak_mount_residual_n": 0.030776553712213557,
+          "jaw_hold_ticks": 0,
+          "first_hold_s": null,
+          "min_jaw_deg": 3.5211292718933e-08,
+          "final_jaw_deg": 73.99488852427899,
+          "final_hold": false,
+          "max_port_bite_m": -0.00041900474248181925
+        }
+      },
+      "maximum_inverted_tets": 0,
+      "minimum_signed_volume_ratio": 0.5939162665738477,
+      "report_sha256": "f4d45f05be31e8a8a027d9c79b23c2c59bc80f92d44e72b40a0c564db11c7b65",
+      "trace_sha256": "fe504a2ba5b0030643ce65031de8f87bd0d6d46a2e9afdde8027b2f301b7ccae"
+    },
+    "contact_free_control_v1": {
+      "status": "passed",
+      "failure": "",
+      "steps": 210,
+      "physics_ticks": 3360,
+      "arms": {
+        "left": {
+          "peak_jaw_effort_nm": 6.346078293972823e-07,
+          "peak_mount_residual_n": 0.0440552612149322,
+          "jaw_hold_ticks": 0,
+          "first_hold_s": null,
+          "min_jaw_deg": 0.0014151346589573533,
+          "final_jaw_deg": 73.99482022238729,
+          "final_hold": false,
+          "max_port_bite_m": -0.00044442399394019295
+        },
+        "right": {
+          "peak_jaw_effort_nm": 5.153037250238413e-07,
+          "peak_mount_residual_n": 0.03947344468128426,
+          "jaw_hold_ticks": 0,
+          "first_hold_s": null,
+          "min_jaw_deg": -2.9434803099852458e-08,
+          "final_jaw_deg": 73.99485778842772,
+          "final_hold": false,
+          "max_port_bite_m": -0.00046063614858175665
+        }
+      },
+      "maximum_inverted_tets": 0,
+      "minimum_signed_volume_ratio": 0.6426746284494876,
+      "report_sha256": "1cf93551be8b83cf09cb4a979cc11f5332fc644de7adb3f092a557f2cd11764b",
+      "trace_sha256": "b44383e707a20f299d217d9febac1810d5f3b1df288ac8372856e32cfa63e6e8"
+    }
+  },
+  "upstream_files_unchanged": 42,
+  "source_sha256": {
+    "ct_appendectomy/contact_control.py": "5bff1649875152b13b7d25fb376326fb369707b1ae03c2e722b41ccfae40c49c",
+    "ct_appendectomy/rosota_ct_env.py": "b3eb1c158c30e62d9029da69a15d087a31423414185a524d5170354a0b37932b",
+    "ct_appendectomy/fr3_ct_scene.py": "a4cecb1b760c02b8341dcc96e69801082d1ffcce8a3ccafe15cd9e5edbc804bd",
+    "ct_appendectomy/run_rosota_ct.py": "7bf071c0f474032f60541d92115e0bc3f6c2f008092ecfb29a437d240dda738a"
+  },
+  "video": {
+    "status": "passed",
+    "decoded_frames": 62,
+    "size": [
+      640,
+      360
+    ],
+    "fps": 5.0,
+    "nominal_sampling_fps": 5.0,
+    "simulated_seconds": 12.0,
+    "policy": "scripted slow axial contact/close/reopen probe",
+    "learned_policy": false,
+    "evaluation_status": "passed"
+  },
+  "limitations": [
+    "Only left tissue contact latch demonstrated; right closes without contact in surface run.",
+    "No force-tracking/Cartesian impedance/traction success claim.",
+    "v3 raw policy string says axial; surface_approach=true and actual target code uses live nodes.",
+    "Static mount tare is pose-dependent; cannot be used as ground-truth tissue wrench."
+  ]
+}
