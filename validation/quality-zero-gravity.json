@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "tissue_health": {
+    "tetrahedra": 48443,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 0,
+    "minimum_signed_volume_ratio": 0.9973503879060771,
+    "median_volume_ratio": 0.9992678123671362,
+    "total_absolute_volume_ratio": 0.9992677748521874,
+    "p99_absolute_volume_change": 0.0007979210717004338
+  },
+  "pin_drift_m": 3.351908839701833e-05,
+  "vector_error_n": [
+    5.280621331930575e-09,
+    1.5822255951775294e-08,
+    3.6770697193001816e-09
+  ],
+  "diagnostic_zero_gravity": true,
+  "scope": "Zero gravity reset and rigid mount sensor only; does not validate loaded tissue"
+}
