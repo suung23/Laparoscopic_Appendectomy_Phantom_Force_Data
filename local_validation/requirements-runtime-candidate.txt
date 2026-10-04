@@ -1,0 +1,3 @@
+# Isolated Python 3.12 comparison environment; not the validated default runtime.
+--extra-index-url https://pypi.nvidia.com
+isaacsim[all,extscache]==6.1.0.0

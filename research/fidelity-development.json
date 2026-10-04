@@ -70,7 +70,9 @@
     "Inspected installed API: measured joint efforts project the same reaction pipeline, so this is not independent sensing; original trial labels corrected in evidence index",
     "Added diagnostic low-stiffness static deflection test; both full-scene and no-Atlas absolute spring-force checks failed and remain rejected",
     "Matched 5040 state samples differ by at most 1.62e-11 rad with/without Atlas despite different force readouts",
-    "Located NVIDIA staff confirmation of a related engine bug and announced Isaac Sim 6.0 fix; isolated 6.1.0.0 installation started for comparison"
+    "Located NVIDIA staff confirmation of a related engine bug and announced Isaac Sim 6.0 fix; isolated 6.1.0.0 installation started for comparison",
+    "Reran 1440-tick full-scene 5.1.0.0 baseline with implementation/helper hashes and load protocol; prior force error reproduced",
+    "Added strict runtime comparator rejecting changed scenes/helpers, incomplete traces, and green statuses contradicted by measured errors"
   ],
   "next_actions": [
     "Finish isolated Isaac Sim 6.1.0.0 installation and rerun the identical known-load tests; preserve 5.1 baseline and require direct evidence of a fix",
@@ -86,11 +88,13 @@
   "host_access": "Existing dedicated H100 key failed authentication; public reference fallback is working. No credentials recorded here.",
   "privacy": "No dataset, local paths, private source, or credentials uploaded; all generated reference assets remain ignored by Git",
   "runtime_comparison": {
-    "installed_baseline": "5.1.0",
+    "installed_baseline": "5.1.0.0",
     "candidate": "6.1.0.0",
-    "candidate_status": "installation started; not yet validated",
+    "candidate_status": "installation active; large Kit wheel downloading, candidate test not run",
     "official_bug_reply": "https://forums.developer.nvidia.com/t/computation-of-the-forces-between-rigid-and-soft-bodies-with-joint-data/320668",
     "installation_docs": "https://docs.isaacsim.omniverse.nvidia.com/latest/installation/install_python.html",
-    "causal_match_confirmed": false
+    "causal_match_confirmed": false,
+    "baseline_report": "out/force_runtime_51_v1/report.json",
+    "comparison_tool": "local_validation/compare_force_runtimes.py"
   }
 }

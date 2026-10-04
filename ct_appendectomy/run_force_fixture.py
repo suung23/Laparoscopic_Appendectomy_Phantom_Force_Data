@@ -39,6 +39,8 @@ def main():
     report=dict(status='starting',gpu=a.gpu,gravity_m_s2=0.,robot_collisions=False,
         isaacsim_version=importlib.metadata.version('isaacsim'),
         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
+    report['helper_sha256']={n:hashlib.sha256((Path(__file__).parent/n).read_bytes()).hexdigest()
+        for n in ('static_load_check.py','mount_sensor_probe.py','fr3_ct_scene.py')}
     try:
         import numpy as np
         import omni.usd
@@ -150,6 +152,8 @@ def main():
         torque_response=[];torque_expected=[];torque_release=[];spring_response=[];spring_release=[];drift=[]
         response=[];noise=[];release=[];trace=[];expected=[]
         onset,offset,end=(240,960,1680) if a.spring_probe else (120,360,480)
+        report['load_protocol']=dict(physics_dt_s=1/480,force_n=.1,axes=[0,1,2],
+            onset_tick=onset,offset_tick=offset,end_tick=end)
         for axis in range(3):
             samples=[];efforts=[];positions=[]
             for tick in range(end):

@@ -10,6 +10,7 @@ TRIALS=['force_fixture_cpu_v1','force_fixture_gpu_v1','force_fr3_cpu_v1',
         'force_fr3_no_atlas_gpu_v1','force_fr3_full_external_gpu_v1','force_fr3_no_atlas_gpu_v2']
 TRIALS += ['force_fr3_torque_full_v1','force_fr3_torque_full_v2','force_fr3_torque_no_atlas_v1']
 TRIALS += ['force_spring_full_v1','force_spring_no_atlas_v1']
+TRIALS += ['force_runtime_51_v1']
 
 
 def main():
