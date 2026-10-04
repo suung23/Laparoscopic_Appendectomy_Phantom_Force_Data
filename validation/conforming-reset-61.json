@@ -1,0 +1,79 @@
+{
+  "status": "rejected",
+  "runtime": "Isaac Sim 6.1",
+  "error": "Invalid reset: tet_inversion",
+  "phases": {
+    "before_initialize": {
+      "tetrahedra": 11257,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 1.0,
+      "median_volume_ratio": 1.0,
+      "total_absolute_volume_ratio": 1.0,
+      "p99_absolute_volume_change": 0.0
+    },
+    "after_cooking": {
+      "tetrahedra": 11257,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 1.0,
+      "median_volume_ratio": 1.0,
+      "total_absolute_volume_ratio": 1.0,
+      "p99_absolute_volume_change": 0.0
+    },
+    "after_initialize": {
+      "tetrahedra": 11257,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.8284072767637541,
+      "median_volume_ratio": 0.9992663759777045,
+      "total_absolute_volume_ratio": 0.9988449307883857,
+      "p99_absolute_volume_change": 0.020829996423776025
+    },
+    "before_warmup": {
+      "tetrahedra": 11257,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.8284072767637541,
+      "median_volume_ratio": 0.9992663759777045,
+      "total_absolute_volume_ratio": 0.9988449307883857,
+      "p99_absolute_volume_change": 0.020829996423776025
+    },
+    "warmup_1": {
+      "tetrahedra": 11257,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.7405246145276863,
+      "median_volume_ratio": 0.9992672266679772,
+      "total_absolute_volume_ratio": 0.9988467578122828,
+      "p99_absolute_volume_change": 0.02904479265621206
+    },
+    "warmup_60": {
+      "tetrahedra": 11257,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 8,
+      "minimum_signed_volume_ratio": -0.7088971571356952,
+      "median_volume_ratio": 1.0028851429031134,
+      "total_absolute_volume_ratio": 1.0047901811724231,
+      "p99_absolute_volume_change": 0.5104160373959566
+    },
+    "warmup_480": {
+      "tetrahedra": 11257,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 9,
+      "minimum_signed_volume_ratio": -0.7794383782750742,
+      "median_volume_ratio": 1.004657374044675,
+      "total_absolute_volume_ratio": 1.0032953071011925,
+      "p99_absolute_volume_change": 0.48216153724161126
+    },
+    "after_settlement": {
+      "tetrahedra": 11257,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 9,
+      "minimum_signed_volume_ratio": -0.782181837885473,
+      "median_volume_ratio": 1.0045136486535167,
+      "total_absolute_volume_ratio": 1.0032610297614941,
+      "p99_absolute_volume_change": 0.48057807641540534
+    }
+  }
+}
