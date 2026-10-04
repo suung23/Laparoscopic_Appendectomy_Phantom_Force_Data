@@ -1,0 +1,87 @@
+{
+  "phases": {
+    "after_initialize": {
+      "health": {
+        "tetrahedra": 48443,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9973144468289519,
+        "median_volume_ratio": 0.9992678003034352,
+        "total_absolute_volume_ratio": 0.9992678064011202,
+        "p99_absolute_volume_change": 0.0008173619564417069
+      },
+      "mean_nodal_translation_m": [
+        -3.4370998942339246e-05,
+        -0.00012843246552365464,
+        8.45958244345534e-06
+      ],
+      "translation_removed_rms_m": 5.786984006201278e-06,
+      "translation_removed_max_m": 1.0301853812012206e-05,
+      "source_sha256": "52ffe5216c537d775f11643e9a7a3ee7f23c215151d56e024eee4ccbbd5ba85f"
+    },
+    "warmup_1": {
+      "health": {
+        "tetrahedra": 48443,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9974425494533584,
+        "median_volume_ratio": 0.9992677685370583,
+        "total_absolute_volume_ratio": 0.9992670895186018,
+        "p99_absolute_volume_change": 0.0008553849800769298
+      },
+      "mean_nodal_translation_m": [
+        -3.4370998942339246e-05,
+        -0.00025349603495674797,
+        8.460277541836215e-06
+      ],
+      "translation_removed_rms_m": 5.810397250955922e-06,
+      "translation_removed_max_m": 1.036651920721377e-05,
+      "source_sha256": "bc884cdb7ead478758697b75a5528f56c9c62ed4a5af0c145d2ecc05c49ab719"
+    },
+    "warmup_60": {
+      "health": {
+        "tetrahedra": 48443,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.786544342280953,
+        "median_volume_ratio": 0.9992131978146579,
+        "total_absolute_volume_ratio": 0.999207271868602,
+        "p99_absolute_volume_change": 0.012510216275224655
+      },
+      "mean_nodal_translation_m": [
+        -3.398223318241688e-05,
+        -0.08224678891475105,
+        5.096620908208983e-06
+      ],
+      "translation_removed_rms_m": 3.3758878907052536e-05,
+      "translation_removed_max_m": 5.8092367865418485e-05,
+      "source_sha256": "38008014be64fe29ed4acadfda7000088e6fa95838192c5f3f83fccddb7cfbab"
+    },
+    "warmup_480": {
+      "health": {
+        "tetrahedra": 48443,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 76,
+        "minimum_signed_volume_ratio": -2.2747580683048914,
+        "median_volume_ratio": 1.0053822901315836,
+        "total_absolute_volume_ratio": 1.0039306772776784,
+        "p99_absolute_volume_change": 0.40860430905862355
+      },
+      "mean_nodal_translation_m": [
+        0.0022050597977424234,
+        -4.541557655373376,
+        0.008183740285995632
+      ],
+      "translation_removed_rms_m": 0.04649380687274106,
+      "translation_removed_max_m": 0.0778245462551366,
+      "source_sha256": "a696342e3fae853dabb23ec193d2b787b7273c822cc9f1b7ecbf2e808763baf7"
+    }
+  },
+  "scope": "Captured geometry audit. Translation removal is not a fitted rigid rotation or physical validation. Environment failures remain failures.",
+  "status": "failed",
+  "error": "Degenerate reference tetrahedron",
+  "base_attachment_enabled": false,
+  "support_collision_enabled": false,
+  "robot_collisions_enabled": false,
+  "gravity_m_s2": 9.81
+}

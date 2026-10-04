@@ -1,0 +1,8 @@
+{
+  "positive_elements_below_sdk_determinant_threshold": 41983,
+  "nonpositive_elements": 0,
+  "sdk_determinant_threshold": 1e-09,
+  "minimum_determinant": 2.538325486487001e-14,
+  "source_url": "https://github.com/NVIDIA-Omniverse/PhysX/blob/main/physx/source/physxextensions/src/ExtDeformableVolumeExt.cpp",
+  "scope": "Public main-source threshold matches local error count exactly. Not a binary-version proof, nor an explanation of all runtime inversions. No threshold override applied."
+}

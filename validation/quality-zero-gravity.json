@@ -1,5 +1,5 @@
 {
-  "status": "passed",
+  "status": "geometry_passed_engine_errors",
   "tissue_health": {
     "tetrahedra": 48443,
     "degenerate_rest_tetrahedra": 0,
@@ -16,5 +16,6 @@
     3.6770697193001816e-09
   ],
   "diagnostic_zero_gravity": true,
-  "scope": "Zero gravity reset and rigid mount sensor only; does not validate loaded tissue"
+  "scope": "Zero gravity stored-coordinate check and rigid sensor only. PhysX emitted 41983 small/degenerate element errors; not a valid mechanics pass.",
+  "engine_error_count": 41983
 }

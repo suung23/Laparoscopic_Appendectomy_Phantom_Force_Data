@@ -1,0 +1,56 @@
+{
+  "status": "failed",
+  "error": "Invalid reset: tet_inversion",
+  "support_collision_enabled": false,
+  "base_attachment_enabled": true,
+  "robot_collisions_enabled": false,
+  "gravity_m_s2": 9.81,
+  "phases": {
+    "after_initialize": {
+      "tetrahedra": 48443,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.8986485508318293,
+      "median_volume_ratio": 0.999267975794733,
+      "total_absolute_volume_ratio": 0.9991168677855791,
+      "p99_absolute_volume_change": 0.0058628694457733945
+    },
+    "warmup_1": {
+      "tetrahedra": 48443,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.8498150090011151,
+      "median_volume_ratio": 0.9992681147277565,
+      "total_absolute_volume_ratio": 0.9990526193660976,
+      "p99_absolute_volume_change": 0.008621913410704667
+    },
+    "warmup_60": {
+      "tetrahedra": 48443,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 9,
+      "minimum_signed_volume_ratio": -3.2849889610035157,
+      "median_volume_ratio": 1.0224009338583846,
+      "total_absolute_volume_ratio": 1.023384330171828,
+      "p99_absolute_volume_change": 0.13708263394420886
+    },
+    "warmup_480": {
+      "tetrahedra": 48443,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 8,
+      "minimum_signed_volume_ratio": -2.961408389852175,
+      "median_volume_ratio": 1.0144214987328772,
+      "total_absolute_volume_ratio": 1.0175486131946903,
+      "p99_absolute_volume_change": 0.11595534906893165
+    },
+    "after_settlement": {
+      "tetrahedra": 48443,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 8,
+      "minimum_signed_volume_ratio": -3.0001901966882714,
+      "median_volume_ratio": 1.01483888032419,
+      "total_absolute_volume_ratio": 1.0179798136065041,
+      "p99_absolute_volume_change": 0.11793233294460125
+    }
+  },
+  "scope": "Gravity isolation diagnostic; support removal did not resolve inversion. Not a surgical environment."
+}
