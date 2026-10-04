@@ -1,0 +1,18 @@
+{
+  "status": "failed",
+  "error": "Invalid reset: pin_drift",
+  "external_every_iteration": true,
+  "adopted": false,
+  "force_test_completed": false,
+  "pin_drift_m": 0.2115422088320952,
+  "tissue_health": {
+    "tetrahedra": 29490,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 14246,
+    "minimum_signed_volume_ratio": -966263048.8271055,
+    "median_volume_ratio": 4.380273997355324,
+    "total_absolute_volume_ratio": 507353.95218838134,
+    "p99_absolute_volume_change": 2532870.8842160758
+  },
+  "report_sha256": "3e32f610d8ed42e36a472a2a07dabd1a8d388668614a4299c245730139ff1d9b"
+}
