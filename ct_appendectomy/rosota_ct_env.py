@@ -227,6 +227,9 @@ class RosotaCTEnv(gym.Env):
                 samples=64,frame='local child joint frame at tool_mount',
                 model='static tare only; no orientation or inertia compensation')
         (self.out/'contact_calibration.json').write_text(json.dumps(calibration,indent=2),encoding='utf-8')
+        if self.diagnostic_no_tool_collision:
+            from jaw_gravity_audit import audit
+            (self.out/'jaw_gravity_audit.json').write_text(json.dumps(audit(self),indent=2),encoding='utf-8')
         from tissue_grasp import TissueGrasp
         from deformation_metrics import DeformationMeasure
         from isaacsim.core.prims import SingleRigidPrim
