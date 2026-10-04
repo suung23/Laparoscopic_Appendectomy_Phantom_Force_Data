@@ -93,10 +93,13 @@ class RosotaCTEnv(gym.Env):
         UsdPhysics.MassAPI.Apply(anchor).CreateMassAttr(.01)
         self.specs=author(self.stage,self.config['data'],self.fr3_urdf,self.out,
             patches=self.target_patches if self.workspace=='appendix_patches' else None,cutter_cad=self.cutter_cad)
+        self.disabled_robot_colliders=[]
         if self.diagnostic_no_tool_collision:
             for prim in self.stage.Traverse():
                 if str(prim.GetPath()).startswith('/World/FR3/') and prim.HasAPI(UsdPhysics.CollisionAPI):
                     UsdPhysics.CollisionAPI(prim).CreateCollisionEnabledAttr(False)
+                    self.disabled_robot_colliders.append(str(prim.GetPath()))
+            if not self.disabled_robot_colliders:raise RuntimeError('Collision diagnostic disabled no robot colliders')
         for c in self.config['data']['clusters']:
             self.stage.GetPrimAtPath(c['path']+'Attachment').GetAttribute('omniphysics:attachmentEnabled').Set(False)
         if self.grasp_mode=='solver_attachment':
@@ -202,12 +205,14 @@ class RosotaCTEnv(gym.Env):
         self.trace=[];self.jaw_open={h:s['open_deg'] for h,s in self.specs.items()}
         self.initial_q=np.array([self.q(h) for h in self.specs]);self.initial_scope=self.scope.pose.copy()
         from contact_control import ContactGuard
-        self.force_rows={};samples={h:[] for h in self.specs}
+        self.force_rows={};samples={h:[] for h in self.specs};jaw_samples={h:[] for h in self.specs}
         for h,robot in self.robots.items():
             self.force_rows[h]=int(robot._articulation_view._metadata.joint_indices['tool_mount'])+1
         for _ in range(64):
             self.sim.step(render=False)
-            for h in self.specs:samples[h].append(self.sensor(h)[0])
+            for h in self.specs:
+                wrench,effort=self.sensor(h)
+                samples[h].append(wrench);jaw_samples[h].append(effort)
         self.guards={};self.hold_q={};calibration={}
         for h in self.specs:
             values=np.asarray(samples[h]);baseline=values.mean(axis=0)
@@ -215,6 +220,10 @@ class RosotaCTEnv(gym.Env):
             self.guards[h]=ContactGuard(baseline,noise,max_open_deg=self.specs[h]['open_deg'])
             self.guards[h].update(*self.sensor(h))
             calibration[h]=dict(baseline=baseline.tolist(),max_force_residual_n=noise,
+                jaw_effort_mean_nm=np.mean(jaw_samples[h],axis=0).tolist(),
+                jaw_effort_min_nm=np.min(jaw_samples[h],axis=0).tolist(),
+                jaw_effort_max_nm=np.max(jaw_samples[h],axis=0).tolist(),
+                jaw_effort_tare_applied=False,
                 samples=64,frame='local child joint frame at tool_mount',
                 model='static tare only; no orientation or inertia compensation')
         (self.out/'contact_calibration.json').write_text(json.dumps(calibration,indent=2),encoding='utf-8')
@@ -338,6 +347,7 @@ class RosotaCTEnv(gym.Env):
             grasp_mode=self.grasp_mode,held_patches={h:v['cluster'] for h,v in self.grasp.held.items()},
             settlement_verified=self.settlement['measured_equilibrium'],
             diagnostic_no_tool_collision=self.diagnostic_no_tool_collision,
+            disabled_robot_collider_count=len(self.disabled_robot_colliders),
             rosota_full_contract=False)
 
     def step(self,action):
