@@ -1,0 +1,108 @@
+{
+  "repository": "nvidia/PhysicalAI-Robotics-Open-H-Embodiment",
+  "revision": "e29dda7cabf2a2626634c7822db27695553ae523",
+  "subset": "Surgical/hamlyn/tissue_retraction",
+  "episode": 0,
+  "license": "CC-BY-4.0",
+  "rows": 190,
+  "fps": 30,
+  "timestamp_span_s": 6.300000190734863,
+  "clock_grid_error_s": 2.2252400722067023e-07,
+  "monotonic_timestamps": true,
+  "contiguous_frame_indices": true,
+  "physical_video_telemetry_alignment_verified": false,
+  "arms": {
+    "left": {
+      "position_range_m": [
+        1.3686716556549072e-05,
+        1.1701136827468872e-05,
+        1.792609691619873e-05
+      ],
+      "quaternion_norm_range": [
+        0.9999999686708915,
+        1.0000000292796394
+      ],
+      "gripper_range": [
+        0.10650031268596649,
+        0.47075751423835754
+      ],
+      "calibration_vector_shape": [
+        190,
+        7
+      ],
+      "calibration_max_change": 0.0,
+      "reference_frame": "each PSM base; not a shared world frame",
+      "camera_extrinsic_direction_verified": false
+    },
+    "right": {
+      "position_range_m": [
+        0.04825747013092041,
+        0.036306168884038925,
+        0.041660912334918976
+      ],
+      "quaternion_norm_range": [
+        0.9999999635749773,
+        1.0000000333139547
+      ],
+      "gripper_range": [
+        0.051943402737379074,
+        0.949845552444458
+      ],
+      "calibration_vector_shape": [
+        190,
+        7
+      ],
+      "calibration_max_change": 0.0,
+      "reference_frame": "each PSM base; not a shared world frame",
+      "camera_extrinsic_direction_verified": false
+    }
+  },
+  "videos": {
+    "observation.images.color": {
+      "decoded_frames": 190,
+      "matches_telemetry": true,
+      "declared_shape": [
+        480,
+        848,
+        3
+      ]
+    },
+    "observation.images.depth": {
+      "decoded_frames": 190,
+      "matches_telemetry": true,
+      "declared_shape": [
+        480,
+        848,
+        3
+      ]
+    },
+    "observation.images.wrist_left": {
+      "decoded_frames": 190,
+      "matches_telemetry": true,
+      "declared_shape": [
+        480,
+        640,
+        3
+      ]
+    },
+    "observation.images.wrist_right": {
+      "decoded_frames": 190,
+      "matches_telemetry": true,
+      "declared_shape": [
+        480,
+        640,
+        3
+      ]
+    }
+  },
+  "metric_depth_available": false,
+  "depth_rejection": "Depth is a colorized lossy RGB H264 stream. No metric scale/intrinsics verified; do not unproject it.",
+  "force_ground_truth_available": false,
+  "retargeting_ready": false,
+  "retargeting_blockers": [
+    "PSM-base to common-camera transform direction must be verified",
+    "Rosota tool-tip offsets and tool-specific jaw normalization must be calibrated"
+  ],
+  "anatomy": "ex-vivo porcine tissue on bench; not a human abdominal cavity",
+  "status": "passed integrity audit"
+}

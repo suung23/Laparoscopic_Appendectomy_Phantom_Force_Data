@@ -1,0 +1,15 @@
+{
+  "doi": "10.25532/OPARA-1033",
+  "license": "CC-BY-4.0",
+  "archive_id": "96efe821-1088-4cdf-a07d-7d4a72f9f87a",
+  "archive_name": "specimen_1.tar.gz",
+  "compressed_bytes_read": 134217728,
+  "complete_archive_checksum_verified": false,
+  "status": "Compressed download budget reached",
+  "sample_files": 4,
+  "paired_stereo_available": false,
+  "calibration_available": false,
+  "structured_light_geometry_available": false,
+  "eligible_for_geometry_validation": false,
+  "next_action": "Obtain a complete calibrated session; the archive prefix contains only right-camera frames and cannot establish metric geometry"
+}

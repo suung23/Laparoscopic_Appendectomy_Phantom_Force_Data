@@ -32,7 +32,7 @@
     },
     {
       "id": "ct-grasp-traction-release",
-      "status": "one assisted trial passed; repeated-seed and unloaded-control validation pending; see ct-grasp-validation.json",
+      "status": "One assisted engineering sequence passed; material interpretation limited by unverified fixed-wait settlement; repeated matched controls pending",
       "requires": [
         "live tissue inside jaw mouth",
         "explicitly labelled assistance",
@@ -68,7 +68,7 @@
     },
     {
       "id": "real-video-provenance",
-      "status": "one clinical Open-H/CMR episode downloaded and audited",
+      "status": "One clinical CMR and one ex-vivo Hamlyn episode audited; surgery-level held-out split pending",
       "requires": [
         "revision-pinned source and license",
         "video and telemetry integrity",
@@ -98,6 +98,26 @@
         "wall-clock throughput and reproducible resets",
         "comparison with original Rosota and LapGym",
         "no reward improvement via invalid tissue physics"
+      ]
+    },
+    {
+      "id": "reset-equilibrium",
+      "status": "not achieved; fixed wait was not verified; adaptive 8-second trial failed",
+      "requires": [
+        "measured nodal speed below specified limits",
+        "repeatability across resets",
+        "same initial state for paired controls"
+      ]
+    },
+    {
+      "id": "solver-reaction-transfer",
+      "status": "Dynamic attachment implemented; repeated three-axis known-load sensor tests failed, so force-based reaction validation remains unsupported",
+      "requires": [
+        "known-load sensor verification",
+        "same robot trajectory and settled initial tissue",
+        "enabled/disabled constraint comparison",
+        "force or generalized-torque balance",
+        "full bimanual traction and release"
       ]
     }
   ],

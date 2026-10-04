@@ -9,7 +9,12 @@
       "license": "CC-BY-4.0",
       "local_reference": "assets/references/open_h_cmr_ep000000",
       "use": "Clinical appearance and controller input reference",
-      "exclusions": ["No force ground truth", "Not appendectomy", "Hand-controller inputs are not robot tip poses", "Single episode is not a held-out benchmark"]
+      "exclusions": [
+        "No force ground truth",
+        "Not appendectomy",
+        "Hand-controller inputs are not robot tip poses",
+        "Single episode is not a held-out benchmark"
+      ]
     },
     {
       "name": "D4D",
@@ -17,13 +22,32 @@
       "loader": "https://github.com/reubendocea/d4d",
       "license": "CC-BY-4.0, verified in official OPARA item metadata",
       "use": "Stereo endoscopy and structured-light reference surface geometry during tissue manipulation",
-      "exclusions": ["Porcine cadaver, not human appendix", "Do not infer measured contact force", "Respect per-session dropped-frame and camera-motion metadata"]
+      "exclusions": [
+        "Porcine cadaver, not human appendix",
+        "Do not infer measured contact force",
+        "Respect per-session dropped-frame and camera-motion metadata"
+      ],
+      "access_status": "Bounded compressed prefix exhausted; no paired stereo, session calibration, or structured-light geometry obtained"
     },
     {
       "name": "LapGym / sofa_env",
       "url": "https://github.com/ScheiklP/sofa_env",
       "publication": "https://www.jmlr.org/papers/volume24/23-0207/23-0207.pdf",
       "use": "Deformable manipulation, dissection and RL benchmark comparison; not clinical ground truth"
+    },
+    {
+      "name": "Open-H Hamlyn tissue retraction",
+      "url": "https://huggingface.co/datasets/nvidia/PhysicalAI-Robotics-Open-H-Embodiment",
+      "revision": "e29dda7cabf2a2626634c7822db27695553ae523",
+      "license": "CC-BY-4.0",
+      "local_reference": "assets/references/open_h_hamlyn_retraction_ep000000",
+      "use": "Ex-vivo tool/tissue video and pose reference",
+      "exclusions": [
+        "Not intra-abdominal clinical footage",
+        "Colorized depth video has no verified metric scale",
+        "Per-arm calibration frame convention not verified",
+        "No force ground truth"
+      ]
     }
   ],
   "completed_this_iteration": [
@@ -31,9 +55,17 @@
     "3600 telemetry rows audited; metadata label-count mismatch detected",
     "Topology-preserving image-colour UV experiment authored and rendered",
     "Appearance experiment rejected as improvement evidence: target liver not visible",
-    "Surface and force error metrics implemented without test-time alignment or scale fitting"
+    "Surface and force error metrics implemented without test-time alignment or scale fitting",
+    "Dynamic shaft-to-tissue constraint implemented without kinematic pose writes; remains idealized adhesion",
+    "Hamlyn episode audited: 190 synchronized frames per camera, finite pose/calibration streams, no metric-depth assumption",
+    "Bounded D4D intake retained only four right-camera images; unusable for calibrated reconstruction",
+    "Measured reset gate implemented; tissue failed eight-second settlement trial",
+    "Three-axis 0.1 N loads repeated with collisions disabled: mount vector errors 0.014 to 0.047 N; sensor calibration failed",
+    "Full incoming-joint reactions confirm selected tool_mount index; cause of force error still unresolved"
   ],
   "next_actions": [
+    "Isolate force application and joint-reaction reporting in a minimal articulated fixture; compare CPU/GPU and static force balance",
+    "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",
     "Recover persistent surface appearance from multiple views with tool/HUD/specular masks; reject single-patch tiling as final solution",

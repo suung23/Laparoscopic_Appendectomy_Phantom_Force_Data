@@ -8,10 +8,17 @@ import requests
 REPO = 'nvidia/PhysicalAI-Robotics-Open-H-Embodiment'
 SUBSET = 'Surgical/cmr_surgical/cholecystectomy'
 BASE = 'https://huggingface.co'
+SUBSETS = {
+    'cmr_cholecystectomy': (SUBSET, 4792, ['observation.images.endoscope'],
+        'Clinical cholecystectomy appearance and controller-input reference; not appendix anatomy or material ground truth'),
+    'hamlyn_retraction': ('Surgical/hamlyn/tissue_retraction', 75,
+        ['observation.images.color','observation.images.depth','observation.images.wrist_left','observation.images.wrist_right'],
+        'Ex-vivo porcine bimanual retraction; RGB-encoded depth is not metric depth without a documented decoding scale')}
 
 
-def fetch(output, episode=0, max_bytes=150_000_000):
-    if not 0 <= episode < 4792:
+def fetch(output, episode=0, max_bytes=150_000_000, subset='cmr_cholecystectomy'):
+    subset_path, episode_count, cameras, usage = SUBSETS[subset]
+    if not 0 <= episode < episode_count:
         raise ValueError('Episode outside documented subset')
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
@@ -20,13 +27,13 @@ def fetch(output, episode=0, max_bytes=150_000_000):
     response.raise_for_status()
     revision = response.json()['sha']
     chunk = episode // 1000
-    paths = ['README.md', f'{SUBSET}/README.md', f'{SUBSET}/meta/info.json',
-             f'{SUBSET}/meta/modality.json',
-             f'{SUBSET}/data/chunk-{chunk:03d}/episode_{episode:06d}.parquet',
-             f'{SUBSET}/videos/chunk-{chunk:03d}/observation.images.endoscope/episode_{episode:06d}.mp4']
+    paths = ['README.md', f'{subset_path}/README.md', f'{subset_path}/meta/info.json',
+             f'{subset_path}/meta/modality.json',
+             f'{subset_path}/data/chunk-{chunk:03d}/episode_{episode:06d}.parquet']
+    paths += [f'{subset_path}/videos/chunk-{chunk:03d}/{camera}/episode_{episode:06d}.mp4' for camera in cameras]
     records, total = [], 0
     for remote in paths:
-        relative = remote.removeprefix(SUBSET + '/') if remote != 'README.md' else 'DATASET_CARD.md'
+        relative = remote.removeprefix(subset_path + '/') if remote != 'README.md' else 'DATASET_CARD.md'
         target = output / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         temporary = target.with_suffix(target.suffix + '.partial')
@@ -50,10 +57,10 @@ def fetch(output, episode=0, max_bytes=150_000_000):
                         'sha256': digest.hexdigest(), 'bytes': size})
         print(f'Downloaded {relative}: {size} bytes', flush=True)
     manifest = {'schema_version': 1, 'repository': REPO, 'revision': revision,
-                'subset': SUBSET, 'episode': episode, 'license': 'CC-BY-4.0',
-                'attribution': 'CMR Surgical / Open-H-Embodiment, hosted by NVIDIA',
+                'subset': subset_path, 'episode': episode, 'license': 'CC-BY-4.0',
+                'attribution': ('CMR Surgical' if subset=='cmr_cholecystectomy' else 'Hamlyn')+' / Open-H-Embodiment, hosted by NVIDIA',
                 'source': f'{BASE}/datasets/{REPO}', 'files': records,
-                'use': 'Clinical cholecystectomy appearance and motion reference; not appendix anatomy or material ground truth',
+                'use': usage,
                 'split': 'development-reference; exclude this surgery from held-out evaluation'}
     (output / 'provenance.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
     return manifest
@@ -63,5 +70,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--episode', type=int, default=0)
+    parser.add_argument('--subset', choices=SUBSETS, default='cmr_cholecystectomy')
     args = parser.parse_args()
-    fetch(args.out, args.episode)
+    fetch(args.out, args.episode, subset=args.subset)

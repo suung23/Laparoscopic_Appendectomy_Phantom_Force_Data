@@ -1,0 +1,210 @@
+{
+  "scope": "Engineering load path diagnostics, not tissue material calibration",
+  "two_way_reaction_validated": false,
+  "frictional_grasp_validated": false,
+  "trials": [
+    {
+      "trial": "solver_coupling_v1",
+      "method": "Constraint-local point edits with fixed robot; runtime update behavior unverified",
+      "status": "failed",
+      "error": null,
+      "report_sha256": "c296b25f942b5e85820ab774849b8130f5304e55f3a88d8aefc7af29e6c213b4",
+      "implementation_sha256": null,
+      "mount_force_effect_n": 6.26810317286521e-06,
+      "activation_differential_noise_n": 2.4752190831668453e-05,
+      "conditions": {
+        "disabled": {
+          "activation_max_displacement_m": 0.0006499540851902872,
+          "tool_displacement_m": null,
+          "commanded_displacement_m": null,
+          "failure": null
+        },
+        "enabled": {
+          "activation_max_displacement_m": 0.000518297309527696,
+          "tool_displacement_m": null,
+          "commanded_displacement_m": null,
+          "failure": null
+        }
+      }
+    },
+    {
+      "trial": "solver_coupling_v2",
+      "method": "1 mm world-Y robot motion; fixed-duration reset was not verified settled",
+      "status": "failed",
+      "error": null,
+      "report_sha256": "f27a664aa76cb217d819545101a781aa53ae2e880653bd6c58f49e62ea9dd1cb",
+      "implementation_sha256": null,
+      "mount_force_effect_n": 5.025298002636078e-05,
+      "activation_differential_noise_n": 8.424726920747942e-05,
+      "conditions": {
+        "disabled": {
+          "activation_max_displacement_m": 0.0010446340407722667,
+          "tool_displacement_m": [
+            3.279745578765869e-05,
+            0.0009829048067331314,
+            -2.596154808998108e-05
+          ],
+          "commanded_displacement_m": null,
+          "failure": null
+        },
+        "enabled": {
+          "activation_max_displacement_m": 0.0013943020971256455,
+          "tool_displacement_m": [
+            -4.06801700592041e-06,
+            0.0010029152035713196,
+            3.1329691410064697e-06
+          ],
+          "commanded_displacement_m": null,
+          "failure": null
+        }
+      }
+    },
+    {
+      "trial": "solver_coupling_v3",
+      "method": "2 mm axial motion; directions recomputed per reset, so conditions were not exactly matched",
+      "status": "failed",
+      "error": null,
+      "report_sha256": "2d774793b75a227a7ef608380e75aed367d442df47fc4fc07c578b5f28d18ed7",
+      "implementation_sha256": null,
+      "mount_force_effect_n": 0.0001289022083011701,
+      "activation_differential_noise_n": 5.9891577279336346e-05,
+      "conditions": {
+        "disabled": {
+          "activation_max_displacement_m": 0.0011471834028338916,
+          "tool_displacement_m": [
+            0.00023028254508972168,
+            -0.0019710808992385864,
+            -0.00019299238920211792
+          ],
+          "commanded_displacement_m": [
+            0.0002375828874838086,
+            -0.001975883258213928,
+            -0.0001985943641817858
+          ],
+          "failure": null
+        },
+        "enabled": {
+          "activation_max_displacement_m": 0.0013261356638230313,
+          "tool_displacement_m": [
+            0.00028964877128601074,
+            -0.001972794532775879,
+            -0.00020765140652656555
+          ],
+          "commanded_displacement_m": [
+            0.0002870663374463133,
+            -0.0019685356901837925,
+            -0.0002060586187903316
+          ],
+          "failure": null
+        }
+      }
+    },
+    {
+      "trial": "solver_coupling_v4",
+      "method": "Matched direction and adaptive settlement; stopped at failed reset motion gate",
+      "status": "failed",
+      "error": "Tissue did not reach the measured reset equilibrium gate",
+      "report_sha256": "6bfd24f4e90961784d1fc925250a23e087bc17112f20b4d82831fc8718db4267",
+      "implementation_sha256": null
+    },
+    {
+      "trial": "mount_sensor_v1",
+      "method": "Known 0.1 N rigid-link force on/off without tissue attachments",
+      "status": "failed",
+      "error": null,
+      "report_sha256": "9596380c4ee324b0cc8df17c7860ccb3afbe7f32eeea064df1130f62e7ee5388",
+      "implementation_sha256": {
+        "rosota_ct_env.py": "9876a7cb8bc8cfe5c68b8250ce65f07cc85887526abdacc0262685f64032c0fa",
+        "solver_grasp.py": "38e072dc68e042db0deaedda5036edb99d4731f223c1aa406fc618b96837b217",
+        "tissue_grasp.py": "247ea6e3fc31db1dbfd997e31600351de43daaaa0e60b18fdb1aa329cfaad753",
+        "coupling_probe.py": "fb21da4a1a5a9b96a305fbdb3190a090d4ff8b95c7c3c841046b3dfd1c4d4710",
+        "settlement.py": "4081a8302e679915f16fd8276651f957f6cfc85c716052ebbeda3927810f27c0",
+        "mount_sensor_probe.py": "281f904a56ad53dad6fa323d4bb4a7275698145cdea157c06ad01b9493cabfc1"
+      },
+      "measured_response_n": 0.09449555348523729,
+      "released_residual_n": 2.9433067932228495e-08,
+      "baseline_noise_n": 3.078250448773452e-05
+    },
+    {
+      "trial": "mount_sensor_v2",
+      "method": "Three-axis 0.1 N loads; robot collisions disabled in diagnostic only",
+      "status": "failed",
+      "error": null,
+      "report_sha256": "bee85dc9694827978772bba9894a17a8383e1be932dd085c9319f01aac836408",
+      "implementation_sha256": {
+        "rosota_ct_env.py": "4bf781ba5345c3a2b40735ce769de2176602d2f27d583e9b19fea239dbada943",
+        "solver_grasp.py": "38e072dc68e042db0deaedda5036edb99d4731f223c1aa406fc618b96837b217",
+        "tissue_grasp.py": "247ea6e3fc31db1dbfd997e31600351de43daaaa0e60b18fdb1aa329cfaad753",
+        "coupling_probe.py": "fb21da4a1a5a9b96a305fbdb3190a090d4ff8b95c7c3c841046b3dfd1c4d4710",
+        "settlement.py": "4081a8302e679915f16fd8276651f957f6cfc85c716052ebbeda3927810f27c0",
+        "mount_sensor_probe.py": "e344d6bfdf594f82cf1d018230cbc473a22bf023eb3c8fbf839210edd21b5ab7"
+      },
+      "baseline_noise_n": [
+        3.0501924315567467e-05,
+        3.0094232784578604e-05,
+        3.055607763281526e-05
+      ],
+      "vector_error_n": [
+        0.041229721936776785,
+        0.014039310461271892,
+        0.046626919651479144
+      ],
+      "release_residual_n": [
+        1.532984699917198e-08,
+        7.667330531548603e-08,
+        6.97103490495476e-07
+      ],
+      "tolerance_n": 0.005
+    },
+    {
+      "trial": "mount_sensor_v3",
+      "method": "Repeat three-axis loads with all incoming joint wrenches and poses recorded",
+      "status": "failed",
+      "error": null,
+      "report_sha256": "b3971952e8dc7bd6d47a1493a681a9afd5f0dc05e450e16db4de63a817980773",
+      "implementation_sha256": {
+        "rosota_ct_env.py": "4bf781ba5345c3a2b40735ce769de2176602d2f27d583e9b19fea239dbada943",
+        "solver_grasp.py": "38e072dc68e042db0deaedda5036edb99d4731f223c1aa406fc618b96837b217",
+        "tissue_grasp.py": "247ea6e3fc31db1dbfd997e31600351de43daaaa0e60b18fdb1aa329cfaad753",
+        "coupling_probe.py": "fb21da4a1a5a9b96a305fbdb3190a090d4ff8b95c7c3c841046b3dfd1c4d4710",
+        "settlement.py": "4081a8302e679915f16fd8276651f957f6cfc85c716052ebbeda3927810f27c0",
+        "mount_sensor_probe.py": "c6a3493200e6f69347c38b9d075ecd238b6d59cd3d783c0715c1bba2fac8f1c5"
+      },
+      "baseline_noise_n": [
+        3.0501924315567467e-05,
+        3.0094232784578604e-05,
+        3.055607763281526e-05
+      ],
+      "vector_error_n": [
+        0.041229721936776785,
+        0.014039310461271892,
+        0.046626919651479144
+      ],
+      "release_residual_n": [
+        1.532984699917198e-08,
+        7.667330531548603e-08,
+        6.97103490495476e-07
+      ],
+      "tolerance_n": 0.005,
+      "force_row": 8,
+      "joint_indices": {
+        "fr3_joint1": 0,
+        "fr3_joint2": 1,
+        "fr3_joint3": 2,
+        "fr3_joint4": 3,
+        "fr3_joint5": 4,
+        "fr3_joint6": 5,
+        "fr3_joint7": 6,
+        "jaw_left": 8,
+        "jaw_right": 9,
+        "tool_mount": 7
+      }
+    }
+  ],
+  "remaining": [
+    "Matched settled trials with repeatability control",
+    "Known-load sensor sensitivity and coordinate-frame check",
+    "Independent force balance/drive-torque verification",
+    "Full bimanual contact and release under validated coupling"
+  ]
+}

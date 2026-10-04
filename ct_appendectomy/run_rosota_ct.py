@@ -1,5 +1,6 @@
 """Record and verify the real CT articulation/RCM path, without learned claims."""
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -23,7 +24,13 @@ def main():
         help='Experimental CT assisted grasp/pull/release; not full Rosota baseline parity')
     p.add_argument('--grasp-approach-samples',type=int,default=240)
     p.add_argument('--attachment-probe',action='store_true',help='Isolated activation diagnostic, not a robot grasp')
+    p.add_argument('--solver-grasp',action='store_true',help='Experimental dynamic-link attachment; remains assisted adhesion')
+    p.add_argument('--coupling-probe',action='store_true',help='Paired enabled/disabled constraint load-path test, not a grasp')
+    p.add_argument('--mount-sensor-probe',action='store_true',help='Known 0.1 N external force sensor calibration without tissue attachment')
     a=p.parse_args()
+    if a.coupling_probe and (a.baseline_task or a.contact_probe or a.attachment_probe):p.error('Coupling probe is a separate diagnostic')
+    if a.mount_sensor_probe and (a.baseline_task or a.contact_probe or a.attachment_probe or a.coupling_probe or a.solver_grasp):p.error('Mount sensor probe is a separate diagnostic')
+    if a.solver_grasp and not (a.baseline_task or a.coupling_probe):p.error('--solver-grasp requires --grasp-probe or --coupling-probe')
     if a.steps<1:p.error('--steps must be positive')
     if a.grasp_approach_samples<1:p.error('--grasp-approach-samples must be positive')
     if a.baseline_task and a.contact_probe:p.error('Choose baseline task or contact probe')
@@ -35,6 +42,8 @@ def main():
     frames=a.out/'frames';frames.mkdir(exist_ok=True)
     if any(frames.glob('*.png')):p.error('Use a fresh output folder')
     report={'status':'starting','learned_policy':False,'policy':'geometric two-tip target tracking'}
+    report['implementation_sha256']={name:hashlib.sha256((Path(__file__).parent/name).read_bytes()).hexdigest()
+        for name in ('rosota_ct_env.py','solver_grasp.py','tissue_grasp.py','coupling_probe.py','settlement.py','mount_sensor_probe.py')}
     def save():(a.out/'report.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
     save()
     for n,d in [('WARP_CACHE_PATH','isaac-warp'),('OPTIX_CACHE_PATH','optix')]:os.environ.setdefault(n,str(ROOT/'.cache'/d))
@@ -52,9 +61,17 @@ def main():
         from PIL import Image,ImageDraw
         from rosota_ct_env import RosotaCTEnv
         env=RosotaCTEnv(app,a.assets,a.fr3_urdf,a.out,max_steps=a.steps,
-            grasp_mode='rosota_attachment' if a.baseline_task else 'none',
-            workspace='appendix_patches' if a.baseline_task else 'legacy')
+            grasp_mode='solver_attachment' if a.solver_grasp or a.coupling_probe else ('rosota_attachment' if a.baseline_task else 'none'),
+            workspace='appendix_patches' if a.baseline_task or a.coupling_probe else 'legacy',
+            settle_policy='adaptive' if a.coupling_probe else 'fixed',
+            diagnostic_no_tool_collision=a.mount_sensor_probe)
         obs,info=env.reset(seed=42);report.update(status='running',**info);save()
+        if a.mount_sensor_probe:
+            from mount_sensor_probe import run
+            report.update(run(env));return
+        if a.coupling_probe:
+            from coupling_probe import run
+            report.update(run(env));return
         if a.attachment_probe:
             from attachment_probe import run
             report.update(run(env));return

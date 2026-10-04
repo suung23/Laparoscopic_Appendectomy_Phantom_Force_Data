@@ -12,6 +12,8 @@ def audit(root, out, ffmpeg):
     import pyarrow.parquet as pq
     root, out = Path(root), Path(out)
     manifest = json.loads((root / 'provenance.json').read_text())
+    if manifest['subset']!='Surgical/cmr_surgical/cholecystectomy':
+        raise ValueError('This audit uses CMR-specific controller semantics; choose the matching dataset adapter')
     for record in manifest['files']:
         if hashlib.sha256((root / record['path']).read_bytes()).hexdigest() != record['sha256']:
             raise ValueError('Reference hash mismatch')

@@ -16,8 +16,12 @@ from bimanual_env import BimanualEnv
 
 class RosotaCTEnv(gym.Env):
     metadata={'render_modes':['rgb_array'],'render_fps':30}
-    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy'):
-        if grasp_mode not in ('none','rosota_attachment'):raise ValueError('Unknown grasp model')
+    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False):
+        if settle_policy not in ('fixed','adaptive'):raise ValueError('Unknown settlement policy')
+        self.settle_policy=settle_policy
+        self.diagnostic_no_tool_collision=bool(diagnostic_no_tool_collision)
+        if self.diagnostic_no_tool_collision and grasp_mode!='none':raise ValueError('Collision-free sensor fixture cannot be a grasp task')
+        if grasp_mode not in ('none','rosota_attachment','solver_attachment'):raise ValueError('Unknown grasp model')
         self.grasp_mode=grasp_mode
         if workspace not in ('legacy','appendix_patches'):raise ValueError('Unknown workspace')
         self.workspace=workspace;self.target_patches=[1,4]
@@ -58,8 +62,16 @@ class RosotaCTEnv(gym.Env):
         self.stage=omni.usd.get_context().get_stage()
         self.specs=author(self.stage,self.config['data'],self.fr3_urdf,self.out,
             patches=self.target_patches if self.workspace=='appendix_patches' else None)
+        if self.diagnostic_no_tool_collision:
+            for prim in self.stage.Traverse():
+                if str(prim.GetPath()).startswith('/World/FR3/') and prim.HasAPI(UsdPhysics.CollisionAPI):
+                    UsdPhysics.CollisionAPI(prim).CreateCollisionEnabledAttr(False)
         for c in self.config['data']['clusters']:
             self.stage.GetPrimAtPath(c['path']+'Attachment').GetAttribute('omniphysics:attachmentEnabled').Set(False)
+        if self.grasp_mode=='solver_attachment':
+            from solver_grasp import bind_links
+            self.grasp_links={h:(i,s['root']+'/shaft') for (h,s),i in zip(self.specs.items(),self.target_patches)}
+            bind_links(self.stage,self.config['data']['clusters'],self.grasp_links)
         camera=np.asarray(UsdGeom.Xformable(self.stage.GetPrimAtPath('/World/Endoscope')).GetOrderedXformOps()[0].Get()).T
         camera[:3,3]+=np.mean([s['workspace_shift'] for s in self.specs.values()],axis=0)
         self.scope=TrocarScope(camera);self.scope.apply_usd(self.stage)
@@ -90,6 +102,22 @@ class RosotaCTEnv(gym.Env):
             for hand,s in self.specs.items():
                 self.robots[hand].apply_action(ArticulationAction(joint_positions=s['seed'],joint_velocities=np.zeros(7),joint_indices=self.indices[hand]))
             self.sim.step(render=False)
+        self.settlement={'policy':self.settle_policy,'measured_equilibrium':False,'physics_ticks':480}
+        if self.settle_policy=='adaptive':
+            from settlement import SettlementGate
+            gate=SettlementGate(self.points())
+            settled=False
+            for window in range(56):
+                for _ in range(60):self.sim.step(render=False)
+                settled=gate.update(self.points())
+                (self.out/'settlement_progress.json').write_text(json.dumps(dict(
+                    window=window+1,physics_ticks=480+60*(window+1),latest=gate.rows[-1])),encoding='utf-8')
+                if window>=7 and settled:break
+            self.settlement.update(measured_equilibrium=settled,physics_ticks=480+60*len(gate.rows),
+                limits={'rms_speed_m_s':gate.rms_limit,'p99_speed_m_s':gate.p99_limit,'consecutive_windows':gate.required},
+                interval_s=gate.dt,trace=gate.rows)
+            (self.out/'settlement.json').write_text(json.dumps(self.settlement,indent=2),encoding='utf-8')
+            if not settled:raise RuntimeError('Tissue did not reach the measured reset equilibrium gate')
         self.sim.render()
         self.controllers={h:RosotaArmController(s['chain'],s['base'],s['port'],s['normal'],self.q(h),hand='left') for h,s in self.specs.items()}
         self.control=self.controllers  # Shared RGB renderer's initialized-state guard.
@@ -130,6 +158,17 @@ class RosotaCTEnv(gym.Env):
         self.grasp=TissueGrasp(self.stage,self.config['data']['clusters'],
             preferred=dict(zip(self.specs,self.target_patches)) if self.workspace=='appendix_patches' else None,
             pose_writer=write_grip_pose)
+        if self.grasp_mode=='solver_attachment':
+            from solver_grasp import SolverTissueGrasp
+            self.grasp_link_bodies={}
+            for hand,(_,path) in self.grasp_links.items():
+                body=SingleRigidPrim(prim_path=path,name=hand+'_grasp_link',reset_xform_properties=False)
+                body.initialize();self.grasp_link_bodies[hand]=body
+            def read_link(hand):
+                from scipy.spatial.transform import Rotation
+                p,q=self.grasp_link_bodies[hand].get_world_pose()
+                return Rotation.from_quat(np.asarray(q)[[1,2,3,0]]).as_matrix(),np.asarray(p)
+            self.grasp=SolverTissueGrasp(self.stage,self.config['data']['clusters'],self.grasp_links,read_link)
         self.deformation=DeformationMeasure(self.points(),self.tets)
         info=self.measure()
         (self.out/'reset_diagnostics.json').write_text(json.dumps(info,indent=2),encoding='utf-8')
@@ -193,8 +232,10 @@ class RosotaCTEnv(gym.Env):
             plant='PhysX dynamic articulations with measured joint feedback',
             calibrated_ports=False,right_tool='grasper; cutter pending',scope_shaft_collision=False,
             commissioning_retreat_m=.015 if self.workspace=='legacy' else .018,workspace=self.workspace,
-            grasp_assist=self.grasp_mode=='rosota_attachment' or bool(self.grasp.held),
+            grasp_assist=self.grasp_mode!='none' or bool(self.grasp.held),
             grasp_mode=self.grasp_mode,held_patches={h:v['cluster'] for h,v in self.grasp.held.items()},
+            settlement_verified=self.settlement['measured_equilibrium'],
+            diagnostic_no_tool_collision=self.diagnostic_no_tool_collision,
             rosota_full_contract=False)
 
     def step(self,action):
@@ -213,7 +254,7 @@ class RosotaCTEnv(gym.Env):
             for tick in range(16):
                 # Both hands act on the same pre-step state. Reading USD's
                 # FEM buffer once avoids four identical host conversions.
-                grasp_points=self.points() if self.grasp_mode=='rosota_attachment' else None
+                grasp_points=self.points() if self.grasp_mode!='none' else None
                 for h in self.specs:
                     guard=self.guards[h]
                     if guard.latched:
@@ -227,7 +268,7 @@ class RosotaCTEnv(gym.Env):
                         joint_velocities=result['joint_velocity_ff'],joint_indices=self.indices[h]))
                     jaws=self.robots[h].get_joint_positions(joint_indices=self.jaw_indices[h])
                     measured=float(np.rad2deg(jaws[0]-jaws[1]))
-                    if self.grasp_mode=='rosota_attachment':
+                    if self.grasp_mode!='none':
                         from pxr import UsdGeom
                         s=self.specs[h]
                         M=np.asarray(UsdGeom.Xformable(self.stage.GetPrimAtPath(s['root']+'/shaft')).ComputeLocalToWorldTransform(0)).T
