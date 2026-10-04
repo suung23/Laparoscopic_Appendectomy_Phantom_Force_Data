@@ -18,6 +18,7 @@ def main():
     p.add_argument('--exclude',choices=['/World/Atlas','/World/FR3/Right'],help='Remove one scene component only in the diagnostic')
     p.add_argument('--external-every-iteration',action='store_true',help='Test the documented TGS external-force integration option')
     p.add_argument('--spring-probe',action='store_true',help='Diagnostic-only 300 Nm/rad drives; measure static deflection independently of reaction sensors')
+    p.add_argument('--rigid-anchor',action='store_true',help='Author an explicit kinematic rigid anchor required by the newer attachment backend')
     p.add_argument('--out',type=Path,required=True)
     a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True)
     if a.reset_seed and not a.robot_scene:p.error('--reset-seed requires --robot-scene')
@@ -41,6 +42,7 @@ def main():
         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
     report['helper_sha256']={n:hashlib.sha256((Path(__file__).parent/n).read_bytes()).hexdigest()
         for n in ('static_load_check.py','mount_sensor_probe.py','fr3_ct_scene.py')}
+    report['rigid_anchor_fix']=a.rigid_anchor
     try:
         import numpy as np
         import omni.usd
@@ -95,6 +97,11 @@ def main():
         for prim in stage.Traverse():
             if str(prim.GetPath()).startswith(robot_path+'/') and prim.HasAPI(UsdPhysics.CollisionAPI):
                 UsdPhysics.CollisionAPI(prim).CreateCollisionEnabledAttr(False)
+        if a.rigid_anchor:
+            anchor=stage.GetPrimAtPath('/World/BaseAnchor')
+            if not anchor:raise ValueError('Missing tissue anchor')
+            UsdPhysics.RigidBodyAPI.Apply(anchor).CreateKinematicEnabledAttr(True)
+            UsdPhysics.MassAPI.Apply(anchor).CreateMassAttr(.01)
         sim=SimulationContext(stage_units_in_meters=1.,physics_dt=1/480,rendering_dt=1/30)
         if a.spring_probe:
             for i in range(1,8):
@@ -127,6 +134,19 @@ def main():
             sim.step(render=False)
         report['reset_seed']=a.reset_seed
         report['warmup_ticks']=480
+        tissue_view=None
+        if a.keep_scene and a.exclude!='/World/Atlas':
+            import omni.physics.tensors as tensors
+            tissue_sim=tensors.create_simulation_view('numpy',stage_id=omni.usd.get_context().get_stage_id())
+            tissue_view=tissue_sim.create_volume_deformable_body_view('/World/Atlas/appendix')
+            if tissue_view.count!=1:raise RuntimeError('Expected one active deformable appendix')
+            # 5.1's CPU readback tensor backend counts deformables but cannot
+            # fetch nodal arrays. Keep the same enabled-USD-readback path on both runtimes.
+            tissue_mesh=stage.GetPrimAtPath('/World/Atlas/appendix/sim')
+            tissue_initial=np.asarray(tissue_mesh.GetAttribute('points').Get(),float)[None].copy()
+            if not np.isfinite(tissue_initial).all() or tissue_initial.shape[-1]!=3:raise RuntimeError('Invalid live deformable coordinates')
+            report['active_tissue']=dict(count=tissue_view.count,position_shape=list(tissue_initial.shape),finite=True,
+                count_source='PhysX deformable view',position_source='USD simulation mesh readback')
         joint_frames=[];arm_indices=[]
         if a.robot_scene:
             for i in range(1,8):
@@ -201,6 +221,10 @@ def main():
                 report['state_based_spring_check']=spring
         report.update(evaluate_response(response,expected,release,noise),
             selected_row=row,trace=trace,physics_ticks=len(trace))
+        if tissue_view is not None:
+            tissue_final=np.asarray(tissue_mesh.GetAttribute('points').Get(),float)[None]
+            if not np.isfinite(tissue_final).all():raise RuntimeError('Nonfinite final tissue state')
+            report['active_tissue']['max_displacement_m']=float(np.linalg.norm(tissue_final-tissue_initial,axis=-1).max())
     except Exception as e:
         report.update(status='error',error=str(e));raise
     finally:

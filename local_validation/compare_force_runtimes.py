@@ -9,7 +9,7 @@ import numpy as np
 def compare(baseline,candidate):
     keys=('source_sha256','helper_sha256','robot_scene_sha256','load_protocol','gpu',
           'gravity_m_s2','robot_collisions','surrounding_scene_retained',
-          'excluded_component','external_forces_every_iteration','reset_seed','warmup_ticks')
+          'excluded_component','external_forces_every_iteration','reset_seed','warmup_ticks','rigid_anchor_fix')
     missing=[k for k in keys if k not in baseline or k not in candidate]
     if missing:raise ValueError('Missing comparison evidence: '+', '.join(missing))
     if any(baseline[k]!=candidate[k] for k in keys):raise ValueError('Unmatched experiment configuration or source')
@@ -18,6 +18,11 @@ def compare(baseline,candidate):
     versions=[d.get('isaacsim_version') for d in (baseline,candidate)]
     if not all(versions) or versions[0]==versions[1]:raise ValueError('Two recorded distinct runtime versions required')
     for d in (baseline,candidate):
+        tissue=d.get('active_tissue',{})
+        shape=tissue.get('position_shape',[])
+        if tissue.get('count')!=1 or len(shape)!=3 or shape[0]!=1 or shape[1]<4 or shape[2]!=3 or not tissue.get('finite'):
+            raise ValueError('Missing active deformable tensor evidence')
+        if not np.isfinite(tissue.get('max_displacement_m',float('nan'))):raise ValueError('Missing final deformable state')
         errors=np.asarray(d.get('vector_error_n'),float)
         if errors.shape!=(3,) or not np.isfinite(errors).all():raise ValueError('Three finite force errors required')
         if d.get('physics_ticks')!=3*d['load_protocol']['end_tick']:raise ValueError('Incomplete force protocol')
@@ -34,7 +39,10 @@ def compare(baseline,candidate):
     return dict(status='passed known-load comparison' if passed else 'candidate not validated',
         baseline_runtime=versions[0],candidate_runtime=versions[1],matched_source=True,
         baseline_error_n=baseline['vector_error_n'],candidate_error_n=candidate['vector_error_n'],
-        prior_failure_resolved=bool(passed and baseline.get('status')=='failed'),
+        prior_failure_resolved=False,
+        rigid_reaction_regression_passed=bool(passed and baseline.get('status')=='failed'),
+        deformable_response_validated=False,
+        unresolved='Body count and USD point arrays do not independently prove live deformable motion; require driven response and readback audit',
         scope='Matched zero-gravity known-load fixture only; task contact, tissue mechanics and clinical fidelity remain unvalidated')
 
 

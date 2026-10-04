@@ -27,6 +27,8 @@ def author_retraction(stage,sim_path,points,base):
     origin=points[grip].mean(axis=0)
     fixed=UsdGeom.Xform.Define(stage,'/World/BaseAnchor')
     fixed.AddTranslateOp().Set(Gf.Vec3d(0,0,0))
+    UsdPhysics.RigidBodyAPI.Apply(fixed.GetPrim()).CreateKinematicEnabledAttr(True)
+    UsdPhysics.MassAPI.Apply(fixed.GetPrim()).CreateMassAttr(.01)
     handle=UsdGeom.Xform.Define(stage,'/World/RetractionHandle')
     op=handle.AddTranslateOp()
     op.Set(Gf.Vec3d(*origin))

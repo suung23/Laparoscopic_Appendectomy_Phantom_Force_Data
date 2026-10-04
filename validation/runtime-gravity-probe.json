@@ -1,0 +1,18 @@
+{
+  "runtime": "6.1.0.0",
+  "status": "failed reset before force probe",
+  "failure": "pin_drift",
+  "pin_drift_m": 0.03615563299963118,
+  "tissue_health": {
+    "tetrahedra": 29490,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 95,
+    "minimum_signed_volume_ratio": -211.50642064119614,
+    "median_volume_ratio": 0.9974405336846166,
+    "total_absolute_volume_ratio": 0.9908686344130766,
+    "p99_absolute_volume_change": 0.9359126898194954
+  },
+  "report_sha256": "e12d7af63d3dd8be03b8a86772cb35aa5e0c8486ddc19c8085ffb7c520f1a5fe",
+  "reset_diagnostics_sha256": "18e1c059fc246eecc7731db9ddc5e5d6fd7124bede277e32778c82d2101c5bc0",
+  "interpretation": "Gravity-on task is not validated. Investigate attachment and node correspondence; no sensor trial completed. Runtime not promoted."
+}

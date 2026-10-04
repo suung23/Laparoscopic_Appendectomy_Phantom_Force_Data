@@ -62,6 +62,12 @@ class RosotaCTEnv(gym.Env):
         omni.usd.get_context().open_stage(str((self.assets/'attached.usda').resolve()))
         for _ in range(20):self.app.update()
         self.stage=omni.usd.get_context().get_stage()
+        # Older authored stages used a bare Xform; modern PhysX attachments
+        # require a rigid actor for this stationary attachment target.
+        anchor=self.stage.GetPrimAtPath('/World/BaseAnchor')
+        if not anchor:raise ValueError('Missing appendix base anchor')
+        UsdPhysics.RigidBodyAPI.Apply(anchor).CreateKinematicEnabledAttr(True)
+        UsdPhysics.MassAPI.Apply(anchor).CreateMassAttr(.01)
         self.specs=author(self.stage,self.config['data'],self.fr3_urdf,self.out,
             patches=self.target_patches if self.workspace=='appendix_patches' else None)
         if self.diagnostic_no_tool_collision:

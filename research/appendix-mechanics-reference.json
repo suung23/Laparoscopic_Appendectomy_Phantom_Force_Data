@@ -1,0 +1,47 @@
+{
+  "title": "Mechanical Properties of Inflamed Appendix Tissues",
+  "doi": "10.3390/biomedicines12112588",
+  "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11591559/",
+  "use": "Prior and virtual-coupon protocol only; not fitted or validated simulator material",
+  "sample": "Frozen/thawed human appendix; control fragments from one appendix, three independent appendices per inflamed group",
+  "rheometry": {
+    "disc_diameter_mm": 8,
+    "preload_n": 0.1,
+    "preload_stabilization_s": 60,
+    "frequency_hz": 1,
+    "strain_amplitude": 0.01,
+    "duration_per_compression_s": 60,
+    "compression_levels": [
+      0,
+      0.1,
+      0.2,
+      0.3,
+      0.4
+    ],
+    "amplitude_sweep": [
+      0.001,
+      1.0
+    ],
+    "storage_modulus_pa_mean_sd": {
+      "control": [
+        1136,
+        348
+      ],
+      "purulent": [
+        666,
+        102
+      ],
+      "gangrenous": [
+        642,
+        246
+      ]
+    }
+  },
+  "limitations": [
+    "Raw curves not obtained; licensing of downloadable data not verified",
+    "AFM luminal microscale modulus is not a whole-wall FEM Young modulus",
+    "No direct grasp, tear, cutting or in-vivo force reference",
+    "Compression stiffening and shear weakening require nonlinear model validation"
+  ],
+  "default_material_changed": false
+}

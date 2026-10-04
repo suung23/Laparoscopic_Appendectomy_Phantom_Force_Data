@@ -1533,9 +1533,749 @@
       "physics_ticks": 1440,
       "trial": "force_runtime_51_v1",
       "report_sha256": "06c76a7984f34a09646d0b54ee731bf0164156f083b46e56e99ce4b0248f44b9"
+    },
+    {
+      "status": "passed",
+      "gpu": true,
+      "gravity_m_s2": 0.0,
+      "robot_collisions": false,
+      "isaacsim_version": "6.1.0.0",
+      "source_sha256": "e97d051f15ef2584a0567f390d715518b8280ebe318896e2c1f16c9c8ee846af",
+      "helper_sha256": {
+        "static_load_check.py": "4b4491ee1192b079f13891158b5ee641d96bd6cfbe8466e07eedb950835be5d5",
+        "mount_sensor_probe.py": "a22a7e021191f3ae8154c3754e3ea52dc2a47ee5f5b84741340870dc9ba95f52",
+        "fr3_ct_scene.py": "737118d37d4ed14b30f638e6d5c4953c77772660135ecf469e8a4d2af6a1e649"
+      },
+      "robot_scene_sha256": "01efecae6aaffa3f39ec48b76f396c085069ac202eabc8c631e3c17722883c97",
+      "surrounding_scene_retained": true,
+      "excluded_component": null,
+      "external_forces_every_iteration": false,
+      "reset_seed": true,
+      "warmup_ticks": 480,
+      "load_protocol": {
+        "physics_dt_s": 0.0020833333333333333,
+        "force_n": 0.1,
+        "axes": [
+          0,
+          1,
+          2
+        ],
+        "onset_tick": 120,
+        "offset_tick": 360,
+        "end_tick": 480
+      },
+      "projected_torque_check": {
+        "status": "passed",
+        "error_nm": [
+          6.876283360522919e-08,
+          8.670455743341035e-08,
+          6.158186961371355e-07
+        ],
+        "tolerance_nm": [
+          0.0006562634873604625,
+          0.0003681765254582441,
+          0.0006130600353653368
+        ],
+        "release_error_nm": [
+          1.6015204175153412e-07,
+          3.558174608069328e-08,
+          7.529302440885244e-07
+        ],
+        "measured_nm": [
+          [
+            -0.020109403944289284,
+            -0.017364955948437455,
+            -0.011201374401931474,
+            0.041959271109163865,
+            -0.02813356109072984,
+            0.03038642188175089,
+            2.992565457105023e-06
+          ],
+          [
+            -0.003691836110732538,
+            0.02350642795119029,
+            -0.0020584235020706387,
+            -0.024251104928509903,
+            -0.005163591419986346,
+            0.013051712736581678,
+            -6.394616274274512e-07
+          ],
+          [
+            -0.022906330990977608,
+            0.01145756424278943,
+            -0.01276175201095242,
+            -0.03293246295626773,
+            -0.032038153061836994,
+            -0.028785767669649687,
+            7.678727223070503e-06
+          ]
+        ],
+        "expected_nm": [
+          [
+            -0.020109375526027803,
+            -0.0173649823240285,
+            -0.01120136740047869,
+            0.04195932673952937,
+            -0.028133567763071483,
+            0.030386422579676525,
+            2.9865411109955555e-06
+          ],
+          [
+            -0.0036918371736258584,
+            0.023506382952877044,
+            -0.002058424330481725,
+            -0.024251032903513405,
+            -0.005163580779183874,
+            0.013051726447317122,
+            -6.40946556169919e-07
+          ],
+          [
+            -0.022906363973173006,
+            0.011456985801246086,
+            -0.012761758608714681,
+            -0.03293225642223701,
+            -0.03203817939098959,
+            -0.02878577846616274,
+            7.685098796653133e-06
+          ]
+        ],
+        "scope": "Geometric virtual-work reference versus projected joint-torque output; not independent force sensing or tissue calibration"
+      },
+      "response_sign": -1,
+      "vector_error_n": [
+        2.3660889664351194e-08,
+        2.590556167138175e-08,
+        4.0773192884031484e-08
+      ],
+      "response_local_n": [
+        [
+          0.06182108446955681,
+          0.06552440673112869,
+          -0.04341314733028412
+        ],
+        [
+          0.04818208888173103,
+          0.01204697322100401,
+          0.0867948904633522
+        ],
+        [
+          -0.062101833522319794,
+          0.07457494735717773,
+          0.024123340845108032
+        ]
+      ],
+      "expected_local_n": [
+        [
+          -0.06182109577468989,
+          -0.0655244165644668,
+          0.04341316564249664
+        ],
+        [
+          -0.04818211182257195,
+          -0.01204696619037656,
+          -0.08679490022993919
+        ],
+        [
+          0.062101865769509816,
+          -0.07457495455610222,
+          -0.024123316954786145
+        ]
+      ],
+      "release_residual_n": [
+        7.402518598098595e-09,
+        3.163339368228435e-09,
+        1.9207755386219105e-08
+      ],
+      "baseline_noise_n": [
+        5.581501838491931e-08,
+        5.362820942877988e-08,
+        4.327998581743486e-08
+      ],
+      "tolerance_n": 0.005,
+      "selected_row": 8,
+      "physics_ticks": 1440,
+      "trial": "force_runtime_61_v1",
+      "report_sha256": "2dccb3c2bac21af5d708ae007865a90e0c2fe5f30e8a94a432158c1b0a6777f3",
+      "limitation": "Known-load reaction output only; live deformable response/readback and task transfer remain unverified"
+    },
+    {
+      "status": "error",
+      "gpu": true,
+      "gravity_m_s2": 0.0,
+      "robot_collisions": false,
+      "isaacsim_version": "5.1.0.0",
+      "source_sha256": "1ca5b3f43cb4ee1cef3206f614958da8fce3bb1290128602c5b1e40cd6199712",
+      "helper_sha256": {
+        "static_load_check.py": "4b4491ee1192b079f13891158b5ee641d96bd6cfbe8466e07eedb950835be5d5",
+        "mount_sensor_probe.py": "a22a7e021191f3ae8154c3754e3ea52dc2a47ee5f5b84741340870dc9ba95f52",
+        "fr3_ct_scene.py": "737118d37d4ed14b30f638e6d5c4953c77772660135ecf469e8a4d2af6a1e649"
+      },
+      "rigid_anchor_fix": true,
+      "robot_scene_sha256": "01efecae6aaffa3f39ec48b76f396c085069ac202eabc8c631e3c17722883c97",
+      "surrounding_scene_retained": true,
+      "excluded_component": null,
+      "external_forces_every_iteration": false,
+      "reset_seed": true,
+      "warmup_ticks": 480,
+      "error": "Failed to get deformable body simulation mesh nodal positions from backend",
+      "trial": "force_runtime_51_v2",
+      "report_sha256": "1fd8421e44031ca3ab4bc0a2be2c14586d4e1d10dfdbbc5a4762a59009a0063e"
+    },
+    {
+      "status": "failed",
+      "gpu": true,
+      "gravity_m_s2": 0.0,
+      "robot_collisions": false,
+      "isaacsim_version": "5.1.0.0",
+      "source_sha256": "5a434ce11499682d6ea4f7649caddebf9723ac6993e4d20e16af7a6bf2163b3b",
+      "helper_sha256": {
+        "static_load_check.py": "4b4491ee1192b079f13891158b5ee641d96bd6cfbe8466e07eedb950835be5d5",
+        "mount_sensor_probe.py": "a22a7e021191f3ae8154c3754e3ea52dc2a47ee5f5b84741340870dc9ba95f52",
+        "fr3_ct_scene.py": "737118d37d4ed14b30f638e6d5c4953c77772660135ecf469e8a4d2af6a1e649"
+      },
+      "rigid_anchor_fix": true,
+      "robot_scene_sha256": "01efecae6aaffa3f39ec48b76f396c085069ac202eabc8c631e3c17722883c97",
+      "surrounding_scene_retained": true,
+      "excluded_component": null,
+      "external_forces_every_iteration": false,
+      "reset_seed": true,
+      "warmup_ticks": 480,
+      "active_tissue": {
+        "count": 1,
+        "position_shape": [
+          1,
+          6751,
+          3
+        ],
+        "finite": true,
+        "count_source": "PhysX deformable view",
+        "position_source": "USD simulation mesh readback",
+        "max_displacement_m": 5.6527599678394604e-05
+      },
+      "load_protocol": {
+        "physics_dt_s": 0.0020833333333333333,
+        "force_n": 0.1,
+        "axes": [
+          0,
+          1,
+          2
+        ],
+        "onset_tick": 120,
+        "offset_tick": 360,
+        "end_tick": 480
+      },
+      "projected_torque_check": {
+        "status": "failed",
+        "error_nm": [
+          0.06084668388523982,
+          0.06038901281224253,
+          0.10139797072474978
+        ],
+        "tolerance_nm": [
+          0.0006562634873604625,
+          0.000368176525458244,
+          0.0006130600353653368
+        ],
+        "release_error_nm": [
+          7.359819849104801e-08,
+          2.9416029527249693e-08,
+          2.738183746827147e-07
+        ],
+        "measured_nm": [
+          [
+            -0.03310363116765558,
+            -0.0074202903902858,
+            -0.046117117288147824,
+            0.06287487763843913,
+            0.0011059608698173462,
+            4.660628625474672e-06,
+            -4.490293239599535e-09
+          ],
+          [
+            -0.004470858684769041,
+            0.038242034345984166,
+            -0.0053657501654527096,
+            0.032458476477970066,
+            0.00047613793475372035,
+            -9.853742914955887e-07,
+            -4.031651034764797e-09
+          ],
+          [
+            -0.037608182208533236,
+            -0.02787903247349277,
+            -0.05036755181450303,
+            -0.1058331612366068,
+            -0.0010537049949929517,
+            1.1918593576965009e-05,
+            1.9989645813968426e-09
+          ]
+        ],
+        "expected_nm": [
+          [
+            -0.0201093755260278,
+            -0.0173649823240285,
+            -0.01120136740047869,
+            0.04195932673952937,
+            -0.028133567763071483,
+            0.030386422579676525,
+            2.9865411109955555e-06
+          ],
+          [
+            -0.0036918371736258566,
+            0.023506382952877044,
+            -0.002058424330481725,
+            -0.024251032903513402,
+            -0.005163580779183873,
+            0.013051726447317122,
+            -6.40946556169919e-07
+          ],
+          [
+            -0.022906363973173006,
+            0.011456985801246086,
+            -0.012761758608714681,
+            -0.03293225642223701,
+            -0.03203817939098959,
+            -0.028785778466162745,
+            7.68509879665591e-06
+          ]
+        ],
+        "scope": "Geometric virtual-work reference versus projected joint-torque output; not independent force sensing or tissue calibration"
+      },
+      "response_sign": -1,
+      "vector_error_n": [
+        0.04122966767641561,
+        0.014039380816809527,
+        0.04662729504436584
+      ],
+      "response_local_n": [
+        [
+          0.03909093886613846,
+          0.031352799385786057,
+          -0.039472855627536774
+        ],
+        [
+          0.034912630915641785,
+          0.007514249067753553,
+          0.08748740702867508
+        ],
+        [
+          -0.03815547376871109,
+          0.034620583057403564,
+          0.022044098004698753
+        ]
+      ],
+      "expected_local_n": [
+        [
+          -0.06182109577468989,
+          -0.0655244165644668,
+          0.04341316564249664
+        ],
+        [
+          -0.04818211182257195,
+          -0.01204696619037656,
+          -0.08679490022993919
+        ],
+        [
+          0.062101865769509816,
+          -0.07457495455610222,
+          -0.024123316954786145
+        ]
+      ],
+      "release_residual_n": [
+        2.2539266286702997e-10,
+        5.1325325933770927e-11,
+        2.782871710849122e-08
+      ],
+      "baseline_noise_n": [
+        4.095809025272956e-09,
+        3.4200040577303525e-09,
+        3.413714866340456e-09
+      ],
+      "tolerance_n": 0.005,
+      "selected_row": 8,
+      "physics_ticks": 1440,
+      "trial": "force_runtime_51_v3",
+      "report_sha256": "6f6fed5f5bb833491d1c94ac09109d9e9c773304f2404f4d06933d9ff82d4f03"
+    },
+    {
+      "status": "error",
+      "gpu": true,
+      "gravity_m_s2": 0.0,
+      "robot_collisions": false,
+      "isaacsim_version": "6.1.0.0",
+      "source_sha256": "5a434ce11499682d6ea4f7649caddebf9723ac6993e4d20e16af7a6bf2163b3b",
+      "helper_sha256": {
+        "static_load_check.py": "4b4491ee1192b079f13891158b5ee641d96bd6cfbe8466e07eedb950835be5d5",
+        "mount_sensor_probe.py": "a22a7e021191f3ae8154c3754e3ea52dc2a47ee5f5b84741340870dc9ba95f52",
+        "fr3_ct_scene.py": "737118d37d4ed14b30f638e6d5c4953c77772660135ecf469e8a4d2af6a1e649"
+      },
+      "rigid_anchor_fix": true,
+      "robot_scene_sha256": "01efecae6aaffa3f39ec48b76f396c085069ac202eabc8c631e3c17722883c97",
+      "surrounding_scene_retained": true,
+      "excluded_component": null,
+      "external_forces_every_iteration": false,
+      "reset_seed": true,
+      "warmup_ticks": 480,
+      "error": "Failed to create simulation view with backend 'physx'",
+      "trial": "force_runtime_61_v3",
+      "report_sha256": "216dca415a14914846b9c5f2651388c3cb6d76acad39d64878d2c14962db7efb",
+      "limitation": "Known-load reaction output only; live deformable response/readback and task transfer remain unverified"
+    },
+    {
+      "status": "failed",
+      "gpu": true,
+      "gravity_m_s2": 0.0,
+      "robot_collisions": false,
+      "isaacsim_version": "5.1.0.0",
+      "source_sha256": "6c5d4b47ae65682cab349da70202692d45145e51d84913e1997d4e0e7b79d95f",
+      "helper_sha256": {
+        "static_load_check.py": "4b4491ee1192b079f13891158b5ee641d96bd6cfbe8466e07eedb950835be5d5",
+        "mount_sensor_probe.py": "a22a7e021191f3ae8154c3754e3ea52dc2a47ee5f5b84741340870dc9ba95f52",
+        "fr3_ct_scene.py": "737118d37d4ed14b30f638e6d5c4953c77772660135ecf469e8a4d2af6a1e649"
+      },
+      "rigid_anchor_fix": true,
+      "robot_scene_sha256": "01efecae6aaffa3f39ec48b76f396c085069ac202eabc8c631e3c17722883c97",
+      "surrounding_scene_retained": true,
+      "excluded_component": null,
+      "external_forces_every_iteration": false,
+      "reset_seed": true,
+      "warmup_ticks": 480,
+      "active_tissue": {
+        "count": 1,
+        "position_shape": [
+          1,
+          6751,
+          3
+        ],
+        "finite": true,
+        "count_source": "PhysX deformable view",
+        "position_source": "USD simulation mesh readback",
+        "max_displacement_m": 5.6527599678394604e-05
+      },
+      "load_protocol": {
+        "physics_dt_s": 0.0020833333333333333,
+        "force_n": 0.1,
+        "axes": [
+          0,
+          1,
+          2
+        ],
+        "onset_tick": 120,
+        "offset_tick": 360,
+        "end_tick": 480
+      },
+      "projected_torque_check": {
+        "status": "failed",
+        "error_nm": [
+          0.06084668388523982,
+          0.06038901281224253,
+          0.10139797072474978
+        ],
+        "tolerance_nm": [
+          0.0006562634873604625,
+          0.000368176525458244,
+          0.0006130600353653368
+        ],
+        "release_error_nm": [
+          7.359819849104801e-08,
+          2.9416029527249693e-08,
+          2.738183746827147e-07
+        ],
+        "measured_nm": [
+          [
+            -0.03310363116765558,
+            -0.0074202903902858,
+            -0.046117117288147824,
+            0.06287487763843913,
+            0.0011059608698173462,
+            4.660628625474672e-06,
+            -4.490293239599535e-09
+          ],
+          [
+            -0.004470858684769041,
+            0.038242034345984166,
+            -0.0053657501654527096,
+            0.032458476477970066,
+            0.00047613793475372035,
+            -9.853742914955887e-07,
+            -4.031651034764797e-09
+          ],
+          [
+            -0.037608182208533236,
+            -0.02787903247349277,
+            -0.05036755181450303,
+            -0.1058331612366068,
+            -0.0010537049949929517,
+            1.1918593576965009e-05,
+            1.9989645813968426e-09
+          ]
+        ],
+        "expected_nm": [
+          [
+            -0.0201093755260278,
+            -0.0173649823240285,
+            -0.01120136740047869,
+            0.04195932673952937,
+            -0.028133567763071483,
+            0.030386422579676525,
+            2.9865411109955555e-06
+          ],
+          [
+            -0.0036918371736258566,
+            0.023506382952877044,
+            -0.002058424330481725,
+            -0.024251032903513402,
+            -0.005163580779183873,
+            0.013051726447317122,
+            -6.40946556169919e-07
+          ],
+          [
+            -0.022906363973173006,
+            0.011456985801246086,
+            -0.012761758608714681,
+            -0.03293225642223701,
+            -0.03203817939098959,
+            -0.028785778466162745,
+            7.68509879665591e-06
+          ]
+        ],
+        "scope": "Geometric virtual-work reference versus projected joint-torque output; not independent force sensing or tissue calibration"
+      },
+      "response_sign": -1,
+      "vector_error_n": [
+        0.04122966767641561,
+        0.014039380816809527,
+        0.04662729504436584
+      ],
+      "response_local_n": [
+        [
+          0.03909093886613846,
+          0.031352799385786057,
+          -0.039472855627536774
+        ],
+        [
+          0.034912630915641785,
+          0.007514249067753553,
+          0.08748740702867508
+        ],
+        [
+          -0.03815547376871109,
+          0.034620583057403564,
+          0.022044098004698753
+        ]
+      ],
+      "expected_local_n": [
+        [
+          -0.06182109577468989,
+          -0.0655244165644668,
+          0.04341316564249664
+        ],
+        [
+          -0.04818211182257195,
+          -0.01204696619037656,
+          -0.08679490022993919
+        ],
+        [
+          0.062101865769509816,
+          -0.07457495455610222,
+          -0.024123316954786145
+        ]
+      ],
+      "release_residual_n": [
+        2.2539266286702997e-10,
+        5.1325325933770927e-11,
+        2.782871710849122e-08
+      ],
+      "baseline_noise_n": [
+        4.095809025272956e-09,
+        3.4200040577303525e-09,
+        3.413714866340456e-09
+      ],
+      "tolerance_n": 0.005,
+      "selected_row": 8,
+      "physics_ticks": 1440,
+      "trial": "force_runtime_51_v4",
+      "report_sha256": "490eb67128040dc52899e3a11c2be802671a38d29c16e36f6126e2238b1ff6b3"
+    },
+    {
+      "status": "passed",
+      "gpu": true,
+      "gravity_m_s2": 0.0,
+      "robot_collisions": false,
+      "isaacsim_version": "6.1.0.0",
+      "source_sha256": "6c5d4b47ae65682cab349da70202692d45145e51d84913e1997d4e0e7b79d95f",
+      "helper_sha256": {
+        "static_load_check.py": "4b4491ee1192b079f13891158b5ee641d96bd6cfbe8466e07eedb950835be5d5",
+        "mount_sensor_probe.py": "a22a7e021191f3ae8154c3754e3ea52dc2a47ee5f5b84741340870dc9ba95f52",
+        "fr3_ct_scene.py": "737118d37d4ed14b30f638e6d5c4953c77772660135ecf469e8a4d2af6a1e649"
+      },
+      "rigid_anchor_fix": true,
+      "robot_scene_sha256": "01efecae6aaffa3f39ec48b76f396c085069ac202eabc8c631e3c17722883c97",
+      "surrounding_scene_retained": true,
+      "excluded_component": null,
+      "external_forces_every_iteration": false,
+      "reset_seed": true,
+      "warmup_ticks": 480,
+      "active_tissue": {
+        "count": 1,
+        "position_shape": [
+          1,
+          6751,
+          3
+        ],
+        "finite": true,
+        "count_source": "PhysX deformable view",
+        "position_source": "USD simulation mesh readback",
+        "max_displacement_m": 0.0
+      },
+      "load_protocol": {
+        "physics_dt_s": 0.0020833333333333333,
+        "force_n": 0.1,
+        "axes": [
+          0,
+          1,
+          2
+        ],
+        "onset_tick": 120,
+        "offset_tick": 360,
+        "end_tick": 480
+      },
+      "projected_torque_check": {
+        "status": "passed",
+        "error_nm": [
+          6.876283360522919e-08,
+          8.670455743341035e-08,
+          6.158186961371355e-07
+        ],
+        "tolerance_nm": [
+          0.0006562634873604625,
+          0.0003681765254582441,
+          0.0006130600353653368
+        ],
+        "release_error_nm": [
+          1.6015204175153412e-07,
+          3.558174608069328e-08,
+          7.529302440885244e-07
+        ],
+        "measured_nm": [
+          [
+            -0.020109403944289284,
+            -0.017364955948437455,
+            -0.011201374401931474,
+            0.041959271109163865,
+            -0.02813356109072984,
+            0.03038642188175089,
+            2.992565457105023e-06
+          ],
+          [
+            -0.003691836110732538,
+            0.02350642795119029,
+            -0.0020584235020706387,
+            -0.024251104928509903,
+            -0.005163591419986346,
+            0.013051712736581678,
+            -6.394616274274512e-07
+          ],
+          [
+            -0.022906330990977608,
+            0.01145756424278943,
+            -0.01276175201095242,
+            -0.03293246295626773,
+            -0.032038153061836994,
+            -0.028785767669649687,
+            7.678727223070503e-06
+          ]
+        ],
+        "expected_nm": [
+          [
+            -0.020109375526027803,
+            -0.0173649823240285,
+            -0.01120136740047869,
+            0.04195932673952937,
+            -0.028133567763071483,
+            0.030386422579676525,
+            2.9865411109955555e-06
+          ],
+          [
+            -0.0036918371736258584,
+            0.023506382952877044,
+            -0.002058424330481725,
+            -0.024251032903513405,
+            -0.005163580779183874,
+            0.013051726447317122,
+            -6.40946556169919e-07
+          ],
+          [
+            -0.022906363973173006,
+            0.011456985801246086,
+            -0.012761758608714681,
+            -0.03293225642223701,
+            -0.03203817939098959,
+            -0.02878577846616274,
+            7.685098796653133e-06
+          ]
+        ],
+        "scope": "Geometric virtual-work reference versus projected joint-torque output; not independent force sensing or tissue calibration"
+      },
+      "response_sign": -1,
+      "vector_error_n": [
+        2.3660889664351194e-08,
+        2.590556167138175e-08,
+        4.0773192884031484e-08
+      ],
+      "response_local_n": [
+        [
+          0.06182108446955681,
+          0.06552440673112869,
+          -0.04341314733028412
+        ],
+        [
+          0.04818208888173103,
+          0.01204697322100401,
+          0.0867948904633522
+        ],
+        [
+          -0.062101833522319794,
+          0.07457494735717773,
+          0.024123340845108032
+        ]
+      ],
+      "expected_local_n": [
+        [
+          -0.06182109577468989,
+          -0.0655244165644668,
+          0.04341316564249664
+        ],
+        [
+          -0.04818211182257195,
+          -0.01204696619037656,
+          -0.08679490022993919
+        ],
+        [
+          0.062101865769509816,
+          -0.07457495455610222,
+          -0.024123316954786145
+        ]
+      ],
+      "release_residual_n": [
+        7.402518598098595e-09,
+        3.163339368228435e-09,
+        1.9207755386219105e-08
+      ],
+      "baseline_noise_n": [
+        5.581501838491931e-08,
+        5.362820942877988e-08,
+        4.327998581743486e-08
+      ],
+      "tolerance_n": 0.005,
+      "selected_row": 8,
+      "physics_ticks": 1440,
+      "trial": "force_runtime_61_v4",
+      "report_sha256": "36c8187e1cd7f58d8b91b578ce3b4400cda8910c72fc156f5e7386b1461537a1",
+      "limitation": "Known-load reaction output only; live deformable response/readback and task transfer remain unverified"
     }
   ],
-  "interpretation": "Simple fixture and isolated FR3 pass. Full scene fails even at zero gravity. Removing Atlas and its eight dependent attachments restores the measured response. External-force-every-iteration produces near-zero reported response and is not a remedy.",
+  "interpretation": "Simple fixture and isolated FR3 pass. Under 5.1 the full scene fails even at zero gravity. Under 6.1 v4 rigid reaction errors pass, but zero USD tissue displacement leaves deformable readback unresolved. Removing Atlas and its eight dependent attachments restores the measured response. External-force-every-iteration produces near-zero reported response and is not a remedy.",
   "related_public_report": {
     "url": "https://forums.developer.nvidia.com/t/get-measured-joint-forces-gives-wrong-values-if-gpu-is-used-instead-of-cpu/307612",
     "scope": "User-reported related GPU/particle-system issue in older releases; not confirmation of the cause or fix in this runtime"

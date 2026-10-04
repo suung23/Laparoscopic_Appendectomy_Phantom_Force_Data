@@ -75,7 +75,7 @@
     "Added strict runtime comparator rejecting changed scenes/helpers, incomplete traces, and green statuses contradicted by measured errors"
   ],
   "next_actions": [
-    "Finish isolated Isaac Sim 6.1.0.0 installation and rerun the identical known-load tests; preserve 5.1 baseline and require direct evidence of a fix",
+    "Diagnose 6.1 attachment and nodal correspondence: gravity-on reset has 36.16 mm pin drift and 95 inverted tetrahedra; retain 5.1 default",
     "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",
@@ -90,11 +90,13 @@
   "runtime_comparison": {
     "installed_baseline": "5.1.0.0",
     "candidate": "6.1.0.0",
-    "candidate_status": "installation active; large Kit wheel downloading, candidate test not run",
+    "candidate_status": "Rigid reaction fixture passes; gravity-on reset fails: 36.16 mm pin drift and 95 inverted tetrahedra. Not promoted.",
     "official_bug_reply": "https://forums.developer.nvidia.com/t/computation-of-the-forces-between-rigid-and-soft-bodies-with-joint-data/320668",
     "installation_docs": "https://docs.isaacsim.omniverse.nvidia.com/latest/installation/install_python.html",
     "causal_match_confirmed": false,
-    "baseline_report": "out/force_runtime_51_v1/report.json",
-    "comparison_tool": "local_validation/compare_force_runtimes.py"
+    "baseline_report": "out/force_runtime_51_v4/report.json",
+    "comparison_tool": "local_validation/compare_force_runtimes.py",
+    "candidate_report": "out/force_runtime_61_v4/report.json",
+    "gravity_probe": "validation/runtime-gravity-probe.json"
   }
 }

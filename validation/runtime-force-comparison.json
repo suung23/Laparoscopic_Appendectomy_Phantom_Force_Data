@@ -1,0 +1,25 @@
+{
+  "status": "passed known-load comparison",
+  "baseline_runtime": "5.1.0.0",
+  "candidate_runtime": "6.1.0.0",
+  "matched_source": true,
+  "baseline_error_n": [
+    0.04122966767641561,
+    0.014039380816809527,
+    0.04662729504436584
+  ],
+  "candidate_error_n": [
+    2.3660889664351194e-08,
+    2.590556167138175e-08,
+    4.0773192884031484e-08
+  ],
+  "prior_failure_resolved": false,
+  "rigid_reaction_regression_passed": true,
+  "deformable_response_validated": false,
+  "unresolved": "Body count and USD point arrays do not independently prove live deformable motion; require driven response and readback audit",
+  "scope": "Matched zero-gravity known-load fixture only; task contact, tissue mechanics and clinical fidelity remain unvalidated",
+  "report_sha256": [
+    "490eb67128040dc52899e3a11c2be802671a38d29c16e36f6126e2238b1ff6b3",
+    "36c8187e1cd7f58d8b91b578ce3b4400cda8910c72fc156f5e7386b1461537a1"
+  ]
+}
