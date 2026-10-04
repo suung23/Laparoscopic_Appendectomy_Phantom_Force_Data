@@ -75,7 +75,7 @@
     "Added strict runtime comparator rejecting changed scenes/helpers, incomplete traces, and green statuses contradicted by measured errors"
   ],
   "next_actions": [
-    "Finish bimanual v3 after forced USD source-layer reload; v2 shows true 5.47 mm tissue reset drift, not node permutation",
+    "Finish v4 reset audit with full stage-layer reload and per-reset phase snapshots; root-only reload left 2.47 mm mismatch",
     "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",

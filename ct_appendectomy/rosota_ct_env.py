@@ -51,6 +51,7 @@ class RosotaCTEnv(gym.Env):
         if options:raise ValueError('No reset options')
         super().reset(seed=seed)
         self.done=True
+        self.reset_sequence=getattr(self,'reset_sequence',0)+1
         self.config=json.loads((self.assets/'bimanual_config.json').read_text())
         import omni.usd
         from pxr import UsdGeom,UsdPhysics,PhysxSchema,Gf,Sdf
@@ -71,6 +72,7 @@ class RosotaCTEnv(gym.Env):
         omni.usd.get_context().open_stage(source_path)
         for _ in range(20):self.app.update()
         self.stage=omni.usd.get_context().get_stage()
+        self.stage.Reload()  # Reload referenced layers as well as the root.
         # Older authored stages used a bare Xform; modern PhysX attachments
         # require a rigid actor for this stationary attachment target.
         anchor=self.stage.GetPrimAtPath('/World/BaseAnchor')
@@ -249,6 +251,10 @@ class RosotaCTEnv(gym.Env):
             points_sha256=hashlib.sha256(points.tobytes()).hexdigest(),
             tets_sha256=hashlib.sha256(tets.tobytes()).hexdigest())
         (self.out/('tissue_'+label+'.json')).write_text(json.dumps(summary,indent=2),encoding='utf-8')
+        import shutil
+        for suffix in ('.npz','.json'):
+            shutil.copyfile(self.out/('tissue_'+label+suffix),
+                self.out/(f'reset_{self.reset_sequence}_tissue_'+label+suffix))
 
     def points(self):return np.asarray(self.mesh.GetAttribute('points').Get(),float)
     def observe(self):

@@ -1,0 +1,13 @@
+{
+  "status": "mismatched",
+  "tissue_max_m": 0.00246800766170213,
+  "tissue_rms_m": 0.0007290735875676234,
+  "tissue_p99_m": 0.0022164964254946353,
+  "joint_max_rad": 1.546140993013978e-11,
+  "correspondence_changed_indices": 0,
+  "tissue_tolerance_m": 1e-05,
+  "joint_tolerance_rad": 1e-05,
+  "method": "Exact rest geometry/connectivity correspondence; no alignment, scale fit or tolerance relaxation",
+  "report_sha256": "169f5e458d28533949169a8b8eddfa58afc5521b71d490176b2e2a1b2cf4b159",
+  "root_reload_alone_resolved": false
+}

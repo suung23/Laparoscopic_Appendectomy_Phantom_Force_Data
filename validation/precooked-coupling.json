@@ -34,5 +34,6 @@
     "Full bimanual force balance not verified"
   ],
   "report_sha256": "c05be6fa31e4f60f65d25af7e5a58b79e4e1d3eccce3762abc981a5d00b28b39",
-  "readback_audit": "validation/tissue-readback.json"
+  "readback_audit": "validation/tissue-readback.json",
+  "interpretation": "Exploratory single-arm force effect only: later bimanual trials expose reset mismatch, so matched-state replication is required before causal attribution"
 }
