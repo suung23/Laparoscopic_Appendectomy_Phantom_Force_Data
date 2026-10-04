@@ -64,7 +64,7 @@ try:
         if a.tensor_readback:
             import omni.physics.tensors as tensors
             from node_correspondence import node_permutation
-            tensor_sim=tensors.create_simulation_view('torch')
+            tensor_sim=tensors.create_simulation_view('torch',stage_id=omni.usd.get_context().get_stage_id())
             body=tensor_sim.create_volume_deformable_body_view('/World/Tissue')
             tensor_rest=body.get_rest_nodal_positions().cpu().numpy()[0]
             tensor_tets=body.get_simulation_element_indices().cpu().numpy()[0]
