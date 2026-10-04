@@ -1,0 +1,52 @@
+{
+  "source": "actual Isaac Sim RTX frames, freshly rolled out from saved policies",
+  "video_fps": 15,
+  "video_frames": 141,
+  "duration_s": 9.4,
+  "initialization_note": "Consult the associated training report; replay is not evidence of learning from scratch.",
+  "full_appendectomy": false,
+  "end_frames_held": true,
+  "runs": [
+    {
+      "policy": "checkpoint",
+      "frame_count": 111,
+      "result": {
+        "run_id": "f7e7854a02554347b3c914417bc53c3b",
+        "policy": "checkpoint",
+        "episode": 0,
+        "seed": 10042,
+        "steps": 220,
+        "return": -0.7157199375055351,
+        "success": false,
+        "terminated": false,
+        "truncated": true,
+        "termination_reason": "time_limit",
+        "lift_m": 0.010618073544625578,
+        "pin_drift_m": 8.980022759036175e-05,
+        "inverted_tetrahedra": 0
+      },
+      "recording_sha256": "aa07d73f635d5566116c6d8c409e2da066f19104886ab87ac129369b4a344102"
+    },
+    {
+      "policy": "scripted",
+      "frame_count": 96,
+      "result": {
+        "run_id": "01fa4bb523d84a9e968bb11147e563bb",
+        "policy": "scripted",
+        "episode": 0,
+        "seed": 10042,
+        "steps": 189,
+        "return": 3.9403972218378662,
+        "success": true,
+        "terminated": true,
+        "truncated": false,
+        "termination_reason": "success",
+        "lift_m": 0.007597861747289526,
+        "pin_drift_m": 8.604236692192718e-05,
+        "inverted_tetrahedra": 0
+      },
+      "recording_sha256": "8f54b147772532cd40b5d818ddce047049bc5f35745f30db841f3982c529772c"
+    }
+  ],
+  "video_sha256": "7980260d9f14d4dff97c5942a00a0891f8992ef03bdbb00cbe167e7132b62a06"
+}

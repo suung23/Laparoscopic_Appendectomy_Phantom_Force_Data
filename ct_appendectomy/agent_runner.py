@@ -24,8 +24,9 @@ def main():
     parser.add_argument('--rgb-observation',action='store_true')
     parser.add_argument('--demo-warm-start',action='store_true',help='Explicit behavior cloning before PPO; recorded separately')
     parser.add_argument('--contract-smoke',action='store_true',help='Check rendering, invalid action and regrasp reference before running')
+    parser.add_argument('--record-every',type=int,default=0,help='Save a real RTX frame every N evaluation actions; 0 disables recording')
     args=parser.parse_args()
-    if args.train_steps<0 or args.rollout_steps<2 or args.episodes<0:parser.error('Invalid run limits')
+    if args.train_steps<0 or args.rollout_steps<2 or args.episodes<0 or args.record_every<0:parser.error('Invalid run limits')
     if args.headless and not args.episodes:parser.error('Headless evaluation must have a finite episode limit')
     if args.policy=='checkpoint' and not args.checkpoint and not args.train_steps:parser.error('Checkpoint required')
     if args.rgb_observation and args.train_steps:parser.error('Bundled PPO uses privileged state; RGB API is for external policies')
@@ -225,6 +226,15 @@ def main():
                     report['evaluation_policy']=evaluation_policy
                 seed=args.seed+10000+episode
                 obs=reset(seed);episode_return=0.;trajectory=[]
+                recorded=[]
+                frame_directory=args.out/('frames_'+report['run_id']+'_'+str(episode))
+                def record_frame(action_step,frame_info):
+                    frame_directory.mkdir(parents=True,exist_ok=True)
+                    name=f'{len(recorded):05d}.png'
+                    Image.fromarray(env.render()).save(frame_directory/name)
+                    recorded.append({'file':name,'action_step':action_step,'simulation_time_s':action_step/30,
+                                     'lift_m':frame_info.get('lift_m',0),'success':frame_info.get('is_success',False)})
+                if args.record_every:record_frame(0,{})
                 for step in range(220):
                     if not app.is_running():break
                     if evaluation_policy=='scripted':action=scripted_action(step)
@@ -242,6 +252,8 @@ def main():
                     if (step+1)%25==0:
                         report['progress']={'episode':episode,'step':step+1,'policy':evaluation_policy,'return':episode_return}
                         write_report()
+                    if args.record_every and ((step+1)%args.record_every==0 or term or trunc):
+                        record_frame(step+1,info)
                     if term or trunc:break
                 if not app.is_running():break
                 image=env.render()
@@ -251,6 +263,11 @@ def main():
                         'termination_reason':info['termination_reason'],'lift_m':info['lift_m'],
                         'pin_drift_m':info['pin_drift_m'],'inverted_tetrahedra':info['tissue_health']['inverted_tetrahedra']}
                 journal.write(json.dumps(result)+'\n');journal.flush()
+                if args.record_every:
+                    recording={'policy':evaluation_policy,'control_dt_s':1/30,'capture_every_actions':args.record_every,
+                               'frames':recorded,'result':result,'synthetic_frames':False}
+                    (frame_directory/'recording.json').write_text(json.dumps(recording,indent=2),encoding='utf-8')
+                    report.setdefault('recordings',[]).append(str(frame_directory.relative_to(args.out)))
                 # Keep bounded current-session summaries during continuous demos.
                 report['episodes']=(report['episodes']+[result])[-100:]
                 (args.out/'latest_trajectory.json').write_text(json.dumps(trajectory),encoding='utf-8')
