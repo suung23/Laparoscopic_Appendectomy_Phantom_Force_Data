@@ -24,7 +24,9 @@ def audit(directory):
                 translation_removed_rms_m=float(np.sqrt(np.mean(residual**2))),
                 translation_removed_max_m=float(residual.max()),
                 source_sha256=hashlib.sha256(path.read_bytes()).hexdigest())
-    return dict(phases=phases,scope='Captured geometry audit. Translation removal is not a fitted rigid rotation or physical validation. Environment failures remain failures.')
+    failed=any(row['health']['inverted_tetrahedra'] or row['health']['degenerate_rest_tetrahedra'] for row in phases.values())
+    status='failed' if failed else 'incomplete' if 'after_settlement' not in phases else 'geometry_passed'
+    return dict(status=status,phases=phases,scope='Captured geometry audit only; engine log gate is also required. Translation removal is not a fitted rigid rotation or physical validation. Environment failures remain failures.')
 
 
 if __name__=='__main__':
@@ -33,3 +35,4 @@ if __name__=='__main__':
     a=p.parse_args();result=audit(a.directory)
     a.out.write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(result,indent=2))
+    raise SystemExit(0 if result['status']=='geometry_passed' else 1)

@@ -1,0 +1,18 @@
+[
+  {
+    "mesh": "quality_mesh_v4",
+    "total_mass_kg": 0.004588915084425165,
+    "minimum_nodal_mass_kg": 2.7725428690681182e-11,
+    "maximum_nodal_mass_kg": 2.3671198989011725e-05,
+    "nodal_mass_ratio": 853772.1545480691,
+    "scope": "Geometric lumped mass at placeholder density 1050 kg/m3, not actual PhysX mass buffers"
+  },
+  {
+    "mesh": "boundary_preserved_mesh",
+    "total_mass_kg": 0.004588915084425164,
+    "minimum_nodal_mass_kg": 2.025999746276622e-09,
+    "maximum_nodal_mass_kg": 1.7804806717645824e-05,
+    "nodal_mass_ratio": 8788.158414317406,
+    "scope": "Geometric lumped mass at placeholder density 1050 kg/m3, not actual PhysX mass buffers"
+  }
+]

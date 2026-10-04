@@ -1,0 +1,101 @@
+{
+  "status": "failed",
+  "phases": {
+    "after_initialize": {
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9076476316661923,
+        "median_volume_ratio": 0.9992676900442676,
+        "total_absolute_volume_ratio": 0.9991674023082634,
+        "p99_absolute_volume_change": 0.009206622739388647
+      },
+      "mean_nodal_translation_m": [
+        -3.445876130633964e-05,
+        -0.00012144636972987171,
+        8.844828709743943e-06
+      ],
+      "translation_removed_rms_m": 2.3062022095976237e-05,
+      "translation_removed_max_m": 0.00011421753654429805,
+      "source_sha256": "ff8f9b1a7601f0e644555f6c3e29e0e8862aa060d3052c12e4d4366cd3f3e612"
+    },
+    "warmup_1": {
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9068328784102789,
+        "median_volume_ratio": 0.9992687345201845,
+        "total_absolute_volume_ratio": 0.9991617508647396,
+        "p99_absolute_volume_change": 0.01453872494795709
+      },
+      "mean_nodal_translation_m": [
+        -3.418639916705672e-05,
+        -0.0002325918669643545,
+        1.0627858316891613e-05
+      ],
+      "translation_removed_rms_m": 5.161666555386274e-05,
+      "translation_removed_max_m": 0.00022535214645262033,
+      "source_sha256": "1f18f7366a37e64c0fe46bd28d98650befa703ad70cccdb503761a4b45dd389a"
+    },
+    "warmup_60": {
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 19,
+        "minimum_signed_volume_ratio": -1.702665755984946,
+        "median_volume_ratio": 1.0051089577268808,
+        "total_absolute_volume_ratio": 1.0025652532195561,
+        "p99_absolute_volume_change": 0.341693576910449
+      },
+      "mean_nodal_translation_m": [
+        -0.002640205166632118,
+        -0.008910036609020743,
+        0.005934753536762793
+      ],
+      "translation_removed_rms_m": 0.009749485955343038,
+      "translation_removed_max_m": 0.01881933156205131,
+      "source_sha256": "342c9d2ac7b07ab408f737b58578ff5ef0a0a50c3240d435a72120f53358fa91"
+    },
+    "warmup_480": {
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 8,
+        "minimum_signed_volume_ratio": -1.507836659197799,
+        "median_volume_ratio": 1.0040008916765832,
+        "total_absolute_volume_ratio": 1.0050240319373323,
+        "p99_absolute_volume_change": 0.3571844429904587
+      },
+      "mean_nodal_translation_m": [
+        -0.0019053561208589762,
+        -0.010004490638231897,
+        0.006382086174501199
+      ],
+      "translation_removed_rms_m": 0.010901262538601684,
+      "translation_removed_max_m": 0.0235688141579463,
+      "source_sha256": "f8a1d6d95656b190bccd36c28816a046761065bf8cbf4f84d12176250453921f"
+    },
+    "after_settlement": {
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 7,
+        "minimum_signed_volume_ratio": -1.4814993284734121,
+        "median_volume_ratio": 1.0028644428758122,
+        "total_absolute_volume_ratio": 1.0045574349449349,
+        "p99_absolute_volume_change": 0.3248881170408705
+      },
+      "mean_nodal_translation_m": [
+        -0.0018979295319452322,
+        -0.010001466494359842,
+        0.006377305854424046
+      ],
+      "translation_removed_rms_m": 0.01088226964324069,
+      "translation_removed_max_m": 0.023528111108797576,
+      "source_sha256": "939801dd52069a1ee622cc29d9f381558450f51ed1f2f5025e782dfaf5f465c7"
+    }
+  },
+  "scope": "Captured geometry audit only; engine log gate is also required. Translation removal is not a fitted rigid rotation or physical validation. Environment failures remain failures."
+}
