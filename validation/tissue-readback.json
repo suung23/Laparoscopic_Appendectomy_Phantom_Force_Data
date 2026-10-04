@@ -1,0 +1,39 @@
+{
+  "status": "no stale readback detected",
+  "scope": "Diagnostic 0.5 mm anchor translation; not a surgical action or equilibrium validation",
+  "anchor_translation_m": 0.0005,
+  "trace": [
+    {
+      "sample": 0,
+      "physics_time_s": 1.262500065844506,
+      "render_only_coordinate_change_m": 0.0,
+      "pre_render_displacement_m": 0.0007286414118273121,
+      "post_render_displacement_m": 0.0007286414118273121
+    },
+    {
+      "sample": 1,
+      "physics_time_s": 1.387500072363764,
+      "render_only_coordinate_change_m": 0.0,
+      "pre_render_displacement_m": 0.0015063066890120204,
+      "post_render_displacement_m": 0.0015063066890120204
+    },
+    {
+      "sample": 2,
+      "physics_time_s": 1.512500078883022,
+      "render_only_coordinate_change_m": 0.0,
+      "pre_render_displacement_m": 0.0023768585673044516,
+      "post_render_displacement_m": 0.0023768585673044516
+    },
+    {
+      "sample": 3,
+      "physics_time_s": 1.63750008540228,
+      "render_only_coordinate_change_m": 0.0,
+      "pre_render_displacement_m": 0.0032862406742464566,
+      "post_render_displacement_m": 0.0032862406742464566
+    }
+  ],
+  "physics_ticks": 240,
+  "report_sha256": "80f8c1f709465cccdc1744f145cf347025547510336664c461a78d12d1a61b35",
+  "runtime": "6.1.0.0",
+  "positive_motion_observed": true
+}

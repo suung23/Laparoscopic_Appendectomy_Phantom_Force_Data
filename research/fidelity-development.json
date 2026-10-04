@@ -75,7 +75,7 @@
     "Added strict runtime comparator rejecting changed scenes/helpers, incomplete traces, and green statuses contradicted by measured errors"
   ],
   "next_actions": [
-    "Finish readback freshness test, verify paired reset repeatability and 5.1 compatibility, then extend reaction validation to both arms",
+    "Verify 5.1 precook compatibility and paired reset repeatability; extend force-transfer test to both arms",
     "Diagnose residual reset motion without loosening settlement thresholds; repeat matched load-path controls",
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",
@@ -100,6 +100,7 @@
     "gravity_probe": "validation/runtime-gravity-probe.json",
     "migration_audit": "validation/tissue-migration-audit.json",
     "precook_evidence": "validation/precooked-tissue-runtime.json",
-    "coupling_evidence": "validation/precooked-coupling.json"
+    "coupling_evidence": "validation/precooked-coupling.json",
+    "readback_evidence": "validation/tissue-readback.json"
   }
 }

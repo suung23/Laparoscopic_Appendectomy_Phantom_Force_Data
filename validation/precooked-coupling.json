@@ -30,9 +30,9 @@
   "limitations": [
     "Single left-arm idealized attachment diagnostic",
     "Material not calibrated",
-    "Readback freshness audit pending",
     "Repeatability of paired initial states needs explicit hashes and tolerance test",
     "Full bimanual force balance not verified"
   ],
-  "report_sha256": "c05be6fa31e4f60f65d25af7e5a58b79e4e1d3eccce3762abc981a5d00b28b39"
+  "report_sha256": "c05be6fa31e4f60f65d25af7e5a58b79e4e1d3eccce3762abc981a5d00b28b39",
+  "readback_audit": "validation/tissue-readback.json"
 }
