@@ -1,0 +1,74 @@
+{
+  "scope": "measured aperture commissioning, not contact/cutting validation",
+  "robot_collisions_disabled": false,
+  "gravity_compensation_enabled": true,
+  "closure_tolerance_deg": 2.0,
+  "opening_tolerance_deg": 2.0,
+  "hands": {
+    "left": {
+      "closed_aperture_deg": 0.0014150284090168868,
+      "reopened_aperture_deg": 73.9948168072927,
+      "maximum_opening_deg": 74.0,
+      "measured_range_deg": [
+        0.0014149044853192772,
+        73.9951139205216
+      ],
+      "limits_ok": true,
+      "closure_guard_ticks": 0,
+      "passed": true,
+      "effort_audit": {
+        "peak_raw_abs_nm": [
+          0.00015097821597009897,
+          0.0003253531758673489
+        ],
+        "peak_corrected_abs_nm": [
+          4.0328654843616125e-05,
+          1.5866690232560574e-05
+        ],
+        "p99_corrected_abs_nm": [
+          3.415766387890701e-06,
+          3.3818316352944626e-06
+        ],
+        "gravity_prediction_span_nm": [
+          0.00020768558460002249,
+          0.00013766697618312486
+        ]
+      }
+    },
+    "right": {
+      "closed_aperture_deg": -1.8091943827382897e-08,
+      "reopened_aperture_deg": 49.995044950769056,
+      "maximum_opening_deg": 50.0,
+      "measured_range_deg": [
+        -4.823886377753566e-08,
+        49.995044950769056
+      ],
+      "limits_ok": true,
+      "closure_guard_ticks": 0,
+      "passed": true,
+      "effort_audit": {
+        "peak_raw_abs_nm": [
+          0.0001809645036701113,
+          8.584025636082515e-05
+        ],
+        "peak_corrected_abs_nm": [
+          1.193328285504266e-05,
+          1.2629935172410036e-05
+        ],
+        "p99_corrected_abs_nm": [
+          2.267280058613103e-06,
+          2.285916380051298e-06
+        ],
+        "gravity_prediction_span_nm": [
+          9.172125700580277e-05,
+          0.00010361857917373578
+        ]
+      }
+    }
+  },
+  "passed": true,
+  "limitations": [
+    "No-approach does not prove collision-free motion.",
+    "Joint effort is not an independent contact sensor."
+  ]
+}
