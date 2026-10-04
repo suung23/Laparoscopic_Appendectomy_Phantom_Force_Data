@@ -22,4 +22,3 @@ class IsaacLauncher {
   } catch(Exception e) { MessageBox.Show(e.Message,"Isaac launcher"); }
  }
 }
-
