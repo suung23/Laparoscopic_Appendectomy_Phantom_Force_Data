@@ -35,5 +35,15 @@
     "below_0_1": 448,
     "definition": "12*(3*absolute_volume)^(2/3)/sum_squared_edge_lengths; regular tet=1"
   },
-  "acceptance": "Rejected for mechanics; topology pass is insufficient."
+  "acceptance": "Rejected for mechanics; topology pass is insufficient.",
+  "inversion_localization": {
+    "inverted_count": 25,
+    "inverted_adjacent_to_pin": 9,
+    "inverted_center_to_pin_distance_m_range": [
+      0.00019522358659376435,
+      0.057815689098621906
+    ],
+    "original_connectivity_unchanged": true,
+    "initial_rest_shape_discrepancy_max_m": 3.8698562212122405e-05
+  }
 }
