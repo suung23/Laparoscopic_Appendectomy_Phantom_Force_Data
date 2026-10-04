@@ -17,6 +17,7 @@ p.add_argument('--scene',type=Path,default=ROOT/'out/ct_appendectomy/ct_appendec
 p.add_argument('--headless',action='store_true')
 p.add_argument('--frames',type=int,default=120)
 p.add_argument('--physics',action='store_true')
+p.add_argument('--conforming-simulation',action='store_true',help='Experimental source-conforming tet simulation instead of hex-grid generation')
 p.add_argument('--contact-probe',action='store_true')
 p.add_argument('--forceps-probe',action='store_true')
 p.add_argument('--forceps-rl-smoke',action='store_true')
@@ -118,7 +119,7 @@ try:
         if not hasattr(du,'create_auto_volume_deformable_hierarchy'):
             raise RuntimeError('Required volume deformable API unavailable; no rigid fallback')
         ok=du.create_auto_volume_deformable_hierarchy(stage,body,body+'/sim',body+'/coll',body+'/render',
-            simulation_hex_mesh_enabled=True,cooking_src_simplification_enabled=False,
+            simulation_hex_mesh_enabled=not a.conforming_simulation,cooking_src_simplification_enabled=False,
             set_visibility_with_guide_purpose=True)
         if not ok: raise RuntimeError('PhysX deformable authoring failed')
         prim=stage.GetPrimAtPath(body)
@@ -156,6 +157,15 @@ try:
         initial=np.asarray(points,dtype=float)
         if not np.isfinite(initial).all(): raise RuntimeError('Invalid cooked nodes')
         report['cooked_nodes']=len(initial)
+        if a.conforming_simulation:
+            cells=np.asarray(sim_mesh.GetAttribute('tetVertexIndices').Get(),int).reshape(-1,4)
+            faces=np.concatenate([cells[:,f] for f in ((1,2,3),(0,3,2),(0,1,3),(0,2,1))])
+            _,counts=np.unique(np.sort(faces,axis=1),axis=0,return_counts=True)
+            duplicates=len(cells)-len(np.unique(np.sort(cells,axis=1),axis=0))
+            report['conforming_topology']=dict(nodes=len(initial),tetrahedra=len(cells),
+                duplicate_tetrahedra=duplicates,nonmanifold_faces=int(np.sum(counts>2)))
+            np.savez_compressed(a.out/'cooked_conforming_mesh.npz',points=initial,tets=cells)
+            if duplicates or np.any(counts>2):raise RuntimeError('Conforming simulation topology failed')
         report['gravity_m_s2']=9.81 if a.explore_cavity else 0.
         report['material_identified']=False
         if a.retraction_probe or a.contact_probe or a.forceps_probe or a.explore_cavity:
