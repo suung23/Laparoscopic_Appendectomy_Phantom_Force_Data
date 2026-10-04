@@ -25,6 +25,7 @@ app=SimulationApp({'headless':True,'extra_args':['--/app/vulkan=false','--/app/d
     '--/privacy/extraDiagnosticDataOptIn=false','--/crashreporter/enabled=false']+
     [f'--/app/tokens/{k}={v.as_posix()}' for k,v in tokens.items()]})
 report=dict(status='running',mesh_sha256=hashlib.sha256(a.mesh.read_bytes()).hexdigest(),cases=[],
+    tensor_pipeline='torch_cuda' if a.tensor_readback else 'default_cpu',
     scope='Isolated free fall with zero damping, no attachments, robot, contact or rendering. Not loaded tissue validation.',
     material_si=dict(density_kg_m3=1050,youngs_modulus_pa=12000,poissons_ratio=.45),
     gates=dict(max_translation_removed_rms_m=1e-5,max_acceleration_error_m_s2=.1,minimum_volume_ratio=.99))
@@ -52,7 +53,8 @@ try:
         prim.CreateAttribute('physxDeformableBody:selfCollision',Sdf.ValueTypeNames.Bool).Set(False)
         du.add_deformable_material(stage,'/World/Material',density=1050*mpu**3,youngs_modulus=12000*mpu,poissons_ratio=.45)
         UsdShade.MaterialBindingAPI.Apply(prim).Bind(UsdShade.Material.Get(stage,'/World/Material'),UsdShade.Tokens.weakerThanDescendants,'physics')
-        sim=SimulationContext(stage_units_in_meters=mpu,physics_dt=1/480,rendering_dt=1/30)
+        pipeline=dict(backend='torch',device='cuda:0') if a.tensor_readback else {}
+        sim=SimulationContext(stage_units_in_meters=mpu,physics_dt=1/480,rendering_dt=1/30,**pipeline)
         scene=UsdPhysics.Scene.Get(stage,sim.get_physics_context().prim_path)
         scene.CreateGravityDirectionAttr(Gf.Vec3f(0,-1,0));scene.CreateGravityMagnitudeAttr(9.81/mpu)
         ps=PhysxSchema.PhysxSceneAPI.Apply(scene.GetPrim());ps.CreateEnableGPUDynamicsAttr(True);ps.CreateBroadphaseTypeAttr('GPU')
@@ -89,6 +91,10 @@ try:
         acceleration=np.diff(np.asarray(centers),n=2,axis=0)/(.125**2)
         error=np.linalg.norm(acceleration-np.array([0,-9.81,0]),axis=1)
         passed=all(r['health']['inverted_tetrahedra']==0 and r['health']['minimum_signed_volume_ratio']>=.99 and r['translation_removed_rms_m']<=1e-5 for r in rows) and bool(np.max(error)<=.1)
+        if a.tensor_readback:
+            passed=passed and all(r['tensor_health']['inverted_tetrahedra']==0 and
+                r['tensor_health']['minimum_signed_volume_ratio']>=.99 and
+                r['tensor_usd_max_difference_m']<=1e-7 for r in rows)
         report['cases'].append(dict(meters_per_unit=mpu,status='geometry_dynamics_passed' if passed else 'failed',
             authored_density=1050*mpu**3,authored_youngs_modulus=12000*mpu,authored_gravity=9.81/mpu,
             acceleration_m_s2=acceleration.tolist(),max_acceleration_error_m_s2=float(error.max()),rows=rows))
