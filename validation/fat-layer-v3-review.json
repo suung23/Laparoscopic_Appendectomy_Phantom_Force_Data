@@ -1,0 +1,36 @@
+{
+  "status": "unreviewed continuous visual candidate",
+  "vertices": 49858,
+  "triangles": 99712,
+  "components": 1,
+  "watertight": true,
+  "winding_consistent": true,
+  "height_mm_min_median_max": [
+    0.02,
+    0.5223508244947168,
+    1.5054950888672127
+  ],
+  "binding_error_m": 8.673617379884035e-19,
+  "source_sha256": "4b4fc9fc972a7646ac6f237360952949887ddb783e4cc97f4c4f1d8d88f2d91a",
+  "provenance": "Procedurally authored over BodyParts3D-derived membrane; DBCLS CC BY 4.0",
+  "reference": "Appendix300 sampled visual observations; no reconstructed metric geometry",
+  "physics_integrated": false,
+  "anatomy_validated": false,
+  "collision_checked": false,
+  "self_intersections_checked": false,
+  "parameters": "seed 1729; 2.8 mm seed spacing; Gaussian widths 0.9-1.8 mm; sixth-power smooth maximum; all authoring choices",
+  "lobe_centers": 65,
+  "visual_gate": "incomplete",
+  "visual_observations": [
+    "Lobulated relief and valleys visible compared with previous flat shell",
+    "Uniform tissue material and crude surrounding anatomy remain"
+  ],
+  "render_sha256": "9246f607f8b9174f8dc88ad7b8dff2fa944d80dbf5ab56ade7d45b1e507ffe47",
+  "collision_validation": {
+    "status": "failed_to_complete",
+    "attempts": 2,
+    "error": "Rtree native access violation during containment in both independent processes",
+    "fallback": "Open3D import blocked by Windows application policy; not bypassed"
+  },
+  "adopted": false
+}
