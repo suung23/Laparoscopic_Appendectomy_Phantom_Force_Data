@@ -1,0 +1,27 @@
+{
+  "status": "reference constitutive checks passed",
+  "triangles": 3072,
+  "rest_energy_J": -2.753038222910509e-21,
+  "rest_force_norm_N": 3.568580967754747e-17,
+  "authored_2_percent_x_stretch_energy_J": 3.0875213009770584e-07,
+  "resultant_force_N": [
+    4.573977915173222e-19,
+    -3.4474240953250024e-19,
+    5.082197683525802e-19
+  ],
+  "parameters": {
+    "young_Pa": 12000,
+    "poisson": 0.45,
+    "thickness_m": 0.0002,
+    "measured": false
+  },
+  "scope": "Membrane in-plane energy and force only",
+  "missing": [
+    "bending stiffness",
+    "dynamic solver",
+    "contact integration",
+    "experimental material calibration",
+    "Isaac runtime integration"
+  ],
+  "tests": "Rigid-motion objectivity, finite-difference energy-force consistency, force/torque resultant and collapsed-triangle rejection"
+}
