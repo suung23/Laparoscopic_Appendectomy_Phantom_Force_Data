@@ -1,0 +1,94 @@
+{
+  "status": "unreviewed visual authoring candidate",
+  "seed": 1729,
+  "lobules": 35,
+  "vertices": 5670,
+  "triangles": 11200,
+  "roundtrip_error_m": 8.673617379884035e-19,
+  "rigid_motion_error_m": 1.3183898417423734e-16,
+  "parent_surface_sha256": "4b4fc9fc972a7646ac6f237360952949887ddb783e4cc97f4c4f1d8d88f2d91a",
+  "appearance_reference": "validation/appendix300-backbone-review.json",
+  "provenance": "Procedural authored geometry; membrane derived from BodyParts3D / DBCLS, CC BY 4.0",
+  "dimensions_calibrated": false,
+  "contact_integrated": false,
+  "collision_checked": false,
+  "limitations": [
+    "Local-frame surface following is not adipose mechanics",
+    "Overlaps and seam appearance require review",
+    "No reconstructed video geometry or patient-specific claim"
+  ],
+  "visual_gate": "failed",
+  "observed": "Separate yellow bead-like protrusions rather than continuous lobulated adipose tissue; unrealistic spacing, silhouette and color.",
+  "collision_review": {
+    "status": "sampled diagnostic only",
+    "surface": "out\\ct_appendectomy\\fat_layer_v1\\layer.npz",
+    "samples": {
+      "vertices": 5670,
+      "edge_midpoints": 16800,
+      "face_centroids": 11200
+    },
+    "penetrations": {
+      "/SurgicalRegion/appendix_FJ2565": {
+        "vertices": {
+          "count_over_0_1mm": 573,
+          "max_depth_mm": 1.8199251290611695
+        },
+        "edge_midpoints": {
+          "count_over_0_1mm": 1663,
+          "max_depth_mm": 1.8211027339016337
+        },
+        "face_centroids": {
+          "count_over_0_1mm": 1105,
+          "max_depth_mm": 1.807005165345992
+        }
+      },
+      "/SurgicalRegion/ileum_FJ2599": {
+        "vertices": {
+          "count_over_0_1mm": 80,
+          "max_depth_mm": 1.1177345079358219
+        },
+        "edge_midpoints": {
+          "count_over_0_1mm": 234,
+          "max_depth_mm": 1.1072236472782715
+        },
+        "face_centroids": {
+          "count_over_0_1mm": 156,
+          "max_depth_mm": 1.086577305361995
+        }
+      },
+      "/SurgicalRegion/mesentery_FJ3396": {
+        "vertices": {
+          "count_over_0_1mm": 156,
+          "max_depth_mm": 0.7283644134150704
+        },
+        "edge_midpoints": {
+          "count_over_0_1mm": 463,
+          "max_depth_mm": 0.769038699469753
+        },
+        "face_centroids": {
+          "count_over_0_1mm": 312,
+          "max_depth_mm": 0.7609424688024654
+        }
+      },
+      "/SurgicalRegion/appendicular_artery_FJ3410": {
+        "vertices": {
+          "count_over_0_1mm": 79,
+          "max_depth_mm": 0.4743996794719466
+        },
+        "edge_midpoints": {
+          "count_over_0_1mm": 215,
+          "max_depth_mm": 0.4981240047662042
+        },
+        "face_centroids": {
+          "count_over_0_1mm": 146,
+          "max_depth_mm": 0.4922735985089758
+        }
+      }
+    },
+    "exhaustive_intersection_check": false,
+    "clinical_validity": false
+  },
+  "render_sha256": "c74918674bc8a19b1edd23e07f4976e0d02ccff394358e79e8921ba46e95db89",
+  "adopted": false,
+  "next": "Replace scattered independent ellipsoids with a connected lobulated layer tapering into the membrane; resolve neighboring-organ intersections."
+}
