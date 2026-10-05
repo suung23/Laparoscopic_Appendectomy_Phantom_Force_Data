@@ -1,0 +1,51 @@
+{
+  "status": "unreviewed continuous visual candidate",
+  "vertices": 49858,
+  "triangles": 99712,
+  "components": 1,
+  "watertight": true,
+  "winding_consistent": true,
+  "height_mm_min_median_max": [
+    0.000674256881063454,
+    0.46308440188280686,
+    1.5004306684736046
+  ],
+  "binding_error_m": 8.673617379884035e-19,
+  "source_sha256": "4b4fc9fc972a7646ac6f237360952949887ddb783e4cc97f4c4f1d8d88f2d91a",
+  "provenance": "Procedurally authored over BodyParts3D-derived membrane; DBCLS CC BY 4.0",
+  "reference": "Appendix300 sampled visual observations; no reconstructed metric geometry",
+  "physics_integrated": false,
+  "anatomy_validated": false,
+  "collision_checked": false,
+  "self_intersections_checked": false,
+  "parameters": "seed 1729; 2.8 mm seed spacing; Gaussian widths 0.9-1.8 mm; sixth-power smooth maximum; all authoring choices",
+  "lobe_centers": 65,
+  "neighbor_clipping": {
+    "appendix_FJ2565": {
+      "changed_vertices": 356,
+      "baseline_inside_vertices": 160,
+      "max_reduction_mm": 0.8045374793372044
+    },
+    "mesentery_FJ3396": {
+      "changed_vertices": 91,
+      "baseline_inside_vertices": 135,
+      "max_reduction_mm": 0.28100177951597305
+    }
+  },
+  "top_offset_guard": {
+    "iterations": 9,
+    "initial_bad_faces": 2797,
+    "remaining_bad_faces": 0,
+    "min_absolute_offset_m": 6.74256881063454e-07
+  },
+  "bottom_offset_guard": {
+    "iterations": 4,
+    "initial_bad_faces": 94,
+    "remaining_bad_faces": 0,
+    "min_absolute_offset_m": 1.25e-06
+  },
+  "clipping_scope": "Eight normal-line samples and ten bisections; not continuous collision detection; pre-existing membrane penetrations remain",
+  "top_vertices_below_10_micrometres": 83,
+  "decision": "Not accepted: orientation guard eliminates local reversals by collapsing thickness near tight folds. This exposes a parent-surface geometry limitation, not validated tissue thickness.",
+  "render_and_nonlocal_intersections": "unverified"
+}
