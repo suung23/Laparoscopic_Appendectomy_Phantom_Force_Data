@@ -1,0 +1,167 @@
+{
+  "status": "passed",
+  "scope": "10-step freefall only; no contact, physical damping, empirical mechanics or realtime acceptance",
+  "method": "implicit Euler",
+  "tolerance_n": 1e-11,
+  "dt_s": 0.0020833333333333333,
+  "elapsed_s": 6.287031800020486,
+  "mesh_sha256": "e601a3601ad3d6ce4414bf4ded7e5389678ac9e2b96931aca7ba31a784ced944",
+  "source_sha256": {
+    "implicit_reference.py": "0dbd29633f0203d9c44d0103e51e5fe0ddb70dc20d3f09bf2bdaec2fe145f585",
+    "constrained_elasticity.py": "6fbfc4d53779068f723e6e23ef3fcec4fc6273cd169d68c2806b4881ce35a066",
+    "elastic_preconditioner.py": "2f58b26d43e37cd91f1529971283f148e93b8e8de0fd8b583b14569ca4e34ae4",
+    "determinant_step.py": "54454fbc93278d161a9e7918978733699492358103a6167a599636b32ca1ef86"
+  },
+  "rows": [
+    {
+      "tick": 1,
+      "residual_n": 2.941158601388327e-14,
+      "position_error_m": 3.3010683419261166e-13,
+      "velocity_error_m_s": 1.584516622750893e-10,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9999999999567886,
+        "median_volume_ratio": 0.9999999999999964,
+        "total_absolute_volume_ratio": 0.9999999999999865,
+        "p99_absolute_volume_change": 4.437520351174829e-12
+      }
+    },
+    {
+      "tick": 2,
+      "residual_n": 5.889199176066506e-14,
+      "position_error_m": 1.1240067597931277e-12,
+      "velocity_error_m_s": 3.831727116247159e-10,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9999999998687059,
+        "median_volume_ratio": 0.999999999999994,
+        "total_absolute_volume_ratio": 0.9999999999999504,
+        "p99_absolute_volume_change": 1.2677507932323796e-11
+      }
+    },
+    {
+      "tick": 3,
+      "residual_n": 8.834407272569067e-14,
+      "position_error_m": 2.4904233573424656e-12,
+      "velocity_error_m_s": 6.558994350989165e-10,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9999999997514055,
+        "median_volume_ratio": 0.9999999999999956,
+        "total_absolute_volume_ratio": 0.9999999999998953,
+        "p99_absolute_volume_change": 2.384091035700915e-11
+      }
+    },
+    {
+      "tick": 4,
+      "residual_n": 1.1782689082230624e-13,
+      "position_error_m": 4.505296984525136e-12,
+      "velocity_error_m_s": 9.673122736932366e-10,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.999999999619582,
+        "median_volume_ratio": 0.9999999999999933,
+        "total_absolute_volume_ratio": 0.9999999999998228,
+        "p99_absolute_volume_change": 3.730446063165953e-11
+      }
+    },
+    {
+      "tick": 5,
+      "residual_n": 1.4729469271883289e-13,
+      "position_error_m": 7.244628246643419e-12,
+      "velocity_error_m_s": 1.3149335294525017e-09,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.999999999474626,
+        "median_volume_ratio": 0.9999999999999785,
+        "total_absolute_volume_ratio": 0.9999999999997308,
+        "p99_absolute_volume_change": 5.307319916880711e-11
+      }
+    },
+    {
+      "tick": 6,
+      "residual_n": 1.7695835573781904e-13,
+      "position_error_m": 1.0779927736529917e-11,
+      "velocity_error_m_s": 1.6970964987278975e-09,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.999999999315151,
+        "median_volume_ratio": 0.9999999999999356,
+        "total_absolute_volume_ratio": 0.9999999999996079,
+        "p99_absolute_volume_change": 7.040745764186338e-11
+      }
+    },
+    {
+      "tick": 7,
+      "residual_n": 2.1087697018272455e-13,
+      "position_error_m": 1.51805079971585e-11,
+      "velocity_error_m_s": 2.1126197017251414e-09,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9999999991513839,
+        "median_volume_ratio": 0.9999999999998561,
+        "total_absolute_volume_ratio": 0.9999999999994387,
+        "p99_absolute_volume_change": 9.231917452723325e-11
+      }
+    },
+    {
+      "tick": 8,
+      "residual_n": 2.455964305623365e-13,
+      "position_error_m": 2.0513079925382466e-11,
+      "velocity_error_m_s": 2.5603017323483877e-09,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9999999989840391,
+        "median_volume_ratio": 0.9999999999997391,
+        "total_absolute_volume_ratio": 0.9999999999992077,
+        "p99_absolute_volume_change": 1.1376233177706727e-10
+      }
+    },
+    {
+      "tick": 9,
+      "residual_n": 2.8087352322431203e-13,
+      "position_error_m": 2.6841168754872102e-11,
+      "velocity_error_m_s": 3.0386723802998125e-09,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.999999998812986,
+        "median_volume_ratio": 0.9999999999995912,
+        "total_absolute_volume_ratio": 0.9999999999989038,
+        "p99_absolute_volume_change": 1.3806996435050633e-10
+      }
+    },
+    {
+      "tick": 10,
+      "residual_n": 3.1839803146457846e-13,
+      "position_error_m": 3.4224049997680066e-11,
+      "velocity_error_m_s": 3.547455634859364e-09,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9999999986375845,
+        "median_volume_ratio": 0.9999999999994362,
+        "total_absolute_volume_ratio": 0.9999999999985247,
+        "p99_absolute_volume_change": 1.646347047579155e-10
+      }
+    }
+  ]
+}
