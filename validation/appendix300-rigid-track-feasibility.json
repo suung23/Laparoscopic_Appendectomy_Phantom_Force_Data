@@ -1,0 +1,2265 @@
+{
+  "status": "exploratory feature-track feasibility; no 3D reconstruction",
+  "dataset": "Appendix300",
+  "doi": "10.25532/OPARA-1173",
+  "license": "CC BY 4.0",
+  "sampling": {
+    "interval_s": 0.5,
+    "max_dimension_px": 960,
+    "feature": "SIFT",
+    "matching": "Lowe ratio 0.72",
+    "relative_pose": "RANSAC essential matrix; focal ratio assumed, uncalibrated"
+  },
+  "limitations": [
+    "Endoscope calibration, motion, and depth scale are unavailable",
+    "Tissue deformation, occlusion, specular highlights, and tools violate rigid SfM",
+    "Feature tracks are not anatomical labels or a validated surface reconstruction",
+    "No patient metadata or image pixels are copied into the report"
+  ],
+  "clips": [
+    {
+      "video": "Center1_014.mp4",
+      "sha256": "af050e90b66076f7dd83e8278be3cc4bd50ea490a375165e9747946b0e94c2bc",
+      "sample_interval_s": 0.5,
+      "sampled_frames": 76,
+      "median_keypoints": 531,
+      "adjacent_pairs": 75,
+      "median_essential_inliers": 11.0,
+      "pairs_with_at_least_20_inliers": 25,
+      "median_inlier_grid_cells_8x6": 5.0,
+      "pairs": [
+        {
+          "time_s": [
+            0.0,
+            0.5
+          ],
+          "keypoints": [
+            403,
+            387
+          ],
+          "matches": 159,
+          "essential_inliers": 14,
+          "inlier_fraction": 0.0880503144654088,
+          "inlier_grid_cells_8x6": 9,
+          "rotation_compensated_residual_px_p50_p90": [
+            13.034067610741463,
+            21.407972939325344
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            0.5,
+            1.0
+          ],
+          "keypoints": [
+            387,
+            370
+          ],
+          "matches": 145,
+          "essential_inliers": 35,
+          "inlier_fraction": 0.2413793103448276,
+          "inlier_grid_cells_8x6": 9,
+          "rotation_compensated_residual_px_p50_p90": [
+            7.594786465283247,
+            8.515364374320642
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            1.0,
+            1.5
+          ],
+          "keypoints": [
+            370,
+            259
+          ],
+          "matches": 68,
+          "essential_inliers": 25,
+          "inlier_fraction": 0.36764705882352944,
+          "inlier_grid_cells_8x6": 13,
+          "rotation_compensated_residual_px_p50_p90": [
+            14.70054514071238,
+            17.92932350158655
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            1.5,
+            2.0
+          ],
+          "keypoints": [
+            259,
+            326
+          ],
+          "matches": 96,
+          "essential_inliers": 9,
+          "inlier_fraction": 0.09375,
+          "inlier_grid_cells_8x6": 5,
+          "rotation_compensated_residual_px_p50_p90": [
+            11.781788468759741,
+            15.050122456647792
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            2.0,
+            2.5
+          ],
+          "keypoints": [
+            326,
+            266
+          ],
+          "matches": 102,
+          "essential_inliers": 2,
+          "inlier_fraction": 0.0196078431372549,
+          "inlier_grid_cells_8x6": 2,
+          "rotation_compensated_residual_px_p50_p90": [
+            3.2506270281229366,
+            3.789025751015493
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            2.5,
+            3.0
+          ],
+          "keypoints": [
+            266,
+            204
+          ],
+          "matches": 72,
+          "essential_inliers": 0,
+          "inlier_fraction": 0.0,
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            3.0,
+            3.5
+          ],
+          "keypoints": [
+            204,
+            208
+          ],
+          "matches": 75,
+          "essential_inliers": 13,
+          "inlier_fraction": 0.17333333333333334,
+          "inlier_grid_cells_8x6": 3,
+          "rotation_compensated_residual_px_p50_p90": [
+            3.041965085876563,
+            4.139664957574649
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            3.5,
+            4.0
+          ],
+          "keypoints": [
+            208,
+            278
+          ],
+          "matches": 62,
+          "essential_inliers": 39,
+          "inlier_fraction": 0.6290322580645161,
+          "inlier_grid_cells_8x6": 18,
+          "rotation_compensated_residual_px_p50_p90": [
+            60.25701358896698,
+            89.53040217147586
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            4.0,
+            4.5
+          ],
+          "keypoints": [
+            278,
+            339
+          ],
+          "matches": 100,
+          "essential_inliers": 39,
+          "inlier_fraction": 0.39,
+          "inlier_grid_cells_8x6": 14,
+          "rotation_compensated_residual_px_p50_p90": [
+            13.944879313684728,
+            19.99965067890986
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            4.5,
+            5.0
+          ],
+          "keypoints": [
+            339,
+            330
+          ],
+          "matches": 118,
+          "essential_inliers": 32,
+          "inlier_fraction": 0.2711864406779661,
+          "inlier_grid_cells_8x6": 15,
+          "rotation_compensated_residual_px_p50_p90": [
+            10.153672114166705,
+            15.137844140273904
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            5.0,
+            5.5
+          ],
+          "keypoints": [
+            330,
+            380
+          ],
+          "matches": 115,
+          "essential_inliers": 80,
+          "inlier_fraction": 0.6956521739130435,
+          "inlier_grid_cells_8x6": 26,
+          "rotation_compensated_residual_px_p50_p90": [
+            22.88011200064443,
+            36.30835618206857
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            5.5,
+            6.0
+          ],
+          "keypoints": [
+            380,
+            545
+          ],
+          "matches": 67,
+          "essential_inliers": 44,
+          "inlier_fraction": 0.6567164179104478,
+          "inlier_grid_cells_8x6": 21,
+          "rotation_compensated_residual_px_p50_p90": [
+            26.980920398375083,
+            38.09791369819189
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            6.0,
+            6.5
+          ],
+          "keypoints": [
+            545,
+            443
+          ],
+          "matches": 69,
+          "essential_inliers": 13,
+          "inlier_fraction": 0.18840579710144928,
+          "inlier_grid_cells_8x6": 8,
+          "rotation_compensated_residual_px_p50_p90": [
+            6.720312120936148,
+            610.3134094644386
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            6.5,
+            7.0
+          ],
+          "keypoints": [
+            443,
+            213
+          ],
+          "matches": 18,
+          "essential_inliers": 5,
+          "inlier_fraction": 0.2777777777777778,
+          "inlier_grid_cells_8x6": 4,
+          "rotation_compensated_residual_px_p50_p90": [
+            13.43512403633807,
+            17.013021191547
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            7.0,
+            7.5
+          ],
+          "keypoints": [
+            213,
+            402
+          ],
+          "matches": 27,
+          "essential_inliers": 9,
+          "inlier_fraction": 0.3333333333333333,
+          "inlier_grid_cells_8x6": 5,
+          "rotation_compensated_residual_px_p50_p90": [
+            8.019782926863387,
+            12.782619231259272
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            7.5,
+            8.0
+          ],
+          "keypoints": [
+            402,
+            452
+          ],
+          "matches": 75,
+          "essential_inliers": 49,
+          "inlier_fraction": 0.6533333333333333,
+          "inlier_grid_cells_8x6": 16,
+          "rotation_compensated_residual_px_p50_p90": [
+            143.61119421423243,
+            161.16352424980317
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            8.0,
+            8.5
+          ],
+          "keypoints": [
+            452,
+            469
+          ],
+          "matches": 73,
+          "essential_inliers": 45,
+          "inlier_fraction": 0.6164383561643836,
+          "inlier_grid_cells_8x6": 20,
+          "rotation_compensated_residual_px_p50_p90": [
+            25.95874949962275,
+            30.55542773618569
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            8.5,
+            9.0
+          ],
+          "keypoints": [
+            469,
+            423
+          ],
+          "matches": 133,
+          "essential_inliers": 48,
+          "inlier_fraction": 0.3609022556390977,
+          "inlier_grid_cells_8x6": 9,
+          "rotation_compensated_residual_px_p50_p90": [
+            8.95683365979646,
+            11.88250794802866
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            9.0,
+            9.5
+          ],
+          "keypoints": [
+            423,
+            458
+          ],
+          "matches": 40,
+          "essential_inliers": 17,
+          "inlier_fraction": 0.425,
+          "inlier_grid_cells_8x6": 5,
+          "rotation_compensated_residual_px_p50_p90": [
+            12.377732976778562,
+            14.421578630820475
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            9.5,
+            10.0
+          ],
+          "keypoints": [
+            458,
+            471
+          ],
+          "matches": 57,
+          "essential_inliers": 6,
+          "inlier_fraction": 0.10526315789473684,
+          "inlier_grid_cells_8x6": 4,
+          "rotation_compensated_residual_px_p50_p90": [
+            17.040540749197596,
+            17.49770932416922
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            10.0,
+            10.5
+          ],
+          "keypoints": [
+            471,
+            507
+          ],
+          "matches": 121,
+          "essential_inliers": 12,
+          "inlier_fraction": 0.09917355371900827,
+          "inlier_grid_cells_8x6": 4,
+          "rotation_compensated_residual_px_p50_p90": [
+            9.618055849759868,
+            10.736199407418551
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            10.5,
+            11.0
+          ],
+          "keypoints": [
+            507,
+            538
+          ],
+          "matches": 50,
+          "essential_inliers": 23,
+          "inlier_fraction": 0.46,
+          "inlier_grid_cells_8x6": 12,
+          "rotation_compensated_residual_px_p50_p90": [
+            11.281160937207101,
+            16.394539942424387
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            11.0,
+            11.5
+          ],
+          "keypoints": [
+            538,
+            559
+          ],
+          "matches": 92,
+          "essential_inliers": 7,
+          "inlier_fraction": 0.07608695652173914,
+          "inlier_grid_cells_8x6": 3,
+          "rotation_compensated_residual_px_p50_p90": [
+            9.492953285963987,
+            10.299562497111864
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            11.5,
+            12.0
+          ],
+          "keypoints": [
+            559,
+            582
+          ],
+          "matches": 68,
+          "essential_inliers": 39,
+          "inlier_fraction": 0.5735294117647058,
+          "inlier_grid_cells_8x6": 16,
+          "rotation_compensated_residual_px_p50_p90": [
+            64.93206919488766,
+            71.2411131669198
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            12.0,
+            12.5
+          ],
+          "keypoints": [
+            582,
+            682
+          ],
+          "matches": 54,
+          "essential_inliers": 13,
+          "inlier_fraction": 0.24074074074074073,
+          "inlier_grid_cells_8x6": 5,
+          "rotation_compensated_residual_px_p50_p90": [
+            24.14587707815133,
+            29.688654266006846
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            12.5,
+            13.0
+          ],
+          "keypoints": [
+            682,
+            575
+          ],
+          "matches": 42,
+          "essential_inliers": 1,
+          "inlier_fraction": 0.023809523809523808,
+          "inlier_grid_cells_8x6": 1,
+          "rotation_compensated_residual_px_p50_p90": [
+            15.980248210474914,
+            15.980248210474914
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            13.0,
+            13.5
+          ],
+          "keypoints": [
+            575,
+            568
+          ],
+          "matches": 88,
+          "essential_inliers": 25,
+          "inlier_fraction": 0.2840909090909091,
+          "inlier_grid_cells_8x6": 7,
+          "rotation_compensated_residual_px_p50_p90": [
+            10.88868919662575,
+            16.769381471922312
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            13.5,
+            14.0
+          ],
+          "keypoints": [
+            568,
+            529
+          ],
+          "matches": 14,
+          "essential_inliers": 12,
+          "inlier_fraction": 0.8571428571428571,
+          "inlier_grid_cells_8x6": 4,
+          "rotation_compensated_residual_px_p50_p90": [
+            4.239777071349441,
+            7.013242000419006
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            14.0,
+            14.5
+          ],
+          "keypoints": [
+            529,
+            448
+          ],
+          "matches": 65,
+          "essential_inliers": 6,
+          "inlier_fraction": 0.09230769230769231,
+          "inlier_grid_cells_8x6": 2,
+          "rotation_compensated_residual_px_p50_p90": [
+            2.9584964403089247,
+            5.3969264551751905
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            14.5,
+            15.0
+          ],
+          "keypoints": [
+            448,
+            562
+          ],
+          "matches": 70,
+          "essential_inliers": 4,
+          "inlier_fraction": 0.05714285714285714,
+          "inlier_grid_cells_8x6": 3,
+          "rotation_compensated_residual_px_p50_p90": [
+            16.113557765014846,
+            17.76740904618797
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            15.0,
+            15.5
+          ],
+          "keypoints": [
+            562,
+            603
+          ],
+          "matches": 65,
+          "essential_inliers": 23,
+          "inlier_fraction": 0.35384615384615387,
+          "inlier_grid_cells_8x6": 11,
+          "rotation_compensated_residual_px_p50_p90": [
+            9.938188528898474,
+            12.345691957982812
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            15.5,
+            16.0
+          ],
+          "keypoints": [
+            603,
+            548
+          ],
+          "matches": 142,
+          "essential_inliers": 49,
+          "inlier_fraction": 0.34507042253521125,
+          "inlier_grid_cells_8x6": 12,
+          "rotation_compensated_residual_px_p50_p90": [
+            4.642601045723418,
+            10.99813160801171
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            16.0,
+            16.5
+          ],
+          "keypoints": [
+            548,
+            403
+          ],
+          "matches": 33,
+          "essential_inliers": 17,
+          "inlier_fraction": 0.5151515151515151,
+          "inlier_grid_cells_8x6": 10,
+          "rotation_compensated_residual_px_p50_p90": [
+            210.33664128690495,
+            215.1757919527357
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            16.5,
+            17.0
+          ],
+          "keypoints": [
+            403,
+            390
+          ],
+          "matches": 34,
+          "essential_inliers": 7,
+          "inlier_fraction": 0.20588235294117646,
+          "inlier_grid_cells_8x6": 6,
+          "rotation_compensated_residual_px_p50_p90": [
+            6.9939638704810205,
+            11.04569296728446
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            17.0,
+            17.5
+          ],
+          "keypoints": [
+            390,
+            572
+          ],
+          "matches": 77,
+          "essential_inliers": 4,
+          "inlier_fraction": 0.05194805194805195,
+          "inlier_grid_cells_8x6": 4,
+          "rotation_compensated_residual_px_p50_p90": [
+            15.490698282067047,
+            18.018986654550005
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            17.5,
+            18.0
+          ],
+          "keypoints": [
+            572,
+            569
+          ],
+          "matches": 88,
+          "essential_inliers": 5,
+          "inlier_fraction": 0.056818181818181816,
+          "inlier_grid_cells_8x6": 3,
+          "rotation_compensated_residual_px_p50_p90": [
+            16.65953968968382,
+            17.651556160676442
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            18.0,
+            18.5
+          ],
+          "keypoints": [
+            569,
+            524
+          ],
+          "matches": 94,
+          "essential_inliers": 32,
+          "inlier_fraction": 0.3404255319148936,
+          "inlier_grid_cells_8x6": 6,
+          "rotation_compensated_residual_px_p50_p90": [
+            2.9016728577545248,
+            4.096739101404347
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            18.5,
+            19.0
+          ],
+          "keypoints": [
+            524,
+            579
+          ],
+          "matches": 43,
+          "essential_inliers": 4,
+          "inlier_fraction": 0.09302325581395349,
+          "inlier_grid_cells_8x6": 2,
+          "rotation_compensated_residual_px_p50_p90": [
+            100.67626094735279,
+            223.53072610679502
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            19.0,
+            19.5
+          ],
+          "keypoints": [
+            579,
+            604
+          ],
+          "matches": 36,
+          "essential_inliers": 3,
+          "inlier_fraction": 0.08333333333333333,
+          "inlier_grid_cells_8x6": 2,
+          "rotation_compensated_residual_px_p50_p90": [
+            5.011028191663144,
+            9.397513981594466
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            19.5,
+            20.0
+          ],
+          "keypoints": [
+            604,
+            605
+          ],
+          "matches": 38,
+          "essential_inliers": 6,
+          "inlier_fraction": 0.15789473684210525,
+          "inlier_grid_cells_8x6": 4,
+          "rotation_compensated_residual_px_p50_p90": [
+            4.840022523852106,
+            8.245497715913029
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            20.0,
+            20.5
+          ],
+          "keypoints": [
+            605,
+            484
+          ],
+          "matches": 28,
+          "essential_inliers": 7,
+          "inlier_fraction": 0.25,
+          "inlier_grid_cells_8x6": 5,
+          "rotation_compensated_residual_px_p50_p90": [
+            10.41929353222615,
+            76.51906882699691
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            20.5,
+            21.0
+          ],
+          "keypoints": [
+            484,
+            644
+          ],
+          "matches": 71,
+          "essential_inliers": 3,
+          "inlier_fraction": 0.04225352112676056,
+          "inlier_grid_cells_8x6": 2,
+          "rotation_compensated_residual_px_p50_p90": [
+            6.013660481292182,
+            10.127425679942869
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            21.0,
+            21.5
+          ],
+          "keypoints": [
+            644,
+            691
+          ],
+          "matches": 219,
+          "essential_inliers": 169,
+          "inlier_fraction": 0.771689497716895,
+          "inlier_grid_cells_8x6": 17,
+          "rotation_compensated_residual_px_p50_p90": [
+            13.276812982814409,
+            14.282737415437968
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            21.5,
+            22.0
+          ],
+          "keypoints": [
+            691,
+            622
+          ],
+          "matches": 144,
+          "essential_inliers": 2,
+          "inlier_fraction": 0.013888888888888888,
+          "inlier_grid_cells_8x6": 2,
+          "rotation_compensated_residual_px_p50_p90": [
+            4.348603700204714,
+            5.040087563061576
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            22.0,
+            22.5
+          ],
+          "keypoints": [
+            622,
+            616
+          ],
+          "matches": 128,
+          "essential_inliers": 2,
+          "inlier_fraction": 0.015625,
+          "inlier_grid_cells_8x6": 2,
+          "rotation_compensated_residual_px_p50_p90": [
+            6.729992232968797,
+            6.815472558224482
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            22.5,
+            23.0
+          ],
+          "keypoints": [
+            616,
+            624
+          ],
+          "matches": 144,
+          "essential_inliers": 0,
+          "inlier_fraction": 0.0,
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            23.0,
+            23.5
+          ],
+          "keypoints": [
+            624,
+            634
+          ],
+          "matches": 37,
+          "essential_inliers": 9,
+          "inlier_fraction": 0.24324324324324326,
+          "inlier_grid_cells_8x6": 6,
+          "rotation_compensated_residual_px_p50_p90": [
+            11.231145271432169,
+            17.54586590382993
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            23.5,
+            24.0
+          ],
+          "keypoints": [
+            634,
+            560
+          ],
+          "matches": 44,
+          "essential_inliers": 25,
+          "inlier_fraction": 0.5681818181818182,
+          "inlier_grid_cells_8x6": 13,
+          "rotation_compensated_residual_px_p50_p90": [
+            140.40489679018606,
+            162.96444619217954
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            24.0,
+            24.5
+          ],
+          "keypoints": [
+            560,
+            666
+          ],
+          "matches": 117,
+          "essential_inliers": 3,
+          "inlier_fraction": 0.02564102564102564,
+          "inlier_grid_cells_8x6": 2,
+          "rotation_compensated_residual_px_p50_p90": [
+            9.99198069235731,
+            11.862401193941958
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            24.5,
+            25.0
+          ],
+          "keypoints": [
+            666,
+            601
+          ],
+          "matches": 115,
+          "essential_inliers": 1,
+          "inlier_fraction": 0.008695652173913044,
+          "inlier_grid_cells_8x6": 1,
+          "rotation_compensated_residual_px_p50_p90": [
+            15.867108483853512,
+            15.867108483853512
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            25.0,
+            25.5
+          ],
+          "keypoints": [
+            601,
+            456
+          ],
+          "matches": 72,
+          "essential_inliers": 5,
+          "inlier_fraction": 0.06944444444444445,
+          "inlier_grid_cells_8x6": 2,
+          "rotation_compensated_residual_px_p50_p90": [
+            7.995520372803615,
+            9.587544712220229
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            25.5,
+            26.0
+          ],
+          "keypoints": [
+            456,
+            553
+          ],
+          "matches": 124,
+          "essential_inliers": 4,
+          "inlier_fraction": 0.03225806451612903,
+          "inlier_grid_cells_8x6": 2,
+          "rotation_compensated_residual_px_p50_p90": [
+            6.283392828807058,
+            6.850081005005081
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            26.0,
+            26.5
+          ],
+          "keypoints": [
+            553,
+            594
+          ],
+          "matches": 178,
+          "essential_inliers": 0,
+          "inlier_fraction": 0.0,
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            26.5,
+            27.0
+          ],
+          "keypoints": [
+            594,
+            533
+          ],
+          "matches": 127,
+          "essential_inliers": 11,
+          "inlier_fraction": 0.08661417322834646,
+          "inlier_grid_cells_8x6": 6,
+          "rotation_compensated_residual_px_p50_p90": [
+            6.394801490677682,
+            8.835434915579015
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            27.0,
+            27.5
+          ],
+          "keypoints": [
+            533,
+            475
+          ],
+          "matches": 96,
+          "essential_inliers": 3,
+          "inlier_fraction": 0.03125,
+          "inlier_grid_cells_8x6": 1,
+          "rotation_compensated_residual_px_p50_p90": [
+            2.7844379979001626,
+            4.313981978595407
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            27.5,
+            28.0
+          ],
+          "keypoints": [
+            475,
+            396
+          ],
+          "matches": 75,
+          "essential_inliers": 45,
+          "inlier_fraction": 0.6,
+          "inlier_grid_cells_8x6": 18,
+          "rotation_compensated_residual_px_p50_p90": [
+            16.64954197825647,
+            20.034094220077094
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            28.0,
+            28.5
+          ],
+          "keypoints": [
+            396,
+            298
+          ],
+          "matches": 22,
+          "essential_inliers": 11,
+          "inlier_fraction": 0.5,
+          "inlier_grid_cells_8x6": 8,
+          "rotation_compensated_residual_px_p50_p90": [
+            29.97458087201686,
+            73.54336098823224
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            28.5,
+            29.0
+          ],
+          "keypoints": [
+            298,
+            227
+          ],
+          "matches": 33,
+          "essential_inliers": 7,
+          "inlier_fraction": 0.21212121212121213,
+          "inlier_grid_cells_8x6": 5,
+          "rotation_compensated_residual_px_p50_p90": [
+            13.667909079929782,
+            15.150377100055026
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            29.0,
+            29.5
+          ],
+          "keypoints": [
+            227,
+            653
+          ],
+          "matches": 24,
+          "essential_inliers": 13,
+          "inlier_fraction": 0.5416666666666666,
+          "inlier_grid_cells_8x6": 10,
+          "rotation_compensated_residual_px_p50_p90": [
+            136.60930650097467,
+            240.93580019250635
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            29.5,
+            30.0
+          ],
+          "keypoints": [
+            653,
+            703
+          ],
+          "matches": 145,
+          "essential_inliers": 44,
+          "inlier_fraction": 0.30344827586206896,
+          "inlier_grid_cells_8x6": 7,
+          "rotation_compensated_residual_px_p50_p90": [
+            2.7854716184433306,
+            3.6670776491977928
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            30.0,
+            30.5
+          ],
+          "keypoints": [
+            703,
+            715
+          ],
+          "matches": 214,
+          "essential_inliers": 9,
+          "inlier_fraction": 0.04205607476635514,
+          "inlier_grid_cells_8x6": 3,
+          "rotation_compensated_residual_px_p50_p90": [
+            1.2844829008269771,
+            2.462947438646441
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            30.5,
+            31.0
+          ],
+          "keypoints": [
+            715,
+            686
+          ],
+          "matches": 276,
+          "essential_inliers": 57,
+          "inlier_fraction": 0.20652173913043478,
+          "inlier_grid_cells_8x6": 16,
+          "rotation_compensated_residual_px_p50_p90": [
+            18.887754730968595,
+            20.47032835220578
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            31.0,
+            31.5
+          ],
+          "keypoints": [
+            686,
+            709
+          ],
+          "matches": 283,
+          "essential_inliers": 0,
+          "inlier_fraction": 0.0,
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            31.5,
+            32.0
+          ],
+          "keypoints": [
+            709,
+            632
+          ],
+          "matches": 157,
+          "essential_inliers": 144,
+          "inlier_fraction": 0.9171974522292994,
+          "inlier_grid_cells_8x6": 30,
+          "rotation_compensated_residual_px_p50_p90": [
+            47.609391001404084,
+            55.82536225796087
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            32.0,
+            32.5
+          ],
+          "keypoints": [
+            632,
+            686
+          ],
+          "matches": 86,
+          "essential_inliers": 14,
+          "inlier_fraction": 0.16279069767441862,
+          "inlier_grid_cells_8x6": 7,
+          "rotation_compensated_residual_px_p50_p90": [
+            7.988622608670567,
+            9.79791705943443
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            32.5,
+            33.0
+          ],
+          "keypoints": [
+            686,
+            580
+          ],
+          "matches": 67,
+          "essential_inliers": 12,
+          "inlier_fraction": 0.1791044776119403,
+          "inlier_grid_cells_8x6": 4,
+          "rotation_compensated_residual_px_p50_p90": [
+            9.226687562913437,
+            13.471749990246948
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            33.0,
+            33.5
+          ],
+          "keypoints": [
+            580,
+            659
+          ],
+          "matches": 24,
+          "essential_inliers": 5,
+          "inlier_fraction": 0.20833333333333334,
+          "inlier_grid_cells_8x6": 4,
+          "rotation_compensated_residual_px_p50_p90": [
+            65.97025068597266,
+            423.2521094139764
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            33.5,
+            34.0
+          ],
+          "keypoints": [
+            659,
+            425
+          ],
+          "matches": 12,
+          "essential_inliers": 3,
+          "inlier_fraction": 0.25,
+          "inlier_grid_cells_8x6": 3,
+          "rotation_compensated_residual_px_p50_p90": [
+            173.78668174552317,
+            192.19351989617698
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            34.0,
+            34.5
+          ],
+          "keypoints": [
+            425,
+            372
+          ],
+          "matches": 11,
+          "essential_inliers": 0
+        },
+        {
+          "time_s": [
+            34.5,
+            35.0
+          ],
+          "keypoints": [
+            372,
+            506
+          ],
+          "matches": 18,
+          "essential_inliers": 8,
+          "inlier_fraction": 0.4444444444444444,
+          "inlier_grid_cells_8x6": 4,
+          "rotation_compensated_residual_px_p50_p90": [
+            9.12968579715846,
+            257.16883971902655
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            35.0,
+            35.5
+          ],
+          "keypoints": [
+            506,
+            500
+          ],
+          "matches": 86,
+          "essential_inliers": 55,
+          "inlier_fraction": 0.6395348837209303,
+          "inlier_grid_cells_8x6": 24,
+          "rotation_compensated_residual_px_p50_p90": [
+            47.091050378221205,
+            61.817715741227225
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            35.5,
+            36.0
+          ],
+          "keypoints": [
+            500,
+            460
+          ],
+          "matches": 99,
+          "essential_inliers": 29,
+          "inlier_fraction": 0.29292929292929293,
+          "inlier_grid_cells_8x6": 8,
+          "rotation_compensated_residual_px_p50_p90": [
+            10.683193792165625,
+            14.289195959211744
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            36.0,
+            36.5
+          ],
+          "keypoints": [
+            460,
+            534
+          ],
+          "matches": 186,
+          "essential_inliers": 164,
+          "inlier_fraction": 0.8817204301075269,
+          "inlier_grid_cells_8x6": 31,
+          "rotation_compensated_residual_px_p50_p90": [
+            22.43490747693359,
+            27.081828501435055
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            36.5,
+            37.0
+          ],
+          "keypoints": [
+            534,
+            564
+          ],
+          "matches": 309,
+          "essential_inliers": 1,
+          "inlier_fraction": 0.003236245954692557,
+          "inlier_grid_cells_8x6": 1,
+          "rotation_compensated_residual_px_p50_p90": [
+            24.408900558954297,
+            24.408900558954297
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            37.0,
+            37.5
+          ],
+          "keypoints": [
+            564,
+            451
+          ],
+          "matches": 205,
+          "essential_inliers": 0,
+          "inlier_fraction": 0.0,
+          "translation_direction": "estimated up to scale; not serialized"
+        }
+      ]
+    },
+    {
+      "video": "Center2_2.mp4",
+      "sha256": "a38b416c45928266e333c46d40c278eff0386a0ca695d268c35ccf807fab04d5",
+      "sample_interval_s": 0.5,
+      "sampled_frames": 47,
+      "median_keypoints": 269,
+      "adjacent_pairs": 46,
+      "median_essential_inliers": 19.0,
+      "pairs_with_at_least_20_inliers": 22,
+      "median_inlier_grid_cells_8x6": 8.0,
+      "pairs": [
+        {
+          "time_s": [
+            0.0,
+            0.5
+          ],
+          "keypoints": [
+            264,
+            304
+          ],
+          "matches": 18,
+          "essential_inliers": 9,
+          "inlier_fraction": 0.5,
+          "inlier_grid_cells_8x6": 3,
+          "rotation_compensated_residual_px_p50_p90": [
+            28.63797420208175,
+            31.49691863843331
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            0.5,
+            1.0
+          ],
+          "keypoints": [
+            304,
+            343
+          ],
+          "matches": 81,
+          "essential_inliers": 51,
+          "inlier_fraction": 0.6296296296296297,
+          "inlier_grid_cells_8x6": 13,
+          "rotation_compensated_residual_px_p50_p90": [
+            6.6368383068205254,
+            10.410948926524702
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            1.0,
+            1.5
+          ],
+          "keypoints": [
+            343,
+            308
+          ],
+          "matches": 32,
+          "essential_inliers": 19,
+          "inlier_fraction": 0.59375,
+          "inlier_grid_cells_8x6": 6,
+          "rotation_compensated_residual_px_p50_p90": [
+            25.062968299733555,
+            31.408154661011686
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            1.5,
+            2.0
+          ],
+          "keypoints": [
+            308,
+            294
+          ],
+          "matches": 18,
+          "essential_inliers": 11,
+          "inlier_fraction": 0.6111111111111112,
+          "inlier_grid_cells_8x6": 7,
+          "rotation_compensated_residual_px_p50_p90": [
+            246.29572503981615,
+            339.11618387799706
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            2.0,
+            2.5
+          ],
+          "keypoints": [
+            294,
+            335
+          ],
+          "matches": 26,
+          "essential_inliers": 20,
+          "inlier_fraction": 0.7692307692307693,
+          "inlier_grid_cells_8x6": 7,
+          "rotation_compensated_residual_px_p50_p90": [
+            530.5399237572096,
+            564.4141606022869
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            2.5,
+            3.0
+          ],
+          "keypoints": [
+            335,
+            407
+          ],
+          "matches": 107,
+          "essential_inliers": 57,
+          "inlier_fraction": 0.5327102803738317,
+          "inlier_grid_cells_8x6": 10,
+          "rotation_compensated_residual_px_p50_p90": [
+            9.011527910140414,
+            11.845957275795614
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            3.0,
+            3.5
+          ],
+          "keypoints": [
+            407,
+            400
+          ],
+          "matches": 93,
+          "essential_inliers": 18,
+          "inlier_fraction": 0.1935483870967742,
+          "inlier_grid_cells_8x6": 7,
+          "rotation_compensated_residual_px_p50_p90": [
+            13.59069574151394,
+            16.980019973335057
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            3.5,
+            4.0
+          ],
+          "keypoints": [
+            400,
+            391
+          ],
+          "matches": 89,
+          "essential_inliers": 71,
+          "inlier_fraction": 0.797752808988764,
+          "inlier_grid_cells_8x6": 15,
+          "rotation_compensated_residual_px_p50_p90": [
+            84.99701198668696,
+            90.4660132139736
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            4.0,
+            4.5
+          ],
+          "keypoints": [
+            391,
+            433
+          ],
+          "matches": 105,
+          "essential_inliers": 93,
+          "inlier_fraction": 0.8857142857142857,
+          "inlier_grid_cells_8x6": 22,
+          "rotation_compensated_residual_px_p50_p90": [
+            43.329718984547874,
+            48.1669452888244
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            4.5,
+            5.0
+          ],
+          "keypoints": [
+            433,
+            408
+          ],
+          "matches": 116,
+          "essential_inliers": 68,
+          "inlier_fraction": 0.5862068965517241,
+          "inlier_grid_cells_8x6": 17,
+          "rotation_compensated_residual_px_p50_p90": [
+            7.639111911775556,
+            12.9741429655195
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            5.0,
+            5.5
+          ],
+          "keypoints": [
+            408,
+            277
+          ],
+          "matches": 89,
+          "essential_inliers": 72,
+          "inlier_fraction": 0.8089887640449438,
+          "inlier_grid_cells_8x6": 19,
+          "rotation_compensated_residual_px_p50_p90": [
+            28.16074211169879,
+            32.16842678938348
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            5.5,
+            6.0
+          ],
+          "keypoints": [
+            277,
+            290
+          ],
+          "matches": 22,
+          "essential_inliers": 2,
+          "inlier_fraction": 0.09090909090909091,
+          "inlier_grid_cells_8x6": 2,
+          "rotation_compensated_residual_px_p50_p90": [
+            41.057014238677326,
+            70.22198478482454
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            6.0,
+            6.5
+          ],
+          "keypoints": [
+            290,
+            196
+          ],
+          "matches": 21,
+          "essential_inliers": 3,
+          "inlier_fraction": 0.14285714285714285,
+          "inlier_grid_cells_8x6": 3,
+          "rotation_compensated_residual_px_p50_p90": [
+            128.84191369554253,
+            480.5053707694786
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            6.5,
+            7.0
+          ],
+          "keypoints": [
+            196,
+            227
+          ],
+          "matches": 7,
+          "essential_inliers": 0
+        },
+        {
+          "time_s": [
+            7.0,
+            7.5
+          ],
+          "keypoints": [
+            227,
+            290
+          ],
+          "matches": 42,
+          "essential_inliers": 28,
+          "inlier_fraction": 0.6666666666666666,
+          "inlier_grid_cells_8x6": 10,
+          "rotation_compensated_residual_px_p50_p90": [
+            23.991663709261992,
+            31.879524586514812
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            7.5,
+            8.0
+          ],
+          "keypoints": [
+            290,
+            216
+          ],
+          "matches": 18,
+          "essential_inliers": 14,
+          "inlier_fraction": 0.7777777777777778,
+          "inlier_grid_cells_8x6": 9,
+          "rotation_compensated_residual_px_p50_p90": [
+            260.4789618868073,
+            303.2416562301055
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            8.0,
+            8.5
+          ],
+          "keypoints": [
+            216,
+            222
+          ],
+          "matches": 22,
+          "essential_inliers": 15,
+          "inlier_fraction": 0.6818181818181818,
+          "inlier_grid_cells_8x6": 8,
+          "rotation_compensated_residual_px_p50_p90": [
+            1199.5007381374505,
+            4207.586151475352
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            8.5,
+            9.0
+          ],
+          "keypoints": [
+            222,
+            263
+          ],
+          "matches": 74,
+          "essential_inliers": 67,
+          "inlier_fraction": 0.9054054054054054,
+          "inlier_grid_cells_8x6": 13,
+          "rotation_compensated_residual_px_p50_p90": [
+            122.79148119697139,
+            131.4612385375927
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            9.0,
+            9.5
+          ],
+          "keypoints": [
+            263,
+            183
+          ],
+          "matches": 24,
+          "essential_inliers": 20,
+          "inlier_fraction": 0.8333333333333334,
+          "inlier_grid_cells_8x6": 8,
+          "rotation_compensated_residual_px_p50_p90": [
+            37.364812285744286,
+            53.354453634779205
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            9.5,
+            10.0
+          ],
+          "keypoints": [
+            183,
+            152
+          ],
+          "matches": 27,
+          "essential_inliers": 24,
+          "inlier_fraction": 0.8888888888888888,
+          "inlier_grid_cells_8x6": 9,
+          "rotation_compensated_residual_px_p50_p90": [
+            748.0749975787053,
+            806.4520085320391
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            10.0,
+            10.5
+          ],
+          "keypoints": [
+            152,
+            250
+          ],
+          "matches": 49,
+          "essential_inliers": 42,
+          "inlier_fraction": 0.8571428571428571,
+          "inlier_grid_cells_8x6": 11,
+          "rotation_compensated_residual_px_p50_p90": [
+            85.06077342819961,
+            90.4505406129964
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            10.5,
+            11.0
+          ],
+          "keypoints": [
+            250,
+            281
+          ],
+          "matches": 61,
+          "essential_inliers": 55,
+          "inlier_fraction": 0.9016393442622951,
+          "inlier_grid_cells_8x6": 11,
+          "rotation_compensated_residual_px_p50_p90": [
+            167.25582728933804,
+            177.27831636700725
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            11.0,
+            11.5
+          ],
+          "keypoints": [
+            281,
+            327
+          ],
+          "matches": 39,
+          "essential_inliers": 27,
+          "inlier_fraction": 0.6923076923076923,
+          "inlier_grid_cells_8x6": 9,
+          "rotation_compensated_residual_px_p50_p90": [
+            42.934178053586784,
+            74.27538628503522
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            11.5,
+            12.0
+          ],
+          "keypoints": [
+            327,
+            158
+          ],
+          "matches": 17,
+          "essential_inliers": 2,
+          "inlier_fraction": 0.11764705882352941,
+          "inlier_grid_cells_8x6": 2,
+          "rotation_compensated_residual_px_p50_p90": [
+            15.758432269470735,
+            16.657526274479896
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            12.0,
+            12.5
+          ],
+          "keypoints": [
+            158,
+            251
+          ],
+          "matches": 37,
+          "essential_inliers": 32,
+          "inlier_fraction": 0.8648648648648649,
+          "inlier_grid_cells_8x6": 7,
+          "rotation_compensated_residual_px_p50_p90": [
+            142.28834087087813,
+            170.3836789200607
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            12.5,
+            13.0
+          ],
+          "keypoints": [
+            251,
+            133
+          ],
+          "matches": 9,
+          "essential_inliers": 0
+        },
+        {
+          "time_s": [
+            13.0,
+            13.5
+          ],
+          "keypoints": [
+            133,
+            182
+          ],
+          "matches": 34,
+          "essential_inliers": 30,
+          "inlier_fraction": 0.8823529411764706,
+          "inlier_grid_cells_8x6": 8,
+          "rotation_compensated_residual_px_p50_p90": [
+            138.79624883000736,
+            199.7074553505088
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            13.5,
+            14.0
+          ],
+          "keypoints": [
+            182,
+            225
+          ],
+          "matches": 10,
+          "essential_inliers": 0
+        },
+        {
+          "time_s": [
+            14.0,
+            14.5
+          ],
+          "keypoints": [
+            225,
+            255
+          ],
+          "matches": 12,
+          "essential_inliers": 5,
+          "inlier_fraction": 0.4166666666666667,
+          "inlier_grid_cells_8x6": 3,
+          "rotation_compensated_residual_px_p50_p90": [
+            15.255826755470316,
+            129.0881795033012
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            14.5,
+            15.0
+          ],
+          "keypoints": [
+            255,
+            272
+          ],
+          "matches": 19,
+          "essential_inliers": 14,
+          "inlier_fraction": 0.7368421052631579,
+          "inlier_grid_cells_8x6": 9,
+          "rotation_compensated_residual_px_p50_p90": [
+            279.03663394440105,
+            348.03850463862955
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            15.0,
+            15.5
+          ],
+          "keypoints": [
+            272,
+            249
+          ],
+          "matches": 8,
+          "essential_inliers": 0
+        },
+        {
+          "time_s": [
+            15.5,
+            16.0
+          ],
+          "keypoints": [
+            249,
+            396
+          ],
+          "matches": 25,
+          "essential_inliers": 17,
+          "inlier_fraction": 0.68,
+          "inlier_grid_cells_8x6": 10,
+          "rotation_compensated_residual_px_p50_p90": [
+            345.2387079368656,
+            394.8437433865845
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            16.0,
+            16.5
+          ],
+          "keypoints": [
+            396,
+            346
+          ],
+          "matches": 28,
+          "essential_inliers": 19,
+          "inlier_fraction": 0.6785714285714286,
+          "inlier_grid_cells_8x6": 9,
+          "rotation_compensated_residual_px_p50_p90": [
+            354.9576421494359,
+            398.9076054920242
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            16.5,
+            17.0
+          ],
+          "keypoints": [
+            346,
+            303
+          ],
+          "matches": 33,
+          "essential_inliers": 23,
+          "inlier_fraction": 0.696969696969697,
+          "inlier_grid_cells_8x6": 8,
+          "rotation_compensated_residual_px_p50_p90": [
+            51.774400200885616,
+            62.06097470236101
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            17.0,
+            17.5
+          ],
+          "keypoints": [
+            303,
+            209
+          ],
+          "matches": 58,
+          "essential_inliers": 45,
+          "inlier_fraction": 0.7758620689655172,
+          "inlier_grid_cells_8x6": 12,
+          "rotation_compensated_residual_px_p50_p90": [
+            11.512772230198571,
+            18.610077111294917
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            17.5,
+            18.0
+          ],
+          "keypoints": [
+            209,
+            114
+          ],
+          "matches": 20,
+          "essential_inliers": 9,
+          "inlier_fraction": 0.45,
+          "inlier_grid_cells_8x6": 6,
+          "rotation_compensated_residual_px_p50_p90": [
+            82.48068399231045,
+            127.96728422840708
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            18.0,
+            18.5
+          ],
+          "keypoints": [
+            114,
+            148
+          ],
+          "matches": 7,
+          "essential_inliers": 0
+        },
+        {
+          "time_s": [
+            18.5,
+            19.0
+          ],
+          "keypoints": [
+            148,
+            261
+          ],
+          "matches": 17,
+          "essential_inliers": 8,
+          "inlier_fraction": 0.47058823529411764,
+          "inlier_grid_cells_8x6": 6,
+          "rotation_compensated_residual_px_p50_p90": [
+            34.32005303794504,
+            125.95532855178267
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            19.0,
+            19.5
+          ],
+          "keypoints": [
+            261,
+            252
+          ],
+          "matches": 9,
+          "essential_inliers": 0
+        },
+        {
+          "time_s": [
+            19.5,
+            20.0
+          ],
+          "keypoints": [
+            252,
+            188
+          ],
+          "matches": 15,
+          "essential_inliers": 5,
+          "inlier_fraction": 0.3333333333333333,
+          "inlier_grid_cells_8x6": 2,
+          "rotation_compensated_residual_px_p50_p90": [
+            54.25812616475575,
+            73.35517850151462
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            20.0,
+            20.5
+          ],
+          "keypoints": [
+            188,
+            186
+          ],
+          "matches": 9,
+          "essential_inliers": 0
+        },
+        {
+          "time_s": [
+            20.5,
+            21.0
+          ],
+          "keypoints": [
+            186,
+            269
+          ],
+          "matches": 17,
+          "essential_inliers": 10,
+          "inlier_fraction": 0.5882352941176471,
+          "inlier_grid_cells_8x6": 8,
+          "rotation_compensated_residual_px_p50_p90": [
+            61.103153153904366,
+            102.1362749802632
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            21.0,
+            21.5
+          ],
+          "keypoints": [
+            269,
+            278
+          ],
+          "matches": 65,
+          "essential_inliers": 51,
+          "inlier_fraction": 0.7846153846153846,
+          "inlier_grid_cells_8x6": 15,
+          "rotation_compensated_residual_px_p50_p90": [
+            19.540631862456166,
+            26.80050735086734
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            21.5,
+            22.0
+          ],
+          "keypoints": [
+            278,
+            333
+          ],
+          "matches": 69,
+          "essential_inliers": 53,
+          "inlier_fraction": 0.7681159420289855,
+          "inlier_grid_cells_8x6": 13,
+          "rotation_compensated_residual_px_p50_p90": [
+            42.42284163647893,
+            51.097627281607345
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            22.0,
+            22.5
+          ],
+          "keypoints": [
+            333,
+            286
+          ],
+          "matches": 96,
+          "essential_inliers": 78,
+          "inlier_fraction": 0.8125,
+          "inlier_grid_cells_8x6": 20,
+          "rotation_compensated_residual_px_p50_p90": [
+            103.155447070783,
+            107.96116493440415
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        },
+        {
+          "time_s": [
+            22.5,
+            23.0
+          ],
+          "keypoints": [
+            286,
+            336
+          ],
+          "matches": 102,
+          "essential_inliers": 76,
+          "inlier_fraction": 0.7450980392156863,
+          "inlier_grid_cells_8x6": 18,
+          "rotation_compensated_residual_px_p50_p90": [
+            18.27522186330417,
+            22.60640517145189
+          ],
+          "translation_direction": "estimated up to scale; not serialized"
+        }
+      ]
+    }
+  ]
+}
