@@ -1,0 +1,263 @@
+{
+  "status": "failed",
+  "mesh_sha256": "e601a3601ad3d6ce4414bf4ded7e5389678ac9e2b96931aca7ba31a784ced944",
+  "cases": [
+    {
+      "meters_per_unit": 1.0,
+      "status": "failed",
+      "observation_source": "live_physx_tensor",
+      "authored_density": 1050.0,
+      "authored_youngs_modulus": 12000.0,
+      "authored_gravity": 9.81,
+      "settling_damping": 0.0,
+      "settling_threshold": 0.0,
+      "sleep_threshold": 0.0,
+      "acceleration_m_s2": [
+        [
+          -0.00011921826466506494,
+          -9.80925243122157,
+          -3.0137915979753255e-05
+        ],
+        [
+          0.00019496326190080067,
+          -9.80299817485518,
+          -0.0005754361144253805
+        ]
+      ],
+      "max_acceleration_error_m_s2": 0.0070281357950682626,
+      "rows": [
+        {
+          "tick": 0,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9998127597090152,
+            "median_volume_ratio": 0.999999947853749,
+            "total_absolute_volume_ratio": 1.0000000131997284,
+            "p99_absolute_volume_change": 3.192517975969533e-05
+          },
+          "translation_removed_rms_m": 0.0,
+          "usd_health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9998559718213226,
+            "median_volume_ratio": 0.9999999496287533,
+            "total_absolute_volume_ratio": 0.9999999646267494,
+            "p99_absolute_volume_change": 8.344812422534926e-06
+          },
+          "tensor_usd_max_difference_m": 0.00012776255707061738,
+          "tensor_usd_different_nodes": 5311
+        },
+        {
+          "tick": 60,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9984203023202661,
+            "median_volume_ratio": 0.9999999423567538,
+            "total_absolute_volume_ratio": 0.9999988380722431,
+            "p99_absolute_volume_change": 0.00035528012514016253
+          },
+          "translation_removed_rms_m": 1.0824237126161585e-06,
+          "usd_health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9998559718213226,
+            "median_volume_ratio": 0.9999999496287533,
+            "total_absolute_volume_ratio": 0.9999999646267494,
+            "p99_absolute_volume_change": 8.344812422534926e-06
+          },
+          "tensor_usd_max_difference_m": 0.0831553959305752,
+          "tensor_usd_different_nodes": 5311
+        },
+        {
+          "tick": 120,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9923144355714237,
+            "median_volume_ratio": 0.9999993140550019,
+            "total_absolute_volume_ratio": 0.9999987466464495,
+            "p99_absolute_volume_change": 0.0017238116212903167
+          },
+          "translation_removed_rms_m": 1.0510187268642677e-05,
+          "usd_health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9998559718213226,
+            "median_volume_ratio": 0.9999999496287533,
+            "total_absolute_volume_ratio": 0.9999999646267494,
+            "p99_absolute_volume_change": 8.344812422534926e-06
+          },
+          "tensor_usd_max_difference_m": 0.3194717470563755,
+          "tensor_usd_different_nodes": 5311
+        },
+        {
+          "tick": 180,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9817580237749861,
+            "median_volume_ratio": 0.9999510302741632,
+            "total_absolute_volume_ratio": 0.9999668639781928,
+            "p99_absolute_volume_change": 0.0042723891095017025
+          },
+          "translation_removed_rms_m": 4.619361216108583e-05,
+          "usd_health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9998559718213226,
+            "median_volume_ratio": 0.9999999496287533,
+            "total_absolute_volume_ratio": 0.9999999646267494,
+            "p99_absolute_volume_change": 8.344812422534926e-06
+          },
+          "tensor_usd_max_difference_m": 0.7089719904721403,
+          "tensor_usd_different_nodes": 5311
+        }
+      ]
+    },
+    {
+      "meters_per_unit": 0.01,
+      "status": "failed",
+      "observation_source": "live_physx_tensor",
+      "authored_density": 0.0010500000000000002,
+      "authored_youngs_modulus": 120.0,
+      "authored_gravity": 981.0,
+      "settling_damping": 0.0,
+      "settling_threshold": 0.0,
+      "sleep_threshold": 0.0,
+      "acceleration_m_s2": [
+        [
+          -0.00012466977057154878,
+          -9.808845211689537,
+          5.089108536985245e-06
+        ],
+        [
+          -0.00029194008038643815,
+          -9.804977710560763,
+          -0.0007834373702355102
+        ]
+      ],
+      "max_acceleration_error_m_s2": 0.005091403965026969,
+      "rows": [
+        {
+          "tick": 0,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9998092024500724,
+            "median_volume_ratio": 1.0000000594906622,
+            "total_absolute_volume_ratio": 1.0000000863792302,
+            "p99_absolute_volume_change": 2.4994284148838083e-05
+          },
+          "translation_removed_rms_m": 0.0,
+          "usd_health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9999379359026551,
+            "median_volume_ratio": 0.9999999961156747,
+            "total_absolute_volume_ratio": 1.0000000022346007,
+            "p99_absolute_volume_change": 1.0790466565158134e-05
+          },
+          "tensor_usd_max_difference_m": 0.00012774467471738169,
+          "tensor_usd_different_nodes": 5311
+        },
+        {
+          "tick": 60,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9986780359266454,
+            "median_volume_ratio": 0.9999994966599282,
+            "total_absolute_volume_ratio": 0.9999989385104667,
+            "p99_absolute_volume_change": 0.0003844576831509219
+          },
+          "translation_removed_rms_m": 1.8317981644767708e-06,
+          "usd_health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9999379359026551,
+            "median_volume_ratio": 0.9999999961156747,
+            "total_absolute_volume_ratio": 1.0000000022346007,
+            "p99_absolute_volume_change": 1.0790466565158134e-05
+          },
+          "tensor_usd_max_difference_m": 0.0831554508965765,
+          "tensor_usd_different_nodes": 5311
+        },
+        {
+          "tick": 120,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9942692101613769,
+            "median_volume_ratio": 0.9999838272243629,
+            "total_absolute_volume_ratio": 0.9999871531875619,
+            "p99_absolute_volume_change": 0.0017271326630593467
+          },
+          "translation_removed_rms_m": 2.287876909215714e-05,
+          "usd_health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9999379359026551,
+            "median_volume_ratio": 0.9999999961156747,
+            "total_absolute_volume_ratio": 1.0000000022346007,
+            "p99_absolute_volume_change": 1.0790466565158134e-05
+          },
+          "tensor_usd_max_difference_m": 0.3194828577327803,
+          "tensor_usd_different_nodes": 5311
+        },
+        {
+          "tick": 180,
+          "health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9826034216615442,
+            "median_volume_ratio": 0.9999901935296881,
+            "total_absolute_volume_ratio": 0.9999849149322717,
+            "p99_absolute_volume_change": 0.004534384609568401
+          },
+          "translation_removed_rms_m": 7.100297234741456e-05,
+          "usd_health": {
+            "tetrahedra": 22312,
+            "degenerate_rest_tetrahedra": 0,
+            "inverted_tetrahedra": 0,
+            "minimum_signed_volume_ratio": 0.9999379359026551,
+            "median_volume_ratio": 0.9999999961156747,
+            "total_absolute_volume_ratio": 1.0000000022346007,
+            "p99_absolute_volume_change": 1.0790466565158134e-05
+          },
+          "tensor_usd_max_difference_m": 0.7090194947630654,
+          "tensor_usd_different_nodes": 5311
+        }
+      ]
+    }
+  ],
+  "solver_iterations": 16,
+  "tensor_pipeline": "warp_cuda",
+  "scope": "16 versus 64 iterations reduces free-fall shape error but still fails unchanged gates. No surgical or contact acceptance.",
+  "material_si": {
+    "density_kg_m3": 1050,
+    "youngs_modulus_pa": 12000,
+    "poissons_ratio": 0.45
+  },
+  "gates": {
+    "max_translation_removed_rms_m": 1e-05,
+    "max_acceleration_error_m_s2": 0.1,
+    "minimum_volume_ratio": 0.99
+  }
+}
