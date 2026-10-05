@@ -76,7 +76,8 @@
     "Implemented calibrated multi-view surface-to-UV observation baking with fail-closed depth, mask, occlusion, and surface-facing checks; synthetic projection suite passed",
     "Added per-tool Newton VBD contact-law wrench logging and ran one stable 960 Hz paired coupon; preserved the low-rate inverted-mesh failure and invalid force spike",
     "Verified the wrench aggregation kernel against an independent closed-form 10 N force / 5 Nm moment synthetic load oracle; this validates logging arithmetic, not Newton's tissue-force model",
-    "Audited Newton 1.4 stable Neo-Hookean incremental shear response against published appendix rheometry; the constitutive-law gate failed at 40% compression and the negative result is retained"
+    "Audited Newton 1.4 stable Neo-Hookean incremental shear response against published appendix rheometry; the constitutive-law gate failed at 40% compression and the negative result is retained",
+    "Analytically audited PhysX fixed-corotated FEM energy under free-lateral compression and plate-plane shear; predicted 1.99x at 40% versus published 3–5x endpoints, while Isaac runtime remained explicitly unverified"
   ],
   "next_actions": [
     "Keep TGS external integration disabled: 6.1 failed pin gate before force testing. Investigate independent-process reset controls while preserving paired tolerance.",
@@ -87,6 +88,7 @@
     "Apply registered_surface_bake.py only after a target-specific mask, metric depth, camera poses, and tracked-surface registration are verified; current Appendix300 RGB clips lack these inputs",
     "Validate the Newton contact-law force estimator against an independent known-load deformable fixture and measured tissue force-displacement data before using it for control or safety claims",
     "Determine whether the integrated Isaac PhysX deformable law reproduces Appendix rheometer compression-stiffening curves; do not generalize the Newton-only audit to PhysX",
+    "Once Windows Application Control permits Isaac's bundled select module, execute a gravity-free PhysX FEM rheometer coupon at 0–40% compression and 1 Hz / 1% shear, record actual reaction torques, and compare to analytic fixed-corotated predictions",
     "Use per-sample normalized Appendix compression curves (not only group endpoint text) to evaluate a thermodynamically consistent compression/shear model and hold out specimens for validation",
     "Recover persistent surface appearance from multiple views with tool/HUD/specular masks; reject single-patch tiling as final solution",
     "Link reconstructed surface to FEM rest coordinates and measure deformation correspondence error",

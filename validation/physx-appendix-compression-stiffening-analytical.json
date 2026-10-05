@@ -1,0 +1,203 @@
+{
+  "status": "analytical_physx_constitutive_compression_stiffening_gate_failed_runtime_unverified",
+  "model": "Fixed-corotated PhysX soft-body energy: mu*||F-R||_F^2 + lambda/2*(det(F)-1)^2",
+  "stress": "P=2*mu*(F-R)+lambda*(J-1)*cof(F); sigma=P*F^T/J",
+  "assumptions": {
+    "physx_material_model": "eCO_ROTATIONAL, documented PhysX default; current scene specifies only Young's modulus and Poisson ratio",
+    "axial_compression": "Prescribed axial stretch 1-c with equal free lateral stretches solved from P22=P33=0",
+    "oscillatory_shear": "Small-amplitude shear in transverse plate plane; central difference of Cauchy sigma23 against current simple shear",
+    "poisson_ratio": 0.45,
+    "baseline_parameter_mapping": "mu=uncompressed appendix G-prime mean and isotropic lambda from nu; scale comparison only"
+  },
+  "groups": {
+    "control": {
+      "baseline_storage_modulus_pa": 1136.0,
+      "reported_increase_at_40pct_percent": 200.0,
+      "reported_factor_at_40pct": 3.0,
+      "approximate_reported_increase": false,
+      "analytical_physx_law_factor_at_40pct": 1.9928432751493188,
+      "analytical_physx_law_modulus_at_40pct_pa": 2263.869960569626,
+      "reported_implied_modulus_at_40pct_pa": 3408.0,
+      "relative_underprediction_of_factor": 0.33571890828356044,
+      "compression_curve": [
+        {
+          "compression_fraction": 0.0,
+          "axial_stretch": 1.0,
+          "free_lateral_stretch": 1.0,
+          "volume_ratio": 1.0,
+          "free_lateral_piola_residual_pa": 0.0,
+          "current_cauchy_shear_tangent_pa": 1136.0000000067364,
+          "ratio_to_uncompressed": 1.00000000000593
+        },
+        {
+          "compression_fraction": 0.1,
+          "axial_stretch": 0.9,
+          "free_lateral_stretch": 1.0481029615380115,
+          "volume_ratio": 0.9886678361862754,
+          "free_lateral_piola_residual_pa": 2.886366701204679e-10,
+          "current_cauchy_shear_tangent_pa": 1320.1522436452767,
+          "ratio_to_uncompressed": 1.162105848279293
+        },
+        {
+          "compression_fraction": 0.2,
+          "axial_stretch": 0.8,
+          "free_lateral_stretch": 1.1033880112031516,
+          "volume_ratio": 0.9739720826134769,
+          "free_lateral_piola_residual_pa": -1.8758328224066645e-12,
+          "current_cauchy_shear_tangent_pa": 1553.0547136875366,
+          "ratio_to_uncompressed": 1.3671256282460709
+        },
+        {
+          "compression_fraction": 0.3,
+          "axial_stretch": 0.7,
+          "free_lateral_stretch": 1.1676686363693138,
+          "volume_ratio": 0.954415031052401,
+          "free_lateral_piola_residual_pa": -2.830802259268239e-10,
+          "current_cauchy_shear_tangent_pa": 1855.8875041253373,
+          "ratio_to_uncompressed": 1.6337037888427264
+        },
+        {
+          "compression_fraction": 0.4,
+          "axial_stretch": 0.6,
+          "free_lateral_stretch": 1.2433263913308283,
+          "volume_ratio": 0.927516309227844,
+          "free_lateral_piola_residual_pa": 1.1368683772161603e-12,
+          "current_cauchy_shear_tangent_pa": 2263.869960569626,
+          "ratio_to_uncompressed": 1.9928432751493188
+        }
+      ]
+    },
+    "purulent": {
+      "baseline_storage_modulus_pa": 666.0,
+      "reported_increase_at_40pct_percent": 350.0,
+      "reported_factor_at_40pct": 4.5,
+      "approximate_reported_increase": false,
+      "analytical_physx_law_factor_at_40pct": 1.9928432751493181,
+      "analytical_physx_law_modulus_at_40pct_pa": 1327.2336212494458,
+      "reported_implied_modulus_at_40pct_pa": 2997.0,
+      "relative_underprediction_of_factor": 0.5571459388557071,
+      "compression_curve": [
+        {
+          "compression_fraction": 0.0,
+          "axial_stretch": 1.0,
+          "free_lateral_stretch": 1.0,
+          "volume_ratio": 1.0,
+          "free_lateral_piola_residual_pa": 0.0,
+          "current_cauchy_shear_tangent_pa": 666.0000000039494,
+          "ratio_to_uncompressed": 1.00000000000593
+        },
+        {
+          "compression_fraction": 0.1,
+          "axial_stretch": 0.9,
+          "free_lateral_stretch": 1.0481029615380115,
+          "volume_ratio": 0.9886678361862754,
+          "free_lateral_piola_residual_pa": 1.6922285794862546e-10,
+          "current_cauchy_shear_tangent_pa": 773.9624949540091,
+          "ratio_to_uncompressed": 1.162105848279293
+        },
+        {
+          "compression_fraction": 0.2,
+          "axial_stretch": 0.8,
+          "free_lateral_stretch": 1.1033880112031516,
+          "volume_ratio": 0.9739720826134769,
+          "free_lateral_piola_residual_pa": -1.1084466677857563e-12,
+          "current_cauchy_shear_tangent_pa": 910.5056684118832,
+          "ratio_to_uncompressed": 1.3671256282460709
+        },
+        {
+          "compression_fraction": 0.3,
+          "axial_stretch": 0.7,
+          "free_lateral_stretch": 1.1676686363693138,
+          "volume_ratio": 0.954415031052401,
+          "free_lateral_piola_residual_pa": -1.659827830735594e-10,
+          "current_cauchy_shear_tangent_pa": 1088.0467233692561,
+          "ratio_to_uncompressed": 1.633703788842727
+        },
+        {
+          "compression_fraction": 0.4,
+          "axial_stretch": 0.6,
+          "free_lateral_stretch": 1.2433263913308283,
+          "volume_ratio": 0.927516309227844,
+          "free_lateral_piola_residual_pa": 6.821210263296962e-13,
+          "current_cauchy_shear_tangent_pa": 1327.2336212494458,
+          "ratio_to_uncompressed": 1.9928432751493181
+        }
+      ]
+    },
+    "gangrenous": {
+      "baseline_storage_modulus_pa": 642.0,
+      "reported_increase_at_40pct_percent": 400.0,
+      "reported_factor_at_40pct": 5.0,
+      "approximate_reported_increase": true,
+      "analytical_physx_law_factor_at_40pct": 1.9928432751493186,
+      "analytical_physx_law_modulus_at_40pct_pa": 1279.4053826458626,
+      "reported_implied_modulus_at_40pct_pa": 3210.0,
+      "relative_underprediction_of_factor": 0.6014313449701363,
+      "compression_curve": [
+        {
+          "compression_fraction": 0.0,
+          "axial_stretch": 1.0,
+          "free_lateral_stretch": 1.0,
+          "volume_ratio": 1.0,
+          "free_lateral_piola_residual_pa": 0.0,
+          "current_cauchy_shear_tangent_pa": 642.000000003807,
+          "ratio_to_uncompressed": 1.00000000000593
+        },
+        {
+          "compression_fraction": 0.1,
+          "axial_stretch": 0.9,
+          "free_lateral_stretch": 1.0481029615380115,
+          "volume_ratio": 0.9886678361862754,
+          "free_lateral_piola_residual_pa": 1.631192958484462e-10,
+          "current_cauchy_shear_tangent_pa": 746.0719545953062,
+          "ratio_to_uncompressed": 1.1621058482792932
+        },
+        {
+          "compression_fraction": 0.2,
+          "axial_stretch": 0.8,
+          "free_lateral_stretch": 1.1033880112031516,
+          "volume_ratio": 0.9739720826134769,
+          "free_lateral_piola_residual_pa": -1.1084466677857563e-12,
+          "current_cauchy_shear_tangent_pa": 877.6946533339774,
+          "ratio_to_uncompressed": 1.3671256282460706
+        },
+        {
+          "compression_fraction": 0.3,
+          "axial_stretch": 0.7,
+          "free_lateral_stretch": 1.1676686363693138,
+          "volume_ratio": 0.954415031052401,
+          "free_lateral_piola_residual_pa": -1.5998580238374416e-10,
+          "current_cauchy_shear_tangent_pa": 1048.8378324370306,
+          "ratio_to_uncompressed": 1.6337037888427268
+        },
+        {
+          "compression_fraction": 0.4,
+          "axial_stretch": 0.6,
+          "free_lateral_stretch": 1.2433263913308283,
+          "volume_ratio": 0.927516309227844,
+          "free_lateral_piola_residual_pa": 5.684341886080801e-13,
+          "current_cauchy_shear_tangent_pa": 1279.4053826458626,
+          "ratio_to_uncompressed": 1.9928432751493186
+        }
+      ]
+    }
+  },
+  "summary": "Under this explicit free-lateral, current-configuration shear test, the documented fixed-corotated law predicts about 1.99x at 40% compression. The Appendix article reports about 3x, 4.5x and about 5x for control, purulent and gangrenous groups. Thus the analytical law underpredicts the reported group endpoint; this is not an Isaac runtime result.",
+  "runtime": {
+    "isaac_started": false,
+    "physx_simulation_executed": false,
+    "reason": "Existing Windows Isaac Python startup was blocked before SimulationApp construction when policy blocked importing select; the same startup was not repeated."
+  },
+  "limitations": [
+    "The article reports a small cohort and endpoint increase text; raw per-sample rheometer curves were not digitized.",
+    "This derivation does not establish the exact compiled PhysX runtime response, contact, viscoelasticity, hysteresis, damage, or fluid effects.",
+    "No material parameters were promoted or changed in the simulator."
+  ],
+  "source": {
+    "appendix_article": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11591559/",
+    "physx_constitutive_docs": "https://nvidia-omniverse.github.io/PhysX/physx/5.4.1/docs/SoftBodies.html",
+    "physx_material_model_api": "https://nvidia-omniverse.github.io/PhysX/physx/5.4.1/_api_build/structPxFEMSoftBodyMaterialModel.html",
+    "scene_script_sha256": "e3c2d9ebbbfad3db566b6332d7f61b6ff5f19668a2e0f36b135477126ed8c9a9",
+    "analysis_script_sha256": "d07744540c5c23d0f3054c338d8257e11cd7d5f2531cd71d974718ec2a514b2a"
+  }
+}
