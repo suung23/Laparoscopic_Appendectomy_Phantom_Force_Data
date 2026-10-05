@@ -1,0 +1,22 @@
+{
+  "active_nodes": 735,
+  "max_penetration_m": 0.0018326691847468347,
+  "energy_J": 1.435965938262068e-06,
+  "reaction_N": [
+    -1.561407309160878e-05,
+    8.054265534841734e-05,
+    -0.00012671832732952452
+  ],
+  "status": "static geometry contact diagnostic",
+  "synthetic_placement_translation_m": [
+    -0.034705541642502565,
+    0.026944804880751783,
+    -0.030072512788417438
+  ],
+  "source": "out/ct_appendectomy/bimanual_scene/rosota_distal.usda",
+  "collision_approximation": "convex hull",
+  "stiffness_N_per_m3": 100000.0,
+  "calibrated": false,
+  "RCM_controlled": false,
+  "dynamics_integrated": false
+}
