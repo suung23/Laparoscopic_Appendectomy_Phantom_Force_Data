@@ -1,0 +1,110 @@
+{
+  "status": "candidate_generated_visual_gate_not_achieved",
+  "dataset": "Appendix300",
+  "doi": "10.25532/OPARA-1173",
+  "license": "CC BY 4.0",
+  "source_video": "Video_Snippets/Center1/Center1_014.mp4",
+  "source_video_sha256": "af050e90b66076f7dd83e8278be3cc4bd50ea490a375165e9747946b0e94c2bc",
+  "source_data_policy": "Raw video, decoded frames, ROI patches and texture images remain local under ignored out/; only hashes and aggregate diagnostics are committed.",
+  "method": {
+    "frames": 3,
+    "requested_times_seconds": [11.965, 12.0, 12.035],
+    "decoded_frames": [
+      {"time_seconds": 11.9923662, "sha256": "ad8f64122e1e8846f358d6f88e3528252601006d437d50ba6201c38fb2255256"},
+      {"time_seconds": 12.0271919, "sha256": "78e7fb39426e77b88f786afb0ccdf6668ab1881e531840cca9002fc4a493dd89"},
+      {"time_seconds": 12.0620176, "sha256": "2f9bd46c97ae2d17432a8138803e089d13a70d97905645917ab5530613cc59fa"}
+    ],
+    "alignment": "per-ROI integer phase correlation to center frame",
+    "reproducibility": "Two independent three-frame builds matched decoded-frame, median-patch, direct-texture and quilt hashes for both ROIs.",
+    "unit_tests": "6 texture tests passed, including integer-shift recovery, max-shift rejection, and reviewed UV-layer rebinding.",
+    "primary_texture": "single aligned temporal-median crop resampled to UV texture; no tiling",
+    "comparison_texture": "seeded local patch quilting",
+    "rendered_into_usd": false,
+    "isaac_endoscope_render": false
+  },
+  "static_usd_candidate": {
+    "path": "out/ct_appendectomy/appendix300_temporal_texture_v11/appearance.usda (local, git-ignored)",
+    "sha256": "d84c59b90298ba99fc758a6ddb1d88baeabb98630ecda175cca906e8ac58bd37",
+    "parent_layer_sha256": "ec1677ba37c6551ac4502c18d2f15961734a7cc02357def7dc12f28a80fe0df8",
+    "operation": "Reused the provenance-checked UV/material layer and replaced only the two RGB texture asset paths.",
+    "resolved_sublayers": ["../ct_appendectomy.usda", "../fat_layer_v7/review.usda"],
+    "source_scene_layer_sha256": [
+      "26acbec1de64c3d125e6606cf245995bd6956517acbb5068ca6d588892bb1233",
+      "d77425e0000d6c2dc35162d5eb7dda6e29c7d3add1ac3143664a98bdc64fcc70"
+    ],
+    "uvs_reused_unchanged": true,
+    "geometry_unchanged_by_layer_operation": true,
+    "physics_unchanged_by_layer_operation": true,
+    "usd_runtime_load_verified": false,
+    "isaac_endoscope_render": false
+  },
+  "aligned_roi_diagnostics": {
+    "appendix": {
+      "roi_xyxy": [900, 240, 1160, 480],
+      "max_translation_px": [12, 8],
+      "median_patch_dimensions_px": [236, 224],
+      "single_frame_fraction_value_gt_230_low_chroma": 0.009824,
+      "three_frame_median_fraction_value_gt_230_low_chroma": 0.00611,
+      "single_frame_p99_value": 251.01,
+      "three_frame_median_p99_value": 229.0,
+      "single_frame_mean_adjacent_rgb_difference": 1.152,
+      "three_frame_median_mean_adjacent_rgb_difference": 1.048,
+      "highlight_repair_fraction_value_gt_230_low_chroma": 0.004124,
+      "highlight_repair_mean_adjacent_rgb_difference": 0.942,
+      "direct_texture_sha256": "49d988cd295f8989b84038b2b9989b429edde21e609b50b9df12a624706b1743",
+      "quilted_alternative_sha256": "9c20980fcd21028b30a4d2924e08546425ab74889ca83343f5a0097bc3fb2420"
+    },
+    "mesoappendix": {
+      "roi_xyxy": [260, 690, 610, 960],
+      "max_translation_px": [0, 0],
+      "median_patch_dimensions_px": [350, 270],
+      "single_frame_p99_value": 173.0,
+      "three_frame_median_p99_value": 172.0,
+      "single_frame_mean_adjacent_rgb_difference": 0.727,
+      "three_frame_median_mean_adjacent_rgb_difference": 0.688,
+      "direct_texture_sha256": "2f7eec0eb6afe7adec07824be02e53a0e145a7876a644a6ddda6091c57155a27",
+      "quilted_alternative_sha256": "175fb4ab8332de965629b25cc1c5e02245712c94c7269c2874433ad13979f56a"
+    }
+  },
+  "failed_attempts": [
+    {
+      "window": "9 frames, 0.06-second requested spacing",
+      "result": "aborted by max-shift guard",
+      "roi": "appendix",
+      "estimated_shift_xy_px": [-61, -1]
+    },
+    {
+      "window": "9 frames, 0.02-second requested spacing",
+      "result": "aborted by max-shift guard",
+      "roi": "appendix",
+      "estimated_shift_xy_px": [10, -30]
+    },
+    {
+      "window": "9 frames, 0.035-second requested spacing",
+      "result": "aborted by max-shift guard",
+      "roi": "appendix",
+      "estimated_shift_xy_px": [12, -43]
+    }
+  ],
+  "visual_review": {
+    "status": "failed",
+    "observed": [
+      "The direct crop preserves real tissue color but becomes visibly soft when stretched across a 1024x1024 UV image.",
+      "A residual bright highlight remains in the appendix crop.",
+      "Quilted alternative still creates repeated tissue forms and is not promoted.",
+      "The short temporal median lowers a narrow highlight statistic while reducing local image gradients; these are diagnostics, not realism metrics."
+    ],
+    "promotion": "Do not use as the accepted simulator appearance until a moving-endoscope render and blinded real-video comparison pass."
+  },
+  "interpretation": [
+    "Three nearby frames support a reproducible local color candidate, not a stable surface reconstruction.",
+    "The available ROI does not provide calibrated camera pose, depth, a same-patient CT-to-video map, or nonrigid surface correspondence.",
+    "Video RGB still mixes tissue reflectance with endoscope lighting, white balance, and specular response."
+  ],
+  "next_gate": [
+    "Select or segment verified appendix and mesoappendix tissue across more cases.",
+    "Estimate and report camera-relative motion and glint uncertainty without treating phase correlation as nonrigid tracking.",
+    "Apply candidates to dynamic mesh UVs and compare rendered sequences under a moving endoscope.",
+    "Keep the appearance gate false until held-out and blinded visual review is complete."
+  ]
+}

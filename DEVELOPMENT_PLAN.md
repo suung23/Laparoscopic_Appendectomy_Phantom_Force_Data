@@ -92,6 +92,43 @@ PhysX 속성이 없으므로 물리 불변성이나 접촉 충실도도 이 시�
 아니며, v7을 생산 재질로 채택하지 않는다. Isaac endoscope 렌더, 변형 중 UV
 안정성, 실제 영상 대비 검토가 남았다. 요약: `validation/appendix300-texture-v7-preflight.json`.
 
+### 2026-10-06 인접 프레임 텍스처 실험
+
+`ct_appendectomy/appendix300_temporal_texture.py`는 해시 검증된 Center1 클립에서
+중앙 프레임 주변 3개 프레임을 추출하고, 수작업 ROI별 위상 상관으로 정수 픽셀
+이동을 정렬한 뒤 시간 중앙값 패치를 만든다. 원본 ROI를 한 번만 UV에 채우는
+재질 후보와 quilting 대안을 각각 생성한다. 프레임의 실제 디코딩 PTS와 해시,
+ROI 이동량, 패치/텍스처 해시를 manifest에 남긴다. 테스트는 합성 이동 복구와
+큰 이동 거부, 검토된 USD 레이어의 텍스처 경로만 바꾸는 검사를 포함해 6개 통과했다.
+기존 해시 검증 USD 레이어에서 UV와 장면 sublayer를 재사용한 로컬 정적 후보도
+만들었다. 텍스처 경로 교체 외에는 그 레이어를 수정하지 않았다.
+
+긴 9프레임 구간은 충수 ROI에서 최대 이동 제한을 넘겨 세 번 거부했다. 3프레임
+후보는 좁은 밝은 픽셀 진단치가 0.982%에서 0.611%로 줄었지만, 인접 색상 차이도
+1.152에서 1.048로 낮아져 표면 디테일 손실이 함께 보였다. 반사 보정은 이 값을
+0.412%까지 낮추는 대신 인접 색상 차이를 0.942까지 더 줄였다. 흐릿한 단일 패치와
+잔류 하이라이트가 보여 육안 검토도 실패다. 이 수치는 제한된 픽셀 진단이며 사실감
+점수가 아니다. 따라서 candidate를 생산 재질로 승격하지 않았다.
+
+같은 로컬 실험은 다음 명령으로 재현한다.
+
+```powershell
+python ct_appendectomy/appendix300_temporal_texture.py `
+  --reference out/appendix300_reference `
+  --out out/ct_appendectomy/appendix300_temporal_texture_v11 `
+  --ffmpeg .cache/bin/ffmpeg.exe `
+  --center-seconds 12 --frame-count 3 --spacing-seconds 0.035 `
+  --parent-layer out/ct_appendectomy/appendix300_video_texture_v7/appearance.usda
+```
+
+새 출력은 원본 영상의 카메라-메시 정합, 비강체 표면 추적, albedo/BRDF 복원을
+하지 않는다. 정적 USD 파일은 만들었지만 Isaac 런타임에서 로드하거나 이동 내시경으로
+렌더하지는 않았다.
+시도 실패, 수치, 한계는 `validation/appendix300-temporal-texture-v1.json`에 남겼고,
+실제 영상 외의 개인 정보는 기록하거나 내보내지 않았다. Appendix300은 색상·조직
+통계의 출처로 활용할 수 있지만, 현 파이프라인은 실물 표면 재현 게이트를 통과하지
+못했다.
+
 ## M2 — 기구와 물리 접촉
 
 두 기구의 shaft/jaw, 포트 기반 RCM 및 속도/행동 제한을 구현한다. 접촉 파지와 보조 attachment를 구분한다. 접근–닫기–견인–열기 시퀀스, 비접촉 negative control, 관통/미끄러짐/핀 drift를 측정한다. 실제 물성 데이터가 없으면 estimated로 유지한다.

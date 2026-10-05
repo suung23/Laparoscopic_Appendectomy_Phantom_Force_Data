@@ -78,8 +78,11 @@
     },
     {
       "id": "real-video-appearance",
-      "status": "not achieved; Appendix300 texture candidate has USD transfer preflight only and remains unrendered",
-      "evidence": "validation/appendix300-texture-v7-preflight.json",
+      "status": "not achieved; single- and multi-frame Appendix300 candidates remain visually rejected/unrendered; no calibrated image-to-surface map",
+      "evidence": [
+        "validation/appendix300-texture-v7-preflight.json",
+        "validation/appendix300-temporal-texture-v1.json"
+      ],
       "requires": [
         "visible target-specific material comparison",
         "camera and light calibration",

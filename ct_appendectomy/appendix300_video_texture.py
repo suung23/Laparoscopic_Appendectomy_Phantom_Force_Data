@@ -53,7 +53,13 @@ def quilt_patch_texture(frame, box, output, seed=300, size=1024, patch_size=96, 
     It is stochastic appearance synthesis, not surface registration or albedo
     recovery. A fixed seed makes the candidate reproducible.
     """
-    patch = frame.crop(box).convert("RGB")
+    return quilt_patch_image(frame.crop(box), output, seed=seed, size=size,
+                             patch_size=patch_size, overlap=overlap)
+
+
+def quilt_patch_image(patch, output, seed=300, size=1024, patch_size=96, overlap=24):
+    """Synthesize a texture from an already cropped tissue patch."""
+    patch = patch.convert("RGB")
     source_patch_size = list(patch.size)
     # Conservatively attenuate broad lamp falloff. This cannot recover true
     # intrinsic albedo.
