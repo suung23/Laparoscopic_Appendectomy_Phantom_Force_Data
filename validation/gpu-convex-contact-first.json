@@ -1,0 +1,11 @@
+{
+  "max_force_difference_N": 1.6135977645194421e-19,
+  "max_energy_difference_J": 3.8670693636854044e-23,
+  "active_nodes_per_state": [
+    0,
+    1,
+    3,
+    2
+  ],
+  "scope": "Four recorded states, one left CAD convex hull; not all-part, continuous, or full GPU dynamics validation"
+}
