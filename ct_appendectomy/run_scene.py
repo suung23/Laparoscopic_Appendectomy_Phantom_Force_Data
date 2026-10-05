@@ -35,6 +35,7 @@ p.add_argument('--bimanual',action='store_true',help='Two independently controll
 p.add_argument('--bimanual-demo',action='store_true',help='Validate scripted two-hand approach, grasp, lift and release')
 p.add_argument('--jaw-collision',choices=('convexHull','convexDecomposition'),default='convexHull')
 p.add_argument('--require-appendix-visible',action='store_true',help='Require appendix semantic pixels in the captured RTX frame')
+p.add_argument('--replay-samples',type=int,default=0,help='Capture evenly spaced authored USD times; render-only CPU replay, not physics')
 p.add_argument('--graphics',choices=('vulkan','d3d12'),default='d3d12')
 p.add_argument('--out',type=Path,default=ROOT/'out/ct_appendectomy/isaac_probe')
 a=p.parse_args()
@@ -53,6 +54,7 @@ if a.disable_tool_contact and not (a.contact_probe or a.forceps_probe): p.error(
 if a.experimental_ct_contact and not a.contact_probe: p.error("CT contact requires --contact-probe")
 if not a.scene.is_file(): p.error('Build the CT scene first with build_scene.py')
 if a.frames<1: p.error('--frames must be positive')
+if a.replay_samples and (a.replay_samples<2 or a.physics or a.interactive): p.error('Replay requires at least 2 samples and render-only batch mode')
 if a.interactive and a.headless: p.error('--interactive requires a visible window')
 if a.interactive and (a.rl_smoke or a.forceps_rl_smoke): p.error('RL smoke checks are batch validations; use a physics probe for interactive viewing')
 a.out.mkdir(parents=True,exist_ok=True)
@@ -279,6 +281,28 @@ try:
     if a.bimanual_demo:
         from bimanual_demo import run as run_bimanual_demo
         report['bimanual_demo']=run_bimanual_demo(bimanual,simulation,rep,rgb,a.out)
+    if a.replay_samples:
+        import omni.timeline
+        from PIL import Image
+        timeline=omni.timeline.get_timeline_interface()
+        timeline.pause()
+        start,end=stage.GetStartTimeCode(),stage.GetEndTimeCode()
+        if end<=start: raise ValueError('Replay stage has no time interval')
+        replay_dir=a.out/'replay_frames';replay_dir.mkdir(exist_ok=True)
+        records=[];previous=None
+        for index,code in enumerate(np.linspace(start,end,a.replay_samples)):
+            timeline.set_current_time(float(code/stage.GetTimeCodesPerSecond()))
+            app.update()
+            rep.orchestrator.step(rt_subframes=8,delta_time=0.)
+            image=np.asarray(rgb.get_data())
+            if image.ndim!=3 or image.shape[:2]!=(720,1280):raise RuntimeError('Invalid replay frame')
+            image=image[:,:,:3].astype(np.uint8).copy()
+            Image.fromarray(image).save(replay_dir/f'{index:04d}.png')
+            records.append({'time_code':float(code),'seconds':float(code/stage.GetTimeCodesPerSecond()),
+                            'mean_pixel_change':float(np.abs(image.astype(float)-previous).mean()) if previous is not None else None})
+            previous=image.astype(float)
+        report['authored_replay']={'samples':records,'physics_executed':False,'RL':False,
+                                   'scope':'Rendering authored USD samples; image changes alone do not validate mechanics'}
     # A newly attached render product may not have a host buffer on its first step.
     for capture_attempt in range(4):
         rep.orchestrator.step(rt_subframes=8,delta_time=0.0)

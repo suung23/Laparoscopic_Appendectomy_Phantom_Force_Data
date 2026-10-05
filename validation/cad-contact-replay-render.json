@@ -1,0 +1,69 @@
+{
+  "engine": "Isaac Sim 6.1.0.0 / PhysX",
+  "mode": "render only",
+  "appendectomy_completed": false,
+  "appendix_patient_specific": false,
+  "registration_validated": false,
+  "source_scene_sha256": "f8788078cbd24ac2ac515294a3212cf2708ef778ddd7b92c4ef348c133471288",
+  "authored_replay": {
+    "samples": [
+      {
+        "time_code": 0.0,
+        "seconds": 0.0,
+        "mean_pixel_change": null
+      },
+      {
+        "time_code": 8.2,
+        "seconds": 0.040999999999999995,
+        "mean_pixel_change": 0.2930815972222222
+      },
+      {
+        "time_code": 16.4,
+        "seconds": 0.08199999999999999,
+        "mean_pixel_change": 0.35303240740740743
+      },
+      {
+        "time_code": 24.599999999999998,
+        "seconds": 0.12299999999999998,
+        "mean_pixel_change": 0.4158933738425926
+      },
+      {
+        "time_code": 32.8,
+        "seconds": 0.16399999999999998,
+        "mean_pixel_change": 0.40436921296296297
+      },
+      {
+        "time_code": 41.0,
+        "seconds": 0.205,
+        "mean_pixel_change": 0.28254304108796297
+      }
+    ],
+    "physics_executed": false,
+    "RL": false,
+    "scope": "Rendering authored USD samples; image changes alone do not validate mechanics"
+  },
+  "camera_ground_truth": {
+    "resolution": [
+      1280,
+      720
+    ],
+    "semantic_frame_fraction": {
+      "BACKGROUND": 0.35597222222222225,
+      "UNLABELLED": 0.006547309027777778,
+      "appendicular_artery": 0.0019140625,
+      "appendix": 0.047705078125,
+      "ascending_colon": 0.04199652777777778,
+      "authored_fat_layer": 0.029588758680555556,
+      "ileum": 0.30465711805555556,
+      "mesentery": 0.022727864583333333,
+      "peritoneum": 0.18889105902777778
+    },
+    "depth_finite_fraction": 0.6440277777777778,
+    "appendix_visibility_gate_passed": true,
+    "threshold_frame_fraction": 0.005,
+    "clinical_view_validated": false
+  },
+  "image_std": 101.9287593489763,
+  "frames": 10,
+  "status": "passed"
+}
