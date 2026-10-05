@@ -1,0 +1,133 @@
+{
+  "status": "completed reference run",
+  "error": null,
+  "steps": [
+    {
+      "optimizer_success": true,
+      "iterations": 500,
+      "residual_N": 6.338639536469486e-07,
+      "tolerance_N": 1e-06,
+      "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "status": "converged",
+      "artery_max_motion_mm": 0.6072164689184352,
+      "contact_before": {
+        "active_nodes": 735,
+        "max_penetration_m": 0.0018326691847468347,
+        "energy_J": 1.435965938262068e-06,
+        "reaction_N": [
+          -1.561407309160878e-05,
+          8.054265534841734e-05,
+          -0.00012671832732952452
+        ]
+      },
+      "contact_after": {
+        "active_nodes": 898,
+        "max_penetration_m": 0.0018413029387721216,
+        "energy_J": 1.4134760508988771e-06,
+        "reaction_N": [
+          0.00041785342531906,
+          -0.0003655444249639233,
+          -0.00013707205681966948
+        ]
+      },
+      "step": 0,
+      "load_torque_error_Nm": 7.877861790360218e-21,
+      "layer_max_motion_mm": 1.6955559808278713
+    },
+    {
+      "optimizer_success": true,
+      "iterations": 509,
+      "residual_N": 6.58716227476097e-07,
+      "tolerance_N": 1e-06,
+      "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "status": "converged",
+      "artery_max_motion_mm": 0.9350666818056699,
+      "contact_before": {
+        "active_nodes": 898,
+        "max_penetration_m": 0.00184130224084788,
+        "energy_J": 1.4134762996230963e-06,
+        "reaction_N": [
+          0.0004178541797261621,
+          -0.0003655448251560621,
+          -0.00013707209712440085
+        ]
+      },
+      "contact_after": {
+        "active_nodes": 522,
+        "max_penetration_m": 0.0017382398274557204,
+        "energy_J": 1.2162161200365413e-06,
+        "reaction_N": [
+          -2.0620797417557728e-05,
+          -0.00017304671087394808,
+          -9.701388043778743e-05
+        ]
+      },
+      "step": 1,
+      "load_torque_error_Nm": 1.4450851267227878e-20,
+      "layer_max_motion_mm": 1.827778694170538
+    },
+    {
+      "optimizer_success": true,
+      "iterations": 588,
+      "residual_N": 4.353756545888632e-07,
+      "tolerance_N": 1e-06,
+      "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "status": "converged",
+      "artery_max_motion_mm": 1.4213577938853592,
+      "contact_before": {
+        "active_nodes": 522,
+        "max_penetration_m": 0.0017382384320931954,
+        "energy_J": 1.216215979531852e-06,
+        "reaction_N": [
+          -2.0620793664233247e-05,
+          -0.0001730467261798791,
+          -9.701386002344679e-05
+        ]
+      },
+      "contact_after": {
+        "active_nodes": 571,
+        "max_penetration_m": 0.0016995436545266891,
+        "energy_J": 1.1776277385186347e-06,
+        "reaction_N": [
+          7.16577225531111e-05,
+          -7.027866616978312e-05,
+          -0.00010338139429298648
+        ]
+      },
+      "step": 2,
+      "load_torque_error_Nm": 1.8773773987852787e-20,
+      "layer_max_motion_mm": 2.271166101698225
+    }
+  ],
+  "dt": 0.004166666666666667,
+  "simulated_seconds": 0.0125,
+  "wall_seconds": 13.177501800004393,
+  "fixed_error_m": 0.0,
+  "last_layer_force_N": [
+    2.0620793664233247e-05,
+    0.0001730467261798791,
+    9.701386002344679e-05
+  ],
+  "force_source": "fixed CAD area-weighted penalty",
+  "scope": "CPU reference dynamics and USD display coupled; layer force lagged at step start",
+  "tool_contact": true,
+  "RCM_controlled": false,
+  "friction": false,
+  "collision_geometry": "convex CAD hull",
+  "RL": false,
+  "Isaac_physics": false,
+  "material_calibrated": false,
+  "artery_visual_following": true,
+  "vessel_mechanics": false,
+  "artery_shape_regularization": true,
+  "quality_gate": "failed: substantial penetration remains",
+  "initial_max_penetration_mm": 1.8326691847468346,
+  "final_max_penetration_mm": 1.699543654526689,
+  "limitations": [
+    "Fixed synthetic jaw pose starts inside tissue",
+    "Contact loads lagged at step start; not fully implicit contact",
+    "No friction, trocar control, robot reaction feedback or calibrated stiffness",
+    "No self-collision or neighboring-organ contact response",
+    "Rendered appearance of this run not yet reviewed"
+  ]
+}
