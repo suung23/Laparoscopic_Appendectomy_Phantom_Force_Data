@@ -10,7 +10,8 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "ct_appendectomy"))
-from appendix300_video_texture import build_from_verified_frame, suppress_local_specular
+from appendix300_video_texture import (build_from_verified_frame, quilt_patch_image,
+                                       suppress_local_specular)
 from appendix300_temporal_texture import (
     align_dense, copy_reviewed_temporal_uv_layer, deduplicate_odd_window,
     fuse_temporal_detail, phase_translation, rebind_reviewed_uv_layer, translate,
@@ -18,6 +19,34 @@ from appendix300_temporal_texture import (
 
 
 class Appendix300TextureTests(unittest.TestCase):
+    def test_masked_quilting_excludes_adjacent_tissue_from_sample_windows(self):
+        patch = np.zeros((64, 64, 3), dtype=np.uint8)
+        patch[:, :40] = (160, 50, 55)
+        patch[:, 40:] = (40, 160, 55)
+        target = np.zeros((64, 64), dtype=bool)
+        target[:, :40] = True
+
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "masked.png"
+            record = quilt_patch_image(
+                Image.fromarray(patch), output, seed=9, size=80,
+                patch_size=16, overlap=4, target_mask=target,
+                min_target_fraction=1.0)
+            result = np.asarray(Image.open(output).convert("RGB"))
+
+        self.assertTrue(record["target_mask_used"])
+        self.assertEqual(record["minimum_source_window_target_fraction"], 1.0)
+        self.assertLess(float(result[..., 1].mean()), 65.)
+
+    def test_masked_quilting_fails_closed_when_target_cannot_supply_patch(self):
+        patch = Image.new("RGB", (48, 48), (150, 70, 75))
+        target = np.zeros((48, 48), dtype=bool)
+        target[20:22, 20:22] = True
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaisesRegex(ValueError, "no patch window"):
+                quilt_patch_image(patch, Path(tmp) / "masked.png", size=80,
+                                  patch_size=16, overlap=4, target_mask=target)
+
     def test_phase_correlation_recovers_small_integer_camera_shift(self):
         rng = np.random.default_rng(27)
         source = rng.integers(20, 230, size=(96, 112, 3), dtype=np.uint8)

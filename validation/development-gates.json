@@ -83,15 +83,20 @@
     },
     {
       "id": "real-video-appearance",
-      "status": "not achieved; the Center2 nine-frame candidate now includes consensus-gated center-frame detail, and aggregate high-frequency energy rises against the temporal-median baseline, but visual review still finds a smooth appendix field and baked highlights; anatomy labels, Isaac moving-endoscope render, and held-out review remain incomplete; longer temporal windows failed; 2026-10-06 runtime attempt was blocked before Isaac startup by Windows Application Control blocking the Python select module",
+      "status": "not achieved; the Center2 nine-frame candidate includes consensus-gated detail but was rejected again on direct ROI review: the purported appendix crop mixes overlapping tissue and baked speculars, while the mesoappendix crop mixes adipose-like and adjacent tissue; neither has an instance mask or validated mesh correspondence, so do not use either as target-specific RL appearance. Mask-aware patch extraction is now implemented and tested but no expert-reviewed anatomy mask is available. Isaac moving-endoscope render and held-out review remain incomplete; longer temporal windows failed; 2026-10-06 runtime attempt was blocked before Isaac startup by Windows Application Control blocking the Python select module",
       "evidence": [
         "validation/appendix300-texture-v7-preflight.json",
         "validation/appendix300-temporal-texture-v1.json",
         "validation/appendix300-center2-dense-flow-appearance-v1.json",
         "validation/appendix300-center2-temporal-window-study-v1.json",
-        "validation/appendix300-detail-fusion-v19.json"
+        "validation/appendix300-detail-fusion-v19.json",
+        "validation/appendix300-surface-texture-audit-v20.json",
+        "ct_appendectomy/appendix300_video_texture.py",
+        "tests/test_appendix300_texture.py"
       ],
       "requires": [
+        "qualified-reviewer-confirmed target-specific instance masks",
+        "documented mapping between observed target regions and simulator mesh UV regions",
         "visible target-specific material comparison",
         "camera and light calibration",
         "specular/diffuse separation with uncertainty",

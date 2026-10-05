@@ -46,21 +46,56 @@ def suppress_local_specular(patch):
     return repaired, float(specular.mean())
 
 
-def quilt_patch_texture(frame, box, output, seed=300, size=1024, patch_size=96, overlap=24):
+def quilt_patch_texture(frame, box, output, seed=300, size=1024, patch_size=96, overlap=24,
+                        target_mask=None, min_target_fraction=0.98):
     """Synthesize a non-mirrored texture field from overlapping ROI crops.
 
     This reduces the obvious mirror symmetry of the initial proof of concept.
     It is stochastic appearance synthesis, not surface registration or albedo
     recovery. A fixed seed makes the candidate reproducible.
     """
+    cropped_mask = None
+    if target_mask is not None:
+        if isinstance(target_mask, Image.Image):
+            if target_mask.size != frame.size:
+                raise ValueError("Target mask must have the same dimensions as the source frame")
+            cropped_mask = target_mask.crop(box)
+        else:
+            mask_array = np.asarray(target_mask)
+            if mask_array.shape != (frame.height, frame.width):
+                raise ValueError("Target mask must have the same dimensions as the source frame")
+            x0, y0, x1, y1 = box
+            cropped_mask = mask_array[y0:y1, x0:x1]
     return quilt_patch_image(frame.crop(box), output, seed=seed, size=size,
-                             patch_size=patch_size, overlap=overlap)
+                             patch_size=patch_size, overlap=overlap,
+                             target_mask=cropped_mask,
+                             min_target_fraction=min_target_fraction)
 
 
-def quilt_patch_image(patch, output, seed=300, size=1024, patch_size=96, overlap=24):
-    """Synthesize a texture from an already cropped tissue patch."""
+def quilt_patch_image(patch, output, seed=300, size=1024, patch_size=96, overlap=24,
+                      target_mask=None, min_target_fraction=0.98):
+    """Synthesize a texture, optionally sampling only target-mask interiors.
+
+    A supplied mask is a binary target-instance mask at the source-patch
+    resolution. Windows below ``min_target_fraction`` target coverage are
+    excluded; if the mask cannot supply a complete source window, fail closed
+    instead of silently quilting adjacent tissue or background.
+    """
     patch = patch.convert("RGB")
     source_patch_size = list(patch.size)
+    mask_array = None
+    if target_mask is not None:
+        if not np.isfinite(min_target_fraction) or not 0 < min_target_fraction <= 1:
+            raise ValueError("min_target_fraction must be finite and in (0, 1]")
+        if isinstance(target_mask, Image.Image):
+            mask_array = np.asarray(target_mask.convert("L")) > 0
+        else:
+            mask_array = np.asarray(target_mask)
+            if mask_array.ndim != 2 or not np.isfinite(mask_array).all():
+                raise ValueError("Target mask must be a finite 2-D array")
+            mask_array = mask_array > 0
+        if mask_array.shape != (patch.height, patch.width) or not mask_array.any():
+            raise ValueError("Target mask must be nonempty and match the source patch")
     # Conservatively attenuate broad lamp falloff. This cannot recover true
     # intrinsic albedo.
     rgb = np.asarray(patch, dtype=np.float32)
@@ -84,11 +119,32 @@ def quilt_patch_image(patch, output, seed=300, size=1024, patch_size=96, overlap
     valid = np.zeros((size, size), dtype=bool)
     # Each grid cell chooses a low-error crop from a seeded candidate pool.
     candidates_per_cell = 32
+    integral = None
+    eligible_cache = {}
+    if mask_array is not None:
+        integral = np.pad(mask_array.astype(np.int32), ((1, 0), (1, 0))).cumsum(0).cumsum(1)
+
+    def eligible_origins(ph, pw):
+        key = (ph, pw)
+        if key not in eligible_cache:
+            counts = (integral[ph:, pw:] - integral[:-ph, pw:] -
+                      integral[ph:, :-pw] + integral[:-ph, :-pw])
+            ys, xs = np.nonzero(counts >= min_target_fraction * ph * pw)
+            if not len(xs):
+                raise ValueError("Target mask contains no patch window at the required coverage")
+            eligible_cache[key] = (xs, ys)
+        return eligible_cache[key]
+
     for y in range(0, size, stride):
         for x in range(0, size, stride):
             ph, pw = min(patch_size, size - y), min(patch_size, size - x)
-            xs = rng.integers(0, w - pw + 1, size=candidates_per_cell)
-            ys = rng.integers(0, h - ph + 1, size=candidates_per_cell)
+            if mask_array is None:
+                xs = rng.integers(0, w - pw + 1, size=candidates_per_cell)
+                ys = rng.integers(0, h - ph + 1, size=candidates_per_cell)
+            else:
+                eligible_x, eligible_y = eligible_origins(ph, pw)
+                sample = rng.integers(0, len(eligible_x), size=candidates_per_cell)
+                xs, ys = eligible_x[sample], eligible_y[sample]
             crops = [source[yy:yy+ph, xx:xx+pw] for xx, yy in zip(xs, ys)]
             left = x > 0
             top = y > 0
@@ -130,7 +186,12 @@ def quilt_patch_image(patch, output, seed=300, size=1024, patch_size=96, overlap
                                          "max_saturation": 200, "dilation_px": 9,
                                          "median_repair_px": 15},
             "seed": seed, "quilting_patch_px": patch_size,
-            "overlap_px": overlap, "candidate_crops_per_cell": candidates_per_cell}
+            "overlap_px": overlap, "candidate_crops_per_cell": candidates_per_cell,
+            "target_mask_used": mask_array is not None,
+            "target_mask_coverage_fraction": (float(mask_array.mean())
+                                               if mask_array is not None else None),
+            "minimum_source_window_target_fraction": (float(min_target_fraction)
+                                                       if mask_array is not None else None)}
 
 
 def build(reference, out, ffmpeg, sources=None):

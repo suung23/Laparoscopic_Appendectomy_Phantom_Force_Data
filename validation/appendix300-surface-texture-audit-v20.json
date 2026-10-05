@@ -1,0 +1,43 @@
+{
+  "status": "rejected_as_target_specific_tissue_texture",
+  "dataset": "Appendix300",
+  "doi": "10.25532/OPARA-1173",
+  "license": "CC BY 4.0",
+  "source_video": "Video_Snippets/Center2/Center2_2.mp4",
+  "source_video_sha256": "a38b416c45928266e333c46d40c278eff0386a0ca695d268c35ccf807fab04d5",
+  "reviewed_frame_time_seconds": 8.0,
+  "reviewed_frame_sha256": "dce9540f143d5ac1c4f21d007e780caef0c74f2696270d5cfda5e58a5482ff3d",
+  "source_candidate_report": "validation/appendix300-detail-fusion-v19.json",
+  "roi_boxes_xyxy": {
+    "appendix_candidate": [1780, 430, 2140, 790],
+    "mesoappendix_candidate": [1420, 590, 1780, 950]
+  },
+  "review_method": "Direct visual inspection of the original endoscopic frame and both exact candidate crops; no automated anatomy label was treated as truth.",
+  "findings": {
+    "appendix_candidate": [
+      "Crop contains overlapping pink/translucent tissue regions rather than an isolated, unambiguous appendix surface.",
+      "Neutral specular points and streaks remain baked into the observed RGB crop.",
+      "The crop boundary cuts across visible tissue structures, so quilting it cannot preserve anatomical continuity."
+    ],
+    "mesoappendix_candidate": [
+      "Crop mixes yellow adipose-like tissue with pink tissue and a boundary between them.",
+      "Multiple specular streaks remain fixed in the candidate RGB texture.",
+      "No instance mask separates mesoappendix from adjacent tissue."
+    ]
+  },
+  "decision": "Do not describe or promote the current UV maps as appendix or mesoappendix tissue appearance. Keep them as rejected image-transfer experiments; do not use for accepted RL appearance randomization.",
+  "mask_aware_sampler": {
+    "implementation": "ct_appendectomy/appendix300_video_texture.py::quilt_patch_image",
+    "behavior": "When a binary instance mask is supplied, source windows below the requested target coverage are excluded; generation fails if no eligible target window exists.",
+    "default_behavior": "No mask is inferred or fabricated; existing candidates remain unmasked and rejected.",
+    "tests": "tests/test_appendix300_texture.py::test_masked_quilting_excludes_adjacent_tissue_from_sample_windows; tests/test_appendix300_texture.py::test_masked_quilting_fails_closed_when_target_cannot_supply_patch"
+  },
+  "requirements_before_reconsideration": [
+    "Target-specific tissue instance mask reviewed by a qualified laparoscopic reviewer.",
+    "Mask-aware texture sampling that excludes tools, background, adjacent organs, and crop-boundary mixing.",
+    "A documented mapping between the observed target region and the simulator mesh/UV region; a rectangular crop is insufficient.",
+    "Separate baked illumination/specular observations from the material base-color candidate with an uncertainty record.",
+    "Isaac render review under a moving endoscope while the same mesh deforms, followed by blinded held-out comparison."
+  ],
+  "privacy": "No raw video, image crop, texture pixels, patient metadata, or user information is included in this tracked report; all image files remain local and git-ignored."
+}
