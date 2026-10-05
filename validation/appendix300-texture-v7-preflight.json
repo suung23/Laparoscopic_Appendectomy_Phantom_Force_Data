@@ -1,0 +1,40 @@
+{
+  "status": "candidate_usd_and_transfer_preflight_passed_visual_gate_not_passed",
+  "dataset": "Appendix300",
+  "license": "CC BY 4.0",
+  "source_video": "Center1_014.mp4",
+  "source_video_sha256": "af050e90b66076f7dd83e8278be3cc4bd50ea490a375165e9747946b0e94c2bc",
+  "source_frame_sha256": "78e7fb39426e77b88f786afb0ccdf6668ab1881e531840cca9002fc4a493dd89",
+  "parent_report_sha256": "705e9e717fa22174807cd6e3fd9bc7d03e5d81edebb1ec54a994dc8387efb425",
+  "method": "local HSV-value contrast plus saturation mask; expanded median repair; seeded overlapping patch quilting; face-varying UV binding",
+  "comparison": {
+    "baseline_v5": {
+      "fraction_value_gt_230": 0.0050678253173828125,
+      "fraction_value_gt_190_and_saturation_lt_145": 0.17953968048095703,
+      "value_p99": 210.0
+    },
+    "highlight_repair_v7": {
+      "fraction_value_gt_230": 0.0032339096069335938,
+      "fraction_value_gt_190_and_saturation_lt_145": 0.18531227111816406,
+      "value_p99": 204.0
+    },
+    "very_bright_pixel_relative_change": -0.36187429431689877
+  },
+  "texture_sha256": {
+    "appendix_appendix300_rgb.png": "713a2467cf35dca7ebd30502e3d226cbef891ccb4df1cc9b47674493fa9fcb85",
+    "mesoappendix_appendix300_rgb.png": "5c995f3bc8c04590aeefd27859136f84f83bb9f7f15f7357337a78227884aa64"
+  },
+  "appearance_usda_sha256": "ec1677ba37c6551ac4502c18d2f15961734a7cc02357def7dc12f28a80fe0df8",
+  "usd_geometry_unchanged": true,
+  "runtime_transfer_function": "runtime_appearance.apply_appearance completed on isolated in-memory USD stage; both target meshes bound under /World/Appendix300Look",
+  "rendered_in_isaac_endoscope": false,
+  "visual_review": "White glare points are reduced in the candidate but remain repeated; quilting pattern is visible. Do not promote to production appearance.",
+  "limitations": [
+    "No camera-to-mesh pixel registration",
+    "Single manually selected video frame, ROI anatomy labels unverified",
+    "No intrinsic albedo/BRDF estimation",
+    "No Isaac endoscope render or deforming runtime review",
+    "Image statistics are narrow diagnostics, not visual-fidelity metrics"
+  ],
+  "privacy": "Only hashes and aggregate statistics are recorded; source video, frames and textures remain local and ignored by Git"
+}

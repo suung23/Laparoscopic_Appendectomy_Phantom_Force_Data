@@ -78,6 +78,20 @@ PhysX 속성이 없으므로 물리 불변성이나 접촉 충실도도 이 시�
 제외한다. 코드와 요약 검증은 `validation/appendix300-texture-quilting-v2.json`에
 기록했다. 이 후보는 M1 시각 합격이 아니다.
 
+### 2026-10-06 로컬 반사점 완화와 런타임 전송 사전검사
+
+같은 해시 검증 프레임으로 v7 후보를 만들고, 넓은 밝기 문턱 대신 HSV 값의
+국소 대비와 채도 조건으로 작은 반사 후보를 찾아 중간값으로 완화했다.
+기존 `runtime_appearance.apply_appearance`가 요구하는 `/World/Appendix300Look`
+경로로 USD 재질을 작성하도록 맞췄다. 격리된 in-memory USD stage에서 실제
+전송 함수를 실행해 appendix와 mesoappendix 메시의 UV·텍스처 연결을 확인했다.
+
+타일의 매우 밝은 픽셀 비율은 v5 0.507%에서 v7 0.323%로 줄었지만, 밝고
+채도가 낮은 픽셀 비율은 오히려 17.95%에서 18.53%로 증가했다. 타일 검사에서도
+반사점과 quilting 반복 무늬가 남았다. 이는 좁은 픽셀 지표일 뿐 사실감 합격이
+아니며, v7을 생산 재질로 채택하지 않는다. Isaac endoscope 렌더, 변형 중 UV
+안정성, 실제 영상 대비 검토가 남았다. 요약: `validation/appendix300-texture-v7-preflight.json`.
+
 ## M2 — 기구와 물리 접촉
 
 두 기구의 shaft/jaw, 포트 기반 RCM 및 속도/행동 제한을 구현한다. 접촉 파지와 보조 attachment를 구분한다. 접근–닫기–견인–열기 시퀀스, 비접촉 negative control, 관통/미끄러짐/핀 drift를 측정한다. 실제 물성 데이터가 없으면 estimated로 유지한다.
