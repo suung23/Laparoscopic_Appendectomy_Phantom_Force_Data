@@ -1,0 +1,79 @@
+{
+  "status": "failed",
+  "reset_error": "Invalid reset: tet_inversion",
+  "rows": [
+    {
+      "phase": "tissue_after_initialize",
+      "symmetric_nearest_node_gap_max_m": 1.5472292644750466e-08,
+      "collision_support_audit": {
+        "nodes": 5311,
+        "boundary_nodes": 3538,
+        "penetrating_nodes": 0,
+        "penetrating_boundary_nodes": 0,
+        "maximum_interior_distance_m": 0.0,
+        "scope": "Node samples only; does not exclude element-face crossings between nodes."
+      }
+    },
+    {
+      "phase": "tissue_after_settlement",
+      "symmetric_nearest_node_gap_max_m": 1.580506819158526e-08,
+      "collision_support_audit": {
+        "nodes": 5311,
+        "boundary_nodes": 3538,
+        "penetrating_nodes": 1039,
+        "penetrating_boundary_nodes": 713,
+        "maximum_interior_distance_m": 0.005994196981191635,
+        "scope": "Node samples only; does not exclude element-face crossings between nodes."
+      }
+    },
+    {
+      "phase": "tissue_before_warmup",
+      "symmetric_nearest_node_gap_max_m": 1.5472292644750466e-08,
+      "collision_support_audit": {
+        "nodes": 5311,
+        "boundary_nodes": 3538,
+        "penetrating_nodes": 0,
+        "penetrating_boundary_nodes": 0,
+        "maximum_interior_distance_m": 0.0,
+        "scope": "Node samples only; does not exclude element-face crossings between nodes."
+      }
+    },
+    {
+      "phase": "tissue_warmup_1",
+      "symmetric_nearest_node_gap_max_m": 1.5472292644750466e-08,
+      "collision_support_audit": {
+        "nodes": 5311,
+        "boundary_nodes": 3538,
+        "penetrating_nodes": 0,
+        "penetrating_boundary_nodes": 0,
+        "maximum_interior_distance_m": 0.0,
+        "scope": "Node samples only; does not exclude element-face crossings between nodes."
+      }
+    },
+    {
+      "phase": "tissue_warmup_480",
+      "symmetric_nearest_node_gap_max_m": 1.580506819158526e-08,
+      "collision_support_audit": {
+        "nodes": 5311,
+        "boundary_nodes": 3538,
+        "penetrating_nodes": 1033,
+        "penetrating_boundary_nodes": 706,
+        "maximum_interior_distance_m": 0.005996527150273323,
+        "scope": "Node samples only; does not exclude element-face crossings between nodes."
+      }
+    },
+    {
+      "phase": "tissue_warmup_60",
+      "symmetric_nearest_node_gap_max_m": 1.580506819158526e-08,
+      "collision_support_audit": {
+        "nodes": 5311,
+        "boundary_nodes": 3538,
+        "penetrating_nodes": 1060,
+        "penetrating_boundary_nodes": 726,
+        "maximum_interior_distance_m": 0.0059994421899318695,
+        "scope": "Node samples only; does not exclude element-face crossings between nodes."
+      }
+    }
+  ],
+  "scope": "Live collision and simulation point sets agree to about 16 nanometers at sampled phases. Nearest-point comparison does not establish material correspondence. Collision points also penetrate support; no mechanics pass."
+}
