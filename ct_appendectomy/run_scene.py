@@ -239,6 +239,8 @@ try:
             add_labels(prim,[prim.GetParent().GetName()])
         elif path=='/World/BodyEnvelope/render':
             add_labels(prim,['body_envelope'])
+        elif prim.IsA(UsdGeom.Mesh) and path.startswith('/SurgicalRegion/'):
+            add_labels(prim,[prim.GetName().split('_FJ')[0]])
     product=rep.create.render_product('/World/Endoscope',(1280,720))
     rgb=rep.AnnotatorRegistry.get_annotator('rgb')
     rgb.attach([product])

@@ -1,0 +1,69 @@
+{
+  "status": "native atlas inspected; surgical visual gate failed",
+  "engine": "Isaac Sim 6.1.0.0 / PhysX",
+  "view": {
+    "source_sha256": "cad6294ed4e7a151bd968ff5c7147d47e4e57d1345c330d60d3221a362fbb68c",
+    "selected": {
+      "eye_m": [
+        -0.017700732789787774,
+        0.01300847782804109,
+        -0.10751416731531202
+      ],
+      "clearance_m": 0.020763065778736333,
+      "visibility": [
+        0.9166666666666666,
+        0.5,
+        0.20833333333333334
+      ]
+    },
+    "targets": [
+      "appendix_FJ2565",
+      "mesoappendix_FJ3397",
+      "ascending_colon_FJ2566"
+    ],
+    "aim_m": [
+      -0.05387725250345306,
+      0.02479058354632368,
+      -0.02595166731531203
+    ],
+    "candidate_count": 192,
+    "valid_candidates": 152,
+    "geometry_changed": false,
+    "hidden_structures": false,
+    "camera_scope": "Atlas inspection camera; no trocar, patient or optical calibration",
+    "ray_visibility_scope": "Fraction of selected target rays first hitting the named structure, not screen area"
+  },
+  "render_artifacts_sha256": {
+    "review.usda": "1d6f6b56f9725b8851a69d73ebfe79424e36a21df9de0bbfabd52534cfaacff3",
+    "render/endoscope.png": "b9c5ba00fef5c582dd1443cd52f7d9e927cf5c5639632f62c4e150b0ef993bf1",
+    "render/report.json": "676679db45abbc54e346c5c832cb0d8e094218d52a7fd3f4acf94a43843f5653"
+  },
+  "semantic_frame_fraction": {
+    "BACKGROUND": 0.35597222222222225,
+    "UNLABELLED": 0.0,
+    "appendicular_artery": 0.003427734375,
+    "appendix": 0.04770833333333333,
+    "ascending_colon": 0.041981336805555554,
+    "ileum": 0.3061599392361111,
+    "mesentery": 0.023047960069444446,
+    "mesoappendix": 0.017816840277777777,
+    "peritoneum": 0.20388563368055557
+  },
+  "observations": [
+    "Native appendix has an elongated curved silhouette; earlier end-on hybrid view obscured that shape",
+    "Native spatial arrangement exposes appendix, adjacent broad tissue sheet and branching artery together",
+    "Large planar facets and crude surrounding tissue boundaries are conspicuous without subdivision",
+    "No lobulated fat or resolved thin translucent tissue layers comparable to inspected Appendix300 samples",
+    "Black background exposes incomplete cavity context; this is an anatomical inspection, not a laparoscopic camera evaluation"
+  ],
+  "decision": "Use native atlas as coarse positional reference only. Build layered surgical-region anatomy rather than increasing atlas polygon count or treating this view as an improved simulator.",
+  "geometry_quality_passed": false,
+  "clinical_camera_passed": false,
+  "physics_or_rl_tested": false,
+  "next_requirements": [
+    "Resolved membrane and fat components with explicit provenance and thickness assumptions",
+    "Anatomical junction continuity and surrounding bowel folds",
+    "Common physical deformation state for tissue layers and instrument contact",
+    "Review against multiple surgical video cases, not this best-visibility atlas view"
+  ]
+}
