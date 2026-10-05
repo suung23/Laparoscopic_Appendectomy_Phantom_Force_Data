@@ -1,0 +1,18 @@
+{
+  "status": "failed",
+  "error": "Tissue did not reach the measured reset equilibrium gate",
+  "measured_equilibrium": false,
+  "physics_ticks": 3840,
+  "limits": {
+    "rms_speed_m_s": 0.0001,
+    "p99_speed_m_s": 0.0005,
+    "consecutive_windows": 4
+  },
+  "last": {
+    "rms_speed_m_s": 0.0029465496324046388,
+    "p99_speed_m_s": 0.00596170047941762,
+    "max_speed_m_s": 0.008167073878978462,
+    "stable_windows": 0
+  },
+  "scope": "No measured equilibrium within the configured reset horizon. Not proof of divergence or solver convergence."
+}
