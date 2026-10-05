@@ -17,12 +17,14 @@ import newton
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--mesh',type=Path,required=True);p.add_argument('--out',type=Path,required=True)
 p.add_argument('--steps',type=int,default=960);p.add_argument('--iterations',type=int,default=12)
+p.add_argument('--vertex-contact-only',action='store_true',help='Diagnostic ablation of edge/face contacts; not a production recommendation')
 a=p.parse_args()
 if a.steps<1 or a.iterations<1:p.error('Positive step and iteration counts required')
 a.out.mkdir(parents=True,exist_ok=True)
 z=np.load(a.mesh);rest=z['points'].copy();rest-=rest.mean(0);tets=z['tets']
 report=dict(status='starting',engine='Newton '+newton.__version__,mesh_sha256=hashlib.sha256(a.mesh.read_bytes()).hexdigest(),
     physics_dt_s=1/480,iterations=a.iterations,steps=a.steps,particle_radius_m=.0004,
+    full_surface_contact=not a.vertex_contact_only,
     scope='Same tetrahedra/material/gravity; contact algorithm, particle radius and solver iterations differ. No force calibration or surgical acceptance.')
 def save():(a.out/'report.json').write_text(json.dumps(report,indent=2)+'\n')
 save()
@@ -53,7 +55,7 @@ try:
         raise RuntimeError('Solver masses disagree with density-weighted tetrahedral volume')
     model.soft_contact_ke=1000.;model.soft_contact_kd=0.;model.soft_contact_mu=.5
     solver=newton.solvers.SolverVBD(model,iterations=a.iterations,particle_enable_self_contact=False)
-    pipeline=newton.CollisionPipeline(model,soft_contact_margin=.0008,enable_rigid_soft_full_surface_contact=True)
+    pipeline=newton.CollisionPipeline(model,soft_contact_margin=.0008,enable_rigid_soft_full_surface_contact=not a.vertex_contact_only)
     s0,s1=model.state(),model.state();control=model.control();contacts=pipeline.contacts()
     rows=[];first=None;worst=0;minimum=1.;penetration=0.
     for tick in range(a.steps+1):
