@@ -49,9 +49,16 @@ def project_boundary(mesh,landmarks,max_distance):
     landmarks=np.asarray(landmarks,float)
     if landmarks.ndim!=2 or landmarks.shape[1]!=3 or not np.isfinite(landmarks).all():
         raise ValueError('Finite 3D landmarks required')
-    projected,distance,faces=trimesh.proximity.closest_point(mesh,landmarks)
+    # Trimesh's absolute tolerances can misclassify small triangles in metres.
+    # Normalize only the query copy, retaining original face/node ordering.
+    origin=mesh.bounds.mean(axis=0)
+    scale=1./float(np.ptp(mesh.vertices,axis=0).max())
+    if not np.isfinite(scale):raise ValueError('Nonzero parent extent required')
+    query=trimesh.Trimesh((mesh.vertices-origin)*scale,mesh.faces,process=False)
+    local,distance,faces=trimesh.proximity.closest_point(query,(landmarks-origin)*scale)
+    projected=local/scale+origin;distance=distance/scale
     if np.any(distance>max_distance):raise ValueError('Landmark exceeds projection limit; review attachment location')
-    weights=trimesh.triangles.points_to_barycentric(mesh.triangles[faces],projected)
+    weights=trimesh.triangles.points_to_barycentric(query.triangles[faces],local)
     binding=SurfaceBinding(mesh.faces[faces],weights,len(mesh.vertices))
     np.testing.assert_allclose(binding.positions(mesh.vertices),projected,rtol=0,atol=1e-10)
     return binding,distance

@@ -52,18 +52,28 @@ def resample_path(points,count):
     return np.column_stack([np.interp(samples,arc,points[:,axis]) for axis in range(3)]),arc[-1]
 
 
-def build(scene,out):
+def build(scene,out,avoid_colon=False):
     stage=Usd.Stage.Open(str(scene.resolve()))
     path='/SurgicalRegion/appendix_FJ2565'
     appendix=mesh_at(stage,path)
     meso=mesh_at(stage,'/SurgicalRegion/mesoappendix_FJ3397')
     colon=mesh_at(stage,'/SurgicalRegion/ascending_colon_FJ2566')
-    _,near_meso,_=trimesh.proximity.closest_point(meso,appendix.vertices)
-    _,near_colon,_=trimesh.proximity.closest_point(colon,appendix.vertices)
-    start=int(np.argmin(near_colon))
-    end=int(np.argmax(np.linalg.norm(appendix.vertices-appendix.vertices[start],axis=1)))
-    indices=edge_path(appendix,near_meso,start,end)
-    samples,length=resample_path(appendix.vertices[indices],65)
+    search=appendix
+    if avoid_colon:
+        vertices,faces=trimesh.remesh.subdivide_to_size(appendix.vertices,appendix.faces,max_edge=.001,max_iter=8)
+        search=trimesh.Trimesh(vertices,faces,process=True)
+    _,near_meso,_=trimesh.proximity.closest_point(meso,search.vertices)
+    _,near_colon,_=trimesh.proximity.closest_point(colon,search.vertices)
+    allowed=(~colon.contains(search.vertices))&(near_colon>=.0002) if avoid_colon else np.ones(len(search.vertices),bool)
+    ids=np.flatnonzero(allowed)
+    start=int(ids[np.argmin(near_colon[ids])])
+    end=int(ids[np.argmax(np.linalg.norm(search.vertices[ids]-search.vertices[start],axis=1))])
+    indices=edge_path(search,near_meso,start,end,allowed_vertices=allowed)
+    samples,length=resample_path(search.vertices[indices],65)
+    # Segment samples are separate evidence from feasible graph vertices.
+    probes=np.concatenate([samples]+[(1-t)*samples[:-1]+t*samples[1:] for t in (.25,.5,.75)])
+    if avoid_colon and colon.contains(probes).any():
+        raise ValueError('Resampled boundary still intersects colon')
     binding,projection=project_boundary(appendix,samples,1e-7)
     bound=binding.positions(appendix.vertices)
     # These are serialization/correspondence invariants, not tissue validation.
@@ -77,10 +87,11 @@ def build(scene,out):
         parent_vertices_sha256=hashlib.sha256(appendix.vertices.tobytes()).hexdigest(),
         parent_faces_sha256=hashlib.sha256(appendix.faces.tobytes()).hexdigest(),
         parent_vertex_count=len(appendix.vertices),nodes=binding.nodes.tolist(),weights=binding.weights.tolist(),
-        rest_positions_m=bound.tolist(),source_edge_path=indices.tolist(),arc_length_mm=float(length*1000),
+        rest_positions_m=bound.tolist(),search_edge_path=indices.tolist(),search_vertex_count=len(search.vertices),
+        avoid_colon=avoid_colon,colon_clearance_authoring_m=.0002 if avoid_colon else None,arc_length_mm=float(length*1000),
         meso_distance_mm_min_median_max=(np.quantile(meso_distance,[0,.5,1])*1000).tolist(),
         max_projection_error_m=float(projection.max()),
-        heuristics={'base':'appendix vertex nearest native ascending-colon mesh',
+        heuristics={'base':'nearest allowed appendix surface sample to native colon (outside with 0.2 mm authoring clearance when enabled)',
             'distal':'appendix vertex farthest in Euclidean distance from selected base',
             'edge_cost':'edge length times (1 + (mean meso distance / 2 mm)^2)'},
         clinical_attachment_validated=False,force_coupling_integrated=False,
@@ -103,4 +114,5 @@ if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--scene',type=Path,default=Path('out/ct_appendectomy/native_source_review/review.usda'))
     p.add_argument('--out',type=Path,default=Path('out/ct_appendectomy/attachment_curve_v1'))
-    a=p.parse_args();build(a.scene,a.out)
+    p.add_argument('--avoid-colon',action='store_true')
+    a=p.parse_args();build(a.scene,a.out,a.avoid_colon)

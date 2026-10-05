@@ -1,0 +1,27 @@
+{
+  "status": "rejected: organ penetration detected",
+  "source_scene_sha256": "1d6f6b56f9725b8851a69d73ebfe79424e36a21df9de0bbfabd52534cfaacff3",
+  "appendix_profile_sha256": "7d573093b6f4563e1153327bfb461a40dc167ff7f53093257fa55b439d43be2f",
+  "boundary_position_error_m": 1.3877787807814457e-17,
+  "penetrations": {
+    "/SurgicalRegion/appendicular_artery_FJ3410": {
+      "centroids_inside_over_0_1mm": 25,
+      "max_depth_mm": 0.4460606328709929
+    }
+  },
+  "anatomy_accepted": false,
+  "physics_integrated": false,
+  "scope": "Triangle centroid containment over 0.1 mm only; no exhaustive intersections, render, tissue material or RL validation.",
+  "numerical_fix": "Normalize parent query geometry and barycentric calculation, preserving original vertex/face IDs.",
+  "failures_retained": [
+    "First run Rtree native access violation during nearest query",
+    "Second run Rtree native access violation during containment",
+    "Third fresh process completed; intermittent native stability unresolved"
+  ],
+  "projection_scale_checks": [
+    1e-05,
+    0.001,
+    1,
+    1000
+  ]
+}

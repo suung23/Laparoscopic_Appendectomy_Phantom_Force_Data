@@ -35,7 +35,8 @@ def build(scene,profile,out):
     local=parent.submesh([np.flatnonzero(keep)],append=True)
     vertices,faces=trimesh.remesh.subdivide_to_size(local.vertices,local.faces,max_edge=.001,max_iter=8)
     search=trimesh.Trimesh(vertices,faces,process=True)
-    _,near,_=trimesh.proximity.closest_point(envelope,search.vertices)
+    near=np.concatenate([trimesh.proximity.closest_point(envelope,chunk)[1]
+        for chunk in np.array_split(search.vertices,max(1,len(search.vertices)//1024+1))])
     # Explicit authoring corridor, not an anatomical tolerance. Reject paths
     # outside the native envelope neighborhood or within adjacent ileum.
     allowed=near<=.003
