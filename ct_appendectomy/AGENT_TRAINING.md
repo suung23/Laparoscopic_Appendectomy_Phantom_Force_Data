@@ -78,6 +78,42 @@ Success requires ten held steps after closing and commanding at least 8 mm lift 
 
 Reward is +5 on success, -5 on physical failure, -0.002 per action, plus potential shaping `0.99 * Phi(next) - Phi(current)`. Phi includes closure progress (0.25) and retained lift progress (0.75). Terminal Phi is zero; a time limit retains its bootstrap value. Use gamma 0.99 with this reward version. `info.is_success` and `termination_reason` determine outcomes; return alone is not a success test.
 
+## Rosota FR3 waypoint PPO pretraining
+
+`rosota_rl_adapter.py` wraps the actual `RosotaCTEnv` controller path in a 14-D
+normalized action and 53-D privileged state. Each arm controls local tip xyz,
+shaft-axis roll and jaw aperture (-1 closed, +1 fully open); two tilt channels
+are fixed at zero under the strict aperture profile. Translation is capped at
+0.12 mm per 30 Hz action and roll at 0.4 rad/s. Four additional actions move
+the endoscope through its geometric trocar pivot, but scope movement has no
+reward term in this waypoint task. The state contains measured joint/tool/goal/scope
+poses, jaw state, locally tared mount reactions and contact/hold flags. The
+reaction and jaw-effort features are simulator sensor signals, not calibrated
+tissue force. This is not an image policy.
+
+`run_rosota_rl.py` trains the local PPO implementation and evaluates matched
+seed sets against a geometric waypoint controller and a random policy. Its
+current objective is only two-arm trocar-constrained waypoint reach; it does
+not reward scope exploration, train a grasp policy, dissect, or complete appendectomy.
+The current CT articulation has no shaft-organ collision geometry. A ten-step,
+0.5 mm waypoint hold is an engineering benchmark threshold, not a surgical
+success criterion. `--eval-assets` records a different scene hash but
+does not establish patient-level held-out generalization. Reset-state hashes
+are compared because reset equilibrium is not yet repeatable.
+
+Example after preparing `multitask_assets`:
+
+```powershell
+./../../work/isaac-venv/Scripts/python.exe ct_appendectomy/run_rosota_rl.py `
+  --headless --train-steps 4096 --eval-episodes 10 `
+  --assets out/ct_appendectomy/multitask_assets `
+  --out out/ct_appendectomy/rosota_rl_waypoint_v1
+```
+
+The adapter, PPO updates and deterministic policy contracts pass CPU/mock tests
+only. The local Isaac Python executable is blocked by Windows Application
+Control, so no Rosota PPO or evaluation episode is claimed.
+
 ## Learning and evidence
 
 The local PPO implementation uses tanh Gaussian actions, clipped policy updates, a value baseline, GAE, gradient clipping and separate masks for termination and truncation. See the [PPO paper](https://arxiv.org/abs/1707.06347) and [Gymnasium time-limit semantics](https://gymnasium.farama.org/tutorials/gymnasium_basics/handling_time_limits/). Optional behavior cloning collects one successful real simulator demonstration; its steps and loss are reported separately from PPO interaction counts.

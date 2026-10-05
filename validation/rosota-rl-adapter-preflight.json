@@ -1,0 +1,99 @@
+{
+  "status": "normalized_contract_and_mock_ppo_preflight_passed_runtime_pending",
+  "environment": "RosotaCTEnv with original Rosota FR3 TipController and geometric trocar scope",
+  "task": "Two-arm trocar-constrained waypoint reach; scope RCM actions exposed but not rewarded",
+  "appendectomy_completed": false,
+  "appendix_grasp_task": false,
+  "shaft_organ_collision_enabled": false,
+  "action_contract": {
+    "version": "bimanual_trocar_scope_v1",
+    "dimension": 14,
+    "per_hand": [
+      "local_tip_dx_m",
+      "local_tip_dy_m",
+      "local_tip_dz_m",
+      "shaft_roll_rad",
+      "jaw_aperture_normalized_minus1_closed_plus1_open"
+    ],
+    "scope": "Four normalized RCM rates",
+    "per_action_tip_translation_cap_m": 0.00012,
+    "roll_speed_limit_rad_s": 0.4,
+    "per_action_roll_cap_rad": 0.013333333333333334,
+    "tool_tilt_actions_locked": true
+  },
+  "jaw_semantics_source_check": {
+    "source": "RosotaArmController.tick gripper_target_deg=row[6]/100*open_deg",
+    "native_row_6_zero": "closed",
+    "native_row_6_100": "open",
+    "geometric_baseline_action": "+1 opens both jaws"
+  },
+  "observation_contract": {
+    "version": "privileged_state_v1",
+    "dimension": 53,
+    "rgb_policy": false,
+    "contains": [
+      "FR3 joint state",
+      "tool-to-waypoint error",
+      "jaw position and effort",
+      "locally tared tool-mount wrench residual",
+      "jaw/contact-stop/tissue-held flags",
+      "scope delta",
+      "time fraction"
+    ],
+    "mount_residual_is_calibrated_tissue_force": false
+  },
+  "success_definition": {
+    "both_tool_waypoint_error_m_max": 0.0005,
+    "consecutive_control_steps": 10,
+    "meaning": "engineering waypoint benchmark only"
+  },
+  "evaluation_modes": [
+    "geometric FK waypoint controller",
+    "random policy",
+    "deterministic PPO"
+  ],
+  "contract_hashes": {
+    "ct_appendectomy/rosota_rl_adapter.py": "9436fcf390bf3f2d3f910821592939340e47ed743a104d5562ad3be6b5378cd1",
+    "ct_appendectomy/run_rosota_rl.py": "2f42db2af42357a43dab4fc6cd8638a59b47b7252389c2b3ad1ff7d4740cea91",
+    "ct_appendectomy/ppo_agent.py": "45da2514f8afb5f528c9f95c9b2ac45643bb5560d9388ae77515e6a20e6e626b",
+    "tests/test_rosota_rl_adapter.py": "6197f8909d1a2579fb375f1950108b464ebb395914e90049ea698e49f909c907"
+  },
+  "available_local_training_assets": {
+    "environment": "RosotaCTEnv/waypoint-reach-v1",
+    "action_contract": "bimanual_trocar_scope_v1",
+    "observation_contract": "privileged_state_v1",
+    "scene_sha256": "30617828e628f577943de88c6d680ee57288336b1704b2a81e18ff8785ae46ac",
+    "config_sha256": "4244a0c3e50074691ba8975123b8bf53d7ecffc159fc372390f7dc6c6044f296",
+    "fr3_urdf_sha256": "86ba7c2600ede7f45804c58a507954a7f5aab05a74e3a28d2b2e4a52fd9f617a",
+    "adapter_sha256": "9436fcf390bf3f2d3f910821592939340e47ed743a104d5562ad3be6b5378cd1",
+    "controller_sha256": "e7a9e3f69b398cd236fb19e37630d166b0c5bc7482f46861821a240ad6c7950a",
+    "ppo_sha256": "45da2514f8afb5f528c9f95c9b2ac45643bb5560d9388ae77515e6a20e6e626b",
+    "policy_observes_rgb": false,
+    "tissue_force_calibrated": false,
+    "patient_level_holdout_verified": false,
+    "appendectomy_completed": false,
+    "runtime_loaded": false
+  },
+  "verification": {
+    "unit_tests_passed": 13,
+    "adapter_tests_passed": 6,
+    "mock_ppo_rollout_environment_steps": 64,
+    "mock_ppo_updates": 1,
+    "mock_rollout_is_simulator_evidence": false,
+    "cli_help_passed": true,
+    "python_compile_passed": true
+  },
+  "runtime": {
+    "isaac_python_launch": "blocked by Windows Application Control",
+    "simulator_ppo_steps": 0,
+    "simulator_evaluation_episodes": 0,
+    "actual_trocar_contact_verified_by_this_runner": false
+  },
+  "held_out_evaluation": {
+    "patient_level_holdout_verified": false,
+    "reset_equilibrium_verified": false,
+    "evaluation_scene_hashes_recorded": true,
+    "paired_initial_tissue_hashes_compared": true
+  },
+  "privacy": "No videos, patient images, account data, credentials, or trained policy files included in this report."
+}

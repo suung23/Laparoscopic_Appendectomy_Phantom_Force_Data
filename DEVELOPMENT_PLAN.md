@@ -132,6 +132,8 @@ relaxation 시험이며, 실제 Isaac 실행과 force readback 없이는 통과�
 
 기존 Rosota CT force/tissue trace 6개도 저장된 SHA-256과 대조한 뒤 jaw-effort trip 및 tet inversion 시점을 한 tick 단위로 분석했다. 실패 trial에서 effort threshold가 inversion보다 약 0.106 s 먼저 발생했고, free-space 대조군에서는 false trip이 없었다. 이 비교는 시뮬레이터 내부 보호 로직의 event ordering만 평가한다. measured tissue force, 생물학적 손상 한계나 오른손 접촉 검증으로 확대 해석하지 않는다. 근거: `validation/contact-force-deformation-event-analysis.json`.
 
+Rosota FR3 실기구 경로에 normalized 14-action/privileged 53-state PPO adapter와 학습·평가 runner를 추가했다. 양팔 local tip translation/roll/jaw와 포트 pivot 내시경 제어를 포함하고, strict aperture 규칙에 따라 유효하지 않은 tool-tilt action은 노출하지 않는다. 기하 waypoint baseline, random policy, deterministic PPO를 같은 seed 목록에서 비교하고 각 초기 tissue-state hash를 보존한다. CPU/mock 64-step PPO update와 unit tests는 통과했지만, 이 task는 waypoint 접근만 다루고 tissue grasp, shaft-organ collision, 수술 영상 policy 또는 appendectomy를 다루지 않는다. Isaac Python 실행이 Windows Application Control에 막혀 simulator rollout 수는 0이다. 근거: `validation/rosota-rl-adapter-preflight.json`.
+
 ## M5 — 충실도와 성능
 
 RTX4090 단일 환경 1280×720 end-to-end 30 Hz를 개발 목표로 측정한다. p50/p95, VRAM, physics/render/transfer 지연을 분리한다. 수술 영상과 광학/재질을 비교하고 해부학 변이 및 seed별 회귀 검사를 수행한다. 느린 물리 정밀 모드와 학습 모드의 차이를 기록한다.

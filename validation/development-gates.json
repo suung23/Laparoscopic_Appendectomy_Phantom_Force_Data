@@ -91,7 +91,8 @@
     },
     {
       "id": "rl-validation",
-      "status": "not achieved",
+      "status": "not achieved; normalized Rosota PPO harness and paired-policy evaluation are implemented, but only CPU/mock preflight ran and simulator rollouts remain at zero",
+      "evidence": "validation/rosota-rl-adapter-preflight.json",
       "requires": [
         "multiple seeds and held-out anatomy",
         "unassisted contact task baseline",
