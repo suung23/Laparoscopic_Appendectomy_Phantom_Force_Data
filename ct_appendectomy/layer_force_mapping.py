@@ -26,3 +26,34 @@ def pullback_forces(parent,nodes,weights,offset,forces):
     # omit the torque contributed by nonzero normal offsets.
     result=torch.autograd.grad((position*load).sum(),p)[0]
     return result.detach().numpy()
+
+class BatchedLayerMap:
+    """Device-resident independent normal-offset maps and work-conjugate loads."""
+    def __init__(self,nodes,weights,offset,parent_count,device='cuda'):
+        import torch
+        binding=SurfaceBinding(nodes,weights,parent_count)
+        delta=np.asarray(offset,float)
+        if delta.shape!=(len(binding.nodes),3) or not np.isfinite(delta).all():raise ValueError('Invalid offsets')
+        self.nodes=torch.tensor(binding.nodes,dtype=torch.int64,device=device)
+        self.weights=torch.tensor(binding.weights,dtype=torch.float64,device=device)
+        self.offset=torch.tensor(delta,dtype=torch.float64,device=device)
+        self.parent_count=parent_count
+
+    def positions(self,parent):
+        import torch
+        if parent.ndim!=3 or parent.shape[1:]!=(self.parent_count,3) or parent.dtype!=torch.float64 or parent.device!=self.nodes.device or not torch.isfinite(parent).all():raise ValueError('Invalid batched parent')
+        triangles=parent[:,self.nodes];edge=triangles[:,:,1]-triangles[:,:,0]
+        length=torch.linalg.vector_norm(edge,dim=-1)
+        if torch.any(length<1e-12):raise ValueError('Degenerate attachment edge')
+        tangent=edge/length[:,:,None]
+        normal=torch.linalg.cross(tangent,triangles[:,:,2]-triangles[:,:,0],dim=-1)
+        norm=torch.linalg.vector_norm(normal,dim=-1)
+        if torch.any(norm<1e-12):raise ValueError('Degenerate attachment face')
+        normal=normal/norm[:,:,None];bitangent=torch.linalg.cross(normal,tangent,dim=-1)
+        return (self.weights[None,:,:,None]*triangles).sum(dim=2)+self.offset[None,:,0,None]*tangent+self.offset[None,:,1,None]*bitangent+self.offset[None,:,2,None]*normal
+
+    def pullback(self,parent,forces):
+        import torch
+        if forces.shape!=(len(parent),len(self.nodes),3) or forces.device!=self.nodes.device or forces.dtype!=torch.float64 or not torch.isfinite(forces).all():raise ValueError('Invalid batched layer load')
+        p=parent.detach().requires_grad_(True);positions=self.positions(p)
+        return torch.autograd.grad((positions*forces).sum(),p)[0].detach()

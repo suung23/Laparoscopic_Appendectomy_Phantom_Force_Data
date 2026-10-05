@@ -1,0 +1,9 @@
+{
+  "batch_size": 4,
+  "layer_vertices": 49858,
+  "max_cpu_gpu_force_difference_N": 2.371692252312041e-20,
+  "max_position_difference_m": 1.3877787807814457e-17,
+  "net_force_error_N": 4.0657581468206416e-20,
+  "net_torque_error_Nm": 4.235164736271502e-21,
+  "scope": "GPU layer mapping and load transfer for four deformed states; synthetic forces, not GPU collision detection or full RL"
+}
