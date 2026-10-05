@@ -336,11 +336,16 @@ class RosotaCTEnv(gym.Env):
         anchor=prim.GetRelationship('omniphysics:src1').GetTargets()[0]
         transform=np.asarray(UsdGeom.Xformable(self.stage.GetPrimAtPath(anchor)).ComputeLocalToWorldTransform(0)).T
         world_targets=targets@transform[:3,:3].T+transform[:3,3]
-        points=self.points().copy()
+        velocity_fields={}
+        if self._tissue_observer:
+            state=self._tissue_observer.snapshot(omni.usd.get_context().get_stage_id())
+            points=state['position_m']
+            velocity_fields['velocity_m_s']=state['velocity_m_s']
+        else:points=self.points().copy()
         rest=np.asarray(self.mesh.GetAttribute('omniphysics:restShapePoints').Get(),float)
         tets=np.asarray(self.mesh.GetAttribute('tetVertexIndices').Get(),int)
         np.savez_compressed(self.out/('tissue_'+label+'.npz'),points=points,rest=rest,tets=tets,
-            pin=indices,target_world=world_targets,anchor_world=transform)
+            pin=indices,target_world=world_targets,anchor_world=transform,**velocity_fields)
         summary=dict(label=label,nodes=len(points),tetrahedra=len(tets),
             observation_source='physx_tensor' if self._tissue_observer else 'usd',
             pin_target_error_m=float(np.linalg.norm(points[indices]-world_targets,axis=1).max()),

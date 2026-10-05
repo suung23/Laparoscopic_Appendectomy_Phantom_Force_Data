@@ -1,0 +1,25 @@
+{
+  "status": "failed",
+  "error": "Tissue did not reach the measured reset equilibrium gate",
+  "physics_ticks": 3840,
+  "velocity_sampling_hz": 480,
+  "last": {
+    "rms_speed_m_s": 0.0029465496324046388,
+    "p99_speed_m_s": 0.00596170047941762,
+    "max_speed_m_s": 0.008167073878978462,
+    "stable_windows": 0,
+    "peak_node_speed_rms_m_s": 0.1579802383520473,
+    "peak_node_speed_p99_m_s": 0.6009085747807443,
+    "peak_node_speed_max_m_s": 1.3047251514032914
+  },
+  "timeout_health": {
+    "tetrahedra": 22312,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 2,
+    "minimum_signed_volume_ratio": -0.17124976220198213,
+    "median_volume_ratio": 1.0065428123837394,
+    "total_absolute_volume_ratio": 1.006146697987724,
+    "p99_absolute_volume_change": 0.3270221937063827
+  },
+  "scope": "Failed measured equilibrium and actual GPU tissue geometry. No accepted surgical state."
+}
