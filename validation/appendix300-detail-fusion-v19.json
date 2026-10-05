@@ -1,0 +1,63 @@
+{
+  "status": "candidate_generated_not_promoted",
+  "dataset": "Appendix300",
+  "doi": "10.25532/OPARA-1173",
+  "license": "CC BY 4.0",
+  "source_video": "Video_Snippets/Center2/Center2_2.mp4",
+  "source_video_sha256": "a38b416c45928266e333c46d40c278eff0386a0ca695d268c35ccf807fab04d5",
+  "source_frame_window_seconds": [7.84, 8.16],
+  "source_frame_count": 9,
+  "parent_provenance": "out/ct_appendectomy/appendix300_temporal_texture_v18/appearance.json",
+  "parent_report_sha256": "22a519ff30a8d8e380f07f849eb3ad492e06f1ad9b22c6a40bbebe274e604144",
+  "parent_static_usd_sha256": "d84c59b90298ba99fc758a6ddb1d88baeabb98630ecda175cca906e8ac58bd37",
+  "roi_boxes_xyxy": {
+    "appendix_candidate": [1780, 430, 2140, 790],
+    "mesoappendix_candidate": [1420, 590, 1780, 950]
+  },
+  "roi_anatomy_labels_expert_confirmed": false,
+  "method": {
+    "alignment": "per-ROI TV-L1 optical flow with forward/backward consistency mask",
+    "color_base": "per-pixel temporal median of aligned RGB low-frequency appearance",
+    "detail": "unwarped center-frame high-frequency component blended according to temporal detail agreement",
+    "detail_sigma_px": 2.0,
+    "consistency_threshold_rgb": 8.0,
+    "camera_to_mesh_registration": false,
+    "measured_albedo": false,
+    "measured_brdf": false
+  },
+  "candidate": {
+    "path": "out/ct_appendectomy/appendix300_temporal_texture_v19_detail_fused/appearance.usda (local, git-ignored)",
+    "static_usd_sha256": "d84c59b90298ba99fc758a6ddb1d88baeabb98630ecda175cca906e8ac58bd37",
+    "uvs_and_geometry_reused_unchanged": true,
+    "physics_unchanged": true,
+    "isaac_runtime_load_verified": false,
+    "moving_endoscope_render_verified": false
+  },
+  "image_frequency_diagnostics": {
+    "appendix_candidate": {
+      "mean_neighbor_rgb_difference_temporal_median": 1.7470183372,
+      "mean_neighbor_rgb_difference_detail_fused": 2.3058199883,
+      "highpass_rms_temporal_median": 3.4275496006,
+      "highpass_rms_detail_fused": 4.7319641113,
+      "detail_texture_sha256": "178435a0484bbf1787dd6d978b5f2ab1f9dd544ac1772502d0306140ae4783a2"
+    },
+    "mesoappendix_candidate": {
+      "mean_neighbor_rgb_difference_temporal_median": 1.6889507771,
+      "mean_neighbor_rgb_difference_detail_fused": 2.5858712196,
+      "highpass_rms_temporal_median": 4.2812705039,
+      "highpass_rms_detail_fused": 5.8471841812,
+      "detail_texture_sha256": "e8db7edf968df026b9bd2b396f427f9b08cf9e7d8346da33991b0ed390cc2454"
+    },
+    "interpretation": "Detail energy increased relative to the median baseline; these image statistics do not establish realism, correct anatomy, reflectance or material response."
+  },
+  "visual_review": {
+    "status": "failed_promotion_gate",
+    "observed": [
+      "The broad appendix candidate remains visually smooth and low-detail.",
+      "Several bright specular spots remain baked into the RGB image.",
+      "No Isaac endoscope render or deforming-mesh comparison was available."
+    ],
+    "decision": "Retain as a hash-linked experiment only; do not promote as accepted simulator surface appearance."
+  },
+  "privacy": "Raw videos, extracted frames, ROI crops and texture pixels remain local and git-ignored; this tracked report contains hashes and aggregate measurements only."
+}

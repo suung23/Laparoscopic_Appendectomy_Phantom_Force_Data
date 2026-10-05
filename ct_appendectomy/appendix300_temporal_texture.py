@@ -99,6 +99,76 @@ def align_dense(reference, moving):
     }
 
 
+def fuse_temporal_detail(aligned, valid_masks, reference_index, *, sigma_px=2.0,
+                         consistency_threshold_rgb=8.0, detail_gain=1.0):
+    """Restore reference detail only where neighboring frames support it.
+
+    Dense-flow warping can soften detail even when its large-scale alignment is
+    useful. This keeps the median low-frequency appearance but selectively
+    restores high-frequency detail from the unwarped reference where neighboring
+    frames support similar detail. It remains an appearance candidate, not an
+    albedo or 3-D surface estimate.
+    """
+    from scipy.ndimage import gaussian_filter
+
+    stack = np.asarray(aligned, dtype=np.float32)
+    valid = np.asarray(valid_masks, dtype=bool)
+    if (stack.ndim != 4 or stack.shape[-1] != 3 or valid.shape != stack.shape[:3] or
+            stack.shape[0] < 3 or not 0 <= reference_index < stack.shape[0] or
+            not np.isfinite(stack).all() or not np.isfinite(sigma_px) or sigma_px <= 0 or
+            not np.isfinite(consistency_threshold_rgb) or consistency_threshold_rgb <= 0 or
+            not np.isfinite(detail_gain) or not 0 <= detail_gain <= 2):
+        raise ValueError("Invalid temporal detail-fusion inputs")
+    low = gaussian_filter(stack, sigma=(0, sigma_px, sigma_px, 0), mode="reflect")
+    detail = stack - low
+    count = valid.sum(axis=0)
+    masked_low = np.where(valid[..., None], low, np.nan)
+    masked_detail = np.where(valid[..., None], detail, np.nan)
+    no_support = count == 0
+    masked_low[reference_index, no_support] = low[reference_index, no_support]
+    masked_detail[reference_index, no_support] = detail[reference_index, no_support]
+    with np.errstate(all="ignore"):
+        fused_low = np.nanmedian(masked_low, axis=0)
+        median_detail = np.nanmedian(masked_detail, axis=0)
+        detail_error = np.abs(masked_detail - median_detail[None, ...])
+        detail_error = np.nan_to_num(detail_error, nan=0.0, posinf=0.0)
+        per_frame_error = detail_error.mean(axis=-1)
+        per_frame_error[~valid] = np.nan
+        disagreement = np.nanmedian(per_frame_error, axis=0)
+    supported = count >= max(3, (stack.shape[0] + 1) // 2)
+    ref_low = low[reference_index]
+    ref_detail = detail[reference_index]
+    fused_low[~supported] = ref_low[~supported]
+    median_detail[~supported] = ref_detail[~supported]
+    disagreement = np.nan_to_num(disagreement, nan=consistency_threshold_rgb * 2,
+                                 posinf=consistency_threshold_rgb * 2)
+    confidence = np.clip(1.0 - disagreement / consistency_threshold_rgb, 0.0, 1.0)
+    confidence = gaussian_filter(confidence, sigma=.75, mode="nearest")
+    confidence[~supported] = 0.0
+    fused_detail = ((1.0 - confidence[..., None]) * median_detail +
+                    confidence[..., None] * ref_detail)
+    fused = np.uint8(np.clip(fused_low + detail_gain * fused_detail, 0, 255))
+    supported_channels = np.broadcast_to(supported[..., None], fused_detail.shape)
+
+    def rms(values):
+        sample = values[supported_channels]
+        return float(np.sqrt(np.mean(np.square(sample)))) if sample.size else None
+
+    return fused, {
+        "method": "temporal_median_low_frequency_with_consensus_gated_reference_detail",
+        "sigma_px": float(sigma_px),
+        "consistency_threshold_rgb": float(consistency_threshold_rgb),
+        "detail_gain": float(detail_gain),
+        "supported_fraction": float(supported.mean()),
+        "low_confidence_fraction": float((supported & (confidence < .2)).sum() /
+                                          max(int(supported.sum()), 1)),
+        "reference_detail_rms_rgb": rms(ref_detail),
+        "temporal_median_detail_rms_rgb": rms(median_detail),
+        "fused_detail_rms_rgb": rms(fused_detail),
+        "interpretation": "Frequency-preserving appearance candidate; no albedo, BRDF, or 3-D registration inferred",
+    }
+
+
 def deduplicate_odd_window(frame_records, center_seconds):
     """Remove exact duplicate decodes and retain an odd unique frame window."""
     unique, duplicate_frames, hashes_seen = [], [], {}
@@ -197,6 +267,68 @@ def rebind_reviewed_uv_layer(parent_layer, output_dir):
     }
 
 
+def copy_reviewed_temporal_uv_layer(parent_layer, output_dir):
+    """Copy a hash-verified temporal UV layer beside replacement RGB textures.
+
+    This preserves a prior layer byte-for-byte; it does not edit mesh topology,
+    UVs, material parameters, or physics. Relative source layers must resolve
+    and still match the recorded hashes from the output directory.
+    """
+    parent_layer = Path(parent_layer).resolve()
+    output_dir = Path(output_dir).resolve()
+    parent_report_path = parent_layer.with_name("appearance.json")
+    parent_report = json.loads(parent_report_path.read_text(encoding="utf-8"))
+    layer_report = parent_report.get("static_usd_layer", {})
+    digest = hashlib.sha256(parent_layer.read_bytes()).hexdigest()
+    if (parent_report.get("dataset") != DATASET or parent_report.get("license") != "CC BY 4.0" or
+            parent_report.get("geometry_unchanged") is not True or
+            layer_report.get("sha256") != digest or
+            layer_report.get("uvs_reused_unchanged") is not True or
+            layer_report.get("geometry_unchanged_by_layer_operation") is not True or
+            layer_report.get("physics_unchanged_by_layer_operation") is not True):
+        raise ValueError("Parent temporal USD layer lacks matching provenance and preservation checks")
+    text = parent_layer.read_text(encoding="utf-8")
+    for name in ("appendix", "mesoappendix"):
+        if re.search(rf'over "{name}"\s*\{{\s*over "render"', text) is None:
+            raise ValueError(f"Parent temporal USD layer does not bind expected mesh: {name}")
+    for name in ("appendix", "mesoappendix"):
+        asset = f"@{name}_appendix300_temporal_rgb.png@"
+        if text.count(asset) != 1 or not (output_dir / asset.strip("@")).is_file():
+            raise ValueError(f"Expected one replacement temporal texture asset: {name}")
+    records = layer_report.get("source_scene_layers", [])
+    sources = layer_report.get("referenced_sublayers", [])
+    if len(records) != len(sources):
+        raise ValueError("Parent report does not hash every temporal USD sublayer")
+    sublayer_block = re.search(r"subLayers\s*=\s*\[(.*?)\]", text, flags=re.S)
+    actual_sources = (re.findall(r"@([^@]+)@", sublayer_block.group(1))
+                      if sublayer_block is not None else [])
+    if actual_sources != sources:
+        raise ValueError("Temporal USD sublayer list differs from the provenance report")
+    resolved_sources = []
+    for relative, record in zip(sources, records):
+        if record.get("path") != relative:
+            raise ValueError("Temporal USD sublayer path differs from the provenance report")
+        source = (output_dir / relative).resolve()
+        if not source.is_file() or hashlib.sha256(source.read_bytes()).hexdigest() != record.get("sha256"):
+            raise ValueError(f"Temporal USD sublayer changed or is missing: {relative}")
+        resolved_sources.append({"path": relative, "sha256": record["sha256"]})
+    output_dir.mkdir(parents=True, exist_ok=True)
+    target = output_dir / "appearance.usda"
+    target.write_text(text, encoding="utf-8")
+    return {
+        "path": target.name,
+        "sha256": hashlib.sha256(target.read_bytes()).hexdigest(),
+        "parent_layer_sha256": digest,
+        "referenced_sublayers": sources,
+        "source_scene_layers": resolved_sources,
+        "changed_properties": [],
+        "uvs_reused_unchanged": True,
+        "geometry_unchanged_by_layer_operation": True,
+        "physics_unchanged_by_layer_operation": True,
+        "usd_runtime_load_verified": False,
+    }
+
+
 def extract_frames(video, ffmpeg, output, times):
     output.mkdir(parents=True, exist_ok=True)
     frames = []
@@ -227,7 +359,7 @@ def extract_frames(video, ffmpeg, output, times):
 def build(reference_dir, out_dir, ffmpeg, center_seconds=12., frame_count=9,
           spacing_seconds=.06, sources=None, parent_layer=None,
           source_video_name="Center1_014.mp4", roi_overrides=None,
-          alignment_method="phase_translation"):
+          alignment_method="phase_translation", texture_strategy="median"):
     reference_dir, out_dir = Path(reference_dir).resolve(), Path(out_dir).resolve()
     ffmpeg = Path(ffmpeg).resolve()
     provenance_path = reference_dir / "provenance.json"
@@ -259,6 +391,10 @@ def build(reference_dir, out_dir, ffmpeg, center_seconds=12., frame_count=9,
         raise ValueError("ROI names must be exactly appendix and mesoappendix")
     if alignment_method not in {"phase_translation", "dense_flow_tvl1"}:
         raise ValueError("Unsupported alignment method")
+    if texture_strategy not in {"median", "detail_fused"}:
+        raise ValueError("Unsupported texture strategy")
+    if texture_strategy == "detail_fused" and alignment_method != "dense_flow_tvl1":
+        raise ValueError("detail_fused requires dense_flow_tvl1 alignment")
     out_dir.mkdir(parents=True, exist_ok=True)
     frame_records, frame_size, frame_selection = extract_frames(
         video, ffmpeg, out_dir / "frames", times)
@@ -323,6 +459,11 @@ def build(reference_dir, out_dir, ffmpeg, center_seconds=12., frame_count=9,
         # Keep an un-repeated crop as the primary candidate. Its UV scale is
         # still approximate, but this avoids fabricating a tiled surface field.
         source_patch = Image.fromarray(temporal)
+        detail_info = None
+        if texture_strategy == "detail_fused":
+            fused, detail_info = fuse_temporal_detail(aligned, valid_masks, reference_index)
+            source_patch = Image.fromarray(fused)
+            source_patch.save(out_dir / f"{name}_temporal_detail_fused.png")
         direct_texture = source_patch.resize((1024, 1024), Image.Resampling.LANCZOS)
         direct_texture.save(texture_path)
         quilt_path = out_dir / f"{name}_appendix300_temporal_quilt_rgb.png"
@@ -338,6 +479,9 @@ def build(reference_dir, out_dir, ffmpeg, center_seconds=12., frame_count=9,
             "texture_dimensions_px": [1024, 1024],
             "quilted_alternative_sha256": hashlib.sha256(quilt_path.read_bytes()).hexdigest(),
             "quilted_alternative_dimensions": quilt_dimensions}
+        if detail_info is not None:
+            rois[name]["texture_method"] = "consensus_gated_reference_detail_over_temporal_median"
+            rois[name]["detail_fusion"] = detail_info
         alignment_report[name] = {"summary": transform_info, "per_frame": transforms}
 
     if parent_layer:
@@ -358,6 +502,7 @@ def build(reference_dir, out_dir, ffmpeg, center_seconds=12., frame_count=9,
                             "sha256": record["sha256"]} for record in frame_records],
         "frame_selection": frame_selection,
         "alignment_method": alignment_method,
+        "texture_strategy": texture_strategy,
         "alignment_by_roi": alignment_report, "rois_and_textures": rois,
         "texture_mapping": "Each temporal composite crop fills one UV map; no 3-D camera projection or patient correspondence",
         "geometry_unchanged": True, "measured_albedo": False, "measured_brdf": False,
@@ -398,7 +543,10 @@ def build(reference_dir, out_dir, ffmpeg, center_seconds=12., frame_count=9,
         report["source_scene_sha256"] = [hashlib.sha256(Path(p).read_bytes()).hexdigest()
                                          for p in sources]
     if parent_layer:
-        report["static_usd_layer"] = rebind_reviewed_uv_layer(parent_layer, out_dir)
+        report["static_usd_layer"] = (
+            copy_reviewed_temporal_uv_layer(parent_layer, out_dir)
+            if texture_strategy == "detail_fused" else
+            rebind_reviewed_uv_layer(parent_layer, out_dir))
     (out_dir / "appearance.json").write_text(json.dumps(report, indent=2) + "\n",
                                              encoding="utf-8")
     return report
@@ -418,6 +566,8 @@ if __name__ == "__main__":
                         help="Reviewed tissue crop; repeat once for appendix and mesoappendix")
     parser.add_argument("--alignment-method", choices=("phase_translation", "dense_flow_tvl1"),
                         default="phase_translation")
+    parser.add_argument("--texture-strategy", choices=("median", "detail_fused"), default="median",
+                        help="detail_fused requires dense flow; output remains an unreviewed candidate")
     parser.add_argument("--source", type=Path, nargs="+")
     parser.add_argument("--parent-layer", type=Path,
                         help="Rebind a reviewed static USD UV layer without changing UVs")
@@ -438,5 +588,6 @@ if __name__ == "__main__":
             parser.error("Each --roi must be NAME=X1,Y1,X2,Y2 with unique names")
     result = build(args.reference, args.out, args.ffmpeg, args.center_seconds,
                    args.frame_count, args.spacing_seconds, args.source, args.parent_layer,
-                   args.source_video, roi_overrides, args.alignment_method)
+                   args.source_video, roi_overrides, args.alignment_method,
+                   args.texture_strategy)
     print(json.dumps(result, indent=2))

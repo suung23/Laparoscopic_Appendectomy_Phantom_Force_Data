@@ -12,8 +12,8 @@ from PIL import Image
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "ct_appendectomy"))
 from appendix300_video_texture import build_from_verified_frame, suppress_local_specular
 from appendix300_temporal_texture import (
-    align_dense, deduplicate_odd_window, phase_translation, rebind_reviewed_uv_layer,
-    translate,
+    align_dense, copy_reviewed_temporal_uv_layer, deduplicate_odd_window,
+    fuse_temporal_detail, phase_translation, rebind_reviewed_uv_layer, translate,
 )
 
 
@@ -53,6 +53,39 @@ class Appendix300TextureTests(unittest.TestCase):
         self.assertEqual(len(report["duplicate_decodes"]), 1)
         self.assertEqual(len(report["trimmed_for_odd_window"]), 1)
         self.assertEqual(len({record["sha256"] for record in selected}), 3)
+
+    @unittest.skipUnless(importlib.util.find_spec("scipy"),
+                         "temporal detail fusion requires scipy")
+    def test_detail_fusion_restores_supported_reference_detail_and_rejects_transient_glint(self):
+        from scipy.ndimage import gaussian_filter
+
+        yy, xx = np.mgrid[:96, :96]
+        base = np.stack((120 + xx * .12, 95 + yy * .10, 78 + (xx + yy) * .06), axis=-1)
+        detail = 12 * np.sin(xx * .85) + 8 * np.cos(yy * .72)
+        sharp = base + detail[..., None]
+        frames = np.stack([base + gaussian_filter(detail, 1.8)[..., None]
+                           for _ in range(5)]).astype(np.float32)
+        frames[2] = sharp
+        frames[2, 43:51, 43:51] += 100.0  # Transient specular-like glint in the reference.
+        valid = np.ones((5, 96, 96), dtype=bool)
+
+        fused, report = fuse_temporal_detail(frames, valid, 2)
+        median = np.median(frames, axis=0)
+        median_high = median - gaussian_filter(median, sigma=(2., 2., 0), mode="reflect")
+        fused_float = fused.astype(np.float32)
+        fused_high = fused_float - gaussian_filter(fused_float, sigma=(2., 2., 0), mode="reflect")
+        stable_region = np.ones((96, 96), dtype=bool)
+        stable_region[38:56, 38:56] = False
+        self.assertGreater(float(np.sqrt(np.mean(fused_high[stable_region] ** 2))),
+                           float(np.sqrt(np.mean(median_high[stable_region] ** 2))))
+        self.assertLess(float(fused[45:49, 45:49].mean()), float(frames[2, 45:49, 45:49].mean()) - 30)
+        self.assertEqual(report["method"],
+                         "temporal_median_low_frequency_with_consensus_gated_reference_detail")
+        self.assertEqual(report["supported_fraction"], 1.0)
+
+    def test_detail_fusion_rejects_bad_inputs(self):
+        with self.assertRaisesRegex(ValueError, "Invalid temporal detail-fusion inputs"):
+            fuse_temporal_detail(np.zeros((2, 8, 8, 3)), np.ones((2, 8, 8), bool), 0)
 
     @unittest.skipUnless(importlib.util.find_spec("scipy") and
                          importlib.util.find_spec("skimage"),
@@ -119,6 +152,49 @@ class Appendix300TextureTests(unittest.TestCase):
             self.assertIn("@appendix_appendix300_temporal_rgb.png@", authored)
             self.assertIn("@mesoappendix_appendix300_temporal_rgb.png@", authored)
             self.assertNotIn("@appendix_appendix300_rgb.png@", authored)
+
+    def test_copies_only_hash_verified_temporal_uv_layer_for_detail_candidate(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            parent, out = root / "parent", root / "candidate"
+            parent.mkdir()
+            out.mkdir()
+            for path in (root / "ct.usda", root / "fat" / "review.usda"):
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("scene-layer", encoding="utf-8")
+            for name in ("appendix_appendix300_temporal_rgb.png",
+                         "mesoappendix_appendix300_temporal_rgb.png"):
+                Image.new("RGB", (4, 4), (80, 90, 100)).save(out / name)
+            layer = parent / "appearance.usda"
+            layer.write_text(
+                '#usda 1.0\n( subLayers = [ @../ct.usda@, @../fat/review.usda@ ] )\n'
+                'over "appendix" { over "render" {} }\n'
+                'over "mesoappendix" { over "render" {} }\n'
+                'asset inputs:file = @appendix_appendix300_temporal_rgb.png@\n'
+                'asset inputs:file = @mesoappendix_appendix300_temporal_rgb.png@\n',
+                encoding="utf-8")
+            source_records = [
+                {"path": "../ct.usda", "sha256": hashlib.sha256((root / "ct.usda").read_bytes()).hexdigest()},
+                {"path": "../fat/review.usda", "sha256": hashlib.sha256((root / "fat/review.usda").read_bytes()).hexdigest()},
+            ]
+            report = {
+                "dataset": "Appendix300", "license": "CC BY 4.0", "geometry_unchanged": True,
+                "static_usd_layer": {
+                    "sha256": hashlib.sha256(layer.read_bytes()).hexdigest(),
+                    "referenced_sublayers": ["../ct.usda", "../fat/review.usda"],
+                    "source_scene_layers": source_records,
+                    "uvs_reused_unchanged": True,
+                    "geometry_unchanged_by_layer_operation": True,
+                    "physics_unchanged_by_layer_operation": True,
+                },
+            }
+            (parent / "appearance.json").write_text(json.dumps(report), encoding="utf-8")
+
+            result = copy_reviewed_temporal_uv_layer(layer, out)
+
+            self.assertTrue(result["geometry_unchanged_by_layer_operation"])
+            self.assertEqual((out / "appearance.usda").read_bytes(), layer.read_bytes())
+            self.assertEqual(result["changed_properties"], [])
 
     def test_repairs_compact_neutral_glint_and_preserves_flat_tissue(self):
         rgb = np.empty((48, 48, 3), dtype=np.uint8)

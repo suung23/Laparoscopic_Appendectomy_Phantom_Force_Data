@@ -83,12 +83,13 @@
     },
     {
       "id": "real-video-appearance",
-      "status": "not achieved; Center2 dense-flow candidate and 54-mesh USD structure are verified, but anatomy labels, Isaac moving-endoscope render, and held-out visual review remain incomplete; a nine-frame 0.32 s candidate has the best tracked 2-D support, while longer windows failed; 2026-10-06 runtime attempt was blocked before Isaac startup by Windows Application Control blocking the Python select module",
+      "status": "not achieved; the Center2 nine-frame candidate now includes consensus-gated center-frame detail, and aggregate high-frequency energy rises against the temporal-median baseline, but visual review still finds a smooth appendix field and baked highlights; anatomy labels, Isaac moving-endoscope render, and held-out review remain incomplete; longer temporal windows failed; 2026-10-06 runtime attempt was blocked before Isaac startup by Windows Application Control blocking the Python select module",
       "evidence": [
         "validation/appendix300-texture-v7-preflight.json",
         "validation/appendix300-temporal-texture-v1.json",
         "validation/appendix300-center2-dense-flow-appearance-v1.json",
-        "validation/appendix300-center2-temporal-window-study-v1.json"
+        "validation/appendix300-center2-temporal-window-study-v1.json",
+        "validation/appendix300-detail-fusion-v19.json"
       ],
       "requires": [
         "visible target-specific material comparison",
