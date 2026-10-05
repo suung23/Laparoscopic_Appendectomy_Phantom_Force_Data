@@ -1,0 +1,13 @@
+{
+  "optimizer_success": true,
+  "iterations": 1039,
+  "residual_N": 7.423150205504197e-10,
+  "tolerance_N": 1e-07,
+  "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+  "inertial_residual_defect_m": 4.5021518059242035e-07,
+  "defect_tolerance_m": 1e-06,
+  "defect_is_position_error_bound": false,
+  "status": "converged",
+  "wall_seconds": 7.257801900006598,
+  "scope": "Synthetic single-node load on authored membrane; not CAD contact or empirical mechanics"
+}

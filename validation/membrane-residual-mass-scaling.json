@@ -1,0 +1,11 @@
+{
+  "free_node_mass_range_kg": [
+    1.7927755304495243e-08,
+    7.707568341146925e-07
+  ],
+  "at_dt_0_005_force_tolerance_1e_6_inertial_defect_range_mm": [
+    0.03243565141879738,
+    1.3944857889560467
+  ],
+  "note": "Inertia-scaled residual diagnostic, not a bound on actual displacement error"
+}

@@ -12,7 +12,7 @@ from attached_visual_layer import AttachedVisualLayer
 from layer_force_mapping import pullback_forces
 from build_fat_layer import evaluate
 
-def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,artery_shape=False,cad=None,approach=None,full_tool_contact=False,friction_mu=0.,solver_tolerance=1e-6):
+def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,artery_shape=False,cad=None,approach=None,full_tool_contact=False,friction_mu=0.,solver_tolerance=1e-6,defect_tolerance=None):
     if not np.isfinite(dt) or dt<=0 or steps<1:raise ValueError("Positive timestep and steps required")
     if not np.isfinite(solver_tolerance) or solver_tolerance<=0:raise ValueError('Positive solver tolerance required')
     out.mkdir(parents=True,exist_ok=True)
@@ -101,7 +101,7 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
             if poses is not None and step==0 and contact_before["active_nodes"]:raise ValueError("Approach begins in sampled contact")
             mapped=pullback_forces(dynamics.points,layer['nodes'],layer['weights'],layer['frame_offsets'],force)
             torque_error=np.linalg.norm(np.cross(dynamics.points,mapped).sum(axis=0)-np.cross(current,force).sum(axis=0))
-            info=dynamics.step(dt,mapped,maxiter=3000,tolerance=solver_tolerance)
+            info=dynamics.step(dt,mapped,maxiter=3000,tolerance=solver_tolerance,defect_tolerance=defect_tolerance)
             mesh=trimesh.Trimesh(dynamics.points,z['faces'],process=False)
             follower.parent.GetPointsAttr().Set(Vt.Vec3fArray.FromNumpy(dynamics.points.astype(np.float32)))
             follower.parent.GetNormalsAttr().Set(Vt.Vec3fArray.FromNumpy(mesh.vertex_normals.astype(np.float32)))
@@ -120,6 +120,7 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
     report.update(full_tool_contact=full_tool_contact,compound_contact_model='additive part potentials; overlapping hulls may over-stiffen' if full_tool_contact else None)
     report['articulated_jaw_trajectory']=jaw_angles is not None
     report['solver_tolerance_N']=solver_tolerance
+    report['inertial_defect_tolerance_m']=defect_tolerance
     report.update(friction=bool(friction_mu),friction_mu=friction_mu,friction_model='lagged regularized sliding Coulomb; no static friction',friction_regularization_speed_m_s=.001)
     (out/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
 
@@ -133,4 +134,5 @@ if __name__=='__main__':
     p.add_argument('--full-tool-contact',action='store_true')
     p.add_argument('--friction-mu',type=float,default=0.)
     p.add_argument('--solver-tolerance',type=float,default=1e-6)
-    a=p.parse_args();run(a.scene,a.parent,a.layer,a.out,a.steps,a.dt,a.artery_binding,a.artery_shape,a.cad,a.approach,a.full_tool_contact,a.friction_mu,a.solver_tolerance)
+    p.add_argument('--defect-tolerance',type=float,default=None)
+    a=p.parse_args();run(a.scene,a.parent,a.layer,a.out,a.steps,a.dt,a.artery_binding,a.artery_shape,a.cad,a.approach,a.full_tool_contact,a.friction_mu,a.solver_tolerance,a.defect_tolerance)
