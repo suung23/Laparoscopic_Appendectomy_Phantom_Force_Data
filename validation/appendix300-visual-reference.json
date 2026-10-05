@@ -1,0 +1,67 @@
+{
+  "dataset": "Appendix300",
+  "doi": "10.25532/OPARA-1173",
+  "license": "CC BY 4.0",
+  "source_url": "https://opara.zih.tu-dresden.de/server/api/core/bitstreams/8a6fcaa0-9026-4744-9f6f-883fe6be78a0/content",
+  "selection": "Two smallest snippets, distinct institutions; convenience sample, not representative cohort",
+  "files": [
+    {
+      "name": "Video_Snippets/Center1/Center1_014.mp4",
+      "size": 26947136,
+      "compressed": 26947136,
+      "offset": 22651465994,
+      "crc": 4050661725,
+      "method": 0,
+      "sha256": "af050e90b66076f7dd83e8278be3cc4bd50ea490a375165e9747946b0e94c2bc",
+      "local_name": "Center1_014.mp4"
+    },
+    {
+      "name": "Video_Snippets/Center2/Center2_2.mp4",
+      "size": 41294920,
+      "compressed": 41294920,
+      "offset": 77486295385,
+      "crc": 493613151,
+      "method": 0,
+      "sha256": "a38b416c45928266e333c46d40c278eff0386a0ca695d268c35ccf807fab04d5",
+      "local_name": "Center2_2.mp4"
+    }
+  ],
+  "attribution": "Kolbinger et al., Appendix300, Scientific Data (2026), DOI 10.1038/s41597-026-07593-6; dataset DOI 10.25532/OPARA-1173; CC BY 4.0",
+  "inspection": {
+    "method": "Sequential sampled frames inspected directly, plus simulator frame at 3 seconds; not full temporal tracking or segmentation",
+    "clips": [
+      {
+        "file": "Center1_014.mp4",
+        "duration_s": 38.14,
+        "width": 1920,
+        "height": 1080,
+        "sample_interval_s": 5
+      },
+      {
+        "file": "Center2_2.mp4",
+        "duration_s": 23.68,
+        "width": 3840,
+        "height": 1080,
+        "sample_interval_s": 4
+      }
+    ],
+    "observations": [
+      "Real frames contain fine branching vessels, lobulated yellow fat, thin membrane-like surfaces and overlapping tissue folds.",
+      "Specular highlights vary sharply with location and camera position; not uniform glossy pink shading.",
+      "Center1 sequence shows an instrument near tissue with changing occlusion and tissue configuration. Sampled frames do not establish quantitative force or deformation.",
+      "Center2 has an oval active image and wide stored frame; do not infer camera intrinsics from container aspect ratio.",
+      "Current simulator frame is dominated by smooth homogeneous surfaces and lacks comparable layered detail."
+    ],
+    "limitations": [
+      "Convenience sample from two centers; not representative or held-out evaluation.",
+      "Downloaded durations are shorter than nominal 100-second snippets; do not assume all files share duration.",
+      "No force labels, calibrated camera, appendix segmentation, or 3D reconstruction inferred."
+    ],
+    "implementation_priorities": [
+      "Replace generic smooth organ layout with appendix-cecum-mesoappendix context grounded in surgical views.",
+      "Model visible tissue layers and spatially varying surface appearance; avoid baking reference-image lighting into albedo.",
+      "Render integrated bimanual grasp and traction with local deformation and moving occlusion.",
+      "Compare actual rendered sequences against references before making visual-fidelity claims."
+    ]
+  }
+}
