@@ -1,0 +1,54 @@
+{
+  "status": "mock_rgb_ppo_passed_live_isaac_pending",
+  "task_contract": "RosotaCTEnv/endoscope-rgb-traction-v1",
+  "policy_architecture": "cnn_endoscope_rgb_proprio_v1",
+  "action_contract": "bimanual_trocar_scope_v1",
+  "action_dimensions": 14,
+  "observation": {
+    "endoscope_rgb": {
+      "shape_hwc": [90, 160, 3],
+      "dtype": "uint8",
+      "source_path": "/World/Endoscope Replicator RGB, downsampled from 640x360"
+    },
+    "proprioception": {
+      "dimensions": 45,
+      "contains": [
+        "two FR3 joint vectors",
+        "jaw position and effort",
+        "local contact residual",
+        "jaw-contact and contact-stop flags",
+        "scope displacement and rotation relative to reset",
+        "episode progress"
+      ],
+      "omits": ["target patch position", "FEM node displacement", "goal coordinates"]
+    }
+  },
+  "reward_information": "The contact/traction reward and success measure read target-patch geometry from simulator state; the observation does not. This is privileged reward shaping, not a deployable end-to-end clinical policy.",
+  "offline_validation": {
+    "mock_renderer_adapter": "passed",
+    "observation_space_contract": "passed",
+    "cnn_forward_and_backward": "passed",
+    "checkpoint_architecture_contract": "passed; vision checkpoints reject the privileged MLP architecture",
+    "ppo_environment_steps": 64,
+    "ppo_updates": 1,
+    "finite_loss": true,
+    "repository_unittest_suite": "40 passed on 2026-10-06"
+  },
+  "live_validation": {
+    "simulation_app_started": false,
+    "physx_steps": 0,
+    "real_endoscope_frames": 0,
+    "rl_episodes": 0,
+    "physics_substep_health_verified": false,
+    "policy_performance_verified": false
+  },
+  "blocker_evidence": "validation/isaac-runtime-attempt-2026-10-06.json",
+  "claims_not_supported": [
+    "live Isaac vision policy execution",
+    "safe bimanual tissue contact",
+    "endoscopic visual realism",
+    "held-out anatomy generalization",
+    "appendectomy competence"
+  ],
+  "privacy": "Vision-policy preflight imagery is synthetic; that test did not read or export patient video, texture pixels or patient metadata. No external experiment service was used."
+}

@@ -1,8 +1,7 @@
 """PPO training/evaluation for Rosota bimanual trocar-constrained tasks.
 
-Tasks include waypoint reach and an unassisted bimanual target-patch traction
-benchmark. Neither is a complete appendectomy. The policy receives privileged
-state, not endoscope pixels.
+Tasks include waypoint reach, unassisted bimanual patch traction and an
+endoscope-RGB traction policy. None is a complete appendectomy.
 """
 import argparse
 import hashlib
@@ -24,11 +23,15 @@ def file_sha256(path):
 
 
 def asset_contract(assets, fr3_urdf, task="waypoint"):
-    task_dimensions={"waypoint":("RosotaCTEnv/waypoint-reach-v1","privileged_state_v1",53),
+    task_dimensions={"waypoint":("RosotaCTEnv/waypoint-reach-v1","privileged_state_v1",53,
+                                  "mlp_privileged_v1"),
                      "unassisted-traction":("RosotaCTEnv/unassisted-bimanual-traction-v1",
-                                              "privileged_traction_state_v1",65)}
+                                              "privileged_traction_state_v1",65,"mlp_privileged_v1"),
+                     "vision-traction":("RosotaCTEnv/endoscope-rgb-traction-v1",
+                                         "endoscope_rgb_proprioception_v1",45,
+                                         "cnn_endoscope_rgb_proprio_v1")}
     if task not in task_dimensions:raise ValueError("Unknown RL task contract: "+str(task))
-    environment,observation_contract,observation_dim=task_dimensions[task]
+    environment,observation_contract,observation_dim,policy_architecture=task_dimensions[task]
     assets = Path(assets).resolve()
     scene, config = assets / "attached.usda", assets / "bimanual_config.json"
     if not scene.is_file() or not config.is_file():
@@ -40,13 +43,15 @@ def asset_contract(assets, fr3_urdf, task="waypoint"):
         "observation_contract": observation_contract,
         "observation_dim": observation_dim,
         "action_dim": 14,
+        "policy_architecture": policy_architecture,
+        "rgb_observation_shape": [90,160,3] if task=="vision-traction" else None,
         "scene_sha256": file_sha256(scene),
         "config_sha256": file_sha256(config),
         "fr3_urdf_sha256": file_sha256(fr3_urdf),
         "adapter_sha256": file_sha256(Path(__file__).with_name("rosota_rl_adapter.py")),
         "controller_sha256": file_sha256(Path(__file__).with_name("rosota_controller.py")),
         "ppo_sha256": file_sha256(Path(__file__).with_name("ppo_agent.py")),
-        "policy_observes_rgb": False,
+        "policy_observes_rgb": task=="vision-traction",
         "tissue_force_calibrated": False,
         "patient_level_holdout_verified": False,
         "appendectomy_completed": False,
@@ -56,7 +61,7 @@ def asset_contract(assets, fr3_urdf, task="waypoint"):
 def train_ppo(env, model, optimizer, *, total_steps, seed, rollout_steps=256):
     """Collect actual adapter episodes and apply PPO updates; simulator injected by caller."""
     import torch
-    from ppo_agent import advantages, update
+    from ppo_agent import advantages, prepare_observation, stack_observations, update
     from physics_substep_audit import EpisodeSubstepHealth
 
     torch.manual_seed(seed)
@@ -73,7 +78,7 @@ def train_ppo(env, model, optimizer, *, total_steps, seed, rollout_steps=256):
 
     for step_index in range(total_steps):
         with torch.no_grad():
-            state = torch.as_tensor(obs, dtype=torch.float32).unsqueeze(0)
+            state = prepare_observation(obs)
             action, raw, log_prob, value, _ = model.evaluate(state)
             action_np = action[0].cpu().numpy()
             raw_np = raw[0].cpu().numpy()
@@ -83,9 +88,10 @@ def train_ppo(env, model, optimizer, *, total_steps, seed, rollout_steps=256):
         episode_substep_health.update(info.get("physics_substep_health"))
         ended = bool(terminated or truncated)
         with torch.no_grad():
-            next_state = torch.as_tensor(next_obs, dtype=torch.float32).unsqueeze(0)
-            next_value = 0.0 if terminated else float(model.critic(torch.clamp(next_state, -10, 10))[0, 0].cpu())
-        trajectories["obs"].append(obs.copy())
+            next_state = prepare_observation(next_obs)
+            next_value = 0.0 if terminated else float(model.value(next_state)[0].cpu())
+        trajectories["obs"].append({key:value.copy() for key,value in obs.items()}
+                                    if isinstance(obs,dict) else obs.copy())
         trajectories["raw"].append(raw_np)
         trajectories["log_prob"].append(logp)
         trajectories["value"].append(v)
@@ -123,7 +129,7 @@ def train_ppo(env, model, optimizer, *, total_steps, seed, rollout_steps=256):
                                       trajectories["next_value"], trajectories["terminated"],
                                       trajectories["ended"])
             batch = {
-                "obs": np.asarray(trajectories["obs"], np.float32),
+                "obs": stack_observations(trajectories["obs"]),
                 "raw": np.asarray(trajectories["raw"], np.float32),
                 "log_prob": np.asarray(trajectories["log_prob"], np.float32),
                 "advantage": adv,
@@ -148,6 +154,7 @@ def _points_hash(env):
 def evaluate_policy(env, model, policy, *, seeds):
     import torch
     from physics_substep_audit import EpisodeSubstepHealth
+    from ppo_agent import prepare_observation
     results = []
     if policy == "random":
         env.action_space.seed(seeds[0] if seeds else 0)
@@ -166,7 +173,7 @@ def evaluate_policy(env, model, policy, *, seeds):
                 action = env.action_space.sample()
             elif policy == "ppo":
                 with torch.no_grad():
-                    state = torch.as_tensor(obs, dtype=torch.float32).unsqueeze(0)
+                    state = prepare_observation(obs)
                     action = model.evaluate(state, deterministic=True)[0][0].cpu().numpy()
             else:
                 raise ValueError("Unknown evaluation policy: " + policy)
@@ -227,12 +234,14 @@ def summarize(rows):
 def make_env(app, assets, fr3_urdf, out, *, max_steps=300, appearance=None,
              task="waypoint"):
     from rosota_ct_env import RosotaCTEnv
-    from rosota_rl_adapter import RosotaRLAdapter, RosotaTractionRLAdapter
-    if task not in {"waypoint", "unassisted-traction"}:
+    from rosota_rl_adapter import (RosotaRLAdapter, RosotaTractionRLAdapter,
+                                  RosotaVisionTractionRLAdapter)
+    if task not in {"waypoint", "unassisted-traction", "vision-traction"}:
         raise ValueError("Unknown RL task: " + str(task))
     core = RosotaCTEnv(app, assets, fr3_urdf, out, max_steps=max_steps,
                        grasp_mode="none", workspace="appendix_patches",
                        settle_policy="adaptive", appearance=appearance)
+    if task=="vision-traction":return RosotaVisionTractionRLAdapter(core)
     return RosotaTractionRLAdapter(core) if task == "unassisted-traction" else RosotaRLAdapter(core)
 
 
@@ -245,8 +254,8 @@ def main():
                         help="Separate evaluation scene; does not imply patient-level holdout")
     parser.add_argument("--fr3-urdf", type=Path, default=work / "isaac-venv/Lib/site-packages/isaacsim/exts/isaacsim.robot_motion.motion_generation/motion_policy_configs/FR3/fr3.urdf")
     parser.add_argument("--appearance", type=Path, help="Optional appearance layer for the CT environment")
-    parser.add_argument("--task", choices=("waypoint", "unassisted-traction"), default="waypoint",
-                        help="Privileged-state benchmark; traction requires unassisted physical jaw contact")
+    parser.add_argument("--task", choices=("waypoint", "unassisted-traction", "vision-traction"), default="waypoint",
+                        help="Vision task uses endoscope RGB and proprioception; reward still reads target geometry")
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--train-steps", type=int, default=0)
     parser.add_argument("--rollout-steps", type=int, default=256)
@@ -268,11 +277,13 @@ def main():
         parser.error("Checkpoint not found: " + str(args.checkpoint))
 
     import torch
-    from ppo_agent import ActorCritic, load_checkpoint, save_checkpoint
+    from ppo_agent import ActorCritic, VisionActorCritic, load_checkpoint, save_checkpoint
     torch.set_num_threads(2)
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
-    model = ActorCritic(observations=training_contract["observation_dim"], actions=14)
+    model = (VisionActorCritic(proprioception=training_contract["observation_dim"],actions=14)
+             if args.task=="vision-traction" else
+             ActorCritic(observations=training_contract["observation_dim"],actions=14))
     optimizer = torch.optim.Adam(model.parameters(), lr=3e-4, eps=1e-5)
     checkpoint_metadata = None
     if args.checkpoint:
@@ -284,14 +295,16 @@ def main():
         "task": ("two-arm trocar-constrained waypoint reach; scope RCM actions exposed but not rewarded"
                  if args.task == "waypoint" else
                  "unassisted bimanual appendix-patch contact and upward traction; engineering benchmark only"),
+        "policy_input": ("endoscope RGB and robot/jaw/contact proprioception; target patch geometry is reward-only"
+                         if args.task=="vision-traction" else "privileged proprioceptive state"),
         "task_is_appendectomy": False,
-        "appendix_grasp_task": args.task == "unassisted-traction",
-        "traction_task": args.task == "unassisted-traction",
+        "appendix_grasp_task": args.task != "waypoint",
+        "traction_task": args.task != "waypoint",
         "traction_task_live_runtime_verified": False,
         "traction_thresholds": {"patch_proximity_m": 0.005, "target_lift_m": 0.005,
-                                "hold_steps": 10} if args.task == "unassisted-traction" else None,
+                                "hold_steps": 10} if args.task != "waypoint" else None,
         "shaft_organ_collision_enabled": False,
-        "policy_observes_rgb": False,
+        "policy_observes_rgb": args.task=="vision-traction",
         "tissue_force_calibrated": False,
         "patient_level_holdout_verified": False,
         "paired_reset_state_verified": False,
@@ -345,7 +358,8 @@ def main():
             report["training"] = training
             metadata = dict(training_contract, trained_steps=args.train_steps,
                             algorithm="local PPO", task_description=report["task"],
-                            task_is_appendectomy=False, policy_observes_rgb=False)
+                            task_is_appendectomy=False,
+                            policy_observes_rgb=args.task=="vision-traction")
             save_checkpoint(args.out / "policy.pt", model, optimizer, metadata)
         env.close()
         env = make_env(app, evaluation_assets, args.fr3_urdf, args.out / "evaluation",
@@ -366,8 +380,10 @@ def main():
         }
         report["paired_reset_state_verified"] = bool(report["paired_start_state_match_by_seed"]) and all(
             report["paired_start_state_match_by_seed"].values())
-        report["status"] = ("completed_traction_benchmark" if args.task == "unassisted-traction"
-                            else "completed_waypoint_benchmark") if all(
+        completed_status={"waypoint":"completed_waypoint_benchmark",
+                          "unassisted-traction":"completed_traction_benchmark",
+                          "vision-traction":"completed_vision_traction_benchmark"}[args.task]
+        report["status"] = completed_status if all(
             not row["failure"] for rows in evaluations.values() for row in rows) else "completed_with_failures"
         report["rl_validation_gate"] = ("not achieved: single local task, privileged state, uncalibrated contact proxy, no patient-level holdout or clinical validation")
         report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")

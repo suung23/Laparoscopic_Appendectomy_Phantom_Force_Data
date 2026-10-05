@@ -102,10 +102,12 @@
     },
     {
       "id": "rl-validation",
-      "status": "not achieved; normalized Rosota PPO now exposes waypoint and unassisted bimanual target-patch traction task contracts with paired-policy evaluation and solver-tick tissue-health aggregation; CPU/mock contract tests only, live simulator rollouts remain at zero; 2026-10-06 official CT launch failed before simulation because Windows Application Control blocked the Python select module",
+      "status": "not achieved; Rosota PPO now exposes waypoint, unassisted bimanual patch traction, and endoscope RGB plus proprioception CNN contracts with paired-policy evaluation and solver-tick tissue-health aggregation; mock RGB PPO updates pass, live simulator rollouts remain at zero; 2026-10-06 official CT launch failed before simulation because Windows Application Control blocked the Python select module",
       "evidence": [
         "validation/rosota-rl-adapter-preflight.json",
+        "validation/rosota-vision-policy-preflight.json",
         "ct_appendectomy/physics_substep_audit.py",
+        "ct_appendectomy/ppo_agent.py",
         "tests/test_physics_substep_audit.py",
         "tests/test_rosota_traction_adapter.py",
         "ct_appendectomy/AGENT_TRAINING.md"

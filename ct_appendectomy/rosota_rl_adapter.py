@@ -12,6 +12,8 @@ from gymnasium import spaces
 ACTION_DIM = 14
 OBSERVATION_DIM = 53
 TRACTION_OBSERVATION_DIM = 65
+VISION_PROPRIOCEPTION_DIM = 45
+VISION_IMAGE_SHAPE = (90, 160, 3)
 TIP_DELTA_LIMIT_M = 0.00012  # Matches the runtime commissioning cap per 30 Hz action.
 ROLL_SPEED_LIMIT_RAD_S = 0.4  # Matches InstrumentLimits.rotation_speed_rad_s.
 CONTROL_HZ = 30.0
@@ -176,6 +178,40 @@ def encode_rosota_traction_observation(observation,info,initial_scope_pose,step_
     return np.clip(encoded,-10.,10.).astype(np.float32)
 
 
+def encode_rosota_proprioception(observation,initial_scope_pose,step_fraction):
+    """Encode only robot/jaw/scope and local contact-sensor state for RGB policy."""
+    required={"joint_position","scope_pose","contact_residual","jaw_position",
+              "jaw_effort","jaw_contact_hold","contact_stop"}
+    if not required.issubset(observation):
+        raise ValueError("Rosota RGB-policy proprioception keys do not match the contract")
+    q=np.asarray(observation["joint_position"],float)
+    scope=np.asarray(observation["scope_pose"],float)
+    wrench=np.asarray(observation["contact_residual"],float)
+    jaw=np.asarray(observation["jaw_position"],float)
+    effort=np.asarray(observation["jaw_effort"],float)
+    holds=np.asarray(observation["jaw_contact_hold"],float)
+    stops=np.asarray(observation["contact_stop"],float)
+    initial=np.asarray(initial_scope_pose,float)
+    shapes=((q,(2,7)),(scope,(4,4)),(wrench,(2,6)),(jaw,(2,2)),
+            (effort,(2,2)),(holds,(2,)),(stops,(2,)),(initial,(4,4)))
+    if any(value.shape!=shape for value,shape in shapes):
+        raise ValueError("Rosota RGB-policy proprioception array shape mismatch")
+    if any(not np.isfinite(value).all() for value,_ in shapes) or not np.isfinite(step_fraction):
+        raise ValueError("Rosota RGB-policy proprioception contains non-finite values")
+    from scipy.spatial.transform import Rotation
+    scope_translation=initial[:3,:3].T@(scope[:3,3]-initial[:3,3])/.03
+    scope_rotation=Rotation.from_matrix(initial[:3,:3].T@scope[:3,:3]).as_rotvec()/SCOPE_ROTATION_SCALE_RAD
+    state=np.concatenate([
+        (q/np.pi).ravel(),(jaw/(np.pi/4)).ravel(),
+        (effort/JAW_EFFORT_SCALE_NM).ravel(),
+        (wrench[:,:3]/WRENCH_FORCE_SCALE_N).ravel(),
+        (wrench[:,3:]/WRENCH_TORQUE_SCALE_NM).ravel(),
+        holds,stops,scope_translation,scope_rotation,[np.clip(step_fraction,0.,1.)]])
+    if state.shape!=(VISION_PROPRIOCEPTION_DIM,):
+        raise RuntimeError("Internal RGB-policy proprioception dimension drift")
+    return np.clip(state,-10.,10.).astype(np.float32)
+
+
 def traction_task_metrics(observation,info,proximity_m=.005,target_lift_m=.005):
     """Compute a transparent unassisted two-patch contact-and-traction gate."""
     if not np.isfinite([proximity_m,target_lift_m]).all() or min(proximity_m,target_lift_m)<=0:
@@ -273,3 +309,36 @@ class RosotaTractionRLAdapter(RosotaRLAdapter):
                     local_up=rotation.T@np.array([0.,1.,0.])
                     action[offset:offset+3]=local_up/max(np.linalg.norm(local_up),1e-12)
         return np.clip(action,-1.,1.)
+
+
+class RosotaVisionTractionRLAdapter(RosotaTractionRLAdapter):
+    """Appendix-patch traction with the rendered endoscope RGB and proprioception."""
+    def __init__(self,env,*,proximity_m=.005,target_lift_m=.005):
+        super().__init__(env,proximity_m=proximity_m,target_lift_m=target_lift_m)
+        self.observation_space=spaces.Dict({
+            "rgb":spaces.Box(0,255,VISION_IMAGE_SHAPE,dtype=np.uint8),
+            "proprio":spaces.Box(-10.,10.,(VISION_PROPRIOCEPTION_DIM,),dtype=np.float32)})
+
+    def _encode(self,observation,info):
+        from PIL import Image
+        frame=np.asarray(self.env.render())
+        if frame.shape!=(360,640,3) or frame.dtype!=np.uint8:
+            raise RuntimeError("The endoscope renderer did not return uint8 640x360 RGB")
+        resized=np.asarray(Image.fromarray(frame,"RGB").resize(
+            (VISION_IMAGE_SHAPE[1],VISION_IMAGE_SHAPE[0]),Image.Resampling.BILINEAR)).copy()
+        proprio=encode_rosota_proprioception(observation,self.initial_scope_pose,
+            self.steps/max(self.max_steps,1))
+        return {"rgb":resized,"proprio":proprio}
+
+    def reset(self,*,seed=None,options=None):
+        observation,info=super().reset(seed=seed,options=options)
+        info=dict(info,vision_policy=True,
+                  rl_observation="endoscope_rgb_proprioception_v1",
+                  task_scope="endoscope RGB plus robot/jaw/contact proprioception; privileged patch geometry used only for reward")
+        return observation,info
+
+    def step(self,action):
+        observation,reward,terminated,truncated,info=super().step(action)
+        info=dict(info,vision_policy=True,rl_observation="endoscope_rgb_proprioception_v1",
+                  task_scope="endoscope RGB plus robot/jaw/contact proprioception; privileged patch geometry used only for reward")
+        return observation,reward,terminated,truncated,info

@@ -127,6 +127,27 @@ does not cut tissue or complete an appendectomy. Adapter tests run without
 Isaac; live contact, physics-substep health, repeatability, held-out anatomy,
 RGB-policy learning and expert review remain unverified.
 
+For an image-input variant, select `--task vision-traction` with its own
+checkpoint and output directory. For example:
+
+```powershell
+./../../work/isaac-venv/Scripts/python.exe ct_appendectomy/run_rosota_rl.py `
+  --headless --task vision-traction --train-steps 4096 --eval-episodes 10 `
+  --assets out/ct_appendectomy/multitask_assets `
+  --out out/ct_appendectomy/rosota_vision_traction_v1
+```
+
+The adapter captures the actual `/World/Endoscope`
+RGB render at 640×360 and resizes it to 160×90, paired with 45 robot/jaw/scope
+proprioceptive values. It deliberately omits the target-patch positions and FEM
+displacements from policy input. Those values still drive reward and success
+measurement, so this is a visual actor with simulator-privileged reward
+shaping, not a fully deployable end-to-end controller. The checkpoint contract
+separates this CNN policy from the 53- and 65-value MLP policies. A mock image
+rollout verifies PPO updates, but Isaac rendering, GPU/physics throughput,
+contact safety, held-out anatomy, visual policy performance and surgery remain
+unverified.
+
 ## Learning and evidence
 
 The local PPO implementation uses tanh Gaussian actions, clipped policy updates, a value baseline, GAE, gradient clipping and separate masks for termination and truncation. See the [PPO paper](https://arxiv.org/abs/1707.06347) and [Gymnasium time-limit semantics](https://gymnasium.farama.org/tutorials/gymnasium_basics/handling_time_limits/). Optional behavior cloning collects one successful real simulator demonstration; its steps and loss are reported separately from PPO interaction counts.
