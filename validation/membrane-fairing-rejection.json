@@ -1,0 +1,49 @@
+{
+  "fixed_vertices": 344,
+  "bending_proxy_before": 9.656827661197378e-05,
+  "bending_proxy_after": 8.294055529236465e-05,
+  "max_motion_mm": 1.0523194016522752,
+  "strength": 10.0,
+  "status": "unreviewed fairing candidate",
+  "max_dihedral_before_deg": 160.89828853971312,
+  "max_dihedral_after_deg": 178.90993440245728,
+  "physics_relaxation": false,
+  "collision_checked": false,
+  "source_surface": "out\\ct_appendectomy\\bound_membrane_v6\\surface.npz",
+  "decision": "rejected: lower Laplacian bending proxy worsens worst adjacent-face angle; do not treat smoothing objective as anatomical improvement",
+  "collision_review": {
+    "status": "sampled diagnostic only",
+    "backend": "independent scipy ray parity / exhaustive closest point",
+    "surface": "out\\ct_appendectomy\\fair_membrane_v1\\surface.npz",
+    "samples": {
+      "vertices": 1625,
+      "edge_midpoints": 4696,
+      "face_centroids": 3072
+    },
+    "penetrations": {
+      "/SurgicalRegion/appendix_FJ2565": {
+        "edge_midpoints": {
+          "count_over_0_1mm": 2,
+          "max_depth_mm": 0.1291254210958709
+        }
+      },
+      "/SurgicalRegion/appendicular_artery_FJ3410": {
+        "vertices": {
+          "count_over_0_1mm": 13,
+          "max_depth_mm": 0.3529824376208468
+        },
+        "edge_midpoints": {
+          "count_over_0_1mm": 47,
+          "max_depth_mm": 0.4391301194584422
+        },
+        "face_centroids": {
+          "count_over_0_1mm": 26,
+          "max_depth_mm": 0.4670420094280983
+        }
+      }
+    },
+    "exhaustive_intersection_check": false,
+    "clinical_validity": false
+  },
+  "next": "Revisit root-boundary correspondence and existing near-reversals before another fat offset; keep attachment provenance."
+}
