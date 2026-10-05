@@ -1,0 +1,17 @@
+{
+  "status": "reference checks passed",
+  "hinges": 4520,
+  "rest_energy_J": -2.753038222910509e-21,
+  "rest_force_norm_N": 3.568580967754747e-17,
+  "authored_displacement_energy_J": 7.898741583915359e-07,
+  "bending_stiffness_Nm": 1e-08,
+  "calibrated": false,
+  "source": "https://multires.caltech.edu/pubs/ds.pdf",
+  "formulation": "0.5 stiffness times sum(3 rest_edge_length^2 / adjacent_rest_area_sum * wrapped_rest_angle_change^2)",
+  "limitations": [
+    "Angle branch at pi",
+    "No continuous collision detection",
+    "No dynamics or Isaac integration",
+    "Not validated against real tissue deformation"
+  ]
+}
