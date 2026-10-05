@@ -1,0 +1,6 @@
+{
+  "source": "base_api_128_assets",
+  "change": "physxDeformableBody:enableSpeculativeCCD = true",
+  "rationale": "Observed nodal displacement per time step can exceed summed contact offsets. Test velocity-dependent contact generation without changing geometry, material or iteration count.",
+  "scope": "Diagnostic only. Does not establish that missed contact is the cause or resolve free-fall error."
+}
