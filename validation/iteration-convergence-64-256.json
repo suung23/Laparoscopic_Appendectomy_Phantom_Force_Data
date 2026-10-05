@@ -1,0 +1,174 @@
+{
+  "status": "comparison_complete",
+  "phases": [
+    {
+      "phase": "before_initialize",
+      "exact_rest_geometry_and_topology": true,
+      "max_displacement_difference_m": 0.0,
+      "rms_displacement_difference_m": 0.0,
+      "reference_health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 1.0,
+        "median_volume_ratio": 1.0,
+        "total_absolute_volume_ratio": 1.0,
+        "p99_absolute_volume_change": 0.0
+      },
+      "candidate_health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 1.0,
+        "median_volume_ratio": 1.0,
+        "total_absolute_volume_ratio": 1.0,
+        "p99_absolute_volume_change": 0.0
+      },
+      "input_sha256": [
+        "33e54271a466274c297005ee6d13f1e905ca770a94eda78da6a451d28fb1963e",
+        "33e54271a466274c297005ee6d13f1e905ca770a94eda78da6a451d28fb1963e"
+      ]
+    },
+    {
+      "phase": "after_initialize",
+      "exact_rest_geometry_and_topology": true,
+      "max_displacement_difference_m": 4.1988067598401416e-05,
+      "rms_displacement_difference_m": 7.859763540052065e-06,
+      "reference_health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9374070123025344,
+        "median_volume_ratio": 1.0,
+        "total_absolute_volume_ratio": 0.999901866376979,
+        "p99_absolute_volume_change": 0.007902799109035328
+      },
+      "candidate_health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9582733832038594,
+        "median_volume_ratio": 1.0,
+        "total_absolute_volume_ratio": 0.9997522881034884,
+        "p99_absolute_volume_change": 0.014684711461183475
+      },
+      "input_sha256": [
+        "65f8693ab324e1e7692837f795dc1399bdb0f9aa8c7a05bf830cfbf31f32d1f2",
+        "deae103c3a0288b39e396e5d688741ababb3d2d8586264809ff06ac8f07e1739"
+      ]
+    },
+    {
+      "phase": "warmup_1",
+      "exact_rest_geometry_and_topology": true,
+      "max_displacement_difference_m": 8.48025827527707e-05,
+      "rms_displacement_difference_m": 2.0783267455115046e-05,
+      "reference_health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.909064730843012,
+        "median_volume_ratio": 1.0,
+        "total_absolute_volume_ratio": 0.9998917504951914,
+        "p99_absolute_volume_change": 0.012706517913862476
+      },
+      "candidate_health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9006807068616042,
+        "median_volume_ratio": 1.0,
+        "total_absolute_volume_ratio": 0.9997126968357194,
+        "p99_absolute_volume_change": 0.020909565837081673
+      },
+      "input_sha256": [
+        "fd78e0f7320c33521afdbf50bedb5c15923cee800bd80b2a607a742b88204417",
+        "8002c8f300e94ff31a6cc2f194267d7be39be60a0c6edfa30d97fa15a466e6e6"
+      ]
+    },
+    {
+      "phase": "warmup_60",
+      "exact_rest_geometry_and_topology": true,
+      "max_displacement_difference_m": 0.0075555501454348944,
+      "rms_displacement_difference_m": 0.003877363479833684,
+      "reference_health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 10,
+        "minimum_signed_volume_ratio": -1.7630333723068556,
+        "median_volume_ratio": 1.0055878769703477,
+        "total_absolute_volume_ratio": 1.0035034387129922,
+        "p99_absolute_volume_change": 0.3247428403967543
+      },
+      "candidate_health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 33,
+        "minimum_signed_volume_ratio": -2.478406159965231,
+        "median_volume_ratio": 1.0041461435435197,
+        "total_absolute_volume_ratio": 0.9928912078066072,
+        "p99_absolute_volume_change": 0.5756439592921913
+      },
+      "input_sha256": [
+        "f7df4f8a35b7c086f115a933566c6d1afe0b96f3824b35e730525f1594f5f2b7",
+        "4eb09db58c2f45303a8e10e5b45038a04978d92eaeec02fcea74039b4ffd3208"
+      ]
+    },
+    {
+      "phase": "warmup_480",
+      "exact_rest_geometry_and_topology": true,
+      "max_displacement_difference_m": 0.004516950285712244,
+      "rms_displacement_difference_m": 0.0024846452345242127,
+      "reference_health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 7,
+        "minimum_signed_volume_ratio": -1.492124226140115,
+        "median_volume_ratio": 1.0045225361110746,
+        "total_absolute_volume_ratio": 1.0051760569159778,
+        "p99_absolute_volume_change": 0.3577585510994736
+      },
+      "candidate_health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 3,
+        "minimum_signed_volume_ratio": -0.09976231575668336,
+        "median_volume_ratio": 1.0072529440055633,
+        "total_absolute_volume_ratio": 1.008010858878656,
+        "p99_absolute_volume_change": 0.3180819944838736
+      },
+      "input_sha256": [
+        "8c6958e3b237c876b0528b1c915f6756428ca54912eaaf512d81bcb5490e366f",
+        "3a6dfd03a71e8371ebc3951f4ecb1646361e8e2bde3a275a499059ae7ec9ca35"
+      ]
+    },
+    {
+      "phase": "after_settlement",
+      "exact_rest_geometry_and_topology": true,
+      "max_displacement_difference_m": 0.004399319398995721,
+      "rms_displacement_difference_m": 0.002521210112701923,
+      "reference_health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 5,
+        "minimum_signed_volume_ratio": -1.4832403763550357,
+        "median_volume_ratio": 1.0038450897733835,
+        "total_absolute_volume_ratio": 1.0057555260304047,
+        "p99_absolute_volume_change": 0.3283504418012925
+      },
+      "candidate_health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 1,
+        "minimum_signed_volume_ratio": -0.04701674194356639,
+        "median_volume_ratio": 1.0070826431213526,
+        "total_absolute_volume_ratio": 1.0074689476611784,
+        "p99_absolute_volume_change": 0.3348660406803427
+      },
+      "input_sha256": [
+        "a37f257a5c5b220c8c26b7cfba07846ac71f48825cdf3dfb7e2697fc7ab748bc",
+        "3ad38812baecd10c1eecdffc77b7d11c576bf8650908a08ea1f17df8378bf4b6"
+      ]
+    }
+  ],
+  "scope": "Trajectory comparison, not an acceptance pass. Requires independently verified matched experimental inputs and timing."
+}

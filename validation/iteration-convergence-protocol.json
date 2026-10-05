@@ -1,0 +1,9 @@
+{
+  "changed_parameter": "physxDeformableBody:solverPositionIterationCount",
+  "before": 64,
+  "after": 256,
+  "only_stage_text_change_verified": true,
+  "source_stage_sha256": "678c4414f1bdc87baa8db92df2321497172dbef60960627d0a2070af528a344e",
+  "candidate_stage_sha256": "c47b2ba7f37d84f086bf40dfca9a405c70e45d89b5eb21d578534a574d25eee4",
+  "scope": "Controlled iteration-count experiment. No changes to material, geometry, attachment, gravity or contact configuration."
+}

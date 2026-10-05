@@ -17,6 +17,7 @@ def main():
     p.add_argument('--steps',type=int,default=90)
     p.add_argument('--external-forces-every-iteration',action='store_true',help='Experimental TGS force integration; requires force validation')
     p.add_argument('--fine-settlement',action='store_true',help='Stricter 1 um/s RMS and 5 um/s p99 reset motion gate, up to 16 s')
+    p.add_argument('--settle-policy',choices=['fixed','adaptive'],help='Override reset settlement policy independently of grasp probes')
     p.add_argument('--reset-checkpoint',type=Path,help='Experimental initial nodal configuration; rest shape preserved')
     p.add_argument('--enhanced-determinism',action='store_true',help='Experimental PhysX enhanced determinism setting')
     p.add_argument('--jaw-gravity-compensation',action='store_true',help='Experimental pose-dependent jaw gravity subtraction; raw effort retained')
@@ -87,7 +88,7 @@ def main():
         env=RosotaCTEnv(app,a.assets,a.fr3_urdf,a.out,max_steps=a.steps,
             grasp_mode='solver_attachment' if a.solver_grasp or a.coupling_probe else ('rosota_attachment' if a.baseline_task else 'none'),
             workspace='appendix_patches' if a.baseline_task or a.coupling_probe else 'legacy',
-            settle_policy='adaptive' if a.coupling_probe else 'fixed',
+            settle_policy=a.settle_policy or ('adaptive' if a.coupling_probe else 'fixed'),
             diagnostic_no_tool_collision=a.mount_sensor_probe or a.readback_probe or a.diagnostic_jaw_no_collision,diagnostic_zero_gravity=a.diagnostic_zero_gravity,enhanced_determinism=a.enhanced_determinism,reset_checkpoint=a.reset_checkpoint,fine_settlement=a.fine_settlement,external_every_iteration=a.external_forces_every_iteration,cutter_cad=a.cutter_cad,jaw_gravity_compensation=a.jaw_gravity_compensation,gpu_tissue_observation=a.gpu_tissue_observation)
         obs,info=env.reset(seed=42);report.update(status='running',**info);save()
         if a.jaw_load_probe:
