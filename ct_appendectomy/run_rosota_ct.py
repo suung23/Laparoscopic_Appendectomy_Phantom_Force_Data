@@ -10,6 +10,7 @@ ROOT=Path(__file__).resolve().parents[1]
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--appearance',type=Path,help='Appearance source; exact rest topology correspondence required')
     p.add_argument('--fr3-urdf',type=Path,required=True)
     p.add_argument('--cutter-cad',type=Path,help='Experimental verified right cutter USD; no cutting or assisted grasp')
     p.add_argument('--assets',type=Path,default=ROOT/'out/ct_appendectomy/multitask_assets')
@@ -42,6 +43,7 @@ def main():
     p.add_argument('--diagnostic-zero-gravity',action='store_true',help='Only for isolating the mount sensor failure, never a task configuration')
     p.add_argument('--physics-substeps',type=int,choices=[1,2,4],default=1,help='Numerical convergence diagnostic; controller remains 480 Hz')
     a=p.parse_args()
+    if a.appearance and not a.appearance.is_file():p.error('Appearance source does not exist')
     if a.physics_substeps!=1 and (not a.contact_probe or any((a.mount_sensor_probe,a.readback_probe,a.jaw_load_probe,a.coupling_probe,a.baseline_task,a.attachment_probe,a.solver_grasp))):
         p.error('Substep diagnostic currently supports the contact/reset path only')
     if a.gpu_tissue_observation:
@@ -92,7 +94,7 @@ def main():
             grasp_mode='solver_attachment' if a.solver_grasp or a.coupling_probe else ('rosota_attachment' if a.baseline_task else 'none'),
             workspace='appendix_patches' if a.baseline_task or a.coupling_probe else 'legacy',
             settle_policy=a.settle_policy or ('adaptive' if a.coupling_probe else 'fixed'),
-            diagnostic_no_tool_collision=a.mount_sensor_probe or a.readback_probe or a.diagnostic_jaw_no_collision,diagnostic_zero_gravity=a.diagnostic_zero_gravity,enhanced_determinism=a.enhanced_determinism,reset_checkpoint=a.reset_checkpoint,fine_settlement=a.fine_settlement,external_every_iteration=a.external_forces_every_iteration,cutter_cad=a.cutter_cad,jaw_gravity_compensation=a.jaw_gravity_compensation,gpu_tissue_observation=a.gpu_tissue_observation,physics_substeps=a.physics_substeps)
+            diagnostic_no_tool_collision=a.mount_sensor_probe or a.readback_probe or a.diagnostic_jaw_no_collision,diagnostic_zero_gravity=a.diagnostic_zero_gravity,enhanced_determinism=a.enhanced_determinism,reset_checkpoint=a.reset_checkpoint,fine_settlement=a.fine_settlement,external_every_iteration=a.external_forces_every_iteration,cutter_cad=a.cutter_cad,jaw_gravity_compensation=a.jaw_gravity_compensation,gpu_tissue_observation=a.gpu_tissue_observation,physics_substeps=a.physics_substeps,appearance=a.appearance)
         obs,info=env.reset(seed=42);report.update(status='running',**info);save()
         if a.jaw_load_probe:
             from jaw_load_probe import run

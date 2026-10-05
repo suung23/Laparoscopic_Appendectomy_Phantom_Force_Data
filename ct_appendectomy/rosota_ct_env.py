@@ -16,8 +16,9 @@ from bimanual_env import BimanualEnv
 
 class RosotaCTEnv(gym.Env):
     metadata={'render_modes':['rgb_array'],'render_fps':30}
-    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False,enhanced_determinism=False,reset_checkpoint=None,fine_settlement=False,external_every_iteration=False,cutter_cad=None,jaw_gravity_compensation=False,gpu_tissue_observation=False,physics_substeps=1):
+    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False,enhanced_determinism=False,reset_checkpoint=None,fine_settlement=False,external_every_iteration=False,cutter_cad=None,jaw_gravity_compensation=False,gpu_tissue_observation=False,physics_substeps=1,appearance=None):
         if settle_policy not in ('fixed','adaptive'):raise ValueError('Unknown settlement policy')
+        self.appearance=Path(appearance) if appearance else None
         self.cutter_cad=Path(cutter_cad) if cutter_cad else None
         if self.cutter_cad and grasp_mode!='none':raise ValueError('Cutter cannot use assisted tissue grasp')
         if self.cutter_cad:
@@ -94,6 +95,10 @@ class RosotaCTEnv(gym.Env):
         for _ in range(20):self.app.update()
         self.stage=omni.usd.get_context().get_stage()
         self.stage.Reload()  # Reload referenced layers as well as the root.
+        if self.appearance:
+            from runtime_appearance import apply_appearance
+            appearance_report=apply_appearance(self.stage,self.appearance)
+            (self.out/'appearance.json').write_text(json.dumps(appearance_report,indent=2),encoding='utf-8')
         from deformable_parameters import validate_deformable_parameters
         validate_deformable_parameters(self.stage.GetPrimAtPath('/World/Atlas/appendix'))
         # Older authored stages used a bare Xform; modern PhysX attachments

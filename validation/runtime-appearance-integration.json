@@ -1,0 +1,187 @@
+{
+  "status": "runtime appearance transferred; integrated motion failed during reset",
+  "error": "Invalid reset: tet_inversion",
+  "source_assets": "out/ct_appendectomy/base_api_128_assets",
+  "appearance": {
+    "source_scene_sha256": "35a72aae333539cd30f79f398389356d137d4ed6525165d041d0a22094e1c7de",
+    "meshes": [
+      "/World/CT/colon",
+      "/World/CT/small_bowel",
+      "/World/Atlas/appendix/render",
+      "/World/Atlas/mesoappendix/render",
+      "/World/BodyEnvelope/render"
+    ],
+    "texture_sha256": {
+      "bowel_0_color.png": "0bab4593f7f9c26b2a3515179acf866b2f7e5e89b47de7d42b7402923bf974d1",
+      "bowel_0_roughness.png": "87fb4768bc053ac88aed54b338cd71995b3ad14066ac563d4c4c601635a73033",
+      "bowel_1_color.png": "888a81106d97913293200a7ad4f611893ed84f0c08e6e3f3bb852e670897e23e",
+      "bowel_1_roughness.png": "2108de35a73da320f41d526b947bb3dbc96a9dd5516971a5ed5ec3d116b08cc1",
+      "appendix_0_color.png": "bbc1c1f9e42769bef6091b274cb770ba319a08857ccb226b89e126111580c044",
+      "appendix_0_roughness.png": "9db077f606dd529ed96c0b4bd345a09a7d17f262b80a15137e97cd544bd55833",
+      "mesentery_0_color.png": "1a8fafd98bbc49dfdd7282b0c511e481664195c9d792ba1d5975d1d3d4de1ce3",
+      "mesentery_0_roughness.png": "ad9e06541cfc6e84c9770f89a57b9931c32e1ce55b5195f7fbe2f5618e038248",
+      "lining_0_color.png": "49b64fdbb60db33ee717ce00c67319058a66481007c687225112028dfd3758a1",
+      "lining_0_roughness.png": "5f308a80ced8b459776d8437d7618692a0f248653ff7451977b9f7ef046e5040"
+    },
+    "scope": "Material bindings and UVs only; no geometry, camera, lighting or physics copied",
+    "clinical_appearance_validated": false
+  },
+  "reset_diagnostics": {
+    "failure": "tet_inversion",
+    "trocar": {
+      "left": {
+        "offset_m": 2.9331798441379535e-05,
+        "bite_m": -0.00047066870171294517,
+        "tilt_rad": 0.00011018020364709399,
+        "insertion_m": 0.12004191506836513,
+        "inward": true,
+        "aperture_clear": true
+      },
+      "right": {
+        "offset_m": 6.011684733826895e-05,
+        "bite_m": -0.00043988369101903265,
+        "tilt_rad": 0.00018360042433413184,
+        "insertion_m": 0.12007654772407936,
+        "inward": true,
+        "aperture_clear": true
+      }
+    },
+    "scope_trocar": {
+      "offset_m": 0.0,
+      "bite_m": -0.0004999999999999996,
+      "tilt_rad": 0.0,
+      "insertion_m": 0.12,
+      "inward": true,
+      "aperture_clear": true,
+      "normal_source": "engineering scope port; not CT wall calibration",
+      "controller": "rigid scope geometric RCM"
+    },
+    "body_fk_error_m": [
+      5.776831418101688e-07,
+      7.669099734485802e-07
+    ],
+    "grasp_geometry": {},
+    "contact": {
+      "left": {
+        "mount_reaction": [
+          -0.22219017148017883,
+          -0.07288364320993423,
+          -0.4087046980857849,
+          -0.010824480094015598,
+          0.03295934945344925,
+          6.993777333264006e-06
+        ],
+        "mount_residual": [
+          -7.909256964921951e-07,
+          2.414453774690628e-08,
+          2.38688662648201e-06,
+          8.60891304910183e-09,
+          -2.0954757928848267e-10,
+          -4.6095323114059284e-10
+        ],
+        "residual_force_n": 2.5146320175630758e-06,
+        "stop_threshold_n": 0.15,
+        "motion_latched": false,
+        "jaw_effort_nm": [
+          5.7794477470451966e-05,
+          -0.0003069159865844995
+        ],
+        "jaw_load_proxy_n": 0.020461065772299968,
+        "jaw_gravity_nm": [
+          0.0,
+          0.0
+        ],
+        "jaw_corrected_effort_nm": [
+          5.7794477470451966e-05,
+          -0.0003069159865844995
+        ],
+        "jaw_gravity_compensated": false,
+        "jaw_limited": true,
+        "force_source": "PhysX joint reactions; local static tare, not calibrated tissue force"
+      },
+      "right": {
+        "mount_reaction": [
+          0.15914113819599152,
+          -0.17137093842029572,
+          -0.40862640738487244,
+          -0.025439439341425896,
+          -0.02364317700266838,
+          6.471881533798296e-06
+        ],
+        "mount_residual": [
+          -1.4542602002620698e-07,
+          -1.1106673628091813e-05,
+          2.3796409368515015e-05,
+          -5.844805855304003e-07,
+          1.627486199140549e-08,
+          4.4947654487259573e-10
+        ],
+        "residual_force_n": 2.626115851675626e-05,
+        "stop_threshold_n": 0.15,
+        "motion_latched": false,
+        "jaw_effort_nm": [
+          0.0002696421288419515,
+          -9.811621566768736e-05
+        ],
+        "jaw_load_proxy_n": 0.017976141922796767,
+        "jaw_gravity_nm": [
+          0.0,
+          0.0
+        ],
+        "jaw_corrected_effort_nm": [
+          0.0002696421288419515,
+          -9.811621566768736e-05
+        ],
+        "jaw_gravity_compensated": false,
+        "jaw_limited": false,
+        "force_source": "PhysX joint reactions; local static tare, not calibrated tissue force"
+      }
+    },
+    "jaw_position_rad": {
+      "left": [
+        0.6457718014717102,
+        -0.6457493305206299
+      ],
+      "right": [
+        0.6457718014717102,
+        -0.6456809043884277
+      ]
+    },
+    "tissue_health": {
+      "tetrahedra": 22312,
+      "degenerate_rest_tetrahedra": 0,
+      "inverted_tetrahedra": 4,
+      "minimum_signed_volume_ratio": -0.6727928744278999,
+      "median_volume_ratio": 1.0049851452250582,
+      "total_absolute_volume_ratio": 1.0049238486569394,
+      "p99_absolute_volume_change": 0.3051446871240559
+    },
+    "pin_drift_m": 3.354259680156934e-05,
+    "controller": "original Rosota TipController strict aperture",
+    "plant": "PhysX dynamic articulations with measured joint feedback",
+    "calibrated_ports": false,
+    "right_tool": "grasper",
+    "cutting_implemented": false,
+    "scope_shaft_collision": false,
+    "commissioning_retreat_m": 0.015,
+    "workspace": "legacy",
+    "grasp_assist": false,
+    "grasp_mode": "none",
+    "held_patches": {},
+    "settlement_verified": false,
+    "diagnostic_no_tool_collision": false,
+    "disabled_robot_collider_count": 0,
+    "tissue_generation": "explicit",
+    "tissue_observation": "usd",
+    "jaw_gravity_compensation": false,
+    "rosota_full_contract": false
+  },
+  "runtime_frames": 0,
+  "runtime_artifact_sha256": {
+    "scene.usda": "b06551b724f28c00415c508b0f369bf4e80f56e17f894528768ba7a318e590a0",
+    "report.json": "7678050a98cb6f37c2fe965458912e89677c256fc0ceb806f6011265d3a2285b",
+    "reset_diagnostics.json": "f608d66ff4e89384a7dc9039ee779e445d60d97fa0c082b3bc935151ad3e1dfd",
+    "appearance.json": "7dff55eedf793f6ee14eaafe2262a4409a39b752a2477b7bce0708868d1e4ac1"
+  },
+  "scope": "No successful bimanual motion, grasp, traction or clinical validation. Do not infer success from process exit code."
+}

@@ -7,6 +7,16 @@ call the unchanged upstream `laparo_control.TipController` at 480 Hz.
 Targets go through articulation drives; policy steps never teleport joints.
 Joint positions are explicitly initialized only at reset.
 
+An optional `--appearance out/ct_appendectomy/appendix300_appearance_v4/appearance.usda`
+transfers the repaired surface UVs and material library during reset. The
+transfer checks exact rest points and face indices before any edit, resolves
+and hashes local textures, and copies no camera, lights, tissue geometry or
+physics settings. It records `appearance.json` beside the runtime output.
+It must run before settlement changes the surface. This is an authored
+appearance experiment, not clinical reconstruction or validated tissue optics.
+The same rendering surface remains attached to the existing physics path;
+this option does not repair that path's outstanding contact/deformation failures.
+
 The contact-feedback extension is documented in `CONTACT_CONTROL.md`:
 measured jaw-effort closure inhibition, torque caps, reopening, and separate
 mount-reaction arm stops. The historical free-space evidence below does not
