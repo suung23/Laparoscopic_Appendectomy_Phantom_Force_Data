@@ -7,7 +7,7 @@ import numpy as np
 import torch
 
 class MembraneReference:
-    def __init__(self,points,faces,young,poisson,thickness,bending_stiffness=0.):
+    def __init__(self,points,faces,young,poisson,thickness,bending_stiffness=0.,device='cpu'):
         if not (np.isfinite([young,poisson,thickness]).all() and young>0 and thickness>0 and -1<poisson<.5):raise ValueError('Invalid material parameters')
         self.faces=torch.tensor(np.asarray(faces),dtype=torch.int64)
         rest=torch.tensor(np.asarray(points),dtype=torch.float64)
@@ -21,6 +21,11 @@ class MembraneReference:
         self.shape=rest.shape
         from hinge_bending import HingeBending
         self.bending=HingeBending(points,faces,bending_stiffness) if bending_stiffness else None
+        self.device=torch.device(device)
+        for name in ('faces','inverse','area'):setattr(self,name,getattr(self,name).to(self.device))
+        if self.bending is not None:
+            for name in ('faces','pairs','edges','weight','rest_cos','rest_sin'):
+                setattr(self.bending,name,getattr(self.bending,name).to(self.device))
     def energy(self,points):
         tri=points[self.faces];ds=torch.stack([tri[:,1]-tri[:,0],tri[:,2]-tri[:,0]],dim=2)
         f=ds@self.inverse
@@ -34,7 +39,7 @@ class MembraneReference:
         energy=(density*self.area*self.thickness).sum()
         return energy+self.bending.energy(points) if self.bending is not None else energy
     def energy_forces(self,points):
-        p=torch.tensor(np.asarray(points),dtype=torch.float64,requires_grad=True)
+        p=torch.tensor(np.asarray(points),dtype=torch.float64,device=self.device,requires_grad=True)
         if p.shape!=self.shape or not torch.isfinite(p).all():raise ValueError('Invalid current points')
         energy=self.energy(p);force=-torch.autograd.grad(energy,p)[0]
-        return float(energy.detach()),force.detach().numpy()
+        return float(energy.detach()),force.detach().cpu().numpy()

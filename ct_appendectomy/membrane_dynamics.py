@@ -7,14 +7,14 @@ class MembraneDynamics:
         if not np.isfinite(density) or density<=0:raise ValueError('Positive density required')
         self.model=model;self.points=np.array(rest,float,copy=True);self.velocity=np.zeros_like(self.points)
         self.fixed=np.asarray(fixed,dtype=int);self.free=np.setdiff1d(np.arange(len(rest)),self.fixed)
-        self.mass=np.zeros(len(rest));tri_mass=model.area.numpy()*model.thickness*density
-        np.add.at(self.mass,model.faces.numpy().ravel(),np.repeat(tri_mass/3,3))
+        self.mass=np.zeros(len(rest));tri_mass=model.area.cpu().numpy()*model.thickness*density
+        np.add.at(self.mass,model.faces.cpu().numpy().ravel(),np.repeat(tri_mass/3,3))
         if (self.mass<=0).any():raise ValueError('Every vertex needs positive mass')
-        inverse=model.inverse.numpy()
+        inverse=model.inverse.cpu().numpy()
         gradients=np.stack([-inverse.sum(axis=1),inverse[:,0],inverse[:,1]],axis=1)
-        local=(2*model.mu+model.lam)*model.thickness*model.area.numpy()[:,None]*np.sum(gradients**2,axis=2)
+        local=(2*model.mu+model.lam)*model.thickness*model.area.cpu().numpy()[:,None]*np.sum(gradients**2,axis=2)
         self.stiffness_diagonal=np.zeros(len(rest))
-        np.add.at(self.stiffness_diagonal,model.faces.numpy().ravel(),local.ravel())
+        np.add.at(self.stiffness_diagonal,model.faces.cpu().numpy().ravel(),local.ravel())
     def step(self,dt,forces,maxiter=1000,tolerance=1e-6,defect_tolerance=None):
         forces=np.asarray(forces,float)
         if not np.isfinite(dt) or dt<=0 or forces.shape!=self.points.shape or not np.isfinite(forces).all():raise ValueError('Invalid step inputs')
