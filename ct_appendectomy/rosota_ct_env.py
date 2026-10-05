@@ -326,6 +326,7 @@ class RosotaCTEnv(gym.Env):
         np.savez_compressed(self.out/('tissue_'+label+'.npz'),points=points,rest=rest,tets=tets,
             pin=indices,target_world=world_targets,anchor_world=transform)
         summary=dict(label=label,nodes=len(points),tetrahedra=len(tets),
+            observation_source='physx_tensor' if self._tissue_observer else 'usd',
             pin_target_error_m=float(np.linalg.norm(points[indices]-world_targets,axis=1).max()),
             points_sha256=hashlib.sha256(points.tobytes()).hexdigest(),
             tets_sha256=hashlib.sha256(tets.tobytes()).hexdigest())

@@ -276,6 +276,8 @@ def main():
             raise RuntimeError('Insufficient actual tool/scope movement')
         (a.out/'physics_trace.json').write_text(json.dumps(env.trace),encoding='utf-8')
     except Exception as exc:
+        import traceback
+        (a.out/'error_traceback.txt').write_text(traceback.format_exc(),encoding='utf-8')
         report.update(status='failed',error=str(exc));raise
     finally:
         save()
