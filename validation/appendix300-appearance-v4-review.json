@@ -1,0 +1,36 @@
+{
+  "status": "texture_mapping_fix_verified; overall_visual_gate_not_passed",
+  "engine": "Isaac Sim 6.1.0.0 / PhysX",
+  "render_mode": "render only",
+  "render_exit_code": 0,
+  "resolution": [
+    1280,
+    720
+  ],
+  "files": {
+    "out\\ct_appendectomy\\appendix300_appearance_v4\\appearance.usda": "35a72aae333539cd30f79f398389356d137d4ed6525165d041d0a22094e1c7de",
+    "out\\ct_appendectomy\\appendix300_appearance_v4\\render\\endoscope.png": "b3e69faf2f8d9105ed6a34c944a6c17f860feae839cf23d7bbe6cc1358c5cbdd",
+    "out\\ct_appendectomy\\appendix300_appearance_v4\\render\\report.json": "8f5ca5205fe305708a668acb81da8bfa6d9f5564084f282048c8d59e15e12117"
+  },
+  "visual_review": {
+    "triangular_colour_patches_removed_in_reviewed_view": true,
+    "view_and_anatomy_unchanged": true,
+    "remaining": [
+      "Opaque and overly smooth mesoappendix appearance",
+      "Simplified tissue surface and synthetic vascular motifs",
+      "Unvalidated appendix/cecum registration",
+      "No bimanual motion or contact deformation in this still"
+    ]
+  },
+  "tests": [
+    "3 reference appearance tests passed including submillimetre UV regression",
+    "Analytic bake orientation and mirrored-boundary checks passed",
+    "All five textured meshes have zero collapsed UV triangles",
+    "Points, normals and triangle topology unchanged"
+  ],
+  "metrics": "validation/surface-texture-bake-normalized.json",
+  "clinical_visual_validation": false,
+  "calibrated_tissue_mechanics": false,
+  "integrated_bimanual_traction": false,
+  "sota_claim": false
+}

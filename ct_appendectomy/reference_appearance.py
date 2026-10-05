@@ -14,6 +14,25 @@ from PIL import Image
 from pxr import Usd, UsdGeom, UsdShade, Sdf, Vt, Gf
 
 
+def atlas_coordinates(points):
+    """Normalize charting input: xatlas drops small metre-scale triangles.
+
+    Only the charting copy is rescaled. Original vertices remain unchanged.
+    """
+    points = np.asarray(points, dtype=np.float64)
+    extent = np.ptp(points, axis=0).max()
+    if not np.isfinite(points).all() or not np.isfinite(extent) or extent <= 0:
+        raise ValueError('Finite nonzero mesh extent required')
+    return ((points-points.min(axis=0))/extent*1000.).astype(np.float32)
+
+
+def require_nondegenerate_uv(uv):
+    a, b = uv[:,1]-uv[:,0], uv[:,2]-uv[:,0]
+    twice_area = np.abs(a[:,0]*b[:,1]-a[:,1]*b[:,0])
+    if not np.isfinite(uv).all() or np.any(twice_area <= 1e-12):
+        raise ValueError('UV atlas contains collapsed or invalid triangles')
+
+
 def author_texture(stage, mesh_path, texture_path, repeat=8., roughness=.32, material_path='/World/ReferenceLiverMaterial'):
     import xatlas
     if not np.isfinite(repeat) or repeat <= 0 or not np.isfinite(roughness) or not 0 < roughness <= 1:
@@ -26,10 +45,11 @@ def author_texture(stage, mesh_path, texture_path, repeat=8., roughness=.32, mat
     if not np.all(counts == 3):
         raise ValueError('Only triangular surfaces supported')
     faces = np.asarray(mesh.GetFaceVertexIndicesAttr().Get(), np.uint32).reshape(-1, 3)
-    mapping, indices, uv = xatlas.parametrize(points, faces)
+    mapping, indices, uv = xatlas.parametrize(atlas_coordinates(points), faces)
     if not np.array_equal(mapping[indices], faces):
         raise RuntimeError('UV unwrap changed triangle correspondence')
     # Face-varying UVs preserve original vertices, FEM skinning and collisions.
+    require_nondegenerate_uv(uv[indices])
     st = uv[indices].reshape(-1, 2) * float(repeat)
     UsdGeom.PrimvarsAPI(mesh).CreatePrimvar('st', Sdf.ValueTypeNames.TexCoord2fArray,
         UsdGeom.Tokens.faceVarying).Set(Vt.Vec2fArray.FromNumpy(st.astype(np.float32)))

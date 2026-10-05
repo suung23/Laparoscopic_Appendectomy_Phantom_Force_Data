@@ -1,0 +1,106 @@
+{
+  "analytic_checks_passed": true,
+  "geometry_and_normals_unchanged": true,
+  "camera_and_named_lights_unchanged": true,
+  "before_sha256": "bdf6e62074876bf7046f5f35e96e929333635a7080d16adf608fbe043f1fb187",
+  "after_sha256": "35a72aae333539cd30f79f398389356d137d4ed6525165d041d0a22094e1c7de",
+  "meshes": [
+    {
+      "mesh": "/World/CT/colon",
+      "before": {
+        "collapsed_uv_triangles": 29,
+        "collapsed_uv_surface_area_fraction": 1.9563845853554085e-05,
+        "seam_edges": 5088,
+        "mean_rgb_absolute_jump": 0.022784458068944906,
+        "p95_rgb_absolute_jump": 0.054759896471609504,
+        "max_rgb_absolute_jump": 0.1223159828046763
+      },
+      "after": {
+        "collapsed_uv_triangles": 0,
+        "collapsed_uv_surface_area_fraction": 0.0,
+        "seam_edges": 3604,
+        "mean_rgb_absolute_jump": 0.003054765383011701,
+        "p95_rgb_absolute_jump": 0.007886717592189531,
+        "max_rgb_absolute_jump": 0.052253437665552925
+      }
+    },
+    {
+      "mesh": "/World/CT/small_bowel",
+      "before": {
+        "collapsed_uv_triangles": 83,
+        "collapsed_uv_surface_area_fraction": 4.1570358007447794e-05,
+        "seam_edges": 7329,
+        "mean_rgb_absolute_jump": 0.02382539231732499,
+        "p95_rgb_absolute_jump": 0.05751633986928107,
+        "max_rgb_absolute_jump": 0.1093675800398284
+      },
+      "after": {
+        "collapsed_uv_triangles": 0,
+        "collapsed_uv_surface_area_fraction": 0.0,
+        "seam_edges": 5027,
+        "mean_rgb_absolute_jump": 0.003303124401342832,
+        "p95_rgb_absolute_jump": 0.008378846072683136,
+        "max_rgb_absolute_jump": 0.08618517572096752
+      }
+    },
+    {
+      "mesh": "/World/Atlas/appendix/render",
+      "before": {
+        "collapsed_uv_triangles": 1952,
+        "collapsed_uv_surface_area_fraction": 0.06559114158153534,
+        "seam_edges": 1196,
+        "mean_rgb_absolute_jump": 0.031763987887232836,
+        "p95_rgb_absolute_jump": 0.07406526202810743,
+        "max_rgb_absolute_jump": 0.10254562740622003
+      },
+      "after": {
+        "collapsed_uv_triangles": 0,
+        "collapsed_uv_surface_area_fraction": 0.0,
+        "seam_edges": 637,
+        "mean_rgb_absolute_jump": 0.0006916586785662733,
+        "p95_rgb_absolute_jump": 0.002614379084967333,
+        "max_rgb_absolute_jump": 0.010980583639705888
+      }
+    },
+    {
+      "mesh": "/World/Atlas/mesoappendix/render",
+      "before": {
+        "collapsed_uv_triangles": 2392,
+        "collapsed_uv_surface_area_fraction": 0.043082740157842636,
+        "seam_edges": 1084,
+        "mean_rgb_absolute_jump": 0.024926906875347897,
+        "p95_rgb_absolute_jump": 0.05563519224475798,
+        "max_rgb_absolute_jump": 0.08080035748045426
+      },
+      "after": {
+        "collapsed_uv_triangles": 0,
+        "collapsed_uv_surface_area_fraction": 0.0,
+        "seam_edges": 690,
+        "mean_rgb_absolute_jump": 0.0012679617185580732,
+        "p95_rgb_absolute_jump": 0.003927351338606262,
+        "max_rgb_absolute_jump": 0.01732405050128107
+      }
+    },
+    {
+      "mesh": "/World/BodyEnvelope/render",
+      "before": {
+        "collapsed_uv_triangles": 0,
+        "collapsed_uv_surface_area_fraction": 0.0,
+        "seam_edges": 1557,
+        "mean_rgb_absolute_jump": 0.027198890885981444,
+        "p95_rgb_absolute_jump": 0.06217387690263632,
+        "max_rgb_absolute_jump": 0.10185470828433442
+      },
+      "after": {
+        "collapsed_uv_triangles": 0,
+        "collapsed_uv_surface_area_fraction": 0.0,
+        "seam_edges": 1619,
+        "mean_rgb_absolute_jump": 0.004648672869711532,
+        "p95_rgb_absolute_jump": 0.01220045044531225,
+        "max_rgb_absolute_jump": 0.04639222949158913
+      }
+    }
+  ],
+  "metric": "Mean channel absolute difference in sRGB [0,1] at paired UV seam edge midpoints; bilinear sampling",
+  "limitations": "Measures texture continuity only, not realism, BRDF, anatomy or mechanics"
+}

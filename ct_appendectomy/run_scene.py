@@ -1,6 +1,6 @@
 """Isaac Sim renderer and optional PhysX FEM appendix cook probe.
 
-Run with an Isaac Sim 5.1 Python environment. A successful render alone does
+Run with the installed Isaac Sim Python environment. A successful render alone does
 not constitute a successful physics or appendectomy evaluation.
 """
 from pathlib import Path
@@ -8,6 +8,7 @@ import argparse
 import json
 import os
 import hashlib
+from importlib.metadata import version, PackageNotFoundError
 
 ROOT=Path(__file__).resolve().parents[1]
 os.environ.setdefault('WARP_CACHE_PATH',str(ROOT/'.cache/isaac-warp'))
@@ -84,7 +85,11 @@ try:
         from omni.kit.viewport.utility import get_active_viewport
         viewport=get_active_viewport()
         if viewport: viewport.set_active_camera('/World/Endoscope')
-    report={'engine':'Isaac Sim 5.1 / PhysX','mode':'FEM retraction + Gymnasium' if a.rl_smoke else ('FEM retraction' if a.retraction_probe else ('FEM cook probe' if a.physics else 'render only')),
+    try:
+        isaac_version=version('isaacsim')
+    except PackageNotFoundError:
+        isaac_version='unknown (distribution metadata unavailable)'
+    report={'engine':f'Isaac Sim {isaac_version} / PhysX','mode':'FEM retraction + Gymnasium' if a.rl_smoke else ('FEM retraction' if a.retraction_probe else ('FEM cook probe' if a.physics else 'render only')),
         'appendectomy_completed':False,'appendix_patient_specific':False,'registration_validated':False}
     report['source_scene_sha256']=hashlib.sha256(a.scene.read_bytes()).hexdigest()
     simulation=None
