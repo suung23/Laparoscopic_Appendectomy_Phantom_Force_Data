@@ -15,10 +15,12 @@ p.add_argument('--solver-iterations',type=int,default=64)
 p.add_argument('--support-gap',type=float,help='Diagnostic horizontal plane gap in meters; disables free-fall acceptance')
 p.add_argument('--steps',type=int,default=180,help='Physics steps, a multiple of 60 and at least 180')
 p.add_argument('--physics-hz',type=int,choices=[480,960,1920],default=480)
+p.add_argument('--audit-every-step',action='store_true',help='Track transient health using live GPU observations at every physics step')
 a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True)
 if any(v<=0 for v in a.units):p.error('Units must be positive')
 if not 1<=a.solver_iterations<=255:p.error('Solver iterations must be within [1,255]')
 if a.steps<180 or a.steps%60:p.error('Steps must be a multiple of 60 and at least 180')
+if a.audit_every_step and not a.tensor_readback:p.error('Every-step audit requires live tensor readback')
 if a.support_gap is not None and (not __import__('math').isfinite(a.support_gap) or a.support_gap<0):p.error('Nonnegative finite support gap required')
 root=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(root/'ct_appendectomy'))
@@ -94,10 +96,22 @@ try:
             observer=TissueTensorObserver.bind(stage,'/World/Tissue','/World/Tissue',omni.usd.get_context().get_stage_id())
             baseline=observer.snapshot(omni.usd.get_context().get_stage_id())['position_m']
         rows=[];centers=[]
+        transient=dict(samples=0,first_inversion_tick=None,maximum_inverted_elements=0,
+                       minimum_signed_volume_ratio=1.,maximum_plane_penetration_m=0.)
         for tick in range(a.steps+1):
+            every_state=observer.snapshot(omni.usd.get_context().get_stage_id()) if a.audit_every_step else None
+            if every_state is not None:
+                health=tetra_health(rest,every_state['position_m'],tets)
+                transient['samples']+=1
+                if health['inverted_tetrahedra'] and transient['first_inversion_tick'] is None:
+                    transient['first_inversion_tick']=tick
+                transient['maximum_inverted_elements']=max(transient['maximum_inverted_elements'],health['inverted_tetrahedra'])
+                transient['minimum_signed_volume_ratio']=min(transient['minimum_signed_volume_ratio'],health['minimum_signed_volume_ratio'])
+                if a.support_gap is not None:
+                    transient['maximum_plane_penetration_m']=max(transient['maximum_plane_penetration_m'],float(floor_y-every_state['position_m'][:,1].min()))
             if tick%60==0:
                 usd_points=np.asarray(mesh.GetPointsAttr().Get(),float)*mpu
-                live=observer.snapshot(omni.usd.get_context().get_stage_id()) if a.tensor_readback else None
+                live=every_state if every_state is not None else (observer.snapshot(omni.usd.get_context().get_stage_id()) if a.tensor_readback else None)
                 points=live['position_m'] if live is not None else usd_points
                 displacement=points-baseline;translation=displacement.mean(0)
                 rms=float(np.sqrt(np.mean(np.sum((displacement-translation)**2,axis=1))))
@@ -118,9 +132,11 @@ try:
         acceleration=np.diff(np.asarray(centers),n=2,axis=0)/((60/a.physics_hz)**2)
         error=np.linalg.norm(acceleration-np.array([0,-9.81,0]),axis=1)
         passed=all(r['health']['inverted_tetrahedra']==0 and r['health']['minimum_signed_volume_ratio']>=.99 and r['translation_removed_rms_m']<=1e-5 for r in rows) and bool(np.max(error)<=.1)
+        if a.audit_every_step:passed=passed and transient['maximum_inverted_elements']==0 and transient['minimum_signed_volume_ratio']>=.99
         if a.support_gap is not None:passed=False  # Contact snapshots cannot establish the free-fall gate.
         report['cases'].append(dict(meters_per_unit=mpu,status='geometry_dynamics_passed' if passed else 'failed',
             observation_source='live_physx_tensor' if a.tensor_readback else 'usd',
+            every_step_health=transient if a.audit_every_step else None,
             authored_density=1050*mpu**3,authored_youngs_modulus=12000*mpu,authored_gravity=9.81/mpu,
             settling_damping=0.,settling_threshold=0.,sleep_threshold=0.,
             acceleration_m_s2=acceleration.tolist(),max_acceleration_error_m_s2=float(error.max()),rows=rows))
