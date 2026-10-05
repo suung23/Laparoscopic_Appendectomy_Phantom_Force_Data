@@ -1,0 +1,77 @@
+{
+  "status": "exploratory_texture_synthesis_sweep_not_promoted",
+  "dataset": "Appendix300",
+  "source": {
+    "video": "Video_Snippets/Center2/Center2_2.mp4",
+    "video_sha256": "a38b416c45928266e333c46d40c278eff0386a0ca695d268c35ccf807fab04d5",
+    "frame_time_seconds": 10.0,
+    "frame_sha256": "3dcefc1dbfdb28efbcbe79ceeca3217e03e800a23a32a3864550052c7d155a1c",
+    "mask_sha256": "a6822f1b941a6ad2aef7b78849573d9401a5a6de58355dbcd81666152d46f41f",
+    "mask_semantics_expert_verified": false
+  },
+  "method": {
+    "operation": "mask-aware overlapping patch quilting from the same cropped RGB frame",
+    "source_bbox_xyxy": [924, 396, 2702, 948],
+    "mask_coverage_inside_crop": 0.18850361096167326,
+    "minimum_target_fraction_per_source_window": 0.98,
+    "atlas_size_px": [1024, 1024],
+    "seed": 311,
+    "patch_sizes_and_overlaps_px": [[48, 12], [80, 20], [112, 28], [144, 36]],
+    "lighting_and_specular_handling": "Inherited from the Appendix300 source image and current quilting implementation; not intrinsic-albedo recovery"
+  },
+  "diagnostics": {
+    "definitions": {
+      "autocorrelation": "Pearson correlation of grayscale atlas pixels and a horizontally shifted copy at the listed offset; this is a narrow periodicity diagnostic, not a realism score",
+      "boundary_to_global_gradient_ratio": "mean grayscale gradient across quilting grid boundaries divided by the overall horizontal grayscale gradient; near 1 means no exceptional grid-boundary jump under this statistic",
+      "highpass_rms_sigma2": "RMS of grayscale atlas minus Gaussian blur with sigma 2 px"
+    },
+    "candidates": [
+      {
+        "patch_px": 48,
+        "overlap_px": 12,
+        "texture_sha256": "7da0d60fbe13a817afaf38eaca9b3c1587ec0aa21045fc7c5600edaa021a2caf",
+        "autocorrelation": {"36": 0.42828, "48": 0.35285, "72": 0.23973, "256": 0.05542, "512": 0.04449},
+        "highpass_rms_sigma2": 2.78111,
+        "boundary_to_global_gradient_ratio": 0.99684,
+        "local_path": "out/ct_appendectomy/appendix300_texture_quilt_sweep_v22/patch_48.png (git-ignored)"
+      },
+      {
+        "patch_px": 80,
+        "overlap_px": 20,
+        "texture_sha256": "ddcb1a384b5c53b5e8da51f6d9f3d89444fab3cc6fc16af1f9b1e679a7ed0298",
+        "autocorrelation": {"60": 0.24848, "80": 0.19499, "120": 0.14515, "256": 0.03435, "512": -0.01195},
+        "highpass_rms_sigma2": 3.32269,
+        "boundary_to_global_gradient_ratio": 0.95901,
+        "local_path": "out/ct_appendectomy/appendix300_texture_quilt_sweep_v22/patch_80.png (git-ignored)"
+      },
+      {
+        "patch_px": 112,
+        "overlap_px": 28,
+        "texture_sha256": "ede6c2f391dd047b83e52432b6befbe838a0aec6f3d8edf63acf672893515eb9",
+        "autocorrelation": {"84": 0.40566, "112": 0.3916, "168": 0.36486, "256": 0.35393, "512": 0.25238},
+        "highpass_rms_sigma2": 3.17605,
+        "boundary_to_global_gradient_ratio": 0.98925,
+        "local_path": "out/ct_appendectomy/appendix300_texture_quilt_sweep_v22/patch_112.png (git-ignored)"
+      },
+      {
+        "patch_px": 144,
+        "overlap_px": 36,
+        "texture_sha256": "68e9c8beb25e132c4848699a7c28776b93d3331ed5b2ae6c7c2f1b00cc5bca0d",
+        "autocorrelation": {"108": 0.37395, "144": 0.30674, "216": 0.28373, "256": 0.24287, "512": 0.07185},
+        "highpass_rms_sigma2": 3.20365,
+        "boundary_to_global_gradient_ratio": 0.9927,
+        "local_path": "out/ct_appendectomy/appendix300_texture_quilt_sweep_v22/patch_144.png (git-ignored)"
+      }
+    ],
+    "candidate_for_visual_review": "patch_80.png",
+    "selection_reason": "Among the tested variants, the 80 px patch has the lowest measured correlation at its own quilting stride (0.24848 versus 0.42828 for 48 px); larger patches show stronger long-offset repetition in these diagnostics. This heuristic does not demonstrate improved anatomical realism."
+  },
+  "privacy": "Source video, frame, mask and candidate pixels remain in git-ignored local output. This tracked report contains hashes and aggregate diagnostics only.",
+  "promotion_blockers": [
+    "The 2-D mask target has not been confirmed by a qualified reviewer as appendix tissue.",
+    "The candidate is synthesized RGB and is not camera-to-mesh registered or attached to deforming surface coordinates.",
+    "Endoscope illumination and specular reflectance have not been separated into calibrated material channels.",
+    "No Isaac moving-endoscope render or blinded expert review was completed.",
+    "The texture continues to show repeated anatomy-like streaks; the numeric statistics do not score visual realism."
+  ]
+}
