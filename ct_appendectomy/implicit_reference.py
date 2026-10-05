@@ -56,6 +56,39 @@ def implicit_step(elastic, positions, velocity, mass, loads, dt, contact=None,
         method='lbfgs_rotated', contact=potential,
         max_iterations=max_iterations, tolerance=tolerance)
     if result['status'] != 'converged':
-        raise ImplicitConvergenceError(result)
+        # Local refinement only; the 1e-8 eligibility threshold is NOT an
+        # acceptance tolerance. Final force tolerance remains caller-specified.
+        if result['residual_n'] <= 1e-8:
+            from .newton_direction import newton_direction
+            from .determinant_step import positive_volume_step
+            refinements = []
+            for _ in range(3):
+                x = result['positions']
+                e,g = elastic.energy_gradient(x,loads)
+                pe,pg = potential.energy_gradient(x); energy,gradient = e+pe,g+pg
+                try:
+                    direction,diagnostic = newton_direction(elastic,x,gradient,potential)
+                except RuntimeError:
+                    break
+                alpha = min(positive_volume_step(elastic.rest,x,direction,elastic.tets)['alpha'],
+                            potential.feasible_step(x,direction))
+                candidate = x+alpha*direction
+                te,tg = elastic.energy_gradient(candidate,loads)
+                tpe,tpg = potential.energy_gradient(candidate)
+                residual = float(np.max(np.abs(tg+tpg)))
+                # Explicit roundoff allowance, with >=10x force contraction.
+                allowance = 64*np.finfo(float).eps*max(abs(e)+abs(pe),abs(te)+abs(tpe),1e-30)
+                if residual >= .1*result['residual_n'] or te+tpe > energy+allowance:
+                    break
+                refinements.append(dict(**diagnostic,alpha=alpha,residual_n=residual,
+                    energy_change_j=te+tpe-energy,energy_roundoff_allowance_j=allowance))
+                result.update(positions=candidate,residual_n=residual)
+                result['history'].append(dict(energy_j=te+tpe,residual_n=residual))
+                if residual <= tolerance:
+                    result['status']='converged'
+                    break
+            result['newton_refinements']=refinements
+        if result['status'] != 'converged':
+            raise ImplicitConvergenceError(result)
     result['velocity'] = (result['positions']-positions)/dt
     return result

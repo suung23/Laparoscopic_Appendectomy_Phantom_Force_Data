@@ -51,6 +51,7 @@ try:
         impulse=dt*(loads.sum(0)-cg.sum(0))
         health=tetra_health(rest,next_x,tets)
         rows.append(dict(tick=tick,residual_n=result['residual_n'],
+            newton_refinements=result.get('newton_refinements',[]),
             contact_force_n=(-cg.sum(0)).tolist(),momentum_balance_error_ns=float(np.linalg.norm(momentum-impulse)),
             minimum_gap_m=float((next_x[:,1]-plane).min()),health=health))
         x,velocity=next_x,next_v
