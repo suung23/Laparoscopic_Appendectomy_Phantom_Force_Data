@@ -1,0 +1,71 @@
+{
+  "bound_membrane_v6": {
+    "root_step_mm_min_max": [
+      0.033096445854229994,
+      0.5442680249463409
+    ],
+    "root_max_turn_degrees": 136.16452542132018,
+    "max_dihedral_degrees": 160.89828853971312,
+    "dihedrals_over_90": 36
+  },
+  "bound_membrane_v7": {
+    "root_step_mm_min_max": [
+      0.2718859978107316,
+      0.2984626577511567
+    ],
+    "root_max_turn_degrees": 25.58638178502145,
+    "max_dihedral_degrees": 134.549921323856,
+    "dihedrals_over_90": 24
+  },
+  "fat_layer": {
+    "status": "unreviewed continuous visual candidate",
+    "vertices": 49858,
+    "triangles": 99712,
+    "components": 1,
+    "watertight": true,
+    "winding_consistent": true,
+    "height_mm_min_median_max": [
+      0.02,
+      0.4105574574675436,
+      1.4402278142659866
+    ],
+    "binding_error_m": 0.0,
+    "source_sha256": "8971d1cd23df539c1a8fba58d3723a73f74feac25b0d4543629e79fd0668f199",
+    "provenance": "Procedurally authored over BodyParts3D-derived membrane; DBCLS CC BY 4.0",
+    "reference": "Appendix300 sampled visual observations; no reconstructed metric geometry",
+    "physics_integrated": false,
+    "anatomy_validated": false,
+    "collision_checked": false,
+    "self_intersections_checked": false,
+    "parameters": "seed 1729; 2.8 mm seed spacing; Gaussian widths 0.9-1.8 mm; sixth-power smooth maximum; all authoring choices",
+    "lobe_centers": 65,
+    "neighbor_clipping": {
+      "appendix_FJ2565": {
+        "changed_vertices": 462,
+        "baseline_inside_vertices": 232,
+        "max_reduction_mm": 0.7039396881328517
+      },
+      "mesentery_FJ3396": {
+        "changed_vertices": 11,
+        "baseline_inside_vertices": 71,
+        "max_reduction_mm": 0.07027261369111942
+      }
+    },
+    "top_offset_guard": {
+      "iterations": 6,
+      "initial_bad_faces": 1033,
+      "remaining_bad_faces": 0,
+      "min_absolute_offset_m": 2e-05
+    },
+    "bottom_offset_guard": {
+      "iterations": 0,
+      "initial_bad_faces": 0,
+      "remaining_bad_faces": 0,
+      "min_absolute_offset_m": 2e-05
+    },
+    "clipping_scope": "Eight normal-line samples and ten bisections; not continuous collision detection; pre-existing membrane penetrations remain"
+  },
+  "top_vertices_below_10_micrometres": 0,
+  "decision": "Candidate for visual/collision review, not adopted. Root correspondence improves folds and avoids submicrometre shell collapse; residual steep folds and sampled organ overlap remain.",
+  "render_and_independent_collision": "pending"
+}

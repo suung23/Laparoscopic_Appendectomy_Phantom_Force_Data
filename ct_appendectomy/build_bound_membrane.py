@@ -16,7 +16,7 @@ from boundary_surface import SurfaceBinding,project_boundary,coons_surface
 from build_scene import mesh_prim
 
 
-def build(scene,profile,out):
+def build(scene,profile,out,root_bias=.002,uniform_root=False):
     stage=Usd.Stage.Open(str(scene.resolve()))
     data=json.loads(profile.read_text())
     appendix=mesh_at(stage,data['source_prim'])
@@ -48,7 +48,7 @@ def build(scene,profile,out):
                for point in bottom[[0,-1]]]
     if endpoints[0]==endpoints[1]:
         raise ValueError("Both endpoints collapse to one attachment vertex; author a root footprint instead of forcing a strip")
-    path=edge_path(search,near,*endpoints,allowed_vertices=allowed)
+    path=edge_path(search,near,*endpoints,bias_scale=root_bias,allowed_vertices=allowed)
     landmarks,length=resample_path(search.vertices[path],len(bottom))
     original_root_length=float(length)
     accepted_smoothing_steps=0
@@ -63,7 +63,9 @@ def build(scene,profile,out):
         if (dist>.003).any() or ileum.contains(probes).any():break
         landmarks=proposal;accepted_smoothing_steps+=1
     length=float(np.linalg.norm(np.diff(landmarks,axis=0),axis=1).sum())
-    second,projection_error=project_boundary(parent,landmarks,1e-7)
+    if uniform_root:
+        landmarks,_=resample_path(landmarks,len(bottom))
+    second,projection_error=project_boundary(parent,landmarks,.001 if uniform_root else 1e-7)
     top=second.positions(parent.vertices)
     v=np.linspace(0,1,25)[:,None]
     # Author a positive outward departure at the appendix boundary. This is
@@ -113,7 +115,7 @@ def build(scene,profile,out):
         second_binding_nodes=second.nodes.tolist(),second_binding_weights=second.weights.tolist(),
         second_rest_curve_m=top.tolist(),search_path_vertex_indices=path.tolist(),search_vertex_count=len(search.vertices),
         search_max_edge_m=.001,search_allowed_vertices=int(allowed.sum()),
-        second_curve_length_mm=float(length*1000),
+        second_curve_length_mm=float(np.linalg.norm(np.diff(top,axis=0),axis=1).sum()*1000),root_bias_m=root_bias,uniform_root=uniform_root,
         root_length_before_smoothing_mm=original_root_length*1000,root_smoothing_steps=accepted_smoothing_steps,max_projection_error_m=float(projection_error.max()),
         vertices=len(surface.vertices),triangles=len(surface.faces),
         connected_components=len(surface.split(only_watertight=False)),winding_consistent=bool(surface.is_winding_consistent),
@@ -138,4 +140,6 @@ if __name__=='__main__':
     p.add_argument('--scene',type=Path,default=Path('out/ct_appendectomy/native_source_review/review.usda'))
     p.add_argument('--profile',type=Path,default=Path('ct_appendectomy/profiles/native_appendix_attachment_exterior_candidate.json'))
     p.add_argument('--out',type=Path,default=Path('out/ct_appendectomy/bound_membrane_current'))
-    a=p.parse_args();build(a.scene,a.profile,a.out)
+    p.add_argument('--root-bias',type=float,default=.002)
+    p.add_argument('--uniform-root',action='store_true')
+    a=p.parse_args();build(a.scene,a.profile,a.out,a.root_bias,a.uniform_root)
