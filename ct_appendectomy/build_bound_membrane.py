@@ -65,8 +65,22 @@ def build(scene,profile,out):
     second,projection_error=project_boundary(parent,landmarks,1e-7)
     top=second.positions(parent.vertices)
     v=np.linspace(0,1,25)[:,None]
-    left=(1-v)*bottom[0]+v*top[0];right=(1-v)*bottom[-1]+v*top[-1]
+    # Author a positive outward departure at the appendix boundary. This is
+    # a geometric Hermite tangent condition, not a tissue constitutive law.
+    normals=np.einsum('ij,ijk->ik',first.weights,appendix.vertex_normals[first.nodes])
+    norms=np.linalg.norm(normals,axis=1)
+    if (norms<1e-10).any():raise ValueError('Undefined attachment normal')
+    normals/=norms[:,None]
+    span=top-bottom
+    target=.1*np.linalg.norm(span,axis=1)
+    correction=np.maximum(0,target-np.einsum('ij,ij->i',span,normals))[:,None]*normals
+    curve=(1-v[:,:,None])*bottom[None]+v[:,:,None]*top[None]+(v*(1-v)**2)[:,:,None]*correction[None]
+    left=curve[:,0];right=curve[:,-1]
     surface=coons_surface(bottom,top,left,right)
+    # Coons captures edge corrections; supply the remaining interior offset.
+    offset=curve-surface.vertices.reshape(curve.shape)
+    offset[[0,-1]]=0;offset[:,[0,-1]]=0
+    surface=coons_surface(bottom,top,left,right,interior_offset=offset)
     positions=surface.vertices.reshape(len(v),len(bottom),3)
     np.testing.assert_allclose(positions[0],bottom,rtol=0,atol=1e-10)
     np.testing.assert_allclose(positions[-1],top,rtol=0,atol=1e-10)
@@ -102,12 +116,14 @@ def build(scene,profile,out):
         root_length_before_smoothing_mm=original_root_length*1000,root_smoothing_steps=accepted_smoothing_steps,max_projection_error_m=float(projection_error.max()),
         vertices=len(surface.vertices),triangles=len(surface.faces),
         connected_components=len(surface.split(only_watertight=False)),winding_consistent=bool(surface.is_winding_consistent),
+        outward_departure_ratio=.1,
+        min_departure_normal_dot_m=float(np.einsum('ij,ij->i',span+correction,normals).min()),
         boundary_position_error_m=float(max(np.abs(positions[0]-bottom).max(),np.abs(positions[-1]-top).max())),
         penetrations=collisions,open_parent_surfaces_not_checked=uncheckable,
         anatomy_accepted=False,thickness_calibrated=False,physics_integrated=False,self_intersections_tested=False,
         assumptions=['Mesenteric endpoints selected within 3 mm of native meso envelope, outside ileum; unvalidated authoring corridor',
             'Mesenteric path edge cost biased toward native mesoappendix envelope',
-            'Two free edges are straight interpolants; no measured fold or thickness'],
+            'Free edges and interior use outward Hermite departure; ratio 0.1 is an authoring choice, not measured tissue shape'],
         limitations=['Candidate may cross organs despite being topologically connected',
             'Centroid containment is not exhaustive collision detection',
             'Both attachment footprints require anatomical review'],
