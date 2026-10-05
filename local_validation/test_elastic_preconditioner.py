@@ -29,8 +29,9 @@ class HessianTests(unittest.TestCase):
         model = ElasticReference(x,[[0,1,2,3]],12000,.3)
         fixed = np.ones_like(x,bool); fixed[3,2] = False
         loads = x*0; loads[3,2] = -.03
-        result = model.solve(x,loads,fixed,method='rest_preconditioned')
-        self.assertEqual(result['status'],'converged')
-        np.testing.assert_array_equal(result['positions'][fixed],x[fixed])
+        for method in ('rest_preconditioned','lbfgs_preconditioned'):
+            result = model.solve(x,loads,fixed,method=method)
+            self.assertEqual(result['status'],'converged')
+            np.testing.assert_array_equal(result['positions'][fixed],x[fixed])
 
 if __name__ == '__main__': unittest.main()

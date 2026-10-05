@@ -48,7 +48,7 @@ class ElasticReference:
         if fixed.shape != x.shape or max_iterations < 1 or not np.isfinite(tolerance) or tolerance <= 0:
             raise ValueError('Invalid solve constraints')
         history = []
-        if method not in ('gradient', 'lbfgs', 'rest_preconditioned'):
+        if method not in ('gradient', 'lbfgs', 'rest_preconditioned', 'lbfgs_preconditioned'):
             raise ValueError('Unknown search method')
         pairs = []
         previous_x = previous_free = None
@@ -57,7 +57,7 @@ class ElasticReference:
         stiffness = max(self.mu * length, 1e-12)
         status = 'iteration_limit'
         precondition = None
-        if method == 'rest_preconditioned' and not fixed.all():
+        if method in ('rest_preconditioned', 'lbfgs_preconditioned') and not fixed.all():
             from .elastic_preconditioner import make_preconditioner
             precondition = make_preconditioner(self, x, fixed, contact)
         def objective(positions):
@@ -76,7 +76,7 @@ class ElasticReference:
             direction = -free / stiffness
             if precondition is not None:
                 direction = precondition(free)
-            if method == 'lbfgs':
+            if method in ('lbfgs', 'lbfgs_preconditioned'):
                 if previous_x is not None:
                     s, y = x-previous_x, free-previous_free
                     sy = float(np.sum(s*y))
@@ -91,7 +91,7 @@ class ElasticReference:
                 if pairs:
                     s, y, rho = pairs[-1]
                     scale = float(np.sum(s*y)/np.sum(y*y))
-                r = scale*q
+                r = -precondition(q) if precondition is not None else scale*q
                 for (s,y,rho), coefficient in zip(pairs, reversed(coefficients)):
                     r += s*(coefficient-rho*float(np.sum(y*r)))
                 direction = -r

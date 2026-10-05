@@ -26,7 +26,15 @@ def positive_volume_step(rest, current, direction, tets, floor=.01, safety=.9):
     if not np.isfinite(coeff).all() or np.any(coeff[:,0]<=0):
         raise ValueError('Initial state is not strictly feasible')
     earliest=1.;limiting=None
-    for index,co in enumerate(coeff):
+    # Bernstein coefficients bound the polynomial on [0,1] by their convex
+    # hull. Strictly positive coefficients need no individual root solve.
+    bernstein=np.column_stack((coeff[:,0],coeff[:,0]+coeff[:,1]/3,
+        coeff[:,0]+2*coeff[:,1]/3+coeff[:,2]/3,coeff.sum(axis=1)))
+    margin=64*np.finfo(float).eps*np.sum(np.abs(coeff),axis=1)
+    certified=np.all(bernstein>margin[:,None],axis=1)
+    unresolved=np.flatnonzero(~certified)
+    for index in unresolved:
+        co=coeff[index]
         # Keep nonzero coefficients; tiny high-order terms may still carry roots.
         degree=3
         while degree>0 and co[degree]==0:degree-=1
@@ -37,7 +45,7 @@ def positive_volume_step(rest, current, direction, tets, floor=.01, safety=.9):
                 earliest=float(root.real);limiting=index
     alpha=safety*earliest if limiting is not None else 1.
     # Check polynomial minima on the entire accepted interval, not just endpoints.
-    for co in coeff:
+    for co in coeff[unresolved]:
         candidates=[0.,alpha]
         for root in np.roots([3*co[3],2*co[2],co[1]]):
             if abs(root.imag)<1e-10 and 0<root.real<alpha:candidates.append(float(root.real))

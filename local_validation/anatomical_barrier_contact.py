@@ -73,7 +73,7 @@ if __name__ == '__main__':
     p.add_argument('--out', type=Path, required=True)
     p.add_argument('--iterations', type=int, default=120)
     p.add_argument('--translation-initialization', action='store_true')
-    p.add_argument('--method', choices=['lbfgs','rest_preconditioned'], default='lbfgs')
+    p.add_argument('--method', choices=['lbfgs','rest_preconditioned','lbfgs_preconditioned'], default='lbfgs')
     a = p.parse_args()
     if a.iterations < 1: p.error('Positive iteration count required')
     run(a.mesh, a.out, a.iterations, a.translation_initialization, a.method)

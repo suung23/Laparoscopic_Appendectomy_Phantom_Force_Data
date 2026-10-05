@@ -20,4 +20,14 @@ class StepTests(unittest.TestCase):
     def test_invalid_initial_state_rejected(self):
         with self.assertRaises(ValueError):positive_volume_step(self.x,self.x*np.array([-1,1,1]),self.x*0,self.t)
 
+    def test_random_paths_against_direct_determinants(self):
+        rng=np.random.default_rng(783)
+        for scale in (.001,.1,1.,10.):
+            for _ in range(20):
+                direction=scale*rng.normal(size=self.x.shape)
+                alpha=positive_volume_step(self.x,self.x,direction,self.t)['alpha']
+                path=self.x[None]+np.linspace(0,alpha,501)[:,None,None]*direction
+                edge=path[:,1:]-path[:,:1]
+                self.assertGreater(np.linalg.det(edge).min(),.01)
+
 if __name__=='__main__':unittest.main()
