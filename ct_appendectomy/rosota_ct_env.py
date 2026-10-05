@@ -216,12 +216,22 @@ class RosotaCTEnv(gym.Env):
             settled=False
             for window in range(120 if self.fine_settlement else 56):
                 peak_speed=np.zeros(len(self.rest)) if self._tissue_observer else None
+                if self._tissue_observer:
+                    from tissue_metrics import step_velocity_comparison
+                    previous=self.points();displacement_peak=np.zeros(len(self.rest));velocity_gap=0.
                 for _ in range(60):
                     self.sim.step(render=False)
                     if self._tissue_observer:
                         state=self._tissue_observer.snapshot(omni.usd.get_context().get_stage_id())
                         peak_speed=np.maximum(peak_speed,np.linalg.norm(state['velocity_m_s'],axis=1))
+                        mean_velocity,gap=step_velocity_comparison(previous,state['position_m'],state['velocity_m_s'],1/480)
+                        displacement_peak=np.maximum(displacement_peak,np.linalg.norm(mean_velocity,axis=1))
+                        velocity_gap=max(velocity_gap,gap);previous=state['position_m']
                 settled=gate.update(state['position_m'] if self._tissue_observer else self.points(),peak_speed)
+                if self._tissue_observer:
+                    gate.rows[-1].update(step_displacement_peak_rms_m_s=float(np.sqrt(np.mean(displacement_peak**2))),
+                        step_displacement_peak_p99_m_s=float(np.percentile(displacement_peak,99)),
+                        maximum_endpoint_vs_step_mean_velocity_rms_gap_m_s=velocity_gap)
                 (self.out/'settlement_progress.json').write_text(json.dumps(dict(
                     window=window+1,physics_ticks=480+60*(window+1),latest=gate.rows[-1])),encoding='utf-8')
                 if window>=7 and settled:break
