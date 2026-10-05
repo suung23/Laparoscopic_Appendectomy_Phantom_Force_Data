@@ -1,0 +1,44 @@
+{
+  "engine": "Newton 1.4.0 installed source",
+  "source_sha256": "1ca46d6a693a29a2b3059746f89be8d7a4de9139ce28fb169580817d14874304",
+  "function": "evaluate_volumetric_neo_hookean_force_and_hessian",
+  "deformation": "F=diag(J,1,1)",
+  "rows": [
+    {
+      "J": 1.0,
+      "energy_density_relative_to_rest_J_m3": 0.0,
+      "P11_Pa": -4.547473508864641e-12
+    },
+    {
+      "J": 0.1,
+      "energy_density_relative_to_rest_J_m3": 18434.482758620696,
+      "P11_Pa": -40965.517241379326
+    },
+    {
+      "J": 0.01,
+      "energy_density_relative_to_rest_J_m3": 22305.724137931047,
+      "P11_Pa": -45062.06896551726
+    },
+    {
+      "J": 0.0,
+      "energy_density_relative_to_rest_J_m3": 22758.620689655185,
+      "P11_Pa": -45517.24137931036
+    },
+    {
+      "J": -0.01,
+      "energy_density_relative_to_rest_J_m3": 23216.068965517254,
+      "P11_Pa": -45972.41379310347
+    },
+    {
+      "J": -0.1,
+      "energy_density_relative_to_rest_J_m3": 27537.931034482775,
+      "P11_Pa": -50068.965517241406
+    }
+  ],
+  "finding": "This inspected constitutive expression has finite energy and stress at J=0 and J<0. It supplies no determinant-domain barrier by itself.",
+  "limitations": [
+    "This is a constitutive audit, not proof about every other solver safeguard.",
+    "Not a tissue calibration or a proposal to clamp simulated positions."
+  ],
+  "next_requirement": "Evaluate a positive-determinant constrained solve; do not assume additional VBD iterations guarantee no inversion."
+}
