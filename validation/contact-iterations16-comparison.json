@@ -1,0 +1,47 @@
+{
+  "scope": "Same 480-control-tick warmup comparison, 128 versus 16 solver iterations. Not equilibrium or surgical validation.",
+  "runs": [
+    {
+      "run": "collision_readback_v1",
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 3,
+        "minimum_signed_volume_ratio": -0.6761080700075468,
+        "median_volume_ratio": 1.0057626853379125,
+        "total_absolute_volume_ratio": 1.0056607002050149,
+        "p99_absolute_volume_change": 0.32325847770508626
+      },
+      "support": {
+        "nodes": 5311,
+        "boundary_nodes": 3538,
+        "penetrating_nodes": 1033,
+        "penetrating_boundary_nodes": 706,
+        "maximum_interior_distance_m": 0.005996527150273323,
+        "scope": "Node samples only; does not exclude element-face crossings between nodes."
+      },
+      "report_error": "Invalid reset: tet_inversion"
+    },
+    {
+      "run": "contact_iterations16_v1",
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 7,
+        "minimum_signed_volume_ratio": -1.492124226140115,
+        "median_volume_ratio": 1.0045225361110746,
+        "total_absolute_volume_ratio": 1.0051760569159778,
+        "p99_absolute_volume_change": 0.3577585510994736
+      },
+      "support": {
+        "nodes": 5311,
+        "boundary_nodes": 3538,
+        "penetrating_nodes": 1055,
+        "penetrating_boundary_nodes": 719,
+        "maximum_interior_distance_m": 0.005999049171805382,
+        "scope": "Node samples only; does not exclude element-face crossings between nodes."
+      },
+      "report_error": "Invalid reset: tet_inversion"
+    }
+  ]
+}
