@@ -1,0 +1,32 @@
+{
+  "status": "synthetic_registered_bake_verified_real_appendix300_surface_mapping_pending",
+  "implementation": "ct_appendectomy/registered_surface_bake.py",
+  "method": "Face-varying UV rasterization; calibrated pinhole projection; reviewed tissue-mask, positive-depth, metric-depth-consistency, and front-face checks; cosine-weighted multi-view fusion in linear light.",
+  "required_inputs": [
+    "Reviewed per-frame target-tissue masks",
+    "Camera intrinsics and world-to-camera poses",
+    "Metric camera-Z depth aligned to each RGB frame",
+    "Registration between the tracked surface mesh and camera frames"
+  ],
+  "synthetic_validation": {
+    "result": "passed",
+    "tests": [
+      "Registered plane color is baked to expected UV texels",
+      "Depth-occluded projections are rejected",
+      "Non-target-mask pixels are rejected",
+      "Back-face projections are rejected",
+      "Two views fuse in linear-light space and report overlap",
+      "Missing calibrated views fail closed",
+      "Non-rigid camera transforms are rejected"
+    ],
+    "command": "python -m unittest tests.test_registered_surface_bake -v"
+  },
+  "appendix300_application": {
+    "performed": false,
+    "reason": "The locally audited Appendix300 clip provides RGB only; no calibrated metric depth or mesh-to-video registration is available. Prior SAM2 masks are provisional and drift rapidly.",
+    "current_rgb_candidate": "validation/appendix300-sam2-appearance-v20.json",
+    "semantic_appendix_identity_expert_verified": false
+  },
+  "texture_semantics": "Observed RGB after geometric registration; not intrinsic albedo, BRDF, or confirmation of appendix identity.",
+  "privacy": "No raw video, image, mask, depth frame, camera pose, or personal information is written by the tracked implementation or report. All synthetic test inputs are generated in memory."
+}
