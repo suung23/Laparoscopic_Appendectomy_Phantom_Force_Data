@@ -76,6 +76,28 @@ PhysX 속성이 없으므로 물리 불변성이나 접촉 충실도도 이 시�
 
 두 기구의 shaft/jaw, 포트 기반 RCM 및 속도/행동 제한을 구현한다. 접촉 파지와 보조 attachment를 구분한다. 접근–닫기–견인–열기 시퀀스, 비접촉 negative control, 관통/미끄러짐/핀 drift를 측정한다. 실제 물성 데이터가 없으면 estimated로 유지한다.
 
+### 2026-10-06 문헌 역학 자료로 정한 시험 우선순위
+
+사람 충수의 ex-vivo shear-rheometry 연구에서 control, purulent, gangrenous
+조직의 1 Hz storage modulus 요약치와 0–40% 압축 프로토콜을 provenance
+파일에 정리했다. 현재 Isaac material의 E=12 kPa, ν=0.45를 선형 등방성
+작은 변형률 선형 등방성 가정으로만 환산하면 전단 계수는 4.14 kPa다. 이는 논문 control 평균의
+3.64배, purulent의 6.21배, gangrenous의 6.45배다. 이는 비교용 경고값이며
+직접 파라미터 보정은 아니다. 논문 표본 수가 작고 조직은 동결·해동된
+생체 외 시료이며, 주파수 의존성·손실 계수·큰 변형을 기존 단일탄성
+PhysX FEM 값에 대응시킬 수 없어 production material은 변경하지 않았다.
+
+별도 포르신 대장 tribology 연구는 1–4 N clamp, 2 mm/s·15 mm sliding,
+윤활 상태와 jaw profile에 따른 sticking/slip 기준을 제공한다. 이는
+충수 실측값이 아니므로 appendix 파라미터에 전용하지 않고, 접촉 구현의
+외부 비교 과제로만 쓴다. 두 연구의 조건·한계·미도입 데이터는
+`research/appendix-mechanics-reference.json` 및
+`research/grasper-colon-friction-reference.json`에 기록했다. 현 12 kPa
+값과 문헌 범위를 비교하는 코드는 `ct_appendectomy/appendix_rheology_prior.py`,
+산출물은 `research/appendix-material-scale-comparison.json`이다. 다음 물성
+작업은 이 조건에 맞춘 8 mm coupon의 동적 shear·압축 stiffening·stress
+relaxation 시험이며, 실제 Isaac 실행과 force readback 없이는 통과로 간주하지 않는다.
+
 ## M3 — 조직 연결·절단·결찰
 
 맹장–충수–mesoappendix–혈관의 연결 상태를 물리 표현에 연결한다. SOFA 및 MPM 후보를 동일 coupon 실험으로 비교한 뒤 solver를 결정한다. 실제 topology 분리, 절단 표면 갱신, ligation constraint, 비의도 손상, 초기 topology로의 reset을 검증한다. 시각적인 절단 gesture는 합격이 아니다.

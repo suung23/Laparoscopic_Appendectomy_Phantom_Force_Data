@@ -1,0 +1,109 @@
+{
+  "status": "literature_prior_comparison_only",
+  "source": {
+    "title": "Mechanical Properties of Inflamed Appendix Tissues",
+    "doi": "10.3390/biomedicines12112588",
+    "url": "https://www.mdpi.com/2227-9059/12/11/2588",
+    "sample": "Frozen/thawed human appendix; control fragments from one appendix, three independent appendices per inflamed group",
+    "sample_counts": {
+      "control": "3 fragments from one healthy appendix",
+      "purulent": "3 fragments, one from each of 3 separate appendices",
+      "gangrenous": "3 fragments, one from each of 3 separate appendices",
+      "replication": "Each tissue fragment tested once"
+    }
+  },
+  "test_context": {
+    "disc_diameter_mm": 8,
+    "preload_n": 0.1,
+    "preload_stabilization_s": 60,
+    "frequency_hz": 1,
+    "strain_amplitude": 0.01,
+    "duration_per_compression_s": 60,
+    "compression_levels": [
+      0,
+      0.1,
+      0.2,
+      0.3,
+      0.4
+    ],
+    "amplitude_sweep": [
+      0.001,
+      1.0
+    ],
+    "storage_modulus_pa_mean_sd": {
+      "control": [
+        1136,
+        348
+      ],
+      "purulent": [
+        666,
+        102
+      ],
+      "gangrenous": [
+        642,
+        246
+      ]
+    },
+    "storage_modulus_percent_increase_at_40pct_compression_reported": {
+      "control": 200,
+      "purulent": 350,
+      "gangrenous": "almost 400"
+    },
+    "loss_modulus_numeric_curves": "Not transcribed from the figures"
+  },
+  "current_runtime_material": {
+    "file": "ct_appendectomy/run_scene.py",
+    "youngs_modulus_pa": 12000.0,
+    "poissons_ratio": 0.45,
+    "implied_linear_isotropic_shear_modulus_pa": 4137.93
+  },
+  "group_comparisons": {
+    "control": {
+      "measured_storage_shear_modulus_pa_mean_sd": [
+        1136,
+        348
+      ],
+      "isotropic_small_strain_equivalent_youngs_modulus_pa_mean_sd": [
+        3294.4,
+        1009.2
+      ],
+      "current_baseline_equivalent_shear_over_measured_mean": 3.643
+    },
+    "purulent": {
+      "measured_storage_shear_modulus_pa_mean_sd": [
+        666,
+        102
+      ],
+      "isotropic_small_strain_equivalent_youngs_modulus_pa_mean_sd": [
+        1931.4,
+        295.8
+      ],
+      "current_baseline_equivalent_shear_over_measured_mean": 6.213
+    },
+    "gangrenous": {
+      "measured_storage_shear_modulus_pa_mean_sd": [
+        642,
+        246
+      ],
+      "isotropic_small_strain_equivalent_youngs_modulus_pa_mean_sd": [
+        1861.8,
+        713.4
+      ],
+      "current_baseline_equivalent_shear_over_measured_mean": 6.445
+    }
+  },
+  "assumptions": [
+    "G-prime is mapped to E-prime using E=2(1+nu)G only as a small-strain isotropic scale comparison",
+    "This mapping ignores loss modulus, frequency dependence, anisotropy, freezing effects, and compression nonlinearity",
+    "Human ex-vivo biopsy summaries are priors, not in-vivo force-displacement ground truth"
+  ],
+  "not_validated": [
+    "PhysX FEM constitutive response",
+    "force-displacement response",
+    "stress relaxation",
+    "contact and slip",
+    "tissue damage",
+    "bimanual task performance"
+  ],
+  "production_material_changed": false
+}

@@ -1,9 +1,16 @@
 {
   "title": "Mechanical Properties of Inflamed Appendix Tissues",
   "doi": "10.3390/biomedicines12112588",
-  "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11591559/",
+  "source": "https://www.mdpi.com/2227-9059/12/11/2588",
+  "pmc_mirror": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11591559/",
   "use": "Prior and virtual-coupon protocol only; not fitted or validated simulator material",
   "sample": "Frozen/thawed human appendix; control fragments from one appendix, three independent appendices per inflamed group",
+  "sample_counts": {
+    "control": "3 fragments from one healthy appendix",
+    "purulent": "3 fragments, one from each of 3 separate appendices",
+    "gangrenous": "3 fragments, one from each of 3 separate appendices",
+    "replication": "Each tissue fragment tested once"
+  },
   "rheometry": {
     "disc_diameter_mm": 8,
     "preload_n": 0.1,
@@ -35,7 +42,23 @@
         642,
         246
       ]
-    }
+    },
+    "storage_modulus_percent_increase_at_40pct_compression_reported": {
+      "control": 200,
+      "purulent": 350,
+      "gangrenous": "almost 400"
+    },
+    "loss_modulus_numeric_curves": "Not transcribed from the figures"
+  },
+  "afm_young_modulus_pa_mean_sd_micro_indentation": {
+    "control": [496, 26],
+    "purulent": [206, 232],
+    "gangrenous": [114, 151]
+  },
+  "handling": {
+    "freeze_thaw": "Samples frozen after excision and thawed before measurement",
+    "measurement_temperature": "Room temperature",
+    "medium": "DMEM during testing"
   },
   "limitations": [
     "Raw curves not obtained; licensing of downloadable data not verified",

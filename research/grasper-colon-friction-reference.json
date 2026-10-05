@@ -1,0 +1,57 @@
+{
+  "title": "Friction behaviour between a laparoscopic grasper and the large intestine during minimally invasive surgery",
+  "doi": "10.1049/bsb2.12028",
+  "source": "https://ietresearch.onlinelibrary.wiley.com/doi/10.1049/bsb2.12028",
+  "species_and_tissue": "Porcine large intestine; not appendix tissue",
+  "sample": {
+    "animals": 2,
+    "test_groups": {
+      "bio_surface_liquid": 4,
+      "pulling_angle": 14,
+      "jaw_surface_profile": 6
+    },
+    "specimens_per_group": "Multiple specimens from each animal; groups use different subsets"
+  },
+  "test_protocol": {
+    "normal_clamping_force_n": [1, 2, 3, 4],
+    "jaw_loading_speed_mm_s": 1,
+    "sliding_speed_mm_s": 2,
+    "sliding_distance_mm": 15,
+    "force_sampling_hz": 20000,
+    "pulling_angles_deg": [0, 15, 30, 45, 60, 75, 90],
+    "tissue_test_temperature_c_mean_sd": [25, 2],
+    "relative_humidity_percent_mean_sd": [50, 5],
+    "reported_large_bowel_thickness_mm": 1.73,
+    "reported_compression_at_1n_percent": 55,
+    "tissue_surface_states": ["natural lubrication", "bovine-serum lubrication"]
+  },
+  "jaw_profiles": {
+    "wedge": {"tooth_height_mm": 0.74, "area_ratio": 2.2},
+    "trapezoidal": {"tooth_height_mm": 0.52, "area_ratio": 1.45},
+    "sinusoidal": {"tooth_height_mm": 0.52, "area_ratio": 1.12},
+    "flat": {"tooth_height_mm": 0, "area_ratio": 1.0},
+    "projected_size_mm": [18, 5]
+  },
+  "published_summary_outcomes": {
+    "typical_4n_test_context": true,
+    "wedge_dynamic_stick_slip_force_n": [1.0, 1.5],
+    "flat_dynamic_force_n": [0.0, 0.5],
+    "serum_vs_natural_peak_friction_percent_decrease_approx": 65,
+    "serum_vs_natural_dynamic_friction_percent_decrease_approx": 70,
+    "angle_with_highest_reported_friction_deg": 15,
+    "higher_normal_load_increases_friction": true,
+    "more_jaw_surface_area_increases_friction": true
+  },
+  "use": "Contact-model test envelope and qualitative slip ordering only; do not transfer porcine-colon values as human-appendix calibration",
+  "data_status": {
+    "paper_data_availability": "The article points to a DOI-issued public repository",
+    "numeric_trace_used": false,
+    "supplementary_files_retrieved": false,
+    "limitations": [
+      "No raw force trace has been imported into the simulator",
+      "The specimen was a large-intestine segment with a single grasper jaw sliding against it, not an appendix grasp",
+      "Small animal count and ex-vivo conditions limit transfer",
+      "Jaw profile in the study may not match the Rosota instrument CAD"
+    ]
+  }
+}
