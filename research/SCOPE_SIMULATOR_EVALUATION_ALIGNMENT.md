@@ -16,6 +16,8 @@ The CSV contract is `split,specimen_or_build_id,trajectory_id,time_s,phase,force
 
 The Open-H Embodiment surgical phantom card describes synchronized video, robot state, and actions but explicitly lists no force/torque sensor; it may support an observation/action interface check, not mechanical calibration ([dataset card](https://huggingface.co/datasets/nvidia/PhysicalAI-Robotics-Open-H-Embodiment/blob/ff0dbf674812a6c84ff3cd30675529bd99b7ddef/Surgical/ucsd/surgical_learning_dataset/readme.md)). A published Zenodo force-estimation record contains stereo images, PSM states, and force/torque ROS bags, but its page does not specify a reuse license or document phantom deformation/relaxation ground truth; it remains a candidate for later rights and channel review, not a calibration source ([Zenodo record](https://zenodo.org/records/21041361)). Neither dataset was downloaded or added to the repository.
 
+A published silicone-phantom study describes synchronized actuator motion, ATI Nano17 force, marker displacement video, and ten repeat trials. Its manipulation is a simple vertical push/release, and its reported model check compares against FEA rather than reserved measured trajectories. It is a useful measurement-protocol precedent, not reusable ground truth for laparoscopic grasp/retraction ([study PDF](https://bartlab.org/newweb/wp-content/uploads/2023/06/2.pdf)).
+
 ## Evaluation path that matches the manuscript
 
 1. Add a bounded grasp–elevate–release benchmark that can run without the full appendectomy scene while retaining the same tool/contact and tissue mechanics under test.
