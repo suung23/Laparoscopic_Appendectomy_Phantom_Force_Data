@@ -1,0 +1,18 @@
+{
+  "source_baseline": "isolated_units_live_v1",
+  "change": "solverPositionIterationCount 64 to 16",
+  "fixed": [
+    "boundary-preserved mesh",
+    "SI density and elasticity",
+    "480 Hz physics",
+    "zero linear and settling damping",
+    "sleep disabled",
+    "live GPU tensor observation",
+    "unchanged geometry and acceleration gates"
+  ],
+  "hypothesis": "Test whether repeated constraint projection contributes to free-fall shape error; not a contact convergence claim.",
+  "units_m_per_stage_unit": [
+    1.0,
+    0.01
+  ]
+}

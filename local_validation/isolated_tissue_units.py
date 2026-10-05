@@ -11,8 +11,10 @@ p.add_argument('--mesh',type=Path,required=True)
 p.add_argument('--out',type=Path,required=True)
 p.add_argument('--units',type=float,nargs='+',default=[1.,.01,.1],help='Meters per simulation length unit')
 p.add_argument('--tensor-readback',action='store_true',help='Compare independent PhysX tensor and USD buffers')
+p.add_argument('--solver-iterations',type=int,default=64)
 a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True)
 if any(v<=0 for v in a.units):p.error('Units must be positive')
+if not 1<=a.solver_iterations<=255:p.error('Solver iterations must be within [1,255]')
 root=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(root/'ct_appendectomy'))
 from isaacsim import SimulationApp
@@ -25,6 +27,7 @@ app=SimulationApp({'headless':True,'extra_args':['--/app/vulkan=false','--/app/d
     '--/privacy/extraDiagnosticDataOptIn=false','--/crashreporter/enabled=false']+
     [f'--/app/tokens/{k}={v.as_posix()}' for k,v in tokens.items()]})
 report=dict(status='running',mesh_sha256=hashlib.sha256(a.mesh.read_bytes()).hexdigest(),cases=[],
+    solver_iterations=a.solver_iterations,
     tensor_pipeline='warp_cuda' if a.tensor_readback else 'default_cpu',
     scope='Isolated free fall with zero damping, no attachments, robot, contact or rendering. Not loaded tissue validation.',
     material_si=dict(density_kg_m3=1050,youngs_modulus_pa=12000,poissons_ratio=.45),
@@ -50,7 +53,7 @@ try:
         prim=mesh.GetPrim()
         if not prim.ApplyAPI('PhysxBaseDeformableBodyAPI'):
             raise RuntimeError('Cannot apply PhysX deformable parameter schema')
-        prim.CreateAttribute('physxDeformableBody:solverPositionIterationCount',Sdf.ValueTypeNames.UInt).Set(64)
+        prim.CreateAttribute('physxDeformableBody:solverPositionIterationCount',Sdf.ValueTypeNames.UInt).Set(a.solver_iterations)
         prim.CreateAttribute('physxDeformableBody:linearDamping',Sdf.ValueTypeNames.Float).Set(0.)
         # A free-fall covariance test must not introduce unit-dependent default
         # settling/sleep thresholds or hidden settling damping.
