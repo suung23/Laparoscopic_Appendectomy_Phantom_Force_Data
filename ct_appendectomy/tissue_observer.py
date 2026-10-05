@@ -50,3 +50,18 @@ class TissueTensorObserver:
 
     def close(self):
         self._closed=True;self._body=None;self._owner=None
+
+    def collision_snapshot(self,stage_id):
+        """Raw collision topology and SI world points; no simulation-node mapping."""
+        if self._closed:raise RuntimeError('Observer is closed; rebind after reset')
+        if int(stage_id)!=self.stage_id:raise RuntimeError('Stage changed; rebind after reset')
+        points=self._array(self._body.get_collision_nodal_positions())
+        elements=self._array(self._body.get_collision_element_indices())
+        if points.ndim!=3 or points.shape[0]!=1 or points.shape[2]!=3 or not np.isfinite(points).all():
+            raise RuntimeError('Invalid collision position buffer')
+        if elements.ndim!=3 or elements.shape[0]!=1 or elements.shape[2]!=4 or elements.dtype.kind not in 'iu':
+            raise RuntimeError('Expected tetrahedral collision topology')
+        if elements.size==0 or elements.min()<0 or elements.max()>=points.shape[1]:
+            raise RuntimeError('Invalid collision indices')
+        return dict(collision_points_m=points[0].astype(float,copy=True)*self.meters_per_unit,
+                    collision_tets=elements[0].copy())

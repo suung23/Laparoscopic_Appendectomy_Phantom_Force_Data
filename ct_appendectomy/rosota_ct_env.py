@@ -364,6 +364,7 @@ class RosotaCTEnv(gym.Env):
             state=self._tissue_observer.snapshot(omni.usd.get_context().get_stage_id())
             points=state['position_m']
             velocity_fields['velocity_m_s']=state['velocity_m_s']
+            velocity_fields.update(self._tissue_observer.collision_snapshot(omni.usd.get_context().get_stage_id()))
         else:points=self.points().copy()
         rest=np.asarray(self.mesh.GetAttribute('omniphysics:restShapePoints').Get(),float)
         tets=np.asarray(self.mesh.GetAttribute('tetVertexIndices').Get(),int)
