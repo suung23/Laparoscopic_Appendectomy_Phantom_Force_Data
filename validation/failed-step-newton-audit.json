@@ -1,0 +1,15 @@
+{
+  "scope": "Single unaccepted Newton correction diagnostic; does not advance dynamics",
+  "candidate_sha256": "ab6c945f4be7f4df0f52356fd0fa3fa35656c8370e769dcc2754ab2927e2f6ce",
+  "initial_residual_n": 1.1488829408646644e-10,
+  "corrected_residual_n": 3.3002207805205193e-15,
+  "alpha": 1.0,
+  "energy_change_j": 8.131516293641283e-20,
+  "diagnostic": {
+    "cg_iterations": 15,
+    "linear_residual_n": 2.4042862524204505e-16,
+    "slope_j": -1.6018904460049314e-22
+  },
+  "minimum_gap_m": 0.0006823018309659659,
+  "force_tolerance_passed": true
+}
