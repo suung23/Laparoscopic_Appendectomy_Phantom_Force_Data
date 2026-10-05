@@ -33,7 +33,16 @@ class ElasticReference:
         if np.any(j <= 0):
             raise ValueError('Non-positive determinant')
         logj = np.log(j)
-        density = .5 * self.mu * (np.sum(f*f, axis=(1, 2)) - 3) - self.mu*logj + .5*self.lam*logj**2
+        # Equivalent spectral energy avoids subtracting O(1) quantities when
+        # strain energy is O(strain**2), notably near rigid motion.
+        stretch = np.linalg.svd(f, compute_uv=False)
+        t = stretch-1
+        remainder = t-np.log1p(t)
+        small = np.abs(t)<1e-3
+        ts = t[small]
+        remainder[small] = sum(((-1.)**n)*ts**n/n for n in range(2,9))
+        spectral_logj = np.log1p(t).sum(axis=1)
+        density = .5*self.mu*np.sum(t*t+2*remainder,axis=1)+.5*self.lam*spectral_logj**2
         p = self.mu*f + (self.lam*logj-self.mu)[:, None, None]*np.linalg.inv(f).transpose(0, 2, 1)
         h = self.volume[:, None, None] * (p @ self.inverse.transpose(0, 2, 1))
         gradient = -loads.copy()

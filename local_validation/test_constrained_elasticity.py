@@ -4,6 +4,17 @@ from ct_appendectomy.constrained_elasticity import ElasticReference
 
 
 class ElasticTests(unittest.TestCase):
+    def test_small_strain_energy_retains_quadratic_limit(self):
+        rest = np.array([[0.,0,0],[1,0,0],[0,1,0],[0,0,1]])
+        model = ElasticReference(rest,[[0,1,2,3]],12000,.3)
+        for epsilon in (1e-5,1e-7,1e-9):
+            x = rest.copy(); x[3,2] += epsilon
+            energy,_ = model.energy_gradient(x,np.zeros_like(x))
+            actual_strain = x[3,2]-1
+            expected = .5*(model.lam+2*model.mu)*actual_strain**2/6
+            self.assertGreater(energy,0)
+            self.assertLess(abs(energy/expected-1),2e-5)
+
     def setUp(self):
         self.x = .01*np.array([[0.,0,0],[1,0,0],[0,1,0],[0,0,1]])
         self.model = ElasticReference(self.x, [[0,1,2,3]], 12000, .3)
