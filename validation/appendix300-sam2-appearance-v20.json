@@ -1,0 +1,92 @@
+{
+  "status": "provisional_masked_uv_candidate_not_promoted",
+  "dataset": "Appendix300",
+  "dataset_doi": "10.25532/OPARA-1173",
+  "dataset_license": "CC BY 4.0",
+  "source_video": "Video_Snippets/Center2/Center2_2.mp4",
+  "source_video_sha256": "a38b416c45928266e333c46d40c278eff0386a0ca695d268c35ccf807fab04d5",
+  "source_frame_time_seconds": 10.0,
+  "source_frame_sha256": "3dcefc1dbfdb28efbcbe79ceeca3217e03e800a23a32a3864550052c7d155a1c",
+  "segmentation": {
+    "model": "facebook/sam2-hiera-small",
+    "model_revision": "e080ada8afd19df5e165abe71b006edc7f4c3d4e",
+    "checkpoint_format": "safetensors",
+    "checkpoint_sha256": "293ad59be7669df6aa41ba79efcdeb7490f43cdc4c06cee4bf66bd89dafad293",
+    "license": "Apache-2.0",
+    "transformers_version": "5.18.0",
+    "device": "NVIDIA GeForce RTX 4090",
+    "inference": "Local only; no source frame was sent to a service",
+    "prompt_resolution_px": [1920, 540],
+    "positive_point_xy": [900, 367],
+    "negative_points_xy": [[850, 290], [850, 450]],
+    "anchor_mask_sha256": "a6822f1b941a6ad2aef7b78849573d9401a5a6de58355dbcd81666152d46f41f",
+    "anchor_mask_fraction": 0.0446103395,
+    "semantic_appendix_identity_expert_verified": false,
+    "propagation_times_seconds": [10.0, 10.1, 10.2, 10.3, 10.4, 10.5],
+    "adjacent_mask_iou": [0.6866109564, 0.7250618459, 0.8012241954, 0.5274458207, 0.8760280801],
+    "anchor_mask_iou": [1.0, 0.6866109564, 0.4953277082, 0.4154243689, 0.1837894053, 0.155768262],
+    "interpretation": "Adjacent-frame overlap alone hides substantial drift from the initial prompt: IoU falls to 0.156 by 10.5 s. Only the 10.0 s anchor mask was used for this texture candidate."
+  },
+  "texture_candidate": {
+    "local_path": "out/ct_appendectomy/appendix300_sam2_texture_v21/appendix_appendix300_temporal_rgb.png (git-ignored)",
+    "texture_sha256": "d172c39195de99e63ddafb779c0409363af912f040299c35e3d697bae0e50df6",
+    "mask_sha256": "a6822f1b941a6ad2aef7b78849573d9401a5a6de58355dbcd81666152d46f41f",
+    "mask_bbox_xyxy_full_resolution": [924, 396, 2702, 948],
+    "bbox_margin_px": 128,
+    "mask_coverage_inside_crop": 0.188503611,
+    "sampler": "Mask-aware overlapping patch quilting; source windows require at least 98% target-mask coverage; deterministic seed 311; 48 px patches; 12 px overlap; output 1024x1024",
+    "texture_semantics": "Observed RGB from a provisional visible-object mask; not intrinsic albedo or appendix-confirmed appearance",
+    "copied_mesoappendix_candidate_unchanged": true
+  },
+  "appearance_diagnostics": {
+    "definitions": {
+      "bright_low_chroma_fraction": "fraction of pixels where max RGB > 230 and channel range < 45",
+      "mean_neighbor_rgb_difference": "mean absolute RGB difference over horizontal and vertical neighbors",
+      "highpass_rms_sigma2": "RMS of RGB minus Gaussian blur with sigma 2 px"
+    },
+    "v19_unmasked_roi": {
+      "mean_rgb": 152.7525,
+      "p99_max_rgb": 254.0,
+      "bright_low_chroma_fraction": 0.00281525,
+      "mean_neighbor_rgb_difference": 0.87876,
+      "highpass_rms_sigma2": 2.29256
+    },
+    "v20_full_frame_mask_failed_brightness_normalization": {
+      "mean_rgb": 73.6327,
+      "p99_max_rgb": 106.0,
+      "bright_low_chroma_fraction": 0.0,
+      "mean_neighbor_rgb_difference": 1.24223,
+      "highpass_rms_sigma2": 2.00035,
+      "decision": "Retained locally as a failed experiment; black endoscope surround biased broad brightness normalization."
+    },
+    "v21_mask_crop_candidate": {
+      "mean_rgb": 130.2519,
+      "p99_max_rgb": 185.0,
+      "bright_low_chroma_fraction": 0.0,
+      "mean_neighbor_rgb_difference": 1.73247,
+      "highpass_rms_sigma2": 2.7963,
+      "interpretation": "Compared with v19, local high-frequency and neighbor-difference diagnostics rise while bright neutral pixels fall. These narrow metrics do not establish realism or albedo recovery."
+    }
+  },
+  "usd_validation": {
+    "local_validation_report": "out/ct_appendectomy/appendix300_sam2_texture_v21/usd-validation.json (git-ignored)",
+    "status": "USD structure verified; Isaac render pending",
+    "parent_layer_sha256": "ec1677ba37c6551ac4502c18d2f15961734a7cc02357def7dc12f28a80fe0df8",
+    "candidate_layer_sha256": "d84c59b90298ba99fc758a6ddb1d88baeabb98630ecda175cca906e8ac58bd37",
+    "mesh_count": 54,
+    "geometry_normals_and_uvs_unchanged": true,
+    "appendix_mesh_texture_bound": true,
+    "mesoappendix_mesh_texture_bound": true,
+    "isaac_runtime_load_verified": false,
+    "moving_endoscope_render_verified": false
+  },
+  "promotion_blockers": [
+    "A qualified reviewer has not confirmed that the SAM2-selected structure is the appendix.",
+    "The anchor mask is only 2-D and rapidly drifts; no persistent surface tracking across deformation is established.",
+    "No camera-to-mesh registration connects the observed pixels to the simulated appendix surface.",
+    "The USD texture has not been loaded or reviewed in an Isaac moving-endoscope render.",
+    "The texture retains observed illumination and is not a calibrated diffuse/specular material decomposition.",
+    "The copied mesoappendix texture remains an earlier rejected mixed-tissue candidate."
+  ],
+  "privacy": "Raw video, source frames, segmentation masks, and texture pixels remain local and git-ignored. This report includes only hashes, prompts, aggregate metrics, and validation results; it contains no patient or user metadata."
+}
