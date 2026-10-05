@@ -33,6 +33,24 @@ try:
         vertices=[wp.vec3(*x) for x in rest],indices=tets.ravel().tolist(),density=1050.,
         k_mu=E/(2*(1+nu)),k_lambda=E*nu/((1+nu)*(1-2*nu)),k_damp=0.,particle_radius=.0004,validate_mesh=True)
     builder.add_ground_plane(height=floor);builder.color();model=builder.finalize(device='cuda:0')
+    actual_tets=model.tet_indices.numpy().reshape(-1,4)
+    if not np.array_equal(actual_tets,tets):
+        raise RuntimeError('Newton tetrahedron indexing differs from diagnostic mesh')
+    actual_rest=model.particle_q.numpy()
+    if not np.array_equal(actual_rest,rest.astype(np.float32)):
+        raise RuntimeError('Newton rest positions differ from expected float32 conversion')
+    cells=rest[tets]
+    volumes=np.einsum('ij,ij->i',np.cross(cells[:,1]-cells[:,0],cells[:,2]-cells[:,0]),cells[:,3]-cells[:,0])/6
+    expected_mass=np.zeros(len(rest))
+    for corner in range(4):np.add.at(expected_mass,tets[:,corner],1050.*volumes/4)
+    actual_mass=model.particle_mass.numpy()
+    if np.any(actual_mass<=0) or not np.isfinite(actual_mass).all():
+        raise RuntimeError('Nonpositive or nonfinite unconstrained particle mass')
+    report['model_audit']=dict(exact_topology=True,exact_float32_rest=True,
+        total_mass_kg=float(actual_mass.sum()),minimum_particle_mass_kg=float(actual_mass.min()),
+        maximum_relative_lumped_mass_error=float(np.max(np.abs(actual_mass-expected_mass)/expected_mass)))
+    if not np.allclose(actual_mass,expected_mass,rtol=1e-4,atol=0):
+        raise RuntimeError('Solver masses disagree with density-weighted tetrahedral volume')
     model.soft_contact_ke=1000.;model.soft_contact_kd=0.;model.soft_contact_mu=.5
     solver=newton.solvers.SolverVBD(model,iterations=a.iterations,particle_enable_self_contact=False)
     pipeline=newton.CollisionPipeline(model,soft_contact_margin=.0008,enable_rigid_soft_full_surface_contact=True)

@@ -1,0 +1,10 @@
+{
+  "audit": {
+    "exact_topology": true,
+    "exact_float32_rest": true,
+    "total_mass_kg": 0.004588914569467306,
+    "minimum_particle_mass_kg": 2.025999590316019e-09,
+    "maximum_relative_lumped_mass_error": 8.918827580512596e-06
+  },
+  "scope": "Topology, rest coordinates and mass initialization only; not contact stability or tissue calibration."
+}
