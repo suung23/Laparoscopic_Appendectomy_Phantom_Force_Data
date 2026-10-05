@@ -12,7 +12,16 @@ def load_jaw(path,part='gripper_tip_left'):
     points=np.asarray(mesh.GetPointsAttr().Get(),float);matrix=np.asarray(UsdGeom.Xformable(mesh).ComputeLocalToWorldTransform(0))
     points=(np.column_stack([points,np.ones(len(points))])@matrix)[:,:3]*UsdGeom.GetStageMetersPerUnit(stage)
     # Explicit convex collision approximation, matching the earlier Isaac path.
-    return trimesh.Trimesh(points,np.asarray(mesh.GetFaceVertexIndicesAttr().Get()).reshape(-1,3),process=False).convex_hull
+    hull=trimesh.Trimesh(points,np.asarray(mesh.GetFaceVertexIndicesAttr().Get()).reshape(-1,3),process=False).convex_hull
+    if not hull.is_watertight:
+        # Long, thin metric CAD can lose hull facets to absolute tolerances.
+        # Recompute from original points in normalized coordinates, then restore metres.
+        center=(points.min(axis=0)+points.max(axis=0))/2
+        span=np.ptp(points,axis=0).max()
+        hull=trimesh.convex.convex_hull((points-center)/span)
+        hull.vertices=hull.vertices*span+center
+    if not hull.is_watertight:raise ValueError('CAD convex hull is not closed: '+part)
+    return hull
 
 def penalty(mesh,points,area,stiffness):
     points=np.asarray(points,float);area=np.asarray(area,float)
