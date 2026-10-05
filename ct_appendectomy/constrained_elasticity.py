@@ -98,8 +98,9 @@ class ElasticReference:
                 contact_energy, contact_gradient = contact.energy_gradient(positions)
                 energy += contact_energy; gradient += contact_gradient
             return energy, gradient
+        cached_objective = None
         for iteration in range(max_iterations):
-            energy, gradient = objective(x)
+            energy, gradient = objective(x) if cached_objective is None else cached_objective
             free = gradient.copy(); free[fixed] = 0
             residual = float(np.max(np.abs(free)))
             history.append(dict(energy_j=energy, residual_n=residual))
@@ -143,13 +144,15 @@ class ElasticReference:
             slope = float(np.sum(gradient*direction))
             for _ in range(60):
                 candidate = x + alpha*direction
-                trial, _ = objective(candidate)
+                trial, trial_gradient = objective(candidate)
                 if trial <= energy + 1e-4*alpha*slope:
-                    x = candidate; break
+                    x = candidate
+                    cached_objective = (trial, trial_gradient)
+                    break
                 alpha *= .5
             else:
                 status = 'line_search_failed'; break
-        energy, gradient = objective(x)
+        energy, gradient = objective(x) if cached_objective is None else cached_objective
         residual_gradient = gradient.copy(); residual_gradient[fixed] = 0
         residual = float(np.max(np.abs(residual_gradient)))
         if residual <= tolerance:

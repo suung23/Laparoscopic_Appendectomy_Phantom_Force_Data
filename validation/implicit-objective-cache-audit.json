@@ -1,0 +1,17 @@
+{
+  "scope": "Single first contact step with profiler; not full-run performance",
+  "positions_bitwise_equal": true,
+  "velocities_bitwise_equal": true,
+  "profiles": [
+    {
+      "name": "implicit_contact_profile",
+      "calls": 18,
+      "energy_gradient_s": 0.7517664000000001
+    },
+    {
+      "name": "implicit_contact_cached_profile",
+      "calls": 10,
+      "energy_gradient_s": 0.43362310000000004
+    }
+  ]
+}
