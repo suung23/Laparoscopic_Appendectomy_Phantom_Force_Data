@@ -51,3 +51,31 @@ class PlaneBarrier:
             return 1.
         hit = float(np.min(-d[approaching]/speed[approaching]))
         return safety*hit if hit <= 1 else 1.
+
+    def normal_translation_minimum(self, x, loads):
+        """Optimize only rigid normal translation of an UNCONSTRAINED body.
+
+        Does not enforce torque equilibrium or return a dynamics trajectory.
+        Requires a net load toward the plane and preserves every edge vector.
+        """
+        x, loads = np.asarray(x, float), np.asarray(loads, float)
+        d = self.gaps(x)
+        if loads.shape != x.shape or not np.isfinite(loads).all():
+            raise ValueError('Invalid loads')
+        normal_load = float(loads.sum(0) @ self.normal)
+        if normal_load >= 0:
+            raise ValueError('No supported translation minimum for this load')
+        minimum = float(d[self.weights > 0].min())
+        lower = -minimum + max(self.activation*1e-12, 32*np.finfo(float).eps*max(1.,abs(self.offset)))
+        upper = self.activation-minimum
+        def derivative(shift):
+            _, gradient = self.energy_gradient(x+shift*self.normal)
+            return float(gradient.sum(0) @ self.normal)-normal_load
+        if derivative(lower) >= 0 or derivative(upper) <= 0:
+            raise RuntimeError('Could not bracket translation equilibrium')
+        for _ in range(80):
+            midpoint = (lower+upper)/2
+            if derivative(midpoint) < 0: lower = midpoint
+            else: upper = midpoint
+        shift = (lower+upper)/2
+        return x+shift*self.normal, dict(shift_m=shift, normal_residual_n=derivative(shift))

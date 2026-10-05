@@ -14,7 +14,7 @@ from ct_appendectomy.plane_barrier import PlaneBarrier
 from ct_appendectomy.tissue_metrics import tetra_health
 
 
-def run(mesh, out, iterations):
+def run(mesh, out, iterations, translation_initialization=False):
     out.mkdir(parents=True, exist_ok=True)
     z = np.load(mesh); rest = z['points'].astype(float); tets = z['tets']
     rest -= rest.mean(0)
@@ -36,7 +36,10 @@ def run(mesh, out, iterations):
     plane = float(rest[:,1].min()-.0008)
     contact = PlaneBarrier([0,1,0], plane, .0008, 1e8, weights)
     started = time.perf_counter()
-    solved = elastic.solve(rest, loads, np.zeros_like(rest, bool),
+    initial, initialization = rest, None
+    if translation_initialization:
+        initial, initialization = contact.normal_translation_minimum(rest, loads)
+    solved = elastic.solve(initial, loads, np.zeros_like(rest, bool),
                            max_iterations=iterations, method='lbfgs', contact=contact)
     x = solved['positions']
     _, contact_gradient = contact.energy_gradient(x)
@@ -55,6 +58,7 @@ def run(mesh, out, iterations):
             weights='one third of adjacent rest surface triangle areas in square meters',
             provenance='engineering placeholders'),
         nodes=len(rest), tetrahedra=len(tets), mass_kg=float(mass.sum()),
+        translation_initialization=initialization,
         residual_n=solved['residual_n'], net_force_n=net.tolist(),
         minimum_gap_m=float(gaps.min()), health=health,
         history=solved['history'])
@@ -68,6 +72,7 @@ if __name__ == '__main__':
     p.add_argument('--mesh', type=Path, required=True)
     p.add_argument('--out', type=Path, required=True)
     p.add_argument('--iterations', type=int, default=120)
+    p.add_argument('--translation-initialization', action='store_true')
     a = p.parse_args()
     if a.iterations < 1: p.error('Positive iteration count required')
-    run(a.mesh, a.out, a.iterations)
+    run(a.mesh, a.out, a.iterations, a.translation_initialization)

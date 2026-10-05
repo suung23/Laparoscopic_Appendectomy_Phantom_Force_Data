@@ -5,6 +5,18 @@ from ct_appendectomy.constrained_elasticity import ElasticReference
 
 
 class PlaneTests(unittest.TestCase):
+    def test_translation_minimum_preserves_shape_and_balances_normal_load(self):
+        barrier = PlaneBarrier([0,1,0], 0, .001, 100., [1.,2.])
+        x = np.array([[0.,.001,0],[.002,.0012,0]])
+        loads = np.array([[0.,-.03,0],[0.,-.02,0]])
+        shifted, report = barrier.normal_translation_minimum(x, loads)
+        np.testing.assert_allclose(shifted[1]-shifted[0], x[1]-x[0], atol=1e-15)
+        self.assertLess(abs(report['normal_residual_n']), 1e-12)
+        self.assertGreater(barrier.gaps(shifted).min(), 0)
+        before = barrier.energy_gradient(x)[0]
+        after = barrier.energy_gradient(shifted)[0]-np.sum(loads*(shifted-x))
+        self.assertLess(after, before)
+
     def test_force_derivative_and_separation(self):
         barrier = PlaneBarrier([0,1,0], 0, .001, 100., [1.,2.])
         x = np.array([[0.,.0004,0],[0,.002,0]])
