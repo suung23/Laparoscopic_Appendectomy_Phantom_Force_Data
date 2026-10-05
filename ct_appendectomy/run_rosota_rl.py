@@ -1,8 +1,8 @@
-"""PPO training/evaluation harness for the normalized Rosota FR3 waypoint env.
+"""PPO training/evaluation for Rosota bimanual trocar-constrained tasks.
 
-The task is an engineering waypoint-reach benchmark with two trocar-constrained
-FR3 tools and a port-constrained scope. It is not grasping or appendectomy.
-The policy receives privileged state, not endoscope pixels.
+Tasks include waypoint reach and an unassisted bimanual target-patch traction
+benchmark. Neither is a complete appendectomy. The policy receives privileged
+state, not endoscope pixels.
 """
 import argparse
 import hashlib
@@ -23,15 +23,23 @@ def file_sha256(path):
     return h.hexdigest()
 
 
-def asset_contract(assets, fr3_urdf):
+def asset_contract(assets, fr3_urdf, task="waypoint"):
+    task_dimensions={"waypoint":("RosotaCTEnv/waypoint-reach-v1","privileged_state_v1",53),
+                     "unassisted-traction":("RosotaCTEnv/unassisted-bimanual-traction-v1",
+                                              "privileged_traction_state_v1",65)}
+    if task not in task_dimensions:raise ValueError("Unknown RL task contract: "+str(task))
+    environment,observation_contract,observation_dim=task_dimensions[task]
     assets = Path(assets).resolve()
     scene, config = assets / "attached.usda", assets / "bimanual_config.json"
     if not scene.is_file() or not config.is_file():
         raise FileNotFoundError("Asset directory must contain attached.usda and bimanual_config.json")
     return {
-        "environment": "RosotaCTEnv/waypoint-reach-v1",
+        "environment": environment,
+        "task": task,
         "action_contract": "bimanual_trocar_scope_v1",
-        "observation_contract": "privileged_state_v1",
+        "observation_contract": observation_contract,
+        "observation_dim": observation_dim,
+        "action_dim": 14,
         "scene_sha256": file_sha256(scene),
         "config_sha256": file_sha256(config),
         "fr3_urdf_sha256": file_sha256(fr3_urdf),
@@ -87,8 +95,9 @@ def train_ppo(env, model, optimizer, *, total_steps, seed, rollout_steps=256):
         trajectories["ended"].append(ended)
         episode_return += float(reward)
         episode_length += 1
-        episode_min_distance = min(episode_min_distance,
-                                   float(np.linalg.norm(info["waypoint_distance_m"])))
+        distance=np.asarray(info.get("task_distance_m",info.get("waypoint_distance_m")),float)
+        if distance.size==0 or not np.isfinite(distance).all():raise ValueError("RL task distance is missing or invalid")
+        episode_min_distance=min(episode_min_distance,float(np.linalg.norm(distance)))
         failure = info.get("failure")
         obs = next_obs
 
@@ -96,8 +105,9 @@ def train_ppo(env, model, optimizer, *, total_steps, seed, rollout_steps=256):
             episodes.append({
                 "episode": episode_index, "seed": seed + episode_index,
                 "return": episode_return, "length": episode_length,
-                "waypoint_success": bool(info.get("waypoint_is_success", False)),
-                "minimum_bimanual_waypoint_distance_m": episode_min_distance,
+                "task_success": bool(info.get("task_success",info.get("waypoint_is_success",False))),
+                "waypoint_success": info.get("waypoint_is_success"),
+                "minimum_bimanual_task_distance_m": episode_min_distance,
                 "failure": failure or "",
                 "physics_substep_health": episode_substep_health.as_dict(),
             })
@@ -150,7 +160,8 @@ def evaluate_policy(env, model, policy, *, seeds):
         info = {}
         while True:
             if policy == "scripted":
-                action = env.scripted_waypoint_action()
+                action = (env.scripted_task_action() if hasattr(env,"scripted_task_action")
+                          else env.scripted_waypoint_action())
             elif policy == "random":
                 action = env.action_space.sample()
             elif policy == "ppo":
@@ -163,16 +174,18 @@ def evaluate_policy(env, model, policy, *, seeds):
             episode_substep_health.update(info.get("physics_substep_health"))
             total_reward += float(reward)
             length += 1
-            min_distance = min(min_distance,
-                               float(np.linalg.norm(info["waypoint_distance_m"])))
+            distance=np.asarray(info.get("task_distance_m",info.get("waypoint_distance_m")),float)
+            if distance.size==0 or not np.isfinite(distance).all():raise ValueError("RL task distance is missing or invalid")
+            min_distance=min(min_distance,float(np.linalg.norm(distance)))
             if terminated or truncated:
                 break
         results.append({
             "episode": episode, "seed": seed, "policy": policy,
             "return": total_reward, "length": length,
-            "waypoint_success": bool(info.get("waypoint_is_success", False)),
+            "task_success": bool(info.get("task_success",info.get("waypoint_is_success",False))),
+            "waypoint_success": info.get("waypoint_is_success"),
             "failure": info.get("failure") or "",
-            "minimum_bimanual_waypoint_distance_m": min_distance,
+            "minimum_bimanual_task_distance_m": min_distance,
             "initial_tissue_state_sha256": start_hash,
             "physics_substep_health": episode_substep_health.as_dict(),
             "appendectomy_completed": False,
@@ -186,11 +199,13 @@ def summarize(rows):
                       if audit.get("minimum_signed_volume_ratio") is not None]
     return {
         "episodes": len(rows),
-        "waypoint_success_rate": float(np.mean([r["waypoint_success"] for r in rows])) if rows else None,
+        "task_success_rate": float(np.mean([r.get("task_success",False) for r in rows])) if rows else None,
+        "waypoint_success_rate": (float(np.mean([r["waypoint_success"] for r in rows]))
+                                  if rows and all(r.get("waypoint_success") is not None for r in rows) else None),
         "mean_return": float(np.mean([r["return"] for r in rows])) if rows else None,
         "mean_steps": float(np.mean([r["length"] for r in rows])) if rows else None,
-        "mean_minimum_bimanual_waypoint_distance_m": float(np.mean(
-            [r["minimum_bimanual_waypoint_distance_m"] for r in rows])) if rows else None,
+        "mean_minimum_bimanual_task_distance_m": float(np.mean(
+            [r["minimum_bimanual_task_distance_m"] for r in rows])) if rows else None,
         "failures": {name: sum(r["failure"] == name for r in rows)
                      for name in sorted({r["failure"] for r in rows if r["failure"]})},
         "physics_substep_safety": {
@@ -209,13 +224,16 @@ def summarize(rows):
     }
 
 
-def make_env(app, assets, fr3_urdf, out, *, max_steps=300, appearance=None):
+def make_env(app, assets, fr3_urdf, out, *, max_steps=300, appearance=None,
+             task="waypoint"):
     from rosota_ct_env import RosotaCTEnv
-    from rosota_rl_adapter import RosotaRLAdapter
+    from rosota_rl_adapter import RosotaRLAdapter, RosotaTractionRLAdapter
+    if task not in {"waypoint", "unassisted-traction"}:
+        raise ValueError("Unknown RL task: " + str(task))
     core = RosotaCTEnv(app, assets, fr3_urdf, out, max_steps=max_steps,
                        grasp_mode="none", workspace="appendix_patches",
                        settle_policy="adaptive", appearance=appearance)
-    return RosotaRLAdapter(core)
+    return RosotaTractionRLAdapter(core) if task == "unassisted-traction" else RosotaRLAdapter(core)
 
 
 def main():
@@ -227,6 +245,8 @@ def main():
                         help="Separate evaluation scene; does not imply patient-level holdout")
     parser.add_argument("--fr3-urdf", type=Path, default=work / "isaac-venv/Lib/site-packages/isaacsim/exts/isaacsim.robot_motion.motion_generation/motion_policy_configs/FR3/fr3.urdf")
     parser.add_argument("--appearance", type=Path, help="Optional appearance layer for the CT environment")
+    parser.add_argument("--task", choices=("waypoint", "unassisted-traction"), default="waypoint",
+                        help="Privileged-state benchmark; traction requires unassisted physical jaw contact")
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--train-steps", type=int, default=0)
     parser.add_argument("--rollout-steps", type=int, default=256)
@@ -241,9 +261,9 @@ def main():
         parser.error("Evaluation-only mode requires --checkpoint")
     if not args.fr3_urdf.is_file():
         parser.error("FR3 URDF is missing: " + str(args.fr3_urdf))
-    training_contract = asset_contract(args.assets, args.fr3_urdf)
+    training_contract = asset_contract(args.assets, args.fr3_urdf, args.task)
     evaluation_assets = args.eval_assets or args.assets
-    evaluation_contract = asset_contract(evaluation_assets, args.fr3_urdf)
+    evaluation_contract = asset_contract(evaluation_assets, args.fr3_urdf, args.task)
     if args.checkpoint and not args.checkpoint.is_file():
         parser.error("Checkpoint not found: " + str(args.checkpoint))
 
@@ -252,7 +272,7 @@ def main():
     torch.set_num_threads(2)
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
-    model = ActorCritic(observations=53, actions=14)
+    model = ActorCritic(observations=training_contract["observation_dim"], actions=14)
     optimizer = torch.optim.Adam(model.parameters(), lr=3e-4, eps=1e-5)
     checkpoint_metadata = None
     if args.checkpoint:
@@ -261,9 +281,15 @@ def main():
     args.out.mkdir(parents=True, exist_ok=True)
     report = {
         "status": "starting",
-        "task": "two-arm trocar-constrained waypoint reach; scope RCM actions exposed but not rewarded",
+        "task": ("two-arm trocar-constrained waypoint reach; scope RCM actions exposed but not rewarded"
+                 if args.task == "waypoint" else
+                 "unassisted bimanual appendix-patch contact and upward traction; engineering benchmark only"),
         "task_is_appendectomy": False,
-        "appendix_grasp_task": False,
+        "appendix_grasp_task": args.task == "unassisted-traction",
+        "traction_task": args.task == "unassisted-traction",
+        "traction_task_live_runtime_verified": False,
+        "traction_thresholds": {"patch_proximity_m": 0.005, "target_lift_m": 0.005,
+                                "hold_steps": 10} if args.task == "unassisted-traction" else None,
         "shaft_organ_collision_enabled": False,
         "policy_observes_rgb": False,
         "tissue_force_calibrated": False,
@@ -311,19 +337,19 @@ def main():
     env = None
     try:
         env = make_env(app, args.assets, args.fr3_urdf, args.out / "training",
-                       max_steps=300, appearance=args.appearance)
+                       max_steps=300, appearance=args.appearance, task=args.task)
         training = None
         if args.train_steps:
             training = train_ppo(env, model, optimizer, total_steps=args.train_steps,
                                  seed=args.seed, rollout_steps=args.rollout_steps)
             report["training"] = training
             metadata = dict(training_contract, trained_steps=args.train_steps,
-                            algorithm="local PPO", task=report["task"],
+                            algorithm="local PPO", task_description=report["task"],
                             task_is_appendectomy=False, policy_observes_rgb=False)
             save_checkpoint(args.out / "policy.pt", model, optimizer, metadata)
         env.close()
         env = make_env(app, evaluation_assets, args.fr3_urdf, args.out / "evaluation",
-                       max_steps=300, appearance=args.appearance)
+                       max_steps=300, appearance=args.appearance, task=args.task)
         seeds = [args.seed + 100_000 + i for i in range(args.eval_episodes)]
         policies = ["scripted", "random"]
         if args.train_steps or args.checkpoint:
@@ -340,9 +366,10 @@ def main():
         }
         report["paired_reset_state_verified"] = bool(report["paired_start_state_match_by_seed"]) and all(
             report["paired_start_state_match_by_seed"].values())
-        report["status"] = "completed_waypoint_benchmark" if all(
+        report["status"] = ("completed_traction_benchmark" if args.task == "unassisted-traction"
+                            else "completed_waypoint_benchmark") if all(
             not row["failure"] for rows in evaluations.values() for row in rows) else "completed_with_failures"
-        report["rl_validation_gate"] = "not achieved: waypoint-only, privileged state, no patient-level holdout or calibrated tissue force"
+        report["rl_validation_gate"] = ("not achieved: single local task, privileged state, uncalibrated contact proxy, no patient-level holdout or clinical validation")
         report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
     except Exception as exc:
         report.update(status="failed", error=repr(exc))

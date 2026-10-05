@@ -35,3 +35,28 @@ def tetra_health(rest, current, indices):
             'median_volume_ratio':float(np.median(ratios)),
             'total_absolute_volume_ratio':float(np.abs(v1[valid]).sum()/np.abs(v0[valid]).sum()),
             'p99_absolute_volume_change':float(np.percentile(np.abs(ratios-1),99))}
+
+
+def target_patch_motion(reference,current,indices,tool_tip,tool_rotation_local_to_world,gravity_up_world):
+    """Measure target-patch pose error and deformation without inferring force."""
+    reference,current=np.asarray(reference,float),np.asarray(current,float)
+    indices=np.asarray(indices,int).reshape(-1)
+    tip,R,up=np.asarray(tool_tip,float),np.asarray(tool_rotation_local_to_world,float),np.asarray(gravity_up_world,float)
+    if (reference.ndim!=2 or reference.shape[1]!=3 or current.shape!=reference.shape or
+        not np.isfinite(reference).all() or not np.isfinite(current).all() or
+        not len(indices) or indices.min()<0 or indices.max()>=len(current) or
+        tip.shape!=(3,) or R.shape!=(3,3) or up.shape!=(3,) or
+        not all(np.isfinite(x).all() for x in (tip,R,up))):raise ValueError('Invalid target-patch measurement inputs')
+    if (not np.allclose(R.T@R,np.eye(3),atol=1e-5) or
+        not np.isclose(np.linalg.det(R),1.,atol=1e-5) or not np.isclose(np.linalg.norm(up),1.,atol=1e-5)):
+        raise ValueError('Tool rotation and gravity-up axis must be orthonormal')
+    reference_center=reference[indices].mean(axis=0)
+    current_center=current[indices].mean(axis=0)
+    displacement=current_center-reference_center
+    relative_local=R.T@(current_center-tip)
+    return {'reference_center_world_m':reference_center.tolist(),
+        'current_center_world_m':current_center.tolist(),
+        'patch_displacement_world_m':displacement.tolist(),
+        'patch_lift_m':float(displacement@up),
+        'centre_in_shaft_frame_m':relative_local.tolist(),
+        'distance_m':float(np.linalg.norm(relative_local))}

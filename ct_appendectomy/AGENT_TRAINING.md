@@ -114,6 +114,19 @@ The adapter, PPO updates and deterministic policy contracts pass CPU/mock tests
 only. The local Isaac Python executable is blocked by Windows Application
 Control, so no Rosota PPO or evaluation episode is claimed.
 
+To select the unassisted patch-traction benchmark, add
+`--task unassisted-traction` to that command and use a separate output directory. It
+sets `grasp_mode="none"` and requires the simulator's jaw/tissue contact path.
+Its 65-value privileged observation adds each target patch's position in the
+local shaft frame and its displacement from reset. The dense reward encourages
+both jaws to approach their respective target patches, register the contact
+latch, and lift each patch 5 mm. Success requires both patches within 5 mm of
+their tips and lifted at least 5 mm for ten policy steps. This contact latch is
+an uncalibrated simulator proxy, not force in validated tissue units. The task
+does not cut tissue or complete an appendectomy. Adapter tests run without
+Isaac; live contact, physics-substep health, repeatability, held-out anatomy,
+RGB-policy learning and expert review remain unverified.
+
 ## Learning and evidence
 
 The local PPO implementation uses tanh Gaussian actions, clipped policy updates, a value baseline, GAE, gradient clipping and separate masks for termination and truncation. See the [PPO paper](https://arxiv.org/abs/1707.06347) and [Gymnasium time-limit semantics](https://gymnasium.farama.org/tutorials/gymnasium_basics/handling_time_limits/). Optional behavior cloning collects one successful real simulator demonstration; its steps and loss are reported separately from PPO interaction counts.

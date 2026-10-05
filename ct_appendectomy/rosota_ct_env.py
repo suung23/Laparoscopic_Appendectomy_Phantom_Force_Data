@@ -30,6 +30,8 @@ class RosotaCTEnv(gym.Env):
         if isinstance(physics_substeps,bool) or physics_substeps not in (1,2,4):raise ValueError('Supported physics substeps: 1, 2, 4')
         self.physics_substeps=physics_substeps
         self.physics_dt=1/(480*physics_substeps)
+        self.gravity_direction_world=np.array([0.,-1.,0.])
+        self.gravity_up_axis_world=-self.gravity_direction_world.copy()
         self.gpu_tissue_observation=bool(gpu_tissue_observation)
         self._tissue_observer=None
         if self.gpu_tissue_observation and grasp_mode!='none':raise ValueError('GPU observation grasp path requires separate validation')
@@ -132,7 +134,7 @@ class RosotaCTEnv(gym.Env):
         self.sim=SimulationContext(stage_units_in_meters=1.,physics_dt=self.physics_dt,rendering_dt=1/30,**pipeline)
         for prim in self.stage.Traverse():
             if prim.IsA(UsdPhysics.Scene):
-                scene=UsdPhysics.Scene(prim);scene.CreateGravityDirectionAttr(Gf.Vec3f(0,-1,0));scene.CreateGravityMagnitudeAttr(0. if self.diagnostic_zero_gravity else 9.81)
+                scene=UsdPhysics.Scene(prim);scene.CreateGravityDirectionAttr(Gf.Vec3f(*self.gravity_direction_world));scene.CreateGravityMagnitudeAttr(0. if self.diagnostic_zero_gravity else 9.81)
                 ps=PhysxSchema.PhysxSceneAPI.Apply(prim);ps.CreateEnableGPUDynamicsAttr(True);ps.CreateBroadphaseTypeAttr('GPU');ps.CreateEnableEnhancedDeterminismAttr(self.enhanced_determinism);ps.CreateEnableExternalForcesEveryIterationAttr(self.external_every_iteration)
         self.stage.GetRootLayer().Export(str(self.out/'scene.usda'))
         self._audit_tissue('before_initialize')
@@ -440,11 +442,12 @@ class RosotaCTEnv(gym.Env):
         if drift>.001:failure='pin_drift'
         grasp_geometry={}
         if self.workspace=='appendix_patches':
+            from tissue_metrics import target_patch_motion
             for h,index in zip(self.specs,self.target_patches):
                 tip,axes=tool_frames[h]
-                centre=tissue[self.config['data']['clusters'][index]['indices']].mean(0)
-                grasp_geometry[h]=dict(target_patch=index,centre_in_shaft_frame_m=((centre-tip)@axes).tolist(),
-                    distance_m=float(np.linalg.norm(centre-tip)))
+                motion=target_patch_motion(self.reference,tissue,
+                    self.config['data']['clusters'][index]['indices'],tip,axes,self.gravity_up_axis_world)
+                grasp_geometry[h]=dict(target_patch=index,**motion)
         return dict(failure=failure,trocar=ports,scope_trocar=scope,body_fk_error_m=mismatch,
             grasp_geometry=grasp_geometry,
             contact={h:g.last.copy() for h,g in self.guards.items()},

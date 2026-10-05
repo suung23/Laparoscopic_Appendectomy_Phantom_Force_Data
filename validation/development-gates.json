@@ -101,11 +101,13 @@
     },
     {
       "id": "rl-validation",
-      "status": "not achieved; normalized Rosota PPO harness, paired-policy evaluation, and solver-tick tissue-health aggregation are implemented, but only CPU/mock preflight ran and simulator rollouts remain at zero; 2026-10-06 official CT launch failed before simulation because Windows Application Control blocked the Python select module",
+      "status": "not achieved; normalized Rosota PPO now exposes waypoint and unassisted bimanual target-patch traction task contracts with paired-policy evaluation and solver-tick tissue-health aggregation; CPU/mock contract tests only, live simulator rollouts remain at zero; 2026-10-06 official CT launch failed before simulation because Windows Application Control blocked the Python select module",
       "evidence": [
         "validation/rosota-rl-adapter-preflight.json",
         "ct_appendectomy/physics_substep_audit.py",
-        "tests/test_physics_substep_audit.py"
+        "tests/test_physics_substep_audit.py",
+        "tests/test_rosota_traction_adapter.py",
+        "ct_appendectomy/AGENT_TRAINING.md"
       ],
       "requires": [
         "multiple seeds and held-out anatomy",
