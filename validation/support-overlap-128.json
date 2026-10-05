@@ -1,0 +1,16 @@
+{
+  "support_shape": "axis-aligned box authored as convex-hull triangle mesh",
+  "support_min_m": [
+    0.014190318062901497,
+    -0.039332229644060135,
+    -0.13212426006793976
+  ],
+  "support_max_m": [
+    0.2141903191804886,
+    -0.027332229539752007,
+    0.06787573546171188
+  ],
+  "nodes_more_than_0_1mm_inside_box": 1029,
+  "maximum_depth_below_top_m": 0.007398905232548714,
+  "scope": "Geometric overlap diagnostic from live tensor snapshot; no contact force attribution or causal proof."
+}

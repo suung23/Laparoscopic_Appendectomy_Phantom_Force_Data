@@ -1,0 +1,29 @@
+{
+  "status": "failed",
+  "solver_iterations": 128,
+  "physics_hz": 960,
+  "control_hz": 480,
+  "duration_s": 8.0,
+  "last": {
+    "rms_speed_m_s": 0.003602375255182057,
+    "p99_speed_m_s": 0.00939169057415251,
+    "max_speed_m_s": 0.011063849694587296,
+    "stable_windows": 0,
+    "peak_node_speed_rms_m_s": 0.17094695288705616,
+    "peak_node_speed_p99_m_s": 0.8084825823085251,
+    "peak_node_speed_max_m_s": 2.4475912666031774,
+    "step_displacement_peak_rms_m_s": 0.19796856227870804,
+    "step_displacement_peak_p99_m_s": 0.9112612299172721,
+    "maximum_endpoint_vs_step_mean_velocity_rms_gap_m_s": 0.13361644421076552
+  },
+  "timeout_health": {
+    "tetrahedra": 22312,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 13,
+    "minimum_signed_volume_ratio": -1.0429923086215371,
+    "median_volume_ratio": 1.0067922009439736,
+    "total_absolute_volume_ratio": 1.004960722380448,
+    "p99_absolute_volume_change": 0.4920352311414259
+  },
+  "scope": "Same 8 second horizon and 128 iterations as 480 Hz baseline; no equilibrium. Smaller time step did not resolve instability; not a convergence proof."
+}

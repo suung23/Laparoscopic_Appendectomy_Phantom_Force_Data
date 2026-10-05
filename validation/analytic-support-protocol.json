@@ -1,0 +1,8 @@
+{
+  "source": "base_api_128_assets",
+  "change": "Disable convex-hull mesh collision and add same-bounds analytic Cube collider",
+  "max_bounds_difference_m": 3.725290298461914e-09,
+  "contact_offset_m": 0.0003000000142492354,
+  "rest_offset_m": 0.0,
+  "scope": "Collision representation diagnostic only; visual mesh unchanged, no clinical anatomy claim."
+}

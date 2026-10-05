@@ -1,0 +1,79 @@
+{
+  "scope": "Single timeout snapshot; masses derived from rest geometry and placeholder density, not queried solver masses. No physical calibration claim.",
+  "total_geometric_mass_kg": 0.004588915084425164,
+  "unweighted_speed_rms_m_s": 0.05173167362454266,
+  "geometric_mass_weighted_speed_rms_m_s": 0.044249738647017235,
+  "geometric_kinetic_energy_j": 4.492638201201308e-06,
+  "highest_energy_nodes": [
+    {
+      "node": 4102,
+      "speed_m_s": 0.2661231345018336,
+      "geometric_mass_kg": 3.4368431128574184e-06,
+      "pinned": false,
+      "energy_j": 1.2170123129613754e-07
+    },
+    {
+      "node": 3579,
+      "speed_m_s": 0.1420299292189075,
+      "geometric_mass_kg": 9.4653437464182e-06,
+      "pinned": false,
+      "energy_j": 9.546982711971069e-08
+    },
+    {
+      "node": 3702,
+      "speed_m_s": 0.16222024121688133,
+      "geometric_mass_kg": 6.273261849665949e-06,
+      "pinned": false,
+      "energy_j": 8.25417183307644e-08
+    },
+    {
+      "node": 4016,
+      "speed_m_s": 0.3064307605252967,
+      "geometric_mass_kg": 1.6103760558417182e-06,
+      "pinned": false,
+      "energy_j": 7.560700363810062e-08
+    },
+    {
+      "node": 4354,
+      "speed_m_s": 0.29367770938447046,
+      "geometric_mass_kg": 1.7476040625133785e-06,
+      "pinned": false,
+      "energy_j": 7.536245163823569e-08
+    },
+    {
+      "node": 4799,
+      "speed_m_s": 0.277206424862059,
+      "geometric_mass_kg": 1.8427729740901067e-06,
+      "pinned": false,
+      "energy_j": 7.080247220736976e-08
+    },
+    {
+      "node": 4570,
+      "speed_m_s": 0.28486476442701064,
+      "geometric_mass_kg": 1.6870757561444988e-06,
+      "pinned": false,
+      "energy_j": 6.845135606647686e-08
+    },
+    {
+      "node": 3810,
+      "speed_m_s": 0.18839659898990882,
+      "geometric_mass_kg": 3.536971331857268e-06,
+      "pinned": false,
+      "energy_j": 6.276935428345355e-08
+    },
+    {
+      "node": 3960,
+      "speed_m_s": 0.20662693422405756,
+      "geometric_mass_kg": 2.902138596525659e-06,
+      "pinned": false,
+      "energy_j": 6.195295378070005e-08
+    },
+    {
+      "node": 3538,
+      "speed_m_s": 0.10201552734456465,
+      "geometric_mass_kg": 1.1007271613510566e-05,
+      "pinned": false,
+      "energy_j": 5.727726145770399e-08
+    }
+  ]
+}
