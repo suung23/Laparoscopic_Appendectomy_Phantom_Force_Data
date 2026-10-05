@@ -18,12 +18,14 @@ p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--mesh',type=Path,required=True);p.add_argument('--out',type=Path,required=True)
 p.add_argument('--steps',type=int,default=960);p.add_argument('--iterations',type=int,default=12)
 p.add_argument('--vertex-contact-only',action='store_true',help='Diagnostic ablation of edge/face contacts; not a production recommendation')
+p.add_argument('--particle-radius',type=float,default=.0004)
 a=p.parse_args()
 if a.steps<1 or a.iterations<1:p.error('Positive step and iteration counts required')
+if not np.isfinite(a.particle_radius) or a.particle_radius<0:p.error('Finite nonnegative contact radius required')
 a.out.mkdir(parents=True,exist_ok=True)
 z=np.load(a.mesh);rest=z['points'].copy();rest-=rest.mean(0);tets=z['tets']
 report=dict(status='starting',engine='Newton '+newton.__version__,mesh_sha256=hashlib.sha256(a.mesh.read_bytes()).hexdigest(),
-    physics_dt_s=1/480,iterations=a.iterations,steps=a.steps,particle_radius_m=.0004,
+    physics_dt_s=1/480,iterations=a.iterations,steps=a.steps,particle_radius_m=a.particle_radius,
     full_surface_contact=not a.vertex_contact_only,
     scope='Same tetrahedra/material/gravity; contact algorithm, particle radius and solver iterations differ. No force calibration or surgical acceptance.')
 def save():(a.out/'report.json').write_text(json.dumps(report,indent=2)+'\n')
@@ -33,7 +35,7 @@ try:
     E=12000.;nu=.45;floor=float(rest[:,1].min()-.0008)
     builder.add_soft_mesh(pos=wp.vec3(),rot=wp.quat_identity(),scale=1.,vel=wp.vec3(),
         vertices=[wp.vec3(*x) for x in rest],indices=tets.ravel().tolist(),density=1050.,
-        k_mu=E/(2*(1+nu)),k_lambda=E*nu/((1+nu)*(1-2*nu)),k_damp=0.,particle_radius=.0004,validate_mesh=True)
+        k_mu=E/(2*(1+nu)),k_lambda=E*nu/((1+nu)*(1-2*nu)),k_damp=0.,particle_radius=a.particle_radius,validate_mesh=True)
     builder.add_ground_plane(height=floor);builder.color();model=builder.finalize(device='cuda:0')
     actual_tets=model.tet_indices.numpy().reshape(-1,4)
     if not np.array_equal(actual_tets,tets):
