@@ -11,6 +11,8 @@ class AttachedVisualLayer:
         rest=np.load(parent_rest);data=np.load(layer_data)
         self.parent_faces=rest['faces'].copy();self.parent_count=len(rest['points'])
         self.faces=data['faces'].copy();self.nodes=data['nodes'].copy();self.weights=data['weights'].copy();self.offset=data['frame_offsets'].copy()
+        self.layer_rest=data['points'].copy();self.follow=data['follow_weight'].copy() if 'follow_weight' in data else np.ones(len(self.layer_rest))
+        if self.follow.shape!=(len(self.layer_rest),) or not np.isfinite(self.follow).all() or (self.follow<0).any() or (self.follow>1).any():raise ValueError('Invalid follow weights')
         for mesh,points,faces in [(self.parent,rest['points'],self.parent_faces),(self.layer,data['points'],self.faces)]:
             if not mesh:raise ValueError('Mesh prim missing')
             if not np.array_equal(np.asarray(mesh.GetFaceVertexIndicesAttr().Get()),faces.ravel()):raise ValueError('Topology mismatch')
@@ -26,6 +28,7 @@ class AttachedVisualLayer:
         if points.shape!=(self.parent_count,3) or not np.isfinite(points).all():raise ValueError('Invalid parent coordinates')
         if not np.array_equal(self.parent.GetFaceVertexIndicesAttr().Get(),self.parent_faces.ravel()):raise ValueError('Parent topology changed')
         positions=evaluate(points,self.nodes,self.weights,self.offset)
+        positions=self.layer_rest+self.follow[:,None]*(positions-self.layer_rest)
         if not np.isfinite(positions).all():raise ValueError('Degenerate parent frame')
         mesh=trimesh.Trimesh(positions,self.faces,process=False)
         self.layer.GetPointsAttr().Set(Vt.Vec3fArray.FromNumpy(positions.astype(np.float32)))
@@ -35,6 +38,7 @@ class AttachedVisualLayer:
 
     def parent_loads(self,layer_forces):
         """Return mapped loads for a solver caller; does not apply them."""
+        if not np.all(self.follow==1):raise ValueError("Partial visual following has no integrated support-force accounting")
         from layer_force_mapping import pullback_forces
         self.check_frames()
         if not np.array_equal(self.parent.GetFaceVertexIndicesAttr().Get(),self.parent_faces.ravel()):raise ValueError('Parent topology changed')

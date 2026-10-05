@@ -1,0 +1,82 @@
+{
+  "status": "completed reference run",
+  "error": null,
+  "steps": [
+    {
+      "optimizer_success": true,
+      "iterations": 274,
+      "residual_N": 7.819781896229336e-07,
+      "tolerance_N": 1e-06,
+      "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "status": "converged",
+      "artery_max_motion_mm": 0.40597137166702374,
+      "step": 0,
+      "load_torque_error_Nm": 3.594462122630743e-21,
+      "layer_max_motion_mm": 0.4067704215530664
+    },
+    {
+      "optimizer_success": true,
+      "iterations": 313,
+      "residual_N": 8.337376866882129e-07,
+      "tolerance_N": 1e-06,
+      "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "status": "converged",
+      "artery_max_motion_mm": 0.7192254680634427,
+      "step": 1,
+      "load_torque_error_Nm": 3.4926320009779975e-21,
+      "layer_max_motion_mm": 0.7280104157320739
+    },
+    {
+      "optimizer_success": true,
+      "iterations": 363,
+      "residual_N": 4.132967169759542e-07,
+      "tolerance_N": 1e-06,
+      "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "status": "converged",
+      "artery_max_motion_mm": 0.913549618318318,
+      "step": 2,
+      "load_torque_error_Nm": 8.578273740810689e-22,
+      "layer_max_motion_mm": 0.9341821652756854
+    }
+  ],
+  "dt": 0.004166666666666667,
+  "simulated_seconds": 0.0125,
+  "wall_seconds": 7.384022900019772,
+  "fixed_error_m": 0.0,
+  "synthetic_force_N": [
+    0.0,
+    0.0,
+    0.00019999999999999963
+  ],
+  "scope": "CPU reference dynamics and USD display coupled; layer force lagged at step start",
+  "tool_contact": false,
+  "RL": false,
+  "Isaac_physics": false,
+  "material_calibrated": false,
+  "artery_visual_following": true,
+  "vessel_mechanics": false,
+  "binding": {
+    "status": "unreviewed visual binding",
+    "vertices": 436,
+    "fixed_vertices": 192,
+    "full_follow_vertices": 225,
+    "blend_policy": "full following within 5 mm, fixed beyond 10 mm; heuristic smooth blend",
+    "max_parent_distance_mm": 50.459532767601644,
+    "roundtrip_error_m": 1.3877787807814457e-17,
+    "parent_sha256": "8971d1cd23df539c1a8fba58d3723a73f74feac25b0d4543629e79fd0668f199",
+    "source_scene_sha256": "d77425e0000d6c2dc35162d5eb7dda6e29c7d3add1ac3143664a98bdc64fcc70",
+    "attribution": "BodyParts3D / DBCLS CC BY 4.0; authored membrane association",
+    "limitations": [
+      "Nearest-surface association is heuristic, not anatomical attachment validation",
+      "No vessel elasticity, blood flow, cutting or endpoint anchoring",
+      "Cross-section distortion under membrane deformation requires review"
+    ]
+  },
+  "fixed_artery_error_m": 0.0,
+  "artery_edge_length_ratio_min_max": [
+    0.589061393688415,
+    1.6961669321780612
+  ],
+  "render_and_vessel_cross_section_validation": "pending",
+  "initial_attempt": "Whole artery binding rejected at 10 mm limit; root extends to 50 mm from membrane."
+}
