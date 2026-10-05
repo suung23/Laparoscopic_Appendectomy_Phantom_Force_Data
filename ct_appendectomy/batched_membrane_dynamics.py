@@ -14,7 +14,7 @@ class BatchedMembraneDynamics:
         self.stiffness=torch.tensor(setup.stiffness_diagonal,dtype=torch.float64,device=device)
         self.free=torch.tensor(setup.free,device=device);self.fixed=torch.tensor(setup.fixed,device=device)
 
-    def step(self,dt,forces,maxiter=1000,tolerance=1e-7,defect_tolerance=1e-6):
+    def step(self,dt,forces,maxiter=1000,tolerance=1e-7,defect_tolerance=1e-6,history_size=10):
         if not np.isfinite([dt,tolerance,defect_tolerance]).all() or min(dt,tolerance,defect_tolerance)<=0:raise ValueError('Positive finite step controls required')
         if forces.shape!=self.points.shape or forces.device!=self.points.device or forces.dtype!=self.points.dtype or not torch.isfinite(forces).all():raise ValueError('Invalid batched forces')
         old=self.points;prediction=old+dt*self.velocity;free=self.free;energy_scale=1e-6
@@ -22,7 +22,8 @@ class BatchedMembraneDynamics:
         initial=(dt*self.velocity[:,free]+dt**2*forces[:,free]/self.mass[free,None])/scale
         z=initial.detach().clone().requires_grad_(True)
         force_limit=torch.minimum(torch.full_like(self.mass[free],tolerance),defect_tolerance*self.mass[free]/dt**2)
-        optimizer=torch.optim.LBFGS([z],max_iter=maxiter,tolerance_grad=float((force_limit[:,None]*scale).min()/energy_scale),tolerance_change=0.,line_search_fn='strong_wolfe',history_size=10)
+        if maxiter<1 or history_size<1:raise ValueError('Positive optimizer limits required')
+        optimizer=torch.optim.LBFGS([z],max_iter=maxiter,max_eval=5*maxiter,tolerance_grad=float((force_limit[:,None]*scale).min()/energy_scale),tolerance_change=0.,line_search_fn='strong_wolfe',history_size=history_size)
         calls=0
         def evaluate():
             points=old.clone();points[:,free]=old[:,free]+z.detach()*scale
@@ -39,7 +40,9 @@ class BatchedMembraneDynamics:
         optimizer.step(closure)
         updated,_,residual=evaluate()
         maximum=residual.abs().amax(dim=(1,2));defect=(residual.abs()*dt**2/self.mass[free,None]).amax(dim=(1,2))
-        report={'force_residual_N':maximum.cpu().tolist(),'inertial_defect_m':defect.cpu().tolist(),'objective_calls':calls,'batch_size':len(old)}
+        report={'force_residual_N':maximum.cpu().tolist(),'inertial_defect_m':defect.cpu().tolist(),'objective_calls':calls,'batch_size':len(old),
+                'optimizer_iterations':int(optimizer.state[z].get('n_iter',0)),'max_iterations':maxiter,'max_evaluations':5*maxiter,'history_size':history_size}
+        self.last_report=report
         if not torch.isfinite(residual).all() or torch.any(maximum>tolerance) or torch.any(defect>defect_tolerance):
             raise RuntimeError('Batched convergence failed; state unchanged: '+str(report))
         self.velocity=(updated-old)/dt;self.points=updated

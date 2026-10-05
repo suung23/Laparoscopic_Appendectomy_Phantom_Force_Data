@@ -1,0 +1,7 @@
+{
+  "status": "failed",
+  "error": "Batched convergence failed; state unchanged: {'force_residual_N': [1.1004276512105937e-09, 4.240105655789415e-10, 6.598356012610868e-09, 4.250217451411711e-09], 'inertial_defect_m': [5.71538901710848e-07, 2.130214095422876e-07, 3.905503114065047e-06, 2.5156626075066814e-06], 'objective_calls': 5302, 'batch_size': 4, 'optimizer_iterations': 3000, 'max_iterations': 3000, 'max_evaluations': 15000, 'history_size': 50}",
+  "state_unchanged": true,
+  "wall_seconds": 42.25292610001634,
+  "scope": "Four authored membranes with synthetic independent loads; no contact or empirical validation"
+}
