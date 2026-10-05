@@ -13,9 +13,11 @@ p.add_argument('--units',type=float,nargs='+',default=[1.,.01,.1],help='Meters p
 p.add_argument('--tensor-readback',action='store_true',help='Compare independent PhysX tensor and USD buffers')
 p.add_argument('--solver-iterations',type=int,default=64)
 p.add_argument('--support-gap',type=float,help='Diagnostic horizontal plane gap in meters; disables free-fall acceptance')
+p.add_argument('--steps',type=int,default=180,help='Physics steps, a multiple of 60 and at least 180')
 a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True)
 if any(v<=0 for v in a.units):p.error('Units must be positive')
 if not 1<=a.solver_iterations<=255:p.error('Solver iterations must be within [1,255]')
+if a.steps<180 or a.steps%60:p.error('Steps must be a multiple of 60 and at least 180')
 if a.support_gap is not None and (not __import__('math').isfinite(a.support_gap) or a.support_gap<0):p.error('Nonnegative finite support gap required')
 root=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(root/'ct_appendectomy'))
@@ -30,6 +32,7 @@ app=SimulationApp({'headless':True,'extra_args':['--/app/vulkan=false','--/app/d
     [f'--/app/tokens/{k}={v.as_posix()}' for k,v in tokens.items()]})
 report=dict(status='running',mesh_sha256=hashlib.sha256(a.mesh.read_bytes()).hexdigest(),cases=[],
     solver_iterations=a.solver_iterations,
+    physics_steps=a.steps,physics_dt_s=1/480,
     tensor_pipeline='warp_cuda' if a.tensor_readback else 'default_cpu',
     scope='Isolated free fall with zero damping, no attachments, robot, contact or rendering. Not loaded tissue validation.',
     material_si=dict(density_kg_m3=1050,youngs_modulus_pa=12000,poissons_ratio=.45),
@@ -90,7 +93,7 @@ try:
             observer=TissueTensorObserver.bind(stage,'/World/Tissue','/World/Tissue',omni.usd.get_context().get_stage_id())
             baseline=observer.snapshot(omni.usd.get_context().get_stage_id())['position_m']
         rows=[];centers=[]
-        for tick in range(181):
+        for tick in range(a.steps+1):
             if tick%60==0:
                 usd_points=np.asarray(mesh.GetPointsAttr().Get(),float)*mpu
                 live=observer.snapshot(omni.usd.get_context().get_stage_id()) if a.tensor_readback else None
@@ -110,7 +113,7 @@ try:
                     np.savez_compressed(a.out/f'tensor_{mpu}_{tick}.npz',points=points,velocity=live['velocity_m_s'],rest=rest,tets=tets)
                 centers.append(points.mean(0))
                 np.savez_compressed(a.out/f'state_{mpu}_{tick}.npz',points=points,rest=rest,tets=tets)
-            if tick<180:sim.step(render=False)
+            if tick<a.steps:sim.step(render=False)
         acceleration=np.diff(np.asarray(centers),n=2,axis=0)/(.125**2)
         error=np.linalg.norm(acceleration-np.array([0,-9.81,0]),axis=1)
         passed=all(r['health']['inverted_tetrahedra']==0 and r['health']['minimum_signed_volume_ratio']>=.99 and r['translation_removed_rms_m']<=1e-5 for r in rows) and bool(np.max(error)<=.1)
