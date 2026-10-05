@@ -1,0 +1,42 @@
+{
+  "status": "converged",
+  "steps": [
+    {
+      "optimizer_success": true,
+      "iterations": 440,
+      "residual_N": 3.9441644331658457e-07,
+      "tolerance_N": 1e-06,
+      "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "status": "converged"
+    },
+    {
+      "optimizer_success": true,
+      "iterations": 498,
+      "residual_N": 5.923462636933347e-07,
+      "tolerance_N": 1e-06,
+      "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "status": "converged"
+    },
+    {
+      "optimizer_success": true,
+      "iterations": 467,
+      "residual_N": 6.617633487266549e-07,
+      "tolerance_N": 1e-06,
+      "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "status": "converged"
+    }
+  ],
+  "wall_seconds": 10.017512099992018,
+  "max_displacement_mm": 0.5419292660201886,
+  "fixed_error_m": 0.0,
+  "synthetic_force_N": [
+    0.0,
+    0.0,
+    0.0002
+  ],
+  "error": null,
+  "contact": false,
+  "Isaac_integrated": false,
+  "preconditioner": "lumped inertia plus membrane gradient stiffness diagonal",
+  "max_iterations": 3000
+}

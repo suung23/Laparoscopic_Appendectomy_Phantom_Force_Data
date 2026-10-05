@@ -1,0 +1,16 @@
+{
+  "status": "failed",
+  "steps": [],
+  "wall_seconds": 2.110725700011244,
+  "max_displacement_mm": 0.0,
+  "fixed_error_m": 0.0,
+  "synthetic_force_N": [
+    0.0,
+    0.0,
+    0.0002
+  ],
+  "error": "Unconverged membrane step: {'optimizer_success': False, 'iterations': 300, 'residual_N': 2.927232822645099e-05, 'tolerance_N': 1e-06, 'message': 'STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT'}",
+  "contact": false,
+  "Isaac_integrated": false,
+  "preconditioner": "lumped inertia plus membrane gradient stiffness diagonal"
+}
