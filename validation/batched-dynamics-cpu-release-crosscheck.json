@@ -1,0 +1,330 @@
+{
+  "surface_sha256": "8971d1cd23df539c1a8fba58d3723a73f74feac25b0d4543629e79fd0668f199",
+  "cpu_seconds": 58.56542850000551,
+  "gpu_seconds": 25.57571409997763,
+  "steps": 4,
+  "load_amplitudes": [
+    1.0,
+    1.0,
+    0.0,
+    0.0
+  ],
+  "max_position_difference_m_per_environment": [
+    6.23212901893463e-08,
+    2.2848264600813677e-08,
+    2.9279688337639616e-08,
+    3.5600956187768664e-08
+  ],
+  "max_velocity_difference_m_s_per_environment": [
+    4.199359238036497e-06,
+    3.771982080320669e-06,
+    2.992502495997742e-06,
+    3.2727379699223795e-06
+  ],
+  "cpu_residual_reports": [
+    [
+      {
+        "optimizer_success": true,
+        "iterations": 824,
+        "residual_N": 8.875742277854377e-10,
+        "tolerance_N": 1e-07,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "inertial_residual_defect_m": 6.103003659587907e-07,
+        "defect_tolerance_m": 1e-06,
+        "defect_is_position_error_bound": false,
+        "status": "converged"
+      },
+      {
+        "optimizer_success": true,
+        "iterations": 828,
+        "residual_N": 1.0776516933531584e-09,
+        "tolerance_N": 1e-07,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "inertial_residual_defect_m": 6.378516158001127e-07,
+        "defect_tolerance_m": 1e-06,
+        "defect_is_position_error_bound": false,
+        "status": "converged"
+      },
+      {
+        "optimizer_success": true,
+        "iterations": 890,
+        "residual_N": 1.1091199894214564e-09,
+        "tolerance_N": 1e-07,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "inertial_residual_defect_m": 7.460903139242649e-07,
+        "defect_tolerance_m": 1e-06,
+        "defect_is_position_error_bound": false,
+        "status": "converged"
+      },
+      {
+        "optimizer_success": true,
+        "iterations": 897,
+        "residual_N": 1.2824652212240942e-09,
+        "tolerance_N": 1e-07,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "inertial_residual_defect_m": 7.590787622853597e-07,
+        "defect_tolerance_m": 1e-06,
+        "defect_is_position_error_bound": false,
+        "status": "converged"
+      }
+    ],
+    [
+      {
+        "optimizer_success": true,
+        "iterations": 913,
+        "residual_N": 1.3538298866712577e-09,
+        "tolerance_N": 1e-07,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "inertial_residual_defect_m": 8.013188176272394e-07,
+        "defect_tolerance_m": 1e-06,
+        "defect_is_position_error_bound": false,
+        "status": "converged"
+      },
+      {
+        "optimizer_success": true,
+        "iterations": 978,
+        "residual_N": 8.086486630928099e-10,
+        "tolerance_N": 1e-07,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "inertial_residual_defect_m": 4.304544240617739e-07,
+        "defect_tolerance_m": 1e-06,
+        "defect_is_position_error_bound": false,
+        "status": "converged"
+      },
+      {
+        "optimizer_success": true,
+        "iterations": 1041,
+        "residual_N": 5.94081178742537e-10,
+        "tolerance_N": 1e-07,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "inertial_residual_defect_m": 5.184654151800871e-07,
+        "defect_tolerance_m": 1e-06,
+        "defect_is_position_error_bound": false,
+        "status": "converged"
+      },
+      {
+        "optimizer_success": true,
+        "iterations": 981,
+        "residual_N": 1.3485629942171577e-09,
+        "tolerance_N": 1e-07,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "inertial_residual_defect_m": 7.982013949174585e-07,
+        "defect_tolerance_m": 1e-06,
+        "defect_is_position_error_bound": false,
+        "status": "converged"
+      }
+    ],
+    [
+      {
+        "optimizer_success": true,
+        "iterations": 966,
+        "residual_N": 1.2018522513353791e-09,
+        "tolerance_N": 1e-07,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "inertial_residual_defect_m": 7.113647249808109e-07,
+        "defect_tolerance_m": 1e-06,
+        "defect_is_position_error_bound": false,
+        "status": "converged"
+      },
+      {
+        "optimizer_success": true,
+        "iterations": 949,
+        "residual_N": 9.616714414248367e-10,
+        "tolerance_N": 1e-07,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "inertial_residual_defect_m": 6.807610984615995e-07,
+        "defect_tolerance_m": 1e-06,
+        "defect_is_position_error_bound": false,
+        "status": "converged"
+      },
+      {
+        "optimizer_success": true,
+        "iterations": 1039,
+        "residual_N": 1.3230229775895488e-09,
+        "tolerance_N": 1e-07,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "inertial_residual_defect_m": 7.830845060618461e-07,
+        "defect_tolerance_m": 1e-06,
+        "defect_is_position_error_bound": false,
+        "status": "converged"
+      },
+      {
+        "optimizer_success": true,
+        "iterations": 967,
+        "residual_N": 8.544952648243123e-10,
+        "tolerance_N": 1e-07,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "inertial_residual_defect_m": 7.754206058515831e-07,
+        "defect_tolerance_m": 1e-06,
+        "defect_is_position_error_bound": false,
+        "status": "converged"
+      }
+    ],
+    [
+      {
+        "optimizer_success": true,
+        "iterations": 1051,
+        "residual_N": 7.503785074185843e-10,
+        "tolerance_N": 1e-07,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "inertial_residual_defect_m": 4.441417819604989e-07,
+        "defect_tolerance_m": 1e-06,
+        "defect_is_position_error_bound": false,
+        "status": "converged"
+      },
+      {
+        "optimizer_success": true,
+        "iterations": 1051,
+        "residual_N": 1.3525792530284315e-09,
+        "tolerance_N": 1e-07,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "inertial_residual_defect_m": 8.005785796683786e-07,
+        "defect_tolerance_m": 1e-06,
+        "defect_is_position_error_bound": false,
+        "status": "converged"
+      },
+      {
+        "optimizer_success": true,
+        "iterations": 1090,
+        "residual_N": 1.2116635056658692e-09,
+        "tolerance_N": 1e-07,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "inertial_residual_defect_m": 7.17171911538702e-07,
+        "defect_tolerance_m": 1e-06,
+        "defect_is_position_error_bound": false,
+        "status": "converged"
+      },
+      {
+        "optimizer_success": true,
+        "iterations": 1063,
+        "residual_N": 7.977992785941398e-10,
+        "tolerance_N": 1e-07,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "inertial_residual_defect_m": 4.7220967783388574e-07,
+        "defect_tolerance_m": 1e-06,
+        "defect_is_position_error_bound": false,
+        "status": "converged"
+      }
+    ]
+  ],
+  "gpu_residual_report": [
+    {
+      "force_residual_N": [
+        5.008413483645743e-10,
+        8.972015475472225e-10,
+        1.4882940770347457e-09,
+        1.0147877784737312e-09
+      ],
+      "inertial_defect_m": [
+        3.8640958331568447e-07,
+        5.500155144811812e-07,
+        8.809068715593344e-07,
+        5.203994550018641e-07
+      ],
+      "objective_calls": 1348,
+      "batch_size": 4,
+      "optimizer_iterations": null,
+      "max_iterations": 3000,
+      "max_evaluations": null,
+      "history_size": 10,
+      "independent_optimizer": {
+        "objective_calls": 1348,
+        "iterations_per_environment": [
+          872,
+          999,
+          990,
+          1067
+        ]
+      }
+    },
+    {
+      "force_residual_N": [
+        6.508600612219433e-10,
+        2.398603875862952e-10,
+        1.0966634324554186e-09,
+        7.966587452026839e-10
+      ],
+      "inertial_defect_m": [
+        8.320183207919778e-07,
+        3.027814296475228e-07,
+        5.657655011559577e-07,
+        6.603588389198681e-07
+      ],
+      "objective_calls": 1293,
+      "batch_size": 4,
+      "optimizer_iterations": null,
+      "max_iterations": 3000,
+      "max_evaluations": null,
+      "history_size": 10,
+      "independent_optimizer": {
+        "objective_calls": 1293,
+        "iterations_per_environment": [
+          770,
+          1002,
+          985,
+          1032
+        ]
+      }
+    },
+    {
+      "force_residual_N": [
+        8.110656770388402e-10,
+        5.304080041301954e-10,
+        1.3020027407101104e-09,
+        1.0589215477753182e-09
+      ],
+      "inertial_defect_m": [
+        4.46888743407568e-07,
+        6.794502910983737e-07,
+        7.706428311303735e-07,
+        6.910640560119948e-07
+      ],
+      "objective_calls": 1363,
+      "batch_size": 4,
+      "optimizer_iterations": null,
+      "max_iterations": 3000,
+      "max_evaluations": null,
+      "history_size": 10,
+      "independent_optimizer": {
+        "objective_calls": 1363,
+        "iterations_per_environment": [
+          940,
+          1060,
+          1059,
+          1088
+        ]
+      }
+    },
+    {
+      "force_residual_N": [
+        7.757325881013546e-10,
+        9.880126665190506e-10,
+        6.765220106270041e-10,
+        7.021701420541434e-10
+      ],
+      "inertial_defect_m": [
+        4.982205712326767e-07,
+        5.847951426766135e-07,
+        3.6015497540828963e-07,
+        4.2250052348840436e-07
+      ],
+      "objective_calls": 1441,
+      "batch_size": 4,
+      "optimizer_iterations": null,
+      "max_iterations": 3000,
+      "max_evaluations": null,
+      "history_size": 10,
+      "independent_optimizer": {
+        "objective_calls": 1441,
+        "iterations_per_environment": [
+          981,
+          935,
+          979,
+          1134
+        ]
+      }
+    }
+  ],
+  "fixed_point_error_m": 0.0,
+  "scope": "Implicit steps for four synthetic load/release histories; no contact trajectory, force calibration, or RL claim"
+}
