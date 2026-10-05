@@ -1,0 +1,148 @@
+{
+  "status": "anatomy penetration found",
+  "poses_checked": [
+    0,
+    37,
+    78
+  ],
+  "parts_checked": [
+    "gripper_shaft_inner",
+    "gripper_shaft_outer",
+    "gripper_tip_left",
+    "gripper_tip_right",
+    "laparo_shaft",
+    "part_13",
+    "part_15"
+  ],
+  "closed_organs_checked": 38,
+  "open_meshes_skipped": [],
+  "penetrations": [
+    {
+      "part": "gripper_tip_left",
+      "pose_index": 37,
+      "organ": "/SurgicalRegion/appendicular_artery_FJ3410",
+      "samples_over_0_1mm": 17,
+      "max_depth_mm": 0.13229107324252645
+    },
+    {
+      "part": "gripper_tip_right",
+      "pose_index": 37,
+      "organ": "/SurgicalRegion/appendicular_artery_FJ3410",
+      "samples_over_0_1mm": 3,
+      "max_depth_mm": 0.10577964320438617
+    },
+    {
+      "part": "laparo_shaft",
+      "pose_index": 0,
+      "organ": "/SurgicalRegion/ileum_FJ2591",
+      "samples_over_0_1mm": 17044,
+      "max_depth_mm": 4.505389034928154
+    },
+    {
+      "part": "laparo_shaft",
+      "pose_index": 0,
+      "organ": "/SurgicalRegion/ileum_FJ2592",
+      "samples_over_0_1mm": 17653,
+      "max_depth_mm": 7.9383968311664015
+    },
+    {
+      "part": "laparo_shaft",
+      "pose_index": 0,
+      "organ": "/SurgicalRegion/mesentery_FJ3396",
+      "samples_over_0_1mm": 383,
+      "max_depth_mm": 0.3858669786332059
+    },
+    {
+      "part": "laparo_shaft",
+      "pose_index": 37,
+      "organ": "/SurgicalRegion/ileum_FJ2591",
+      "samples_over_0_1mm": 18684,
+      "max_depth_mm": 4.503197377194797
+    },
+    {
+      "part": "laparo_shaft",
+      "pose_index": 37,
+      "organ": "/SurgicalRegion/ileum_FJ2592",
+      "samples_over_0_1mm": 19541,
+      "max_depth_mm": 7.942531470427504
+    },
+    {
+      "part": "laparo_shaft",
+      "pose_index": 37,
+      "organ": "/SurgicalRegion/mesentery_FJ3396",
+      "samples_over_0_1mm": 430,
+      "max_depth_mm": 0.3777925907847924
+    },
+    {
+      "part": "laparo_shaft",
+      "pose_index": 78,
+      "organ": "/SurgicalRegion/ileum_FJ2591",
+      "samples_over_0_1mm": 17044,
+      "max_depth_mm": 4.505389034928154
+    },
+    {
+      "part": "laparo_shaft",
+      "pose_index": 78,
+      "organ": "/SurgicalRegion/ileum_FJ2592",
+      "samples_over_0_1mm": 17653,
+      "max_depth_mm": 7.9383968311664015
+    },
+    {
+      "part": "laparo_shaft",
+      "pose_index": 78,
+      "organ": "/SurgicalRegion/mesentery_FJ3396",
+      "samples_over_0_1mm": 383,
+      "max_depth_mm": 0.3858669786332059
+    },
+    {
+      "part": "part_13",
+      "pose_index": 0,
+      "organ": "/SurgicalRegion/mesentery_FJ3396",
+      "samples_over_0_1mm": 143,
+      "max_depth_mm": 0.26281391542579463
+    },
+    {
+      "part": "part_13",
+      "pose_index": 78,
+      "organ": "/SurgicalRegion/mesentery_FJ3396",
+      "samples_over_0_1mm": 143,
+      "max_depth_mm": 0.26281391542579463
+    },
+    {
+      "part": "part_15",
+      "pose_index": 0,
+      "organ": "/SurgicalRegion/ileum_FJ2592",
+      "samples_over_0_1mm": 197,
+      "max_depth_mm": 1.5045795687671162
+    },
+    {
+      "part": "part_15",
+      "pose_index": 0,
+      "organ": "/SurgicalRegion/mesentery_FJ3396",
+      "samples_over_0_1mm": 126,
+      "max_depth_mm": 0.38318581219974907
+    },
+    {
+      "part": "part_15",
+      "pose_index": 78,
+      "organ": "/SurgicalRegion/ileum_FJ2592",
+      "samples_over_0_1mm": 197,
+      "max_depth_mm": 1.5045795687671162
+    },
+    {
+      "part": "part_15",
+      "pose_index": 78,
+      "organ": "/SurgicalRegion/mesentery_FJ3396",
+      "samples_over_0_1mm": 126,
+      "max_depth_mm": 0.38318581219974907
+    }
+  ],
+  "scope": "Static source anatomy against subdivided convex CAD hull samples at selected poses",
+  "continuous_collision": false,
+  "clinical_port_calibration": false,
+  "sources": {
+    "scene": "1d6f6b56f9725b8851a69d73ebfe79424e36a21df9de0bbfabd52534cfaacff3",
+    "cad": "ee97b1f0de75ec1ff3116b8a117fe20db331cb8d02d887b3cd9d4bb57f5c2c94",
+    "approach": "d3c27df92b20fb7afa2d5b798bbe0ff7c0cb6188b73326571df1e010dd700ad8"
+  }
+}
