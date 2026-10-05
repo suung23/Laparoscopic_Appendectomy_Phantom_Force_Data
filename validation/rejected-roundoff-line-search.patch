@@ -1,0 +1,40 @@
+diff --git a/ct_appendectomy/constrained_elasticity.py b/ct_appendectomy/constrained_elasticity.py
+index bce000c..3ec2be3 100644
+--- a/ct_appendectomy/constrained_elasticity.py
++++ b/ct_appendectomy/constrained_elasticity.py
+@@ -65,6 +65,7 @@ class ElasticReference:
+         length = np.cbrt(self.volume.sum())
+         stiffness = max(self.mu * length, 1e-12)
+         status = 'iteration_limit'
++        roundoff_steps = 0
+         precondition = None
+         if method in ('rest_preconditioned', 'lbfgs_preconditioned') and not fixed.all():
+             from .elastic_preconditioner import make_preconditioner
+@@ -118,8 +119,18 @@ class ElasticReference:
+             slope = float(np.sum(gradient*direction))
+             for _ in range(60):
+                 candidate = x + alpha*direction
+-                trial, _ = objective(candidate)
+-                if trial <= energy + 1e-4*alpha*slope:
++                trial, trial_gradient = objective(candidate)
++                # Near equilibrium an O(dx**2) energy decrease may be below
++                # floating-point resolution. Require force contraction there;
++                # this does not relax the force convergence tolerance.
++                resolution = 16*np.finfo(float).eps*max(abs(energy),abs(trial),1e-30)
++                unresolved = abs(alpha*slope) <= resolution
++                trial_gradient[fixed] = 0
++                contracted = np.max(np.abs(trial_gradient)) < .9*residual
++                ordinary = not unresolved and trial <= energy + 1e-4*alpha*slope
++                roundoff = unresolved and trial <= energy+resolution and contracted
++                if ordinary or roundoff:
++                    roundoff_steps += int(roundoff)
+                     x = candidate; break
+                 alpha *= .5
+             else:
+@@ -130,4 +141,5 @@ class ElasticReference:
+         if residual <= tolerance:
+             status = 'converged'
+         return dict(positions=x, status=status, residual_n=residual,
+-                    constraint_reaction_n=np.where(fixed, gradient, 0), history=history)
++                    constraint_reaction_n=np.where(fixed, gradient, 0), history=history,
++                    roundoff_steps=roundoff_steps)

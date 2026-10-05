@@ -1,0 +1,404 @@
+{
+  "status": "failed",
+  "scope": "Frictionless implicit Euler plane-contact diagnostic; uncalibrated material and contact, numerical damping, no self contact or surgical acceptance",
+  "mesh_sha256": "e601a3601ad3d6ce4414bf4ded7e5389678ac9e2b96931aca7ba31a784ced944",
+  "dt_s": 0.0020833333333333333,
+  "requested_steps": 30,
+  "parameters": {
+    "young_pa": 12000.0,
+    "poisson": 0.45,
+    "density_kg_m3": 1050.0,
+    "activation_m": 0.0008,
+    "barrier_stiffness_n_m3": 100000000.0,
+    "tolerance_n": 1e-11
+  },
+  "source_sha256": {
+    "implicit_reference.py": "365e3d1ba97c5c14a5bcdd424a3a27a68d04c5dc4eefb5ede4239cc01dd13ce0",
+    "constrained_elasticity.py": "2b32ae7c5abfd0d062d97e07e0911d941ef9ab04baaf0aa04a566ffcbd31f3af",
+    "elastic_preconditioner.py": "2f58b26d43e37cd91f1529971283f148e93b8e8de0fd8b583b14569ca4e34ae4",
+    "determinant_step.py": "54454fbc93278d161a9e7918978733699492358103a6167a599636b32ca1ef86",
+    "plane_barrier.py": "898a50ea9926a514434b2b7d226439ce17b409b20f96984752fe2e6553041e27"
+  },
+  "rows": [
+    {
+      "tick": 1,
+      "residual_n": 2.205605801621456e-12,
+      "contact_force_n": [
+        -0.0,
+        0.00013731407577919833,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 2.3589122365131195e-15,
+      "minimum_gap_m": 0.0007681097582206697,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9924057458257407,
+        "median_volume_ratio": 0.999999995681814,
+        "total_absolute_volume_ratio": 0.9999978441463427,
+        "p99_absolute_volume_change": 0.00016151515874524608
+      }
+    },
+    {
+      "tick": 2,
+      "residual_n": 6.9639693588575274e-12,
+      "contact_force_n": [
+        -0.0,
+        0.0011142998183496504,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 4.10381002274217e-17,
+      "minimum_gap_m": 0.000739205713695075,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9725157873850815,
+        "median_volume_ratio": 0.999999935967209,
+        "total_absolute_volume_ratio": 0.9999809252460858,
+        "p99_absolute_volume_change": 0.0012121627056025466
+      }
+    },
+    {
+      "tick": 3,
+      "residual_n": 6.089824407385757e-12,
+      "contact_force_n": [
+        -0.0,
+        0.0032874510514847946,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 2.078134056525619e-15,
+      "minimum_gap_m": 0.0007209015008481576,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9544033412551094,
+        "median_volume_ratio": 0.9999995385483971,
+        "total_absolute_volume_ratio": 0.9999339153801338,
+        "p99_absolute_volume_change": 0.0035489404042261747
+      }
+    },
+    {
+      "tick": 4,
+      "residual_n": 5.515321071750659e-12,
+      "contact_force_n": [
+        -0.0,
+        0.006270651588702731,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 4.491851203194184e-15,
+      "minimum_gap_m": 0.0007088834377341688,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9391128199433221,
+        "median_volume_ratio": 0.9999979259442868,
+        "total_absolute_volume_ratio": 0.9998492721742752,
+        "p99_absolute_volume_change": 0.0068764473064435415
+      }
+    },
+    {
+      "tick": 5,
+      "residual_n": 8.62441088122644e-13,
+      "contact_force_n": [
+        -0.0,
+        0.009673130865749375,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 1.0621221415369042e-15,
+      "minimum_gap_m": 0.0007010200161991775,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9290937387285109,
+        "median_volume_ratio": 0.9999932140083672,
+        "total_absolute_volume_ratio": 0.9997254806590276,
+        "p99_absolute_volume_change": 0.011753567673202132
+      }
+    },
+    {
+      "tick": 6,
+      "residual_n": 6.1364080180178405e-12,
+      "contact_force_n": [
+        -0.0,
+        0.013016108513150075,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 5.919616468660659e-15,
+      "minimum_gap_m": 0.0006957367289249158,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9237250854585787,
+        "median_volume_ratio": 0.9999825563600463,
+        "total_absolute_volume_ratio": 0.9995690716307701,
+        "p99_absolute_volume_change": 0.017125492916584172
+      }
+    },
+    {
+      "tick": 7,
+      "residual_n": 8.259975722976248e-12,
+      "contact_force_n": [
+        -0.0,
+        0.01605381123599461,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 4.1038802211423717e-16,
+      "minimum_gap_m": 0.0006922464624984498,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9145377277680022,
+        "median_volume_ratio": 0.9999627191903258,
+        "total_absolute_volume_ratio": 0.9993904973225584,
+        "p99_absolute_volume_change": 0.02225644205374683
+      }
+    },
+    {
+      "tick": 8,
+      "residual_n": 9.525068678763668e-12,
+      "contact_force_n": [
+        -0.0,
+        0.018601608468380413,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 7.854677986456645e-15,
+      "minimum_gap_m": 0.0006900324625854215,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9068757962198772,
+        "median_volume_ratio": 0.999932049874666,
+        "total_absolute_volume_ratio": 0.9992030483031181,
+        "p99_absolute_volume_change": 0.027528294122764644
+      }
+    },
+    {
+      "tick": 9,
+      "residual_n": 8.832699327113275e-12,
+      "contact_force_n": [
+        -0.0,
+        0.02053399232497089,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 1.1541749766969456e-17,
+      "minimum_gap_m": 0.0006889237365126297,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9012133238198767,
+        "median_volume_ratio": 0.9998955311341232,
+        "total_absolute_volume_ratio": 0.999020661220505,
+        "p99_absolute_volume_change": 0.032944144060753563
+      }
+    },
+    {
+      "tick": 10,
+      "residual_n": 1.7445930234100842e-12,
+      "contact_force_n": [
+        -0.0,
+        0.021853322577944867,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 1.974144338304337e-15,
+      "minimum_gap_m": 0.0006885809463265044,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.8977973866349079,
+        "median_volume_ratio": 0.9998536798907338,
+        "total_absolute_volume_ratio": 0.9988545051117139,
+        "p99_absolute_volume_change": 0.03878653857079316
+      }
+    },
+    {
+      "tick": 11,
+      "residual_n": 7.444319801845926e-12,
+      "contact_force_n": [
+        -0.0,
+        0.022511162119768637,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 1.3334579224512276e-15,
+      "minimum_gap_m": 0.0006865651759965855,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.8930395649449829,
+        "median_volume_ratio": 0.9998121999692478,
+        "total_absolute_volume_ratio": 0.9987129143420072,
+        "p99_absolute_volume_change": 0.04321196345587464
+      }
+    },
+    {
+      "tick": 12,
+      "residual_n": 4.0350216956098925e-12,
+      "contact_force_n": [
+        -0.0,
+        0.022467015042716948,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 2.899122490188896e-16,
+      "minimum_gap_m": 0.0006860286418374079,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.8753538171899475,
+        "median_volume_ratio": 0.9997726470755349,
+        "total_absolute_volume_ratio": 0.9986004038966374,
+        "p99_absolute_volume_change": 0.04668978251500981
+      }
+    },
+    {
+      "tick": 13,
+      "residual_n": 9.89206550329789e-12,
+      "contact_force_n": [
+        -0.0,
+        0.021994821739674267,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 1.2113793835284074e-16,
+      "minimum_gap_m": 0.0006848528496475326,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.8549483678059131,
+        "median_volume_ratio": 0.999744511086297,
+        "total_absolute_volume_ratio": 0.9985131720742344,
+        "p99_absolute_volume_change": 0.051604072994634584
+      }
+    },
+    {
+      "tick": 14,
+      "residual_n": 3.627661799469214e-12,
+      "contact_force_n": [
+        -0.0,
+        0.021241277695768224,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 4.1792117254061853e-16,
+      "minimum_gap_m": 0.0006840199465513591,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.8363028692483214,
+        "median_volume_ratio": 0.9997264946155939,
+        "total_absolute_volume_ratio": 0.9984442285217484,
+        "p99_absolute_volume_change": 0.057687771120405934
+      }
+    },
+    {
+      "tick": 15,
+      "residual_n": 9.045224864048123e-12,
+      "contact_force_n": [
+        -0.0,
+        0.02036251954175982,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 9.395050827889583e-18,
+      "minimum_gap_m": 0.0006827909544480648,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.8200133128218736,
+        "median_volume_ratio": 0.9997107452682984,
+        "total_absolute_volume_ratio": 0.9983850671137098,
+        "p99_absolute_volume_change": 0.06146365725748894
+      }
+    }
+  ],
+  "elapsed_s": 41.580641700013075,
+  "error": "Implicit step failed: line_search_failed",
+  "failed_tick": 16,
+  "unaccepted_solve": {
+    "residual_n": 6.320285503099925e-09,
+    "history": [
+      {
+        "energy_j": -1.3133058633336899e-05,
+        "residual_n": 0.0023757162599612486
+      },
+      {
+        "energy_j": -0.00015119667945331965,
+        "residual_n": 0.00036518251625492366
+      },
+      {
+        "energy_j": -0.0001513132411233997,
+        "residual_n": 0.00043374500812434904
+      },
+      {
+        "energy_j": -0.000151327360783528,
+        "residual_n": 0.0005366629998663117
+      },
+      {
+        "energy_j": -0.00015132801647873423,
+        "residual_n": 0.0006435759746917448
+      },
+      {
+        "energy_j": -0.00015132895357829965,
+        "residual_n": 0.00014107990778577023
+      },
+      {
+        "energy_j": -0.0001513289959037723,
+        "residual_n": 7.545027612313253e-05
+      },
+      {
+        "energy_j": -0.00015132902890404692,
+        "residual_n": 1.7401639808529014e-05
+      },
+      {
+        "energy_j": -0.00015132902973715,
+        "residual_n": 1.4909026129539371e-05
+      },
+      {
+        "energy_j": -0.00015132903056815336,
+        "residual_n": 2.012217794979334e-06
+      },
+      {
+        "energy_j": -0.00015132903058570429,
+        "residual_n": 1.258143030125102e-06
+      },
+      {
+        "energy_j": -0.00015132903058897703,
+        "residual_n": 2.0606993885539116e-06
+      },
+      {
+        "energy_j": -0.00015132903060153515,
+        "residual_n": 5.335839154008355e-07
+      },
+      {
+        "energy_j": -0.00015132903060163956,
+        "residual_n": 3.7589417352992203e-07
+      },
+      {
+        "energy_j": -0.0001513290306022359,
+        "residual_n": 3.977642969119579e-08
+      },
+      {
+        "energy_j": -0.00015132903060224165,
+        "residual_n": 4.599418287732997e-08
+      },
+      {
+        "energy_j": -0.00015132903060225076,
+        "residual_n": 2.1540304118916025e-08
+      },
+      {
+        "energy_j": -0.00015132903060225165,
+        "residual_n": 6.320285503099925e-09
+      }
+    ]
+  }
+}
