@@ -1,0 +1,21 @@
+{
+  "runs": [
+    {
+      "iterations": 12,
+      "steps": 30,
+      "first_inversion_tick": 10,
+      "maximum_inversions": 28,
+      "minimum_volume_ratio": -2.1072602583576607,
+      "maximum_penetration_m": 0.0
+    },
+    {
+      "iterations": 96,
+      "steps": 30,
+      "first_inversion_tick": null,
+      "maximum_inversions": 0,
+      "minimum_volume_ratio": 0.1289428010507873,
+      "maximum_penetration_m": 0.0
+    }
+  ],
+  "scope": "Matched 30-step full-surface contact, changing only VBD iterations. Short diagnostic, not surgical or force validation."
+}
