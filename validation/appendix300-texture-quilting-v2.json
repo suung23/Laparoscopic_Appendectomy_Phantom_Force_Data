@@ -1,0 +1,51 @@
+{
+  "status": "static_geometry_and_uv_invariants_passed_visual_runtime_pending",
+  "dataset": "Appendix300",
+  "attribution": "Appendix300, DOI 10.25532/OPARA-1173, CC BY 4.0",
+  "source_video": "Video_Snippets/Center1/Center1_014.mp4",
+  "source_video_sha256": "af050e90b66076f7dd83e8278be3cc4bd50ea490a375165e9747946b0e94c2bc",
+  "frame_time_seconds": 12,
+  "source_frame_sha256": "78e7fb39426e77b88f786afb0ccdf6668ab1881e531840cca9002fc4a493dd89",
+  "transfer": {
+    "method": "seeded_overlapping_patch_quilting",
+    "texture_dimensions_px": [1024, 1024],
+    "patch_size_px": 96,
+    "overlap_px": 24,
+    "candidate_crops_per_cell": 32,
+    "appendix_seed": 300,
+    "mesoappendix_seed": 301,
+    "reproducibility_check": "two independent builds produced matching texture hashes",
+    "appendix_texture_sha256": "268a6347856f74ad3af7aa769541d1114134fb9ef335953846190f4dc9a54dc7",
+    "mesoappendix_texture_sha256": "5c995f3bc8c04590aeefd27859136f84f83bb9f7f15f7357337a78227884aa64"
+  },
+  "scene_inputs": [
+    {
+      "file": "out/ct_appendectomy/ct_appendectomy.usda",
+      "sha256": "26acbec1de64c3d125e6606cf245995bd6956517acbb5068ca6d588892bb1233"
+    },
+    {
+      "file": "out/ct_appendectomy/fat_layer_v7/review.usda",
+      "sha256": "d77425e0000d6c2dc35162d5eb7dda6e29c7d3add1ac3143664a98bdc64fcc70"
+    }
+  ],
+  "geometry_invariants": {
+    "mesh_count": 54,
+    "points_unchanged": true,
+    "face_indices_unchanged": true,
+    "face_counts_unchanged": true,
+    "normals_unchanged": true,
+    "appendix_uv_corner_count": 21216,
+    "mesoappendix_uv_corner_count": 16656
+  },
+  "render_validation": {
+    "isaac_endoscope_render": "not run; current installed Isaac Python execution is blocked by Windows Application Control",
+    "clinical_visual_validation": false,
+    "physics_validation": false
+  },
+  "limitations": [
+    "ROIs are manually selected and not instance-segmented or verified as the named anatomy",
+    "Texture quilting synthesizes appearance statistics and does not register video pixels to 3D surface locations",
+    "Residual highlights and illumination remain baked into RGB; albedo and BRDF are unmeasured",
+    "Appearance texture does not validate contact, deformation, or RL performance"
+  ]
+}

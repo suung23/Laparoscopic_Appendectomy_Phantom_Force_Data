@@ -27,7 +27,13 @@ TARGETS = {
 }
 
 
-def seamless_mirror_patch(frame, box, output):
+def quilt_patch_texture(frame, box, output, seed=300, size=1024, patch_size=96, overlap=24):
+    """Synthesize a non-mirrored texture field from overlapping ROI crops.
+
+    This reduces the obvious mirror symmetry of the initial proof of concept.
+    It is stochastic appearance synthesis, not surface registration or albedo
+    recovery. A fixed seed makes the candidate reproducible.
+    """
     patch = frame.crop(box).convert("RGB")
     source_patch_size = list(patch.size)
     # Conservatively attenuate broad lamp falloff and replace near-white
@@ -38,20 +44,67 @@ def seamless_mirror_patch(frame, box, output):
     scale = np.sqrt(target / np.maximum(low, 1.))
     patch = Image.fromarray(np.clip(rgb * scale[..., None], 0, 255).astype(np.uint8), "RGB")
     hsv = np.asarray(patch.convert("HSV"))
-    mask = Image.fromarray(np.uint8((hsv[..., 2] > 226) & (hsv[..., 1] < 105)) * 255)
+    # Suppress some compact, near-neutral lamp glints from the base-color
+    # candidate. Residual highlights remain; this is not intrinsic-albedo
+    # estimation or a calibrated specular/diffuse decomposition.
+    mask = Image.fromarray(np.uint8((hsv[..., 2] > 198) & (hsv[..., 1] < 145)) * 255)
     mask = mask.filter(ImageFilter.MaxFilter(5)).filter(ImageFilter.GaussianBlur(1.5))
     patch = Image.composite(patch.filter(ImageFilter.MedianFilter(9)), patch, mask)
-    # Mirror tiling closes the UV boundary; retain texture detail near the
-    # source scale by repeating the seamless tile within the atlas.
-    tile = Image.new("RGB", (patch.width * 2, patch.height * 2))
-    tile.paste(patch, (0, 0))
-    tile.paste(patch.transpose(Image.Transpose.FLIP_LEFT_RIGHT), (patch.width, 0))
-    tile.paste(patch.transpose(Image.Transpose.FLIP_TOP_BOTTOM), (0, patch.height))
-    tile.paste(patch.transpose(Image.Transpose.ROTATE_180), (patch.width, patch.height))
-    tile = tile.resize((256, 256), Image.Resampling.LANCZOS)
-    tile.resize((1024, 1024), Image.Resampling.NEAREST).save(output)
-    return {"source_patch_px": source_patch_size, "periodic_tile_px": list(tile.size),
-            "atlas_texture_px": [1024, 1024]}
+    source = np.asarray(patch, dtype=np.float32)
+    h, w = source.shape[:2]
+    if patch_size > min(h, w) or overlap <= 0 or overlap >= patch_size:
+        raise ValueError("Quilting patch/overlap dimensions do not fit the ROI")
+    if size <= patch_size:
+        raise ValueError("Texture size must be larger than a quilting patch")
+
+    rng = np.random.default_rng(seed)
+    stride = patch_size - overlap
+    canvas = np.zeros((size, size, 3), dtype=np.float32)
+    valid = np.zeros((size, size), dtype=bool)
+    # Each grid cell chooses a low-error crop from a seeded candidate pool.
+    candidates_per_cell = 32
+    for y in range(0, size, stride):
+        for x in range(0, size, stride):
+            ph, pw = min(patch_size, size - y), min(patch_size, size - x)
+            xs = rng.integers(0, w - pw + 1, size=candidates_per_cell)
+            ys = rng.integers(0, h - ph + 1, size=candidates_per_cell)
+            crops = [source[yy:yy+ph, xx:xx+pw] for xx, yy in zip(xs, ys)]
+            left = x > 0
+            top = y > 0
+            ol = min(overlap, pw) if left else 0
+            ot = min(overlap, ph) if top else 0
+            scores = []
+            for candidate in crops:
+                errors = []
+                if ol:
+                    errors.append(np.mean((candidate[:, :ol] - canvas[y:y+ph, x:x+ol]) ** 2))
+                if ot:
+                    errors.append(np.mean((candidate[:ot] - canvas[y:y+ot, x:x+pw]) ** 2))
+                scores.append(float(np.mean(errors)) if errors else 0.)
+            # Randomly select among the closest candidates to avoid a fixed
+            # low-variance texture while keeping seams reasonably compatible.
+            best = np.argsort(scores)[:min(5, len(scores))]
+            chosen = crops[int(rng.choice(best))]
+            alpha = np.ones((ph, pw), dtype=np.float32)
+            if ol:
+                ramp = np.linspace(0., 1., ol, endpoint=True, dtype=np.float32)
+                alpha[:, :ol] = np.minimum(alpha[:, :ol], ramp[None, :])
+            if ot:
+                ramp = np.linspace(0., 1., ot, endpoint=True, dtype=np.float32)
+                alpha[:ot, :] = np.minimum(alpha[:ot, :], ramp[:, None])
+            region = canvas[y:y+ph, x:x+pw]
+            was_valid = valid[y:y+ph, x:x+pw]
+            blend = alpha[..., None]
+            region[:] = np.where(was_valid[..., None],
+                                 region * (1. - blend) + chosen * blend,
+                                 chosen)
+            valid[y:y+ph, x:x+pw] = True
+
+    Image.fromarray(np.clip(canvas, 0, 255).astype(np.uint8), "RGB").save(output)
+    return {"source_patch_px": source_patch_size, "atlas_texture_px": [size, size],
+            "synthesis": "seeded_overlapping_patch_quilting",
+            "seed": seed, "quilting_patch_px": patch_size,
+            "overlap_px": overlap, "candidate_crops_per_cell": candidates_per_cell}
 
 
 def build(reference, out, ffmpeg, sources=None):
@@ -75,7 +128,7 @@ def build(reference, out, ffmpeg, sources=None):
     for name, box in ROIS.items():
         texture_path = out / f"{name}_appendix300_rgb.png"
         tiles[name] = {"roi_xyxy": list(box), "dimensions":
-                       seamless_mirror_patch(frame, box, texture_path),
+                       quilt_patch_texture(frame, box, texture_path, seed=300 + len(tiles)),
                        "texture_sha256": hashlib.sha256(texture_path.read_bytes()).hexdigest()}
 
     report = {
@@ -92,7 +145,7 @@ def build(reference, out, ffmpeg, sources=None):
         "limitations": [
             "ROI tissue was selected visually and was not instance-segmented or verified as the named anatomy",
             "Observed lighting, white balance, specular highlights, smoke and blood may remain baked into RGB",
-            "Mirror tiling and UV atlas mapping can repeat image features; no calibrated camera-to-mesh registration",
+            "Seeded patch quilting synthesizes a non-mirrored texture field but repeats source appearance statistics and is not camera-to-mesh registration",
             "This transfer does not add recovered 3-D anatomy or tissue mechanics",
         ],
     }
