@@ -1,0 +1,31 @@
+# SCOPE v1 simulator evaluation alignment
+
+Reviewed the local SCOPE v1 manuscript on 2026-10-06. The manuscript describes a bounded, phantom-grounded simulator for grasping, elevation, and release. It requires pivot geometry, instrument contact, deformable tissue with attachment constraints, and sensor observations. Its primary simulator test is transfer to held-out physical phantom conditions; performance inside the simulator is not the endpoint. Cutting, bleeding, and whole-procedure simulation are outside that manuscript's initial scope.
+
+## Current fit
+
+The appendectomy repository is a useful implementation and stress-test base, but it is not yet evidence for the manuscript's simulator evaluation. Existing bimanual/RL results and GPU contact comparisons are synthetic engineering checks. They do not calibrate material or contact parameters against physical phantom measurements, validate predictions on reserved physical trajectories, or show improved policy performance on held-out physical conditions. The repository currently contains no measured phantom trajectory set.
+
+**Decision:** use the simulator now for software development and controlled synthetic ablations only. Do not report its internal reward, simulated force, or current RL success as phantom-validated performance or as evidence that simulation improves physical transfer.
+
+An initial, dependency-free held-out scoring utility is available at `ct_appendectomy/evaluate_phantom_holdout.py`. It enforces specimen/build-disjoint development and held-out groups and reports XYZ force-vector error, displacement RMSE, relaxation force error, and contact-transition timing/count/direction agreement. Predicted signals must already be sampled at measured timestamps; no fitted time shift or force scale is allowed. Its synthetic self-test checks the metric implementation and split-leakage rejection only; no phantom data have been scored.
+
+The CSV contract is `split,specimen_or_build_id,trajectory_id,time_s,phase,force_measured_x_N,force_measured_y_N,force_measured_z_N,force_predicted_x_N,force_predicted_y_N,force_predicted_z_N,displacement_measured_mm,displacement_predicted_mm,contact_measured,contact_predicted`. Use `development` and `heldout` values for `split`; phases should distinguish `loading`, `unloading`, and `relaxation`. After the simulator is frozen, score a local synchronized dataset with `python ct_appendectomy/evaluate_phantom_holdout.py <local-csv>`. Do not commit raw phantom or animal data.
+
+## Public data availability check
+
+The Open-H Embodiment surgical phantom card describes synchronized video, robot state, and actions but explicitly lists no force/torque sensor; it may support an observation/action interface check, not mechanical calibration ([dataset card](https://huggingface.co/datasets/nvidia/PhysicalAI-Robotics-Open-H-Embodiment/blob/ff0dbf674812a6c84ff3cd30675529bd99b7ddef/Surgical/ucsd/surgical_learning_dataset/readme.md)). A published Zenodo force-estimation record contains stereo images, PSM states, and force/torque ROS bags, but its page does not specify a reuse license or document phantom deformation/relaxation ground truth; it remains a candidate for later rights and channel review, not a calibration source ([Zenodo record](https://zenodo.org/records/21041361)). Neither dataset was downloaded or added to the repository.
+
+## Evaluation path that matches the manuscript
+
+1. Add a bounded grasp–elevate–release benchmark that can run without the full appendectomy scene while retaining the same tool/contact and tissue mechanics under test.
+2. Record physical development and reserved test trajectories with synchronized tool pose, tissue/phantom displacement, measured load, contact state, timestamps, specimen/build identity, sensor calibration, and uncertainty. Split by specimen or build, not adjacent frames. Keep raw personal or identifiable material outside Git.
+3. Fit parameters only on development trajectories, including loading, unloading, and relaxation. Preserve parameter ranges when several models fit; do not label fitted parameters as biological constants.
+4. On reserved physical trajectories, report load–displacement error, relaxation response, contact-transition timing, numerical stability, controller timing, and pairwise action-outcome ranking where the physical protocol supports that comparison. Define acceptance bounds from instrument repeatability and specimen variability before scoring the held-out set.
+5. Compare real-demonstration-only, uncalibrated-simulation augmentation, and calibrated-simulation augmentation with matched real-data and optimization budgets. Freeze each policy for evaluation on the same held-out physical phantom conditions. Report simulation/RL fine-tuning as separate conditions; the decision endpoint is physical transfer, including failures and added data/compute.
+
+## Evidence gates
+
+The manuscript may describe the simulator as calibrated only after development-set fitting is complete and a frozen parameter set is evaluated on reserved physical data. It may claim useful simulation augmentation only if the predeclared held-out physical endpoint improves over the matched real-only condition with uncertainty reported. If that test is unavailable or does not improve, report that outcome and retain the real-data route as primary. Visual similarity, CPU/GPU agreement, synthetic stability, and in-simulator task success do not substitute for either gate.
+
+This note summarizes the manuscript's evaluation intent; the manuscript itself and its figures were not copied into the simulator repository.
