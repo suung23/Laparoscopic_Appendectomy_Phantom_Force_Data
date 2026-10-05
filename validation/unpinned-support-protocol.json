@@ -1,0 +1,7 @@
+{
+  "source": "base_api_128_assets",
+  "change": "Disable only /World/BaseAttachment; retain support and tissue material/mesh",
+  "solver_iterations": 128,
+  "physics_hz": 480,
+  "scope": "Diagnostic only. Pin drift is expected and disqualifies this candidate as a surgical environment. Compare penetration, inversion and velocity with pinned baseline."
+}
