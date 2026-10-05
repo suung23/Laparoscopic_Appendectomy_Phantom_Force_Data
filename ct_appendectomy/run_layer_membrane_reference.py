@@ -12,7 +12,7 @@ from attached_visual_layer import AttachedVisualLayer
 from layer_force_mapping import pullback_forces
 from build_fat_layer import evaluate
 
-def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,artery_shape=False,cad=None):
+def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,artery_shape=False,cad=None,approach=None):
     if not np.isfinite(dt) or dt<=0 or steps<1:raise ValueError("Positive timestep and steps required")
     out.mkdir(parents=True,exist_ok=True)
     stage=Usd.Stage.CreateNew(str((out/'review.usda').resolve()))
@@ -27,20 +27,42 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
     dynamics=MembraneDynamics(MembraneReference(p,z['faces'],12000,.45,.0002,1e-8),p,1000,fixed)
     patch=np.argsort(np.linalg.norm(layer['points']-p[710],axis=1))[:100]
     force=np.zeros_like(layer['points']);force[patch,2]=.0002/len(patch)
-    jaw=None
+    jaw=None;poses=None
+    if approach and not cad:raise ValueError("Approach requires CAD")
     if cad:
         from cad_penalty_contact import load_jaw,penalty
         from build_scene import mesh_prim
-        jaw=load_jaw(cad);jaw.apply_translation(layer['points'][710]-jaw.centroid)
+        local_jaw=load_jaw(cad);jaw=local_jaw.copy()
+        if approach:
+            data=np.load(approach);poses=data['poses']
+            if poses.ndim!=3 or poses.shape[1:]!=(4,4) or not len(poses) or not np.isfinite(poses).all():raise ValueError('Invalid approach poses')
+            if not np.allclose(data['jaw_points'],local_jaw.vertices) or not np.array_equal(data['jaw_faces'],local_jaw.faces):raise ValueError('Approach CAD mismatch')
+            axes=poses[:,:3,:3]
+            if not np.allclose(axes.transpose(0,2,1)@axes,np.eye(3),atol=1e-8) or not np.allclose(np.linalg.det(axes),1,atol=1e-8):raise ValueError('Invalid rotations')
+            delta=poses[:,:3,3]-data['port'];direction=poses[:,:3,2];insertion=np.sum(delta*direction,axis=1)
+            if np.linalg.norm(np.cross(delta,direction),axis=1).max()>1e-8 or (insertion<.03).any() or (insertion>.25).any():raise ValueError('Invalid pivot or insertion')
+            if len(poses)>1 and np.linalg.norm(np.diff(poses[:,:3,3],axis=0),axis=1).max()/dt>.02000001:raise ValueError('Insertion speed exceeds limit')
+            from rosota_controller import aperture_metrics
+            if not all(aperture_metrics(data['port'],data['port_axes'][:,2],pose[:3,3],pose[:3,2])['aperture_clear'] for pose in poses):raise ValueError('Trocar aperture violation')
+            if len(poses)>1:
+                angles=np.arccos(np.clip((np.trace(axes[:-1].transpose(0,2,1)@axes[1:],axis1=1,axis2=2)-1)/2,-1,1))
+                if angles.max()/dt>.4000001:raise ValueError('Rotation speed exceeds limit')
+            jaw.vertices=local_jaw.vertices@poses[0,:3,:3].T+poses[0,:3,3]
+        else:jaw.apply_translation(layer['points'][710]-jaw.centroid)
         tissue=trimesh.Trimesh(layer['points'],layer['faces'],process=False)
         area=np.zeros(len(layer['points']));np.add.at(area,tissue.faces.ravel(),np.repeat(tissue.area_faces/3,3))
         mesh_prim(stage,'/World/FixedCADContactJaw',jaw,(.45,.48,.5),roughness=.2)
     reports=[];trajectory=[p.copy()];start=time.perf_counter();error=None
     try:
         for step in range(steps):
+            if poses is not None:
+                pose=poses[min(step,len(poses)-1)]
+                jaw.vertices=local_jaw.vertices@pose[:3,:3].T+pose[:3,3]
+                mesh_prim(stage,'/World/FixedCADContactJaw',jaw,(.45,.48,.5),roughness=.2)
             current=evaluate(dynamics.points,layer['nodes'],layer['weights'],layer['frame_offsets'])
             contact_before=None
             if jaw is not None:force,contact_before=penalty(jaw,current,area,1e5)
+            if poses is not None and step==0 and contact_before["active_nodes"]:raise ValueError("Approach begins in sampled contact")
             mapped=pullback_forces(dynamics.points,layer['nodes'],layer['weights'],layer['frame_offsets'],force)
             torque_error=np.linalg.norm(np.cross(dynamics.points,mapped).sum(axis=0)-np.cross(current,force).sum(axis=0))
             info=dynamics.step(dt,mapped,maxiter=3000,tolerance=1e-6)
@@ -58,7 +80,7 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
     except Exception as exc:error=str(exc)
     stage.GetRootLayer().Save()
     np.savez_compressed(out/'trajectory.npz',points=np.array(trajectory),dt=dt)
-    report={'status':'completed reference run' if error is None else 'failed','error':error,'steps':reports,'dt':dt,'simulated_seconds':len(reports)*dt,'wall_seconds':time.perf_counter()-start,'fixed_error_m':float(np.abs(dynamics.points[fixed]-p[fixed]).max()),'last_layer_force_N':force.sum(axis=0).tolist(),'force_source':'fixed CAD area-weighted penalty' if jaw is not None else 'synthetic nodal load','scope':'CPU reference dynamics and USD display coupled; layer force lagged at step start','tool_contact':jaw is not None,'RCM_controlled':False,'friction':False,'collision_geometry':'convex CAD hull' if jaw is not None else None,'contact_stiffness_N_per_m3':1e5 if jaw is not None else None,'tool_pose':'fixed synthetic placement; no robot controller' if jaw is not None else None,'RL':False,'Isaac_physics':False,'material_calibrated':False,'artery_visual_following':artery is not None,'vessel_mechanics':False,'artery_shape_regularization':artery_shape}
+    report={'status':'completed reference run' if error is None else 'failed','error':error,'steps':reports,'dt':dt,'simulated_seconds':len(reports)*dt,'wall_seconds':time.perf_counter()-start,'fixed_error_m':float(np.abs(dynamics.points[fixed]-p[fixed]).max()),'last_layer_force_N':force.sum(axis=0).tolist(),'force_source':'CAD area-weighted penalty' if jaw is not None else 'synthetic nodal load','scope':'CPU reference dynamics and USD display coupled; layer force lagged at step start','tool_contact':jaw is not None,'RCM_controlled':False,'kinematic_pivot_trajectory':poses is not None,'friction':False,'collision_geometry':'convex CAD hull' if jaw is not None else None,'contact_stiffness_N_per_m3':1e5 if jaw is not None else None,'tool_pose':('recorded kinematic pivot trajectory; no FR3 controller' if poses is not None else 'fixed synthetic placement') if jaw is not None else None,'RL':False,'Isaac_physics':False,'material_calibrated':False,'artery_visual_following':artery is not None,'vessel_mechanics':False,'artery_shape_regularization':artery_shape}
     (out/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
 
 if __name__=='__main__':
@@ -67,4 +89,5 @@ if __name__=='__main__':
     p.add_argument('--artery-binding',type=Path)
     p.add_argument('--artery-shape',action='store_true')
     p.add_argument('--cad',type=Path)
-    a=p.parse_args();run(a.scene,a.parent,a.layer,a.out,a.steps,a.dt,a.artery_binding,a.artery_shape,a.cad)
+    p.add_argument('--approach',type=Path)
+    a=p.parse_args();run(a.scene,a.parent,a.layer,a.out,a.steps,a.dt,a.artery_binding,a.artery_shape,a.cad,a.approach)

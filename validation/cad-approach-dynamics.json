@@ -1,0 +1,21 @@
+{
+  "status": "completed reference run",
+  "source_report_sha256": "6c277773dd2fc046eccccd9c84ae33161f564a832cb723e1a75b3571675a9661",
+  "steps": 41,
+  "simulated_seconds": 0.20500000000000002,
+  "wall_seconds": 12.009003400016809,
+  "first_contact_step": 37,
+  "first_contact_penetration_mm": 0.08575891268689646,
+  "final_penetration_mm": 0.05583127585195077,
+  "final_layer_motion_mm": 0.03064022858091237,
+  "fixed_error_m": 0.0,
+  "aperture_check": true,
+  "scope": "Single-jaw kinematic pose replay into CPU tissue reference dynamics",
+  "limitations": [
+    "No Rosota FR3 TipController or joint dynamics",
+    "No friction, bimanual grasp or learned policy",
+    "Contact force lagged; parameters uncalibrated",
+    "No full surrounding organ collision response or continuous collision detection",
+    "Rendered motion not reviewed"
+  ]
+}
