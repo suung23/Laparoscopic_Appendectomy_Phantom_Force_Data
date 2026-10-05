@@ -12,9 +12,11 @@ p.add_argument('--out',type=Path,required=True)
 p.add_argument('--units',type=float,nargs='+',default=[1.,.01,.1],help='Meters per simulation length unit')
 p.add_argument('--tensor-readback',action='store_true',help='Compare independent PhysX tensor and USD buffers')
 p.add_argument('--solver-iterations',type=int,default=64)
+p.add_argument('--support-gap',type=float,help='Diagnostic horizontal plane gap in meters; disables free-fall acceptance')
 a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True)
 if any(v<=0 for v in a.units):p.error('Units must be positive')
 if not 1<=a.solver_iterations<=255:p.error('Solver iterations must be within [1,255]')
+if a.support_gap is not None and (not __import__('math').isfinite(a.support_gap) or a.support_gap<0):p.error('Nonnegative finite support gap required')
 root=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(root/'ct_appendectomy'))
 from isaacsim import SimulationApp
@@ -32,6 +34,8 @@ report=dict(status='running',mesh_sha256=hashlib.sha256(a.mesh.read_bytes()).hex
     scope='Isolated free fall with zero damping, no attachments, robot, contact or rendering. Not loaded tissue validation.',
     material_si=dict(density_kg_m3=1050,youngs_modulus_pa=12000,poissons_ratio=.45),
     gates=dict(max_translation_removed_rms_m=1e-5,max_acceleration_error_m_s2=.1,minimum_volume_ratio=.99))
+if a.support_gap is not None:
+    report.update(scope='Isolated plane contact diagnostic; not free fall, equilibrium, force calibration or surgical acceptance.',support_gap_m=a.support_gap)
 try:
     import numpy as np
     import omni.usd
@@ -63,6 +67,14 @@ try:
         prim.CreateAttribute('physxDeformableBody:selfCollision',Sdf.ValueTypeNames.Bool).Set(False)
         du.add_deformable_material(stage,'/World/Material',density=1050*mpu**3,youngs_modulus=12000*mpu,poissons_ratio=.45)
         UsdShade.MaterialBindingAPI.Apply(prim).Bind(UsdShade.Material.Get(stage,'/World/Material'),UsdShade.Tokens.weakerThanDescendants,'physics')
+        if a.support_gap is not None:
+            floor_y=float(rest[:,1].min()-a.support_gap)
+            floor=UsdGeom.Plane.Define(stage,'/World/Support')
+            floor.CreateAxisAttr('Y');floor.AddTranslateOp().Set(Gf.Vec3d(0,floor_y/mpu,0))
+            UsdPhysics.CollisionAPI.Apply(floor.GetPrim())
+            for collider,offset in [(prim,.0005),(floor.GetPrim(),.0003)]:
+                api=PhysxSchema.PhysxCollisionAPI.Apply(collider)
+                api.CreateContactOffsetAttr(offset/mpu);api.CreateRestOffsetAttr(0.)
         pipeline=dict(backend='warp',device='cuda:0') if a.tensor_readback else {}
         sim=SimulationContext(stage_units_in_meters=mpu,physics_dt=1/480,rendering_dt=1/30,**pipeline)
         scene=UsdPhysics.Scene.Get(stage,sim.get_physics_context().prim_path)
@@ -86,6 +98,10 @@ try:
                 displacement=points-baseline;translation=displacement.mean(0)
                 rms=float(np.sqrt(np.mean(np.sum((displacement-translation)**2,axis=1))))
                 rows.append(dict(tick=tick,health=tetra_health(rest,points,tets),translation_removed_rms_m=rms))
+                if a.support_gap is not None:
+                    depth=floor_y-points[:,1]
+                    rows[-1].update(maximum_plane_penetration_m=float(max(0,depth.max())),
+                                    nodes_below_plane_over_0_1mm=int((depth>.0001).sum()))
                 if a.tensor_readback:
                     discrepancy=np.linalg.norm(points-usd_points,axis=1)
                     rows[-1].update(usd_health=tetra_health(rest,usd_points,tets),
@@ -98,6 +114,7 @@ try:
         acceleration=np.diff(np.asarray(centers),n=2,axis=0)/(.125**2)
         error=np.linalg.norm(acceleration-np.array([0,-9.81,0]),axis=1)
         passed=all(r['health']['inverted_tetrahedra']==0 and r['health']['minimum_signed_volume_ratio']>=.99 and r['translation_removed_rms_m']<=1e-5 for r in rows) and bool(np.max(error)<=.1)
+        if a.support_gap is not None:passed=False  # Contact snapshots cannot establish the free-fall gate.
         report['cases'].append(dict(meters_per_unit=mpu,status='geometry_dynamics_passed' if passed else 'failed',
             observation_source='live_physx_tensor' if a.tensor_readback else 'usd',
             authored_density=1050*mpu**3,authored_youngs_modulus=12000*mpu,authored_gravity=9.81/mpu,
@@ -108,6 +125,7 @@ try:
         sim.stop();SimulationContext.clear_instance();omni.usd.get_context().close_stage()
         print(f'END_UNIT_CASE meters_per_unit={mpu}',flush=True)
     report['status']='geometry_dynamics_passed_engine_log_required' if all(c['status']=='geometry_dynamics_passed' for c in report['cases']) else 'failed'
+    if a.support_gap is not None:report['status']='contact_diagnostic_only'
 except Exception as exc:
     report.update(status='failed',error=str(exc));raise
 finally:
