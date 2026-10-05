@@ -49,6 +49,19 @@ def build(scene,profile,out):
         raise ValueError("Both endpoints collapse to one attachment vertex; author a root footprint instead of forcing a strip")
     path=edge_path(search,near,*endpoints,allowed_vertices=allowed)
     landmarks,length=resample_path(search.vertices[path],len(bottom))
+    original_root_length=float(length)
+    accepted_smoothing_steps=0
+    for _ in range(16):
+        proposal=landmarks.copy()
+        proposal[1:-1]=.5*landmarks[1:-1]+.25*(landmarks[:-2]+landmarks[2:])
+        proposal,_,_=trimesh.proximity.closest_point(parent,proposal)
+        proposal[[0,-1]]=landmarks[[0,-1]]
+        # Sample segment interiors too: endpoint feasibility alone is insufficient.
+        probes=np.concatenate([proposal]+[(1-t)*proposal[:-1]+t*proposal[1:] for t in (.25,.5,.75)])
+        _,dist,_=trimesh.proximity.closest_point(envelope,probes)
+        if (dist>.003).any() or ileum.contains(probes).any():break
+        landmarks=proposal;accepted_smoothing_steps+=1
+    length=float(np.linalg.norm(np.diff(landmarks,axis=0),axis=1).sum())
     second,projection_error=project_boundary(parent,landmarks,1e-7)
     top=second.positions(parent.vertices)
     v=np.linspace(0,1,25)[:,None]
@@ -85,7 +98,8 @@ def build(scene,profile,out):
         second_binding_nodes=second.nodes.tolist(),second_binding_weights=second.weights.tolist(),
         second_rest_curve_m=top.tolist(),search_path_vertex_indices=path.tolist(),search_vertex_count=len(search.vertices),
         search_max_edge_m=.001,search_allowed_vertices=int(allowed.sum()),
-        second_curve_length_mm=float(length*1000),max_projection_error_m=float(projection_error.max()),
+        second_curve_length_mm=float(length*1000),
+        root_length_before_smoothing_mm=original_root_length*1000,root_smoothing_steps=accepted_smoothing_steps,max_projection_error_m=float(projection_error.max()),
         vertices=len(surface.vertices),triangles=len(surface.faces),
         connected_components=len(surface.split(only_watertight=False)),winding_consistent=bool(surface.is_winding_consistent),
         boundary_position_error_m=float(max(np.abs(positions[0]-bottom).max(),np.abs(positions[-1]-top).max())),

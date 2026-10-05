@@ -1,0 +1,36 @@
+{
+  "status": "visual and geometric gates remain failed",
+  "render_review": {
+    "image": "out\\ct_appendectomy\\bound_membrane_v3\\render\\endoscope.png",
+    "sha256": "507d94203a9e37ca92cf8fc6ef70714a2e1c5e77c818c1d4896a8860fd148a67",
+    "engine": "Isaac Sim 6.1.0.0",
+    "observed": [
+      "Membrane bunching near attachment",
+      "Uniform smooth organ surfaces",
+      "Large black background; inspection camera not validated laparoscopic framing"
+    ],
+    "scope": "Render-only candidate v3, not physics or RL success"
+  },
+  "v4_change": {
+    "second_curve_length_mm": 22.00048518647597,
+    "root_length_before_smoothing_mm": 34.833153596564294,
+    "root_smoothing_steps": 1,
+    "penetrations": {
+      "/SurgicalRegion/appendix_FJ2565": {
+        "centroids_inside_over_0_1mm": 45,
+        "max_depth_mm": 1.5664084985160485
+      },
+      "/SurgicalRegion/ascending_colon_FJ2566": {
+        "centroids_inside_over_0_1mm": 15,
+        "max_depth_mm": 1.2478056739052694
+      },
+      "/SurgicalRegion/appendicular_artery_FJ3410": {
+        "centroids_inside_over_0_1mm": 30,
+        "max_depth_mm": 0.4495899041019962
+      }
+    },
+    "anatomy_accepted": false
+  },
+  "v4_visual_review": "not yet rendered",
+  "decision": "Root zigzag reduced by projected smoothing, but appendix-side penetrations unchanged. Fix junction placement and surface departure before acceptance."
+}
