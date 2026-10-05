@@ -1,0 +1,72 @@
+{
+  "status": "unreviewed continuous visual candidate",
+  "vertices": 49858,
+  "triangles": 99712,
+  "components": 1,
+  "watertight": true,
+  "winding_consistent": true,
+  "height_mm_min_median_max": [
+    0.02,
+    1.0917916664532237,
+    1.3543973643257183
+  ],
+  "binding_error_m": 8.673617379884035e-19,
+  "source_sha256": "4b4fc9fc972a7646ac6f237360952949887ddb783e4cc97f4c4f1d8d88f2d91a",
+  "provenance": "Procedurally authored over BodyParts3D-derived membrane; DBCLS CC BY 4.0",
+  "reference": "Appendix300 sampled visual observations; no reconstructed metric geometry",
+  "physics_integrated": false,
+  "anatomy_validated": false,
+  "collision_checked": false,
+  "self_intersections_checked": false,
+  "parameters": "seed 1729; Gaussian widths 1.5-3.5 mm; saturation height 1.2 mm; all authoring choices",
+  "visual_gate": "failed",
+  "observations": [
+    "Discrete bead appearance removed",
+    "Layer remains broad, smooth and folded; lobulation insufficient",
+    "Vessels partly covered, tissue junction still unnatural"
+  ],
+  "collision_review": {
+    "status": "sampled diagnostic only",
+    "surface": "out\\ct_appendectomy\\fat_layer_v2\\layer.npz",
+    "samples": {
+      "vertices": 49858,
+      "edge_midpoints": 149568,
+      "face_centroids": 99712
+    },
+    "penetrations": {
+      "/SurgicalRegion/appendix_FJ2565": {
+        "vertices": {
+          "count_over_0_1mm": 590,
+          "max_depth_mm": 0.7677555265942888
+        },
+        "edge_midpoints": {
+          "count_over_0_1mm": 1777,
+          "max_depth_mm": 0.7675143406829629
+        },
+        "face_centroids": {
+          "count_over_0_1mm": 1199,
+          "max_depth_mm": 0.7369875207765708
+        }
+      },
+      "/SurgicalRegion/appendicular_artery_FJ3410": {
+        "vertices": {
+          "count_over_0_1mm": 502,
+          "max_depth_mm": 0.5604196061256699
+        },
+        "edge_midpoints": {
+          "count_over_0_1mm": 1512,
+          "max_depth_mm": 0.5803910960713273
+        },
+        "face_centroids": {
+          "count_over_0_1mm": 1003,
+          "max_depth_mm": 0.5764492143033911
+        }
+      }
+    },
+    "exhaustive_intersection_check": false,
+    "clinical_validity": false
+  },
+  "render_sha256": "49a48c60a0387687fab0eec582a8e20ac03131f8714a46ceabe8782fe311291b",
+  "adopted": false,
+  "deformation_check": "Finite local-frame mapped coordinates under authored 1 mm sinusoidal parent displacement; not physical validation."
+}
