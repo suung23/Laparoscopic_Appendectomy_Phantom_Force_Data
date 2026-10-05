@@ -1,0 +1,27 @@
+{
+  "status": "failed",
+  "solver_iterations": 128,
+  "configuration_validity": "within_documented_range",
+  "last": {
+    "rms_speed_m_s": 0.0009731427226721467,
+    "p99_speed_m_s": 0.0026231501856156126,
+    "max_speed_m_s": 0.00836827423247319,
+    "stable_windows": 0,
+    "peak_node_speed_rms_m_s": 0.09867123800777128,
+    "peak_node_speed_p99_m_s": 0.37378290688883503,
+    "peak_node_speed_max_m_s": 1.1368838050538406,
+    "step_displacement_peak_rms_m_s": 0.11331148793384602,
+    "step_displacement_peak_p99_m_s": 0.42974129713120884,
+    "maximum_endpoint_vs_step_mean_velocity_rms_gap_m_s": 0.08489843322274697
+  },
+  "timeout_health": {
+    "tetrahedra": 22312,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 4,
+    "minimum_signed_volume_ratio": -0.7423862344456468,
+    "median_volume_ratio": 1.006228274255723,
+    "total_absolute_volume_ratio": 1.0059461089845443,
+    "p99_absolute_volume_change": 0.3146974942306602
+  },
+  "scope": "Both actual per-step displacement and reported velocity show persistent motion. Endpoint-versus-interval-mean difference is not by itself a sensor error."
+}

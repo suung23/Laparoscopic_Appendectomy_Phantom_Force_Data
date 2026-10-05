@@ -16,7 +16,7 @@ from bimanual_env import BimanualEnv
 
 class RosotaCTEnv(gym.Env):
     metadata={'render_modes':['rgb_array'],'render_fps':30}
-    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False,enhanced_determinism=False,reset_checkpoint=None,fine_settlement=False,external_every_iteration=False,cutter_cad=None,jaw_gravity_compensation=False,gpu_tissue_observation=False):
+    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False,enhanced_determinism=False,reset_checkpoint=None,fine_settlement=False,external_every_iteration=False,cutter_cad=None,jaw_gravity_compensation=False,gpu_tissue_observation=False,physics_substeps=1):
         if settle_policy not in ('fixed','adaptive'):raise ValueError('Unknown settlement policy')
         self.cutter_cad=Path(cutter_cad) if cutter_cad else None
         if self.cutter_cad and grasp_mode!='none':raise ValueError('Cutter cannot use assisted tissue grasp')
@@ -26,6 +26,9 @@ class RosotaCTEnv(gym.Env):
                 raise ValueError('Cutter asset hash mismatch')
             if manifest['units']!='metres' or manifest['open_total_deg']!=50 or not np.allclose(manifest['hinge_to_tip_m'],[0,0,.021],atol=1e-7):
                 raise ValueError('Unsupported cutter geometry contract')
+        if isinstance(physics_substeps,bool) or physics_substeps not in (1,2,4):raise ValueError('Supported physics substeps: 1, 2, 4')
+        self.physics_substeps=physics_substeps
+        self.physics_dt=1/(480*physics_substeps)
         self.gpu_tissue_observation=bool(gpu_tissue_observation)
         self._tissue_observer=None
         if self.gpu_tissue_observation and grasp_mode!='none':raise ValueError('GPU observation grasp path requires separate validation')
@@ -121,7 +124,7 @@ class RosotaCTEnv(gym.Env):
         self.rest=self.points().copy();self.tets=np.asarray(self.mesh.GetAttribute('tetVertexIndices').Get(),int)
         self.pin=np.asarray(self.config['data']['pin'],int)
         pipeline=dict(backend='torch',device='cuda:0') if self.gpu_tissue_observation else {}
-        self.sim=SimulationContext(stage_units_in_meters=1.,physics_dt=1/480,rendering_dt=1/30,**pipeline)
+        self.sim=SimulationContext(stage_units_in_meters=1.,physics_dt=self.physics_dt,rendering_dt=1/30,**pipeline)
         for prim in self.stage.Traverse():
             if prim.IsA(UsdPhysics.Scene):
                 scene=UsdPhysics.Scene(prim);scene.CreateGravityDirectionAttr(Gf.Vec3f(0,-1,0));scene.CreateGravityMagnitudeAttr(0. if self.diagnostic_zero_gravity else 9.81)
@@ -179,7 +182,7 @@ class RosotaCTEnv(gym.Env):
             from tissue_observer import TissueTensorObserver
             self._tissue_observer=TissueTensorObserver.bind(self.stage,'/World/Atlas/appendix',self.config['data']['sim_path'],omni.usd.get_context().get_stage_id())
         self._audit_tissue('after_initialize')
-        if not np.isclose(self.sim.get_physics_dt(),1/480):raise RuntimeError('Wrong physics interval')
+        if not np.isclose(self.sim.get_physics_dt(),self.physics_dt):raise RuntimeError('Wrong physics interval')
         if not np.array_equal(self.mesh.GetAttribute('omniphysics:restShapePoints').Get(),self.rest):
             raise RuntimeError('Tissue rest nodes changed again after explicit cooking')
         if not np.array_equal(self.mesh.GetAttribute('tetVertexIndices').Get(),self.tets):
@@ -207,9 +210,9 @@ class RosotaCTEnv(gym.Env):
         for warmup_tick in range(480):
             for hand,s in self.specs.items():
                 self.robots[hand].apply_action(ArticulationAction(joint_positions=s['seed'],joint_velocities=np.zeros(7),joint_indices=self.indices[hand]))
-            self.sim.step(render=False)
+            self._physics_step()
             if warmup_tick in (0,59,479):self._audit_tissue('warmup_'+str(warmup_tick+1))
-        self.settlement={'policy':self.settle_policy,'measured_equilibrium':False,'physics_ticks':480}
+        self.settlement={'policy':self.settle_policy,'measured_equilibrium':False,'physics_ticks':480*self.physics_substeps,'control_ticks':480,'physics_dt_s':self.physics_dt}
         if self.settle_policy=='adaptive':
             from settlement import SettlementGate
             gate=SettlementGate(self.points(),rms_limit_m_s=1e-6 if self.fine_settlement else 1e-4,
@@ -218,28 +221,30 @@ class RosotaCTEnv(gym.Env):
             settled=False
             for window in range(120 if self.fine_settlement else 56):
                 peak_speed=np.zeros(len(self.rest)) if self._tissue_observer else None
+                sample_substep=None
+                state=None
                 if self._tissue_observer:
                     from tissue_metrics import step_velocity_comparison
                     previous=self.points();displacement_peak=np.zeros(len(self.rest));velocity_gap=0.
-                for _ in range(60):
-                    self.sim.step(render=False)
-                    if self._tissue_observer:
+                    def sample_substep():
+                        nonlocal peak_speed,previous,displacement_peak,velocity_gap,state
                         state=self._tissue_observer.snapshot(omni.usd.get_context().get_stage_id())
                         peak_speed=np.maximum(peak_speed,np.linalg.norm(state['velocity_m_s'],axis=1))
-                        mean_velocity,gap=step_velocity_comparison(previous,state['position_m'],state['velocity_m_s'],1/480)
+                        mean_velocity,gap=step_velocity_comparison(previous,state['position_m'],state['velocity_m_s'],self.physics_dt)
                         displacement_peak=np.maximum(displacement_peak,np.linalg.norm(mean_velocity,axis=1))
                         velocity_gap=max(velocity_gap,gap);previous=state['position_m']
+                for _ in range(60):self._physics_step(sample_substep)
                 settled=gate.update(state['position_m'] if self._tissue_observer else self.points(),peak_speed)
                 if self._tissue_observer:
                     gate.rows[-1].update(step_displacement_peak_rms_m_s=float(np.sqrt(np.mean(displacement_peak**2))),
                         step_displacement_peak_p99_m_s=float(np.percentile(displacement_peak,99)),
                         maximum_endpoint_vs_step_mean_velocity_rms_gap_m_s=velocity_gap)
                 (self.out/'settlement_progress.json').write_text(json.dumps(dict(
-                    window=window+1,physics_ticks=480+60*(window+1),latest=gate.rows[-1])),encoding='utf-8')
+                    window=window+1,physics_ticks=(480+60*(window+1))*self.physics_substeps,control_ticks=480+60*(window+1),latest=gate.rows[-1])),encoding='utf-8')
                 if window>=7 and settled:break
-            self.settlement.update(measured_equilibrium=settled,physics_ticks=480+60*len(gate.rows),
+            self.settlement.update(measured_equilibrium=settled,physics_ticks=(480+60*len(gate.rows))*self.physics_substeps,control_ticks=480+60*len(gate.rows),
                 limits={'rms_speed_m_s':gate.rms_limit,'p99_speed_m_s':gate.p99_limit,'consecutive_windows':gate.required},
-                interval_s=gate.dt,velocity_sampling_hz=480 if self._tissue_observer else None,trace=gate.rows)
+                interval_s=gate.dt,velocity_sampling_hz=480*self.physics_substeps if self._tissue_observer else None,trace=gate.rows)
             (self.out/'settlement.json').write_text(json.dumps(self.settlement,indent=2),encoding='utf-8')
             if not settled:
                 self._audit_tissue('settlement_timeout')
@@ -256,7 +261,7 @@ class RosotaCTEnv(gym.Env):
         for h,robot in self.robots.items():
             self.force_rows[h]=int(robot._articulation_view._metadata.joint_indices['tool_mount'])+1
         for _ in range(64):
-            self.sim.step(render=False)
+            self._physics_step()
             for h in self.specs:
                 wrench,effort=self.sensor(h)
                 samples[h].append(wrench);jaw_samples[h].append(effort)
@@ -316,6 +321,12 @@ class RosotaCTEnv(gym.Env):
         self.done=False
         return self.observe(),info
 
+    def _physics_step(self,after_substep=None):
+        # One controller interval remains 1/480 s at every solver resolution.
+        for _ in range(self.physics_substeps):
+            self.sim.step(render=False)
+            if after_substep is not None:after_substep()
+
     @staticmethod
     def _array(value):
         if hasattr(value,'detach'):value=value.detach().cpu()
@@ -359,7 +370,7 @@ class RosotaCTEnv(gym.Env):
         np.savez_compressed(self.out/('tissue_'+label+'.npz'),points=points,rest=rest,tets=tets,
             pin=indices,target_world=world_targets,anchor_world=transform,**velocity_fields)
         summary=dict(label=label,nodes=len(points),tetrahedra=len(tets),
-            observation_source='physx_tensor' if self._tissue_observer else 'usd',
+            observation_source='physx_tensor' if self._tissue_observer else 'usd',physics_dt_s=self.physics_dt,
             pin_target_error_m=float(np.linalg.norm(points[indices]-world_targets,axis=1).max()),
             points_sha256=hashlib.sha256(points.tobytes()).hexdigest(),
             tets_sha256=hashlib.sha256(tets.tobytes()).hexdigest())
@@ -484,7 +495,7 @@ class RosotaCTEnv(gym.Env):
                     half=np.deg2rad(self.jaw_open[h]/2)
                     self.robots[h].apply_action(ArticulationAction(joint_positions=np.array([half,-half]),joint_indices=self.jaw_indices[h]))
                 self.scope.step(scope,1/480);self.scope.apply_usd(self.stage)
-                self.sim.step(render=False)
+                self._physics_step()
                 for h in self.specs:self.update_guard(h)
                 info=self.measure();self.trace.append(info)
                 if info['failure']:break
