@@ -1,0 +1,16 @@
+{
+  "force_residual_N": [
+    1.3552527156068805e-20,
+    1.0996181721255327e-17,
+    5.158430648778689e-18
+  ],
+  "inertial_defect_m": [
+    2.0328790734103204e-21,
+    2.5642228412229428e-18,
+    1.2819843656693834e-18
+  ],
+  "objective_calls": 1,
+  "batch_size": 3,
+  "analytic_uniform_acceleration_error_m": 5.204170427930421e-18,
+  "scope": "Three independent GPU membrane translations; no CAD contact or full-scene validation"
+}
