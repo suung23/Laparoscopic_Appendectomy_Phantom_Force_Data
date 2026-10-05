@@ -1,0 +1,22 @@
+{
+  "status": "failed",
+  "phase": "warmup_480",
+  "health": {
+    "tetrahedra": 22312,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 5,
+    "minimum_signed_volume_ratio": -0.6820092578257749,
+    "median_volume_ratio": 1.0053789829191278,
+    "total_absolute_volume_ratio": 1.0068048153613067,
+    "p99_absolute_volume_change": 0.3097535010140295
+  },
+  "support": {
+    "nodes": 5311,
+    "boundary_nodes": 3538,
+    "penetrating_nodes": 1042,
+    "penetrating_boundary_nodes": 715,
+    "maximum_interior_distance_m": 0.005997262895107269,
+    "scope": "Node samples only; does not exclude element-face crossings between nodes."
+  },
+  "scope": "Speculative CCD alone did not resolve contact; no production adoption."
+}
