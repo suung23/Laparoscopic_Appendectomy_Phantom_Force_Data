@@ -96,6 +96,11 @@ def build(source, reference, out, ffmpeg):
                     'No subsurface or wet-film calibration','Clinical donor differs from CT subject',
                     'Liver-only appearance experiment; not a patient-specific reconstruction'])
     stage.GetRootLayer().Save()
+    report.update(reference_frame_sha256=hashlib.sha256(frame.read_bytes()).hexdigest(),
+        observed_texture_sha256=hashlib.sha256((out/'liver_observed_color.png').read_bytes()).hexdigest(),
+        authored_stage_sha256=hashlib.sha256((out/'appearance.usda').read_bytes()).hexdigest(),
+        texture_dimensions_px=[int(tile.shape[1]),int(tile.shape[0])],
+        texture_semantics='Observed RGB with baked illumination; not intrinsic albedo')
     (out/'appearance.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
     print(json.dumps(report,indent=2))
 

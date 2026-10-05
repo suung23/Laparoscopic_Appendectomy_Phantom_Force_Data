@@ -1,0 +1,23 @@
+{
+  "scope": "Audit of existing liver-only appearance experiment; no albedo or photorealism validation",
+  "artifacts": {
+    "reference_frame.png": {
+      "sha256": "2cd5997e0f41ce6d899b755977631388f8eabcea390aae2cc65d96b05a3cb457"
+    },
+    "liver_observed_color.png": {
+      "sha256": "9944a47f603151034ddfab12203d927daab9f7aced07fd11b98b0bee5e9af3a8"
+    },
+    "appearance.usda": {
+      "sha256": "b2231ac58a9a63b15cb2b20914bd95f005b1a3099c846e44c5c8bb3f6ea4bece"
+    }
+  },
+  "limitations": [
+    "Observed RGB contains baked illumination",
+    "Mirrored tiled patch, not multiview reconstruction",
+    "Roughness and physical texture scale are uncalibrated"
+  ],
+  "texture_dimensions_px": [
+    800,
+    360
+  ]
+}
