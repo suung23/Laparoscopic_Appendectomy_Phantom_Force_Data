@@ -1,0 +1,6 @@
+{
+  "source": "base_api_128_assets",
+  "change": "Disable mesh collider; author Y-normal plane at original support top",
+  "plane_y_m": -0.027332229539752007,
+  "scope": "Diagnostic collider, not segmented peritoneum. First launch cancelled before valid candidate authoring; use plane_support_v2 only."
+}
