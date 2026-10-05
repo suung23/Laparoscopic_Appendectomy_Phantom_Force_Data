@@ -1,0 +1,22 @@
+{
+  "status": "reference mapping checks passed",
+  "layer_vertices": 49858,
+  "parent_vertices": 1625,
+  "synthetic_total_load_N": [
+    0.0,
+    0.0,
+    0.20000000000000015
+  ],
+  "force_resultant_error_N": 1.3879170198683193e-16,
+  "torque_resultant_error_Nm": 3.879338400604198e-18,
+  "cpu_seconds_including_torch_import": 1.2549652999732643,
+  "tests": "Finite-difference virtual work, resultant and torque; degenerate face rejection",
+  "solver_integrated": false,
+  "contact_generated": false,
+  "clinical_force_calibrated": false,
+  "limitations": [
+    "Normal-offset map constrains layer kinematics; does not model independent fat compliance",
+    "No contact force was measured; load was synthetic",
+    "Static mapping invariants do not establish dynamic stability"
+  ]
+}

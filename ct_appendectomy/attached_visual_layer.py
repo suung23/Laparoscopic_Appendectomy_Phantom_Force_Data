@@ -32,3 +32,12 @@ class AttachedVisualLayer:
         self.layer.GetNormalsAttr().Set(Vt.Vec3fArray.FromNumpy(mesh.vertex_normals.astype(np.float32)))
         self.layer.GetExtentAttr().Set(Vt.Vec3fArray.FromNumpy(mesh.bounds.astype(np.float32)))
         return positions
+
+    def parent_loads(self,layer_forces):
+        """Return mapped loads for a solver caller; does not apply them."""
+        from layer_force_mapping import pullback_forces
+        self.check_frames()
+        if not np.array_equal(self.parent.GetFaceVertexIndicesAttr().Get(),self.parent_faces.ravel()):raise ValueError('Parent topology changed')
+        points=np.asarray(self.parent.GetPointsAttr().Get(),float)
+        if points.shape!=(self.parent_count,3):raise ValueError('Parent vertex count changed')
+        return pullback_forces(points,self.nodes,self.weights,self.offset,layer_forces)
