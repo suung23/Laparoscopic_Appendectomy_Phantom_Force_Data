@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "scope": "Exact elastic tangent consistency at rejected iterate; not a successful implicit step or physical calibration",
+  "candidate_sha256": "ab6c945f4be7f4df0f52356fd0fa3fa35656c8370e769dcc2754ab2927e2f6ce",
+  "source_sha256": "1d9b73ae6a7ef42d1bfcc4b59d252e02d4d8935d67af24b44084936618548667",
+  "derivative_checks": [
+    {
+      "step_m": 1e-07,
+      "relative_l2_error": 6.065016441774577e-09
+    },
+    {
+      "step_m": 1e-08,
+      "relative_l2_error": 6.6185669385556416e-09
+    },
+    {
+      "step_m": 1e-09,
+      "relative_l2_error": 8.07759943434874e-08
+    }
+  ],
+  "bilinear_symmetry_error": 4.440892098500626e-16
+}

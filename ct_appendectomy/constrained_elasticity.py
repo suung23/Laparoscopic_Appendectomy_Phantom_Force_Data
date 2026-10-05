@@ -51,6 +51,27 @@ class ElasticReference:
         np.add.at(gradient, self.tets[:, 0], -h.sum(axis=2))
         return float(self.volume @ density - np.sum(loads*(x-self.rest))), gradient
 
+    def hessian_vector(self, x, direction):
+        """Exact constitutive tangent action; can be indefinite when deformed."""
+        x, direction = np.asarray(x,float), np.asarray(direction,float)
+        if x.shape != self.rest.shape or direction.shape != x.shape or not np.isfinite(x).all() or not np.isfinite(direction).all():
+            raise ValueError('Invalid tangent inputs')
+        q, dq = x[self.tets], direction[self.tets]
+        ds = np.stack([q[:,i]-q[:,0] for i in (1,2,3)],axis=2)
+        dds = np.stack([dq[:,i]-dq[:,0] for i in (1,2,3)],axis=2)
+        f, df = ds@self.inverse, dds@self.inverse
+        j = np.linalg.det(f)
+        if np.any(j <= 0): raise ValueError('Non-positive determinant')
+        inverse = np.linalg.inv(f); inverse_t = inverse.transpose(0,2,1)
+        dlogj = np.trace(inverse@df,axis1=1,axis2=2)
+        dp = (self.mu*df + self.lam*dlogj[:,None,None]*inverse_t -
+              (self.lam*np.log(j)-self.mu)[:,None,None]*(inverse_t@df.transpose(0,2,1)@inverse_t))
+        h = self.volume[:,None,None]*(dp@self.inverse.transpose(0,2,1))
+        result = np.zeros_like(x)
+        for i in range(3): np.add.at(result,self.tets[:,i+1],h[:,:,i])
+        np.add.at(result,self.tets[:,0],-h.sum(axis=2))
+        return result
+
     def solve(self, initial, loads, fixed, max_iterations=2000, tolerance=1e-7, floor=.01, method='gradient', contact=None):
         x = np.asarray(initial, float).copy()
         fixed = np.asarray(fixed, bool)
