@@ -1,0 +1,51 @@
+{
+  "status": "diagnostic_complete",
+  "engine": "Newton 1.4.0",
+  "mesh_sha256": "e601a3601ad3d6ce4414bf4ded7e5389678ac9e2b96931aca7ba31a784ced944",
+  "physics_dt_s": 0.0020833333333333333,
+  "iterations": 96,
+  "steps": 60,
+  "particle_radius_m": 0.0,
+  "full_surface_contact": true,
+  "scope": "Same tetrahedra/material/gravity; contact algorithm, particle radius and solver iterations differ. No force calibration or surgical acceptance.",
+  "model_audit": {
+    "exact_topology": true,
+    "exact_float32_rest": true,
+    "total_mass_kg": 0.004588914569467306,
+    "minimum_particle_mass_kg": 2.025999590316019e-09,
+    "maximum_relative_lumped_mass_error": 8.918827580512596e-06
+  },
+  "first_inversion_tick": 33,
+  "maximum_inversions": 42,
+  "minimum_volume_ratio": -6.449932658722113,
+  "maximum_penetration_m": 0.00030165165662765503,
+  "rows": [
+    {
+      "tick": 0,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9998559718213226,
+        "median_volume_ratio": 0.9999999496287533,
+        "total_absolute_volume_ratio": 0.9999999646267494,
+        "p99_absolute_volume_change": 8.344812422534926e-06
+      },
+      "penetration_m": 0.0
+    },
+    {
+      "tick": 60,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 26,
+        "minimum_signed_volume_ratio": -4.945235373898098,
+        "median_volume_ratio": 1.000862564185098,
+        "total_absolute_volume_ratio": 0.9946700383428122,
+        "p99_absolute_volume_change": 0.38803178353510054
+      },
+      "penetration_m": 7.449090480804443e-05
+    }
+  ],
+  "assessment": "No production acceptance: transient inversion remains."
+}
