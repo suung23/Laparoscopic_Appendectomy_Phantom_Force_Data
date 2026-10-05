@@ -118,7 +118,7 @@ class RosotaCTEnv(gym.Env):
         self.mesh=self.stage.GetPrimAtPath(self.config['data']['sim_path'])
         self.rest=self.points().copy();self.tets=np.asarray(self.mesh.GetAttribute('tetVertexIndices').Get(),int)
         self.pin=np.asarray(self.config['data']['pin'],int)
-        pipeline=dict(backend='warp',device='cuda:0') if self.gpu_tissue_observation else {}
+        pipeline=dict(backend='torch',device='cuda:0') if self.gpu_tissue_observation else {}
         self.sim=SimulationContext(stage_units_in_meters=1.,physics_dt=1/480,rendering_dt=1/30,**pipeline)
         for prim in self.stage.Traverse():
             if prim.IsA(UsdPhysics.Scene):
@@ -188,11 +188,11 @@ class RosotaCTEnv(gym.Env):
         for hand,s in self.specs.items():
             robot=SingleArticulation(prim_path=s['root'],name=hand,reset_xform_properties=False)
             robot.initialize();self.robots[hand]=robot
-            self.indices[hand]=np.array([robot.get_dof_index('fr3_joint'+str(i)) for i in range(1,8)])
-            self.jaw_indices[hand]=np.array([robot.get_dof_index('jaw_left'),robot.get_dof_index('jaw_right')])
-            robot.set_joint_positions(s['seed'],joint_indices=self.indices[hand])
-            robot.set_joint_positions(np.deg2rad([s['open_deg']/2,-s['open_deg']/2]),joint_indices=self.jaw_indices[hand])
-            robot.set_joint_velocities(np.zeros(robot.num_dof))
+            self.indices[hand]=self._input([robot.get_dof_index('fr3_joint'+str(i)) for i in range(1,8)],indices=True)
+            self.jaw_indices[hand]=self._input([robot.get_dof_index('jaw_left'),robot.get_dof_index('jaw_right')],indices=True)
+            robot.set_joint_positions(self._input(s['seed']),joint_indices=self.indices[hand])
+            robot.set_joint_positions(self._input(np.deg2rad([s['open_deg']/2,-s['open_deg']/2])),joint_indices=self.jaw_indices[hand])
+            robot.set_joint_velocities(self._input(np.zeros(robot.num_dof)))
             robot.apply_action(ArticulationAction(joint_positions=np.deg2rad([s['open_deg']/2,-s['open_deg']/2]),
                 joint_velocities=np.zeros(2),joint_indices=self.jaw_indices[hand]))
         from isaacsim.core.utils.types import ArticulationAction
@@ -297,7 +297,15 @@ class RosotaCTEnv(gym.Env):
         return self.observe(),info
 
     @staticmethod
-    def _array(value):return np.asarray(value.numpy() if hasattr(value,'numpy') else value,float)
+    def _array(value):
+        if hasattr(value,'detach'):value=value.detach().cpu()
+        return np.asarray(value.numpy() if hasattr(value,'numpy') else value,float)
+
+    def _input(self,value,indices=False):
+        if self.gpu_tissue_observation:
+            import torch
+            return torch.as_tensor(value,dtype=torch.int64 if indices else torch.float32,device='cuda:0')
+        return np.asarray(value,dtype=int if indices else float)
 
     def q(self,h):return self._array(self.robots[h].get_joint_positions(joint_indices=self.indices[h]))
     def update_guard(self,h):

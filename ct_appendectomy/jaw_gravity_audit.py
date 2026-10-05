@@ -3,6 +3,7 @@ import numpy as np
 
 
 def _array(value):
+    if hasattr(value,'detach'):value=value.detach().cpu()
     return np.asarray(value.numpy() if hasattr(value,'numpy') else value)
 
 

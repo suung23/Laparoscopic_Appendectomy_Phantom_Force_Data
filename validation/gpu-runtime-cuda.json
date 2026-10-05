@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "torch_version": "2.11.0+cu128",
+  "torch_cuda": "12.8",
+  "warp_version": "1.17.0",
+  "isaac_torch_requirement": "torch==2.11.0",
+  "device": "NVIDIA GeForce RTX 4090",
+  "cuda_arithmetic": true,
+  "warp_torch_shared_buffer": true,
+  "scope": "GPU runtime and array interoperability only; no mechanics or task validation"
+}
