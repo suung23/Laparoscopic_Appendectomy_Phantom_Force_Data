@@ -1,0 +1,22 @@
+{
+  "status": "authoring and force-transfer primitives tested; no anatomical asset adoption",
+  "implementation": "ct_appendectomy/boundary_surface.py",
+  "tests": "local_validation/test_boundary_surface.py",
+  "passed_test_methods": 3,
+  "verified": [
+    "Barycentric boundary motion under affine parent deformation",
+    "Conservation of resultant force and moment when distributing boundary forces",
+    "Equality of boundary and parent virtual work",
+    "Projection rejects a landmark outside its configured distance limit",
+    "Curved four-edge patch and interior fold preserve all supplied boundary curves",
+    "One connected consistently wound synthetic patch"
+  ],
+  "not_verified": [
+    "Anatomical identification of attachment boundaries",
+    "Absence of self-intersections for arbitrary boundary inputs",
+    "Real membrane thickness, fat geometry or material law",
+    "Live Isaac force coupling or bimanual contact",
+    "Clinical realism or full RL task success"
+  ],
+  "next_action": "Author and review anatomical boundary curves, then inspect the connected folded surface in the existing anatomy scene. These tests are mathematical invariants, not measured tissue validation."
+}
