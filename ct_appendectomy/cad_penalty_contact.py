@@ -6,6 +6,17 @@ import trimesh
 from pxr import Usd,UsdGeom
 from independent_containment import contains
 
+def part_pose(pose,name,half_angle):
+    """Rosota rest-CAD hinge convention: left +Y rotation, right -Y."""
+    if not np.isfinite(half_angle) or not 0<=half_angle<=np.deg2rad(37):raise ValueError('Jaw half-angle outside 0-37 degrees')
+    result=np.array(pose,float,copy=True)
+    if result.shape!=(4,4) or not np.isfinite(result).all():raise ValueError('Invalid tool pose')
+    sign={'gripper_tip_left':1,'gripper_tip_right':-1}.get(name,0)
+    c,s=np.cos(sign*half_angle),np.sin(sign*half_angle)
+    hinge=np.array([[c,0,s],[0,1,0],[-s,0,c]])
+    result[:3,:3]=result[:3,:3]@hinge
+    return result
+
 def load_jaw(path,part='gripper_tip_left'):
     stage=Usd.Stage.Open(str(path.resolve()));mesh=UsdGeom.Mesh(stage.GetPrimAtPath('/Tool/'+part+'/mesh'))
     if not mesh:raise ValueError('CAD jaw mesh missing')

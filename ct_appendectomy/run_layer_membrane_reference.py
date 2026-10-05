@@ -27,7 +27,7 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
     dynamics=MembraneDynamics(MembraneReference(p,z['faces'],12000,.45,.0002,1e-8),p,1000,fixed)
     patch=np.argsort(np.linalg.norm(layer['points']-p[710],axis=1))[:100]
     force=np.zeros_like(layer['points']);force[patch,2]=.0002/len(patch)
-    jaw=None;poses=None;local_parts=None;parts=None
+    jaw=None;poses=None;local_parts=None;parts=None;jaw_angles=None
     if full_tool_contact and (not cad or not approach):raise ValueError('Full tool contact requires CAD and approach')
     if approach and not cad:raise ValueError("Approach requires CAD")
     if cad:
@@ -42,6 +42,11 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
             local_parts={name:load_jaw(cad,name) for name in names}
         if approach:
             data=np.load(approach);poses=data['poses']
+            if 'jaw_half_angles' in data:
+                if not full_tool_contact:raise ValueError('Articulated trajectory requires full tool contact')
+                jaw_angles=data['jaw_half_angles']
+                if jaw_angles.shape!=(len(poses),) or not np.isfinite(jaw_angles).all() or (jaw_angles<0).any() or (jaw_angles>np.deg2rad(37)).any():raise ValueError('Invalid jaw angles')
+                if len(jaw_angles)>1 and np.abs(np.diff(jaw_angles)).max()/dt>.6000001:raise ValueError('Jaw angular speed exceeds legacy control limit')
             if 'dt' in data and not np.isclose(float(data['dt']),dt,rtol=0,atol=1e-12):raise ValueError('Trajectory timestep mismatch')
             if poses.ndim!=3 or poses.shape[1:]!=(4,4) or not len(poses) or not np.isfinite(poses).all():raise ValueError('Invalid approach poses')
             if not np.allclose(data['jaw_points'],local_jaw.vertices) or not np.array_equal(data['jaw_faces'],local_jaw.faces):raise ValueError('Approach CAD mismatch')
@@ -67,8 +72,12 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
                 pose=poses[min(step,len(poses)-1)]
                 jaw.vertices=local_jaw.vertices@pose[:3,:3].T+pose[:3,3]
                 if local_parts is not None:
+                    from cad_penalty_contact import part_pose
                     parts={name:mesh.copy() for name,mesh in local_parts.items()}
-                    for name,mesh in parts.items():mesh.vertices=local_parts[name].vertices@pose[:3,:3].T+pose[:3,3]
+                    half_angle=float(jaw_angles[min(step,len(jaw_angles)-1)]) if jaw_angles is not None else 0.
+                    for name,mesh in parts.items():
+                        transform=part_pose(pose,name,half_angle)
+                        mesh.vertices=local_parts[name].vertices@transform[:3,:3].T+transform[:3,3]
                 mesh_prim(stage,'/World/FixedCADContactJaw',jaw,(.45,.48,.5),roughness=.2)
             current=evaluate(dynamics.points,layer['nodes'],layer['weights'],layer['frame_offsets'])
             contact_before=None
@@ -93,6 +102,7 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
     np.savez_compressed(out/'trajectory.npz',points=np.array(trajectory),dt=dt)
     report={'status':'completed reference run' if error is None else 'failed','error':error,'steps':reports,'dt':dt,'simulated_seconds':len(reports)*dt,'wall_seconds':time.perf_counter()-start,'fixed_error_m':float(np.abs(dynamics.points[fixed]-p[fixed]).max()),'last_layer_force_N':force.sum(axis=0).tolist(),'force_source':'CAD area-weighted penalty' if jaw is not None else 'synthetic nodal load','scope':'CPU reference dynamics and USD display coupled; layer force lagged at step start','tool_contact':jaw is not None,'RCM_controlled':False,'kinematic_pivot_trajectory':poses is not None,'friction':False,'collision_geometry':'convex CAD hull' if jaw is not None else None,'contact_stiffness_N_per_m3':1e5 if jaw is not None else None,'tool_pose':('recorded kinematic pivot trajectory; no FR3 controller' if poses is not None else 'fixed synthetic placement') if jaw is not None else None,'RL':False,'Isaac_physics':False,'material_calibrated':False,'artery_visual_following':artery is not None,'vessel_mechanics':False,'artery_shape_regularization':artery_shape}
     report.update(full_tool_contact=full_tool_contact,compound_contact_model='additive part potentials; overlapping hulls may over-stiffen' if full_tool_contact else None)
+    report['articulated_jaw_trajectory']=jaw_angles is not None
     (out/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
 
 if __name__=='__main__':

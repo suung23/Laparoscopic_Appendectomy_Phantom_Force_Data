@@ -1,0 +1,20 @@
+{
+  "status": "completed reference run",
+  "error": null,
+  "steps": 199,
+  "simulated_seconds": 0.995,
+  "wall_seconds": 156.96284399999422,
+  "source_sha256": "28c9b4cd5b5f2c5f1b37631cf035301d99edc9c2ec661c28ce22d6d600c8e238",
+  "articulated_jaw_trajectory": true,
+  "max_layer_motion_mm": 0.43562510784000547,
+  "final_contact_nodes": 0,
+  "active_parts": [
+    "gripper_tip_left",
+    "gripper_tip_right"
+  ],
+  "limitations": [
+    "No friction or validated grasp retention",
+    "No full-organ collision audit for articulated trajectory",
+    "Uncalibrated mechanics and non-real-time CPU solver"
+  ]
+}
