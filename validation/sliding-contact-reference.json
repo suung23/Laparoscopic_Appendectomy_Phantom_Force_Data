@@ -1,0 +1,21 @@
+{
+  "status": "completed reference run",
+  "error": null,
+  "steps": 83,
+  "simulated_seconds": 0.41500000000000004,
+  "wall_seconds": 60.31768830001238,
+  "source_sha256": "da0d77ce8f1777bdf7ae6806aef0c0361625a42fb0b50b56497613c6ac586bec",
+  "mu": 0.3,
+  "maximum_relative_friction_power_W": 0.0,
+  "minimum_relative_friction_power_W": -6.783175028844231e-08,
+  "lagged_relative_friction_work_J": -1.4750294245921435e-09,
+  "max_layer_motion_mm": 0.5601966651334702,
+  "final_contact_nodes": 0,
+  "static_friction": false,
+  "measured_parameters": false,
+  "limitations": [
+    "Lagged sliding force; discrete total energy stability not established",
+    "No stiction or grasp retention validation",
+    "Friction coefficient 0.3 is an engineering test value"
+  ]
+}

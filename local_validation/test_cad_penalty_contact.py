@@ -3,8 +3,16 @@ from pathlib import Path
 import numpy as np
 import trimesh
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'ct_appendectomy'))
-from cad_penalty_contact import penalty,compound_penalty
+from cad_penalty_contact import penalty,compound_penalty,sliding_friction
 class ContactTests(unittest.TestCase):
+    def test_sliding_friction_dissipation_bound_and_separation(self):
+        normal=np.array([[0,0,2.],[0,0,0.],[0,0,3.]])
+        velocity=np.array([[1.,2.,3.],[1.,0,0],[0,0,4.]])
+        f=sliding_friction(normal,velocity,.3,.001)
+        self.assertTrue((np.sum(f*velocity,axis=1)<=0).all())
+        self.assertTrue((np.linalg.norm(f,axis=1)<=.3*np.linalg.norm(normal,axis=1)+1e-12).all())
+        np.testing.assert_allclose(f[:,2],0,atol=1e-12)
+        np.testing.assert_allclose(f[1:],0,atol=1e-12)
     def test_compound_energy_gradient_and_reaction(self):
         left=trimesh.creation.box();right=left.copy();right.apply_translation([.8,0,0])
         parts={'left':left,'right':right};p=np.array([[.49,0,0],[.31,0,0]]);area=np.array([.002,.003])

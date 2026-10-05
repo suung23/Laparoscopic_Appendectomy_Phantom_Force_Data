@@ -12,7 +12,7 @@ from attached_visual_layer import AttachedVisualLayer
 from layer_force_mapping import pullback_forces
 from build_fat_layer import evaluate
 
-def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,artery_shape=False,cad=None,approach=None,full_tool_contact=False):
+def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,artery_shape=False,cad=None,approach=None,full_tool_contact=False,friction_mu=0.):
     if not np.isfinite(dt) or dt<=0 or steps<1:raise ValueError("Positive timestep and steps required")
     out.mkdir(parents=True,exist_ok=True)
     stage=Usd.Stage.CreateNew(str((out/'review.usda').resolve()))
@@ -29,6 +29,7 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
     force=np.zeros_like(layer['points']);force[patch,2]=.0002/len(patch)
     jaw=None;poses=None;local_parts=None;parts=None;jaw_angles=None
     if full_tool_contact and (not cad or not approach):raise ValueError('Full tool contact requires CAD and approach')
+    if not np.isfinite(friction_mu) or friction_mu<0 or (friction_mu and not full_tool_contact):raise ValueError('Friction requires full tool contact and nonnegative coefficient')
     if approach and not cad:raise ValueError("Approach requires CAD")
     if cad:
         from cad_penalty_contact import load_jaw,penalty
@@ -66,6 +67,7 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
         area=np.zeros(len(layer['points']));np.add.at(area,tissue.faces.ravel(),np.repeat(tissue.area_faces/3,3))
         mesh_prim(stage,'/World/FixedCADContactJaw',jaw,(.45,.48,.5),roughness=.2)
     reports=[];trajectory=[p.copy()];start=time.perf_counter();error=None
+    previous_layer=None;previous_transforms=None
     try:
         for step in range(steps):
             if poses is not None:
@@ -75,13 +77,26 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
                     from cad_penalty_contact import part_pose
                     parts={name:mesh.copy() for name,mesh in local_parts.items()}
                     half_angle=float(jaw_angles[min(step,len(jaw_angles)-1)]) if jaw_angles is not None else 0.
+                    transforms={}
                     for name,mesh in parts.items():
                         transform=part_pose(pose,name,half_angle)
+                        transforms[name]=transform
                         mesh.vertices=local_parts[name].vertices@transform[:3,:3].T+transform[:3,3]
                 mesh_prim(stage,'/World/FixedCADContactJaw',jaw,(.45,.48,.5),roughness=.2)
             current=evaluate(dynamics.points,layer['nodes'],layer['weights'],layer['frame_offsets'])
+            relative=None
+            if parts is not None and friction_mu:
+                tissue_velocity=(current-previous_layer)/dt if previous_layer is not None else np.zeros_like(current)
+                relative={}
+                for name,transform in transforms.items():
+                    old=previous_transforms[name] if previous_transforms is not None else transform
+                    local=(current-transform[:3,3])@transform[:3,:3]
+                    old_world=local@old[:3,:3].T+old[:3,3]
+                    relative[name]=tissue_velocity-(current-old_world)/dt
+            previous_layer=current.copy()
+            if parts is not None:previous_transforms=transforms
             contact_before=None
-            if jaw is not None:force,contact_before=compound_penalty(parts,current,area,1e5) if parts is not None else penalty(jaw,current,area,1e5)
+            if jaw is not None:force,contact_before=compound_penalty(parts,current,area,1e5,relative,friction_mu) if parts is not None else penalty(jaw,current,area,1e5)
             if poses is not None and step==0 and contact_before["active_nodes"]:raise ValueError("Approach begins in sampled contact")
             mapped=pullback_forces(dynamics.points,layer['nodes'],layer['weights'],layer['frame_offsets'],force)
             torque_error=np.linalg.norm(np.cross(dynamics.points,mapped).sum(axis=0)-np.cross(current,force).sum(axis=0))
@@ -103,6 +118,7 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
     report={'status':'completed reference run' if error is None else 'failed','error':error,'steps':reports,'dt':dt,'simulated_seconds':len(reports)*dt,'wall_seconds':time.perf_counter()-start,'fixed_error_m':float(np.abs(dynamics.points[fixed]-p[fixed]).max()),'last_layer_force_N':force.sum(axis=0).tolist(),'force_source':'CAD area-weighted penalty' if jaw is not None else 'synthetic nodal load','scope':'CPU reference dynamics and USD display coupled; layer force lagged at step start','tool_contact':jaw is not None,'RCM_controlled':False,'kinematic_pivot_trajectory':poses is not None,'friction':False,'collision_geometry':'convex CAD hull' if jaw is not None else None,'contact_stiffness_N_per_m3':1e5 if jaw is not None else None,'tool_pose':('recorded kinematic pivot trajectory; no FR3 controller' if poses is not None else 'fixed synthetic placement') if jaw is not None else None,'RL':False,'Isaac_physics':False,'material_calibrated':False,'artery_visual_following':artery is not None,'vessel_mechanics':False,'artery_shape_regularization':artery_shape}
     report.update(full_tool_contact=full_tool_contact,compound_contact_model='additive part potentials; overlapping hulls may over-stiffen' if full_tool_contact else None)
     report['articulated_jaw_trajectory']=jaw_angles is not None
+    report.update(friction=bool(friction_mu),friction_mu=friction_mu,friction_model='lagged regularized sliding Coulomb; no static friction',friction_regularization_speed_m_s=.001)
     (out/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
 
 if __name__=='__main__':
@@ -113,4 +129,5 @@ if __name__=='__main__':
     p.add_argument('--cad',type=Path)
     p.add_argument('--approach',type=Path)
     p.add_argument('--full-tool-contact',action='store_true')
-    a=p.parse_args();run(a.scene,a.parent,a.layer,a.out,a.steps,a.dt,a.artery_binding,a.artery_shape,a.cad,a.approach,a.full_tool_contact)
+    p.add_argument('--friction-mu',type=float,default=0.)
+    a=p.parse_args();run(a.scene,a.parent,a.layer,a.out,a.steps,a.dt,a.artery_binding,a.artery_shape,a.cad,a.approach,a.full_tool_contact,a.friction_mu)
