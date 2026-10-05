@@ -1,0 +1,103 @@
+{
+  "reference": {
+    "dataset": "Appendix300",
+    "doi": "10.25532/OPARA-1173",
+    "license": "CC BY 4.0",
+    "source_url": "https://opara.zih.tu-dresden.de/server/api/core/bitstreams/8a6fcaa0-9026-4744-9f6f-883fe6be78a0/content",
+    "selection": "Two smallest snippets, distinct institutions; convenience sample, not representative cohort",
+    "files": [
+      {
+        "name": "Video_Snippets/Center1/Center1_014.mp4",
+        "size": 26947136,
+        "compressed": 26947136,
+        "offset": 22651465994,
+        "crc": 4050661725,
+        "method": 0,
+        "sha256": "af050e90b66076f7dd83e8278be3cc4bd50ea490a375165e9747946b0e94c2bc",
+        "local_name": "Center1_014.mp4"
+      },
+      {
+        "name": "Video_Snippets/Center2/Center2_2.mp4",
+        "size": 41294920,
+        "compressed": 41294920,
+        "offset": 77486295385,
+        "crc": 493613151,
+        "method": 0,
+        "sha256": "a38b416c45928266e333c46d40c278eff0386a0ca695d268c35ccf807fab04d5",
+        "local_name": "Center2_2.mp4"
+      }
+    ]
+  },
+  "source_scene": "out\\ct_appendectomy\\bimanual_scene\\ct_appendectomy.usda",
+  "meshes": [
+    {
+      "mesh": "/World/CT/colon",
+      "vertices": 20214,
+      "triangles": 40424,
+      "uv_interpolation": "faceVarying",
+      "geometry_unchanged": true,
+      "roughness": 0.25,
+      "roughness_calibrated": false,
+      "uv_repeat": 1.0
+    },
+    {
+      "mesh": "/World/CT/small_bowel",
+      "vertices": 23986,
+      "triangles": 48028,
+      "uv_interpolation": "faceVarying",
+      "geometry_unchanged": true,
+      "roughness": 0.25,
+      "roughness_calibrated": false,
+      "uv_repeat": 1.0
+    },
+    {
+      "mesh": "/World/Atlas/appendix/render",
+      "vertices": 3538,
+      "triangles": 7072,
+      "uv_interpolation": "faceVarying",
+      "geometry_unchanged": true,
+      "roughness": 0.25,
+      "roughness_calibrated": false,
+      "uv_repeat": 1.0
+    },
+    {
+      "mesh": "/World/Atlas/mesoappendix/render",
+      "vertices": 2778,
+      "triangles": 5552,
+      "uv_interpolation": "faceVarying",
+      "geometry_unchanged": true,
+      "roughness": 0.25,
+      "roughness_calibrated": false,
+      "uv_repeat": 1.0
+    },
+    {
+      "mesh": "/World/BodyEnvelope/render",
+      "vertices": 21966,
+      "triangles": 43714,
+      "uv_interpolation": "faceVarying",
+      "geometry_unchanged": true,
+      "roughness": 0.25,
+      "roughness_calibrated": false,
+      "uv_repeat": 1.0
+    }
+  ],
+  "status": "rejected_after_render_review",
+  "measured_albedo": false,
+  "measured_brdf": false,
+  "segmented_vessels": false,
+  "geometry_reconstructed": false,
+  "limitations": [
+    "Authored colours and vascular motifs, informed by inspected references, not recovered patient anatomy",
+    "UV chart seams and vessel continuity require rendered review",
+    "Geometry and existing registration problems unchanged",
+    "No new tool mechanics or FEM integration in this appearance layer"
+  ],
+  "visual_findings": [
+    "Visible triangular/chart-like appearance discontinuities on appendix and lining",
+    "Mesoappendix still appears as thick opaque bulk rather than thin layered tissue",
+    "Appendix shape and colon relationship remain unlike reviewed reference views",
+    "No bimanual motion or contact deformation demonstrated by this still render"
+  ],
+  "adoption": "Do not replace baseline or claim visual fidelity improvement",
+  "render_sha256": "42861673cd27fce06b6d48f5a91101a121bd5c265a1f94fdfda53e64e4aa6817"
+}

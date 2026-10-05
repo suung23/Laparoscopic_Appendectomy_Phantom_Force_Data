@@ -14,7 +14,7 @@ from PIL import Image
 from pxr import Usd, UsdGeom, UsdShade, Sdf, Vt, Gf
 
 
-def author_texture(stage, mesh_path, texture_path, repeat=8., roughness=.32):
+def author_texture(stage, mesh_path, texture_path, repeat=8., roughness=.32, material_path='/World/ReferenceLiverMaterial'):
     import xatlas
     if not np.isfinite(repeat) or repeat <= 0 or not np.isfinite(roughness) or not 0 < roughness <= 1:
         raise ValueError('Finite positive repeat and roughness in (0, 1] required')
@@ -33,7 +33,7 @@ def author_texture(stage, mesh_path, texture_path, repeat=8., roughness=.32):
     st = uv[indices].reshape(-1, 2) * float(repeat)
     UsdGeom.PrimvarsAPI(mesh).CreatePrimvar('st', Sdf.ValueTypeNames.TexCoord2fArray,
         UsdGeom.Tokens.faceVarying).Set(Vt.Vec2fArray.FromNumpy(st.astype(np.float32)))
-    path = '/World/ReferenceLiverMaterial'
+    path = material_path
     material = UsdShade.Material.Define(stage, path)
     surface = UsdShade.Shader.Define(stage, path+'/Surface')
     surface.CreateIdAttr('UsdPreviewSurface')
