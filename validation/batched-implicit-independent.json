@@ -1,0 +1,32 @@
+{
+  "force_residual_N": [
+    9.595642963489868e-10,
+    5.417486215197076e-10,
+    8.49400080047616e-10,
+    8.688366278940826e-10
+  ],
+  "inertial_defect_m": [
+    5.679568274846302e-07,
+    7.019540007815463e-07,
+    6.115312791153013e-07,
+    5.14255997913556e-07
+  ],
+  "objective_calls": 1387,
+  "batch_size": 4,
+  "optimizer_iterations": 0,
+  "max_iterations": 3000,
+  "max_evaluations": 15000,
+  "history_size": 10,
+  "independent_optimizer": {
+    "objective_calls": 1387,
+    "iterations_per_environment": [
+      861,
+      921,
+      1036,
+      1110
+    ]
+  },
+  "status": "converged",
+  "wall_seconds": 8.301441499992507,
+  "scope": "Four independent GPU implicit solves with synthetic membrane loads; no contact or clinical validation"
+}
