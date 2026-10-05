@@ -1,0 +1,22 @@
+{
+  "status": "two-resolution comparison completed",
+  "coarse_dt": 0.005,
+  "fine_dt": 0.0025,
+  "fine_wall_seconds": 95.74148019999848,
+  "max_matched_state_difference_mm": 0.10076613825065715,
+  "final_max_difference_mm": 0.09908116810393308,
+  "coarse_peak_layer_motion_mm": 0.5601966651334702,
+  "fine_peak_layer_motion_mm": 0.5679009686731823,
+  "final_fine_contact_nodes": 0,
+  "sources": {
+    "coarse": "da0d77ce8f1777bdf7ae6806aef0c0361625a42fb0b50b56497613c6ac586bec",
+    "fine": "2859ae17418bb171de5e07910438b747719f1b3b6e3e4162ccc4ddcbdadb34fa"
+  },
+  "convergence_established": false,
+  "empirical_validation": false,
+  "limitations": [
+    "Two resolutions do not establish asymptotic convergence",
+    "Same uncalibrated penalty and material models",
+    "Lagged friction; no static grasp validation"
+  ]
+}
