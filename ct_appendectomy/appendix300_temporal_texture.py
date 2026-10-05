@@ -20,7 +20,7 @@ from appendix300_video_texture import ATTRIBUTION, DATASET, ROIS, quilt_patch_im
 
 def _gray(image):
     rgb = np.asarray(image.convert("RGB"), dtype=np.float32)
-    return rgb[..., 0] * .299 + rgb[..., 1] * .587 + rgb[..., 2] * .114
+    return (rgb[..., 0] * .299 + rgb[..., 1] * .587 + rgb[..., 2] * .114) / 255.
 
 
 def phase_translation(reference, moving, max_shift=24):
@@ -61,6 +61,73 @@ def translate(image, dx, dy):
     padded = np.pad(source, ((abs(dy), abs(dy)), (abs(dx), abs(dx)), (0, 0)), mode="edge")
     y0, x0 = abs(dy) - dy, abs(dx) - dx
     return Image.fromarray(padded[y0:y0 + h, x0:x0 + w])
+
+
+def align_dense(reference, moving):
+    """Nonrigid TV-L1 warp plus forward/backward consistency mask."""
+    try:
+        from scipy.ndimage import map_coordinates
+        from skimage.registration import optical_flow_tvl1
+    except ImportError as error:
+        raise RuntimeError("Dense alignment requires the installed scipy and scikit-image packages") from error
+    ref_gray, mov_gray = _gray(reference), _gray(moving)
+    if ref_gray.shape != mov_gray.shape:
+        raise ValueError("Dense-flow inputs must have matching dimensions")
+    v, u = optical_flow_tvl1(ref_gray, mov_gray, attachment=15, tightness=.3,
+                             num_warp=5, num_iter=10, tol=1e-4, prefilter=True)
+    back_v, back_u = optical_flow_tvl1(mov_gray, ref_gray, attachment=15, tightness=.3,
+                                       num_warp=5, num_iter=10, tol=1e-4, prefilter=True)
+    h, w = ref_gray.shape
+    y, x = np.mgrid[:h, :w].astype(np.float32)
+    sample_y, sample_x = y + v, x + u
+    coords = np.stack((sample_y, sample_x))
+    warped = np.stack([map_coordinates(np.asarray(moving)[..., channel], coords,
+                                       order=1, mode="nearest")
+                       for channel in range(3)], axis=-1)
+    rev_v = map_coordinates(back_v, coords, order=1, mode="nearest")
+    rev_u = map_coordinates(back_u, coords, order=1, mode="nearest")
+    roundtrip = np.hypot(v + rev_v, u + rev_u)
+    valid = ((sample_y >= 1) & (sample_y < h - 1) &
+             (sample_x >= 1) & (sample_x < w - 1) & (roundtrip <= 1.5))
+    flow_magnitude = np.hypot(v, u)
+    return Image.fromarray(np.uint8(np.clip(warped, 0, 255))), valid, {
+        "method": "skimage_TVL1_dense_flow",
+        "flow_magnitude_p95_px": round(float(np.percentile(flow_magnitude, 95)), 3),
+        "flow_magnitude_max_px": round(float(flow_magnitude.max()), 3),
+        "forward_backward_consistent_fraction": round(float(valid.mean()), 5),
+        "roundtrip_tolerance_px": 1.5,
+    }
+
+
+def deduplicate_odd_window(frame_records, center_seconds):
+    """Remove exact duplicate decodes and retain an odd unique frame window."""
+    unique, duplicate_frames, hashes_seen = [], [], {}
+    for record in frame_records:
+        digest = record["sha256"]
+        if digest in hashes_seen:
+            duplicate_frames.append({
+                "requested_time_seconds": record["requested_time_seconds"],
+                "decoded_time_seconds": record["time_seconds"],
+                "duplicate_of_requested_time_seconds": hashes_seen[digest],
+                "sha256": digest,
+            })
+        else:
+            hashes_seen[digest] = record["requested_time_seconds"]
+            unique.append(record)
+    discarded = []
+    if len(unique) % 2 == 0:
+        farthest = max(range(len(unique)),
+                       key=lambda index: abs(unique[index]["time_seconds"] - center_seconds))
+        removed = unique.pop(farthest)
+        discarded.append({"requested_time_seconds": removed["requested_time_seconds"],
+                          "decoded_time_seconds": removed["time_seconds"],
+                          "reason": "trimmed farthest unique frame to retain an odd temporal window",
+                          "sha256": removed["sha256"]})
+    if len(unique) < 3:
+        raise ValueError("Fewer than three unique source frames remain after duplicate removal")
+    unique.sort(key=lambda record: record["time_seconds"])
+    return unique, {"duplicate_decodes": duplicate_frames,
+                    "trimmed_for_odd_window": discarded}
 
 
 def rebind_reviewed_uv_layer(parent_layer, output_dir):
@@ -133,6 +200,7 @@ def rebind_reviewed_uv_layer(parent_layer, output_dir):
 def extract_frames(video, ffmpeg, output, times):
     output.mkdir(parents=True, exist_ok=True)
     frames = []
+    expected_size = None
     for index, timestamp in enumerate(times):
         path = output / f"frame_{index:02d}_{timestamp:.3f}s.png"
         result = subprocess.run([str(ffmpeg), "-hide_banner", "-loglevel", "info", "-ss",
@@ -144,23 +212,31 @@ def extract_frames(video, ffmpeg, output, times):
         # Input-side seeking resets the decoded stream timestamp near zero.
         actual_timestamp = timestamp + float(pts.group(1))
         with Image.open(path) as image:
-            if image.size != (1920, 1080):
-                raise ValueError(f"Unexpected frame dimensions at {timestamp}s: {image.size}")
-        frames.append((actual_timestamp, path))
-    return frames
+            if expected_size is None:
+                expected_size = image.size
+            elif image.size != expected_size:
+                raise ValueError(f"Frame dimensions changed at {timestamp}s: {image.size}")
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        record = {"time_seconds": actual_timestamp, "requested_time_seconds": timestamp,
+                  "path": path, "sha256": digest}
+        frames.append(record)
+    frames, selection = deduplicate_odd_window(frames, float(np.mean(times)))
+    return frames, expected_size, selection
 
 
 def build(reference_dir, out_dir, ffmpeg, center_seconds=12., frame_count=9,
-          spacing_seconds=.06, sources=None, parent_layer=None):
+          spacing_seconds=.06, sources=None, parent_layer=None,
+          source_video_name="Center1_014.mp4", roi_overrides=None,
+          alignment_method="phase_translation"):
     reference_dir, out_dir = Path(reference_dir).resolve(), Path(out_dir).resolve()
     ffmpeg = Path(ffmpeg).resolve()
     provenance_path = reference_dir / "provenance.json"
     provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
     if provenance.get("doi") != "10.25532/OPARA-1173" or provenance.get("license") != "CC BY 4.0":
         raise ValueError("Local source manifest is not the licensed Appendix300 record")
-    item = next((f for f in provenance["files"] if f["local_name"] == "Center1_014.mp4"), None)
+    item = next((f for f in provenance["files"] if f["local_name"] == source_video_name), None)
     if item is None:
-        raise ValueError("Source manifest does not include the expected local snippet")
+        raise ValueError(f"Source manifest does not include {source_video_name}")
     video = reference_dir / item["local_name"]
     video_hash = hashlib.sha256(video.read_bytes()).hexdigest()
     if video_hash != item["sha256"]:
@@ -173,34 +249,74 @@ def build(reference_dir, out_dir, ffmpeg, center_seconds=12., frame_count=9,
         raise ValueError("The requested time window starts before the source clip")
     times = [center_seconds + i * spacing_seconds for i in range(-(frame_count // 2),
                                                                     frame_count // 2 + 1)]
+    if roi_overrides is None:
+        if source_video_name != "Center1_014.mp4":
+            raise ValueError("A visually reviewed --roi is required for non-default source videos")
+        roi_boxes = dict(ROIS)
+    else:
+        roi_boxes = dict(roi_overrides)
+    if set(roi_boxes) != {"appendix", "mesoappendix"}:
+        raise ValueError("ROI names must be exactly appendix and mesoappendix")
+    if alignment_method not in {"phase_translation", "dense_flow_tvl1"}:
+        raise ValueError("Unsupported alignment method")
     out_dir.mkdir(parents=True, exist_ok=True)
-    frame_records = extract_frames(video, ffmpeg, out_dir / "frames", times)
+    frame_records, frame_size, frame_selection = extract_frames(
+        video, ffmpeg, out_dir / "frames", times)
     full_frames = []
-    for timestamp, path in frame_records:
-        with Image.open(path) as im:
-            full_frames.append((timestamp, im.convert("RGB")))
+    for record in frame_records:
+        with Image.open(record["path"]) as im:
+            full_frames.append((record["time_seconds"], im.convert("RGB")))
 
     rois, alignment_report = {}, {}
-    for index, (name, box) in enumerate(ROIS.items()):
+    for index, (name, box) in enumerate(roi_boxes.items()):
+        if len(box) != 4 or box[0] < 0 or box[1] < 0 or box[2] > frame_size[0] or box[3] > frame_size[1] or box[2] <= box[0] or box[3] <= box[1]:
+            raise ValueError(f"ROI {name} is outside {frame_size}: {box}")
         crops = [(timestamp, image.crop(box)) for timestamp, image in full_frames]
-        reference = crops[len(crops) // 2][1]
-        aligned, transforms, shifts = [], [], []
-        for timestamp, crop in crops:
-            dx, dy, ratio = phase_translation(reference, crop)
-            aligned_crop = translate(crop, dx, dy)
-            aligned.append(np.asarray(aligned_crop, dtype=np.uint8))
-            shifts.append((dx, dy))
-            transforms.append({"time_seconds": timestamp, "sample_shift_xy_px": [dx, dy],
-                               "peak_to_sidelobe_ratio": round(ratio, 5)})
-        temporal = np.median(np.stack(aligned, axis=0), axis=0).astype(np.uint8)
-        # Exclude replicated border pixels so only source-observed texels enter
-        # the temporal median and downstream quilting.
-        pad_x = max(abs(dx) for dx, _ in shifts)
-        pad_y = max(abs(dy) for _, dy in shifts)
-        if pad_x * 2 >= temporal.shape[1] or pad_y * 2 >= temporal.shape[0]:
-            raise ValueError("Alignment leaves no common observed area in the ROI")
-        temporal = temporal[pad_y:temporal.shape[0] - pad_y if pad_y else None,
-                            pad_x:temporal.shape[1] - pad_x if pad_x else None]
+        reference_index = len(crops) // 2
+        reference = crops[reference_index][1]
+        aligned, valid_masks, transforms, shifts = [], [], [], []
+        for frame_index, (timestamp, crop) in enumerate(crops):
+            if alignment_method == "dense_flow_tvl1" and frame_index != reference_index:
+                aligned_crop, valid, record = align_dense(reference, crop)
+                aligned.append(np.asarray(aligned_crop, dtype=np.uint8))
+                valid_masks.append(valid)
+                transforms.append({"time_seconds": timestamp, **record})
+            else:
+                if alignment_method == "dense_flow_tvl1":
+                    valid_masks.append(np.ones((reference.height, reference.width), dtype=bool))
+                    transforms.append({"time_seconds": timestamp, "method": "reference_frame",
+                                       "forward_backward_consistent_fraction": 1.0})
+                else:
+                    dx, dy, ratio = phase_translation(reference, crop)
+                    shifts.append((dx, dy))
+                    transforms.append({"time_seconds": timestamp, "sample_shift_xy_px": [dx, dy],
+                                       "peak_to_sidelobe_ratio": round(ratio, 5)})
+                aligned.append(np.asarray(crop if alignment_method == "dense_flow_tvl1"
+                                          else translate(crop, dx, dy), dtype=np.uint8))
+        if alignment_method == "dense_flow_tvl1":
+            stack = np.stack(aligned, axis=0).astype(np.float32)
+            valid = np.stack(valid_masks, axis=0)
+            valid_count = valid.sum(axis=0)
+            masked = np.where(valid[..., None], stack, np.nan)
+            with np.errstate(all="ignore"):
+                temporal = np.nanmedian(masked, axis=0)
+            underconstrained = valid_count < 2
+            temporal[underconstrained] = stack[len(stack) // 2][underconstrained]
+            temporal = np.uint8(np.clip(np.nan_to_num(temporal), 0, 255))
+            pad_x = pad_y = 0
+            transform_info = {"method": alignment_method,
+                              "pixels_with_two_or_more_valid_frames_fraction": round(
+                                  float((valid_count >= 2).mean()), 5)}
+        else:
+            temporal = np.median(np.stack(aligned, axis=0), axis=0).astype(np.uint8)
+            # Exclude replicated border pixels so only observed texels enter the median.
+            pad_x = max(abs(dx) for dx, _ in shifts)
+            pad_y = max(abs(dy) for _, dy in shifts)
+            if pad_x * 2 >= temporal.shape[1] or pad_y * 2 >= temporal.shape[0]:
+                raise ValueError("Alignment leaves no common observed area in the ROI")
+            temporal = temporal[pad_y:temporal.shape[0] - pad_y if pad_y else None,
+                                pad_x:temporal.shape[1] - pad_x if pad_x else None]
+            transform_info = {"method": alignment_method}
         temporal_path = out_dir / f"{name}_temporal_median.png"
         Image.fromarray(temporal).save(temporal_path)
         texture_path = out_dir / f"{name}_appendix300_temporal_rgb.png"
@@ -222,28 +338,40 @@ def build(reference_dir, out_dir, ffmpeg, center_seconds=12., frame_count=9,
             "texture_dimensions_px": [1024, 1024],
             "quilted_alternative_sha256": hashlib.sha256(quilt_path.read_bytes()).hexdigest(),
             "quilted_alternative_dimensions": quilt_dimensions}
-        alignment_report[name] = transforms
+        alignment_report[name] = {"summary": transform_info, "per_frame": transforms}
 
+    if parent_layer:
+        status = "static_usd_candidate_runtime_unverified"
+    elif sources:
+        status = "multi_frame_usd_candidate_unrendered"
+    else:
+        status = "multi_frame_texture_candidate_usd_pending"
     report = {
-        "status": "multi_frame_texture_candidate_usd_pending" if not sources else
-                  "multi_frame_usd_candidate_unrendered",
+        "status": status,
         "dataset": DATASET, "attribution": ATTRIBUTION,
         "license": provenance["license"], "source_doi": provenance["doi"],
         "source_video": item["name"], "source_video_sha256": video_hash,
+        "source_frame_dimensions_px": list(frame_size),
         "requested_frame_times_seconds": times,
-        "source_frames": [{"decoded_time_seconds": t, "sha256": hashlib.sha256(
-            p.read_bytes()).hexdigest()} for t, p in frame_records],
-        "alignment_method": "per-ROI integer phase correlation to middle frame",
+        "source_frames": [{"decoded_time_seconds": record["time_seconds"],
+                            "requested_time_seconds": record["requested_time_seconds"],
+                            "sha256": record["sha256"]} for record in frame_records],
+        "frame_selection": frame_selection,
+        "alignment_method": alignment_method,
         "alignment_by_roi": alignment_report, "rois_and_textures": rois,
-        "texture_mapping": "Each single observed crop fills one UV map; no 3-D camera projection or patient correspondence",
+        "texture_mapping": "Each temporal composite crop fills one UV map; no 3-D camera projection or patient correspondence",
         "geometry_unchanged": True, "measured_albedo": False, "measured_brdf": False,
-        "camera_to_mesh_registration": False, "nonrigid_surface_tracking": False,
+        "camera_to_mesh_registration": False,
+        "dense_2d_optical_flow_used": alignment_method == "dense_flow_tvl1",
+        "physical_nonrigid_surface_tracking": False,
         "endoscope_rendered": False, "clinical_visual_validation": False,
         "privacy": "Source videos, extracted frames, median patches and textures remain local and git-ignored.",
         "limitations": [
             "ROIs are manually selected and not instance-segmented or anatomically verified",
-            "Translation-only alignment cannot follow nonrigid tissue motion or changing view angle",
-            "A temporal median can suppress transient highlights but does not recover intrinsic albedo",
+            ("Dense flow tracks 2-D image motion only; it does not estimate 3-D deformation or surface attachment"
+             if alignment_method == "dense_flow_tvl1" else
+             "Translation-only alignment cannot follow nonrigid tissue motion or changing view angle"),
+            "A temporal median can reduce transient highlights but does not recover intrinsic albedo or BRDF",
             "Quilting still synthesizes repeated local appearance and is not image-to-3D registration",
             "Isaac endoscope render and deforming-mesh review remain required before visual acceptance",
         ],
@@ -284,12 +412,31 @@ if __name__ == "__main__":
     parser.add_argument("--center-seconds", type=float, default=12.)
     parser.add_argument("--frame-count", type=int, default=9)
     parser.add_argument("--spacing-seconds", type=float, default=.06)
+    parser.add_argument("--source-video", default="Center1_014.mp4",
+                        help="Local filename exactly as recorded in provenance.json")
+    parser.add_argument("--roi", action="append", metavar="NAME=X1,Y1,X2,Y2",
+                        help="Reviewed tissue crop; repeat once for appendix and mesoappendix")
+    parser.add_argument("--alignment-method", choices=("phase_translation", "dense_flow_tvl1"),
+                        default="phase_translation")
     parser.add_argument("--source", type=Path, nargs="+")
     parser.add_argument("--parent-layer", type=Path,
                         help="Rebind a reviewed static USD UV layer without changing UVs")
     args = parser.parse_args()
     if args.source and args.parent_layer:
         parser.error("--source and --parent-layer are mutually exclusive")
+    roi_overrides = None
+    if args.roi:
+        roi_overrides = {}
+        try:
+            for item in args.roi:
+                name, coordinate_text = item.split("=", 1)
+                coords = tuple(int(value) for value in coordinate_text.split(","))
+                if name in roi_overrides or len(coords) != 4:
+                    raise ValueError
+                roi_overrides[name] = coords
+        except ValueError:
+            parser.error("Each --roi must be NAME=X1,Y1,X2,Y2 with unique names")
     result = build(args.reference, args.out, args.ffmpeg, args.center_seconds,
-                   args.frame_count, args.spacing_seconds, args.source, args.parent_layer)
+                   args.frame_count, args.spacing_seconds, args.source, args.parent_layer,
+                   args.source_video, roi_overrides, args.alignment_method)
     print(json.dumps(result, indent=2))

@@ -1,6 +1,7 @@
 import sys
 import json
 import hashlib
+import importlib.util
 import tempfile
 import unittest
 from pathlib import Path
@@ -10,7 +11,10 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "ct_appendectomy"))
 from appendix300_video_texture import build_from_verified_frame, suppress_local_specular
-from appendix300_temporal_texture import phase_translation, rebind_reviewed_uv_layer, translate
+from appendix300_temporal_texture import (
+    align_dense, deduplicate_odd_window, phase_translation, rebind_reviewed_uv_layer,
+    translate,
+)
 
 
 class Appendix300TextureTests(unittest.TestCase):
@@ -33,6 +37,44 @@ class Appendix300TextureTests(unittest.TestCase):
         moving = Image.fromarray(np.roll(np.asarray(source), shift=(31, 0), axis=(0, 1)))
         with self.assertRaisesRegex(ValueError, "exceeds 24px"):
             phase_translation(source, moving)
+
+    def test_duplicate_video_decodes_are_removed_and_window_stays_odd(self):
+        records = [
+            {"time_seconds": 1.00, "requested_time_seconds": 1.00, "sha256": "a"},
+            {"time_seconds": 1.00, "requested_time_seconds": 1.02, "sha256": "a"},
+            {"time_seconds": 1.04, "requested_time_seconds": 1.04, "sha256": "b"},
+            {"time_seconds": 1.08, "requested_time_seconds": 1.08, "sha256": "c"},
+            {"time_seconds": 1.12, "requested_time_seconds": 1.12, "sha256": "d"},
+        ]
+
+        selected, report = deduplicate_odd_window(records, 1.06)
+
+        self.assertEqual(len(selected), 3)
+        self.assertEqual(len(report["duplicate_decodes"]), 1)
+        self.assertEqual(len(report["trimmed_for_odd_window"]), 1)
+        self.assertEqual(len({record["sha256"] for record in selected}), 3)
+
+    @unittest.skipUnless(importlib.util.find_spec("scipy") and
+                         importlib.util.find_spec("skimage"),
+                         "dense optical-flow dependencies are optional")
+    def test_dense_flow_reduces_known_image_translation(self):
+        from scipy.ndimage import gaussian_filter
+
+        rng = np.random.default_rng(3)
+        source = gaussian_filter(rng.normal(size=(128, 128, 3)), sigma=(2, 2, 0))
+        source = (255 * (source - source.min()) / (source.max() - source.min())).astype(np.uint8)
+        moving = np.roll(source, shift=(3, -5), axis=(0, 1))
+        reference = Image.fromarray(source)
+        moved = Image.fromarray(moving)
+
+        aligned, valid, record = align_dense(reference, moved)
+        before = np.abs(source.astype(float).mean(2) - moving.astype(float).mean(2)).mean()
+        after = np.abs(source.astype(float).mean(2) -
+                       np.asarray(aligned).astype(float).mean(2))[valid].mean()
+
+        self.assertGreater(float(valid.mean()), 0.75)
+        self.assertLess(after, before * 0.1)
+        self.assertEqual(record["method"], "skimage_TVL1_dense_flow")
 
     def test_rebinds_only_reviewed_usd_texture_paths(self):
         with tempfile.TemporaryDirectory() as tmp:

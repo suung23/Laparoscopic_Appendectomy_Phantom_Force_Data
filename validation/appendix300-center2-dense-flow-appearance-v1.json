@@ -1,0 +1,98 @@
+{
+  "status": "appearance_candidate_and_static_usd_structure_verified_isaac_visual_gate_pending",
+  "dataset": "Appendix300",
+  "doi": "10.25532/OPARA-1173",
+  "license": "CC BY 4.0",
+  "source_video": "Video_Snippets/Center2/Center2_2.mp4",
+  "source_video_sha256": "a38b416c45928266e333c46d40c278eff0386a0ca695d268c35ccf807fab04d5",
+  "source_frame_dimensions_px": [3840, 1080],
+  "requested_times_seconds": [7.93, 7.965, 8.0, 8.035, 8.07],
+  "selected_unique_frames": [
+    {"decoded_time_seconds": 7.96, "requested_time_seconds": 7.93, "sha256": "6be575490be3f5339d7a04af808a7e7085b227d68500e839b790be2f6922fea5"},
+    {"decoded_time_seconds": 8.0, "requested_time_seconds": 7.965, "sha256": "dce9540f143d5ac1c4f21d007e780caef0c74f2696270d5cfda5e58a5482ff3d"},
+    {"decoded_time_seconds": 8.04, "requested_time_seconds": 8.035, "sha256": "b5cc3a3262008b8a2179088f87f790a793f37665c5f9ff11820416f67865caa5"}
+  ],
+  "frame_selection": {
+    "exact_duplicate_decode_removed": {"requested_time_seconds": 8.0, "decoded_time_seconds": 8.0, "duplicate_of_requested_time_seconds": 7.965, "sha256": "dce9540f143d5ac1c4f21d007e780caef0c74f2696270d5cfda5e58a5482ff3d"},
+    "unique_even_window_trimmed": {"requested_time_seconds": 8.07, "decoded_time_seconds": 8.08, "sha256": "67b87d5a23fc4eb0c72130f73d99a956d7cad18259f5f43836a93b0570c3dea6"}
+  },
+  "roi_selection": {
+    "method": "manually selected rectangular crops from the reviewed endoscopic frame",
+    "anatomy_instance_segmentation": false,
+    "expert_anatomy_review": false,
+    "appendix_candidate_xyxy": [1780, 430, 2140, 790],
+    "mesoappendix_candidate_xyxy": [1420, 590, 1780, 950],
+    "label_warning": "Visual labels are provisional; the crop-to-mesh patient/anatomy correspondence is not established."
+  },
+  "alignment": {
+    "method": "scikit-image TV-L1 dense 2-D optical flow with forward/backward round-trip mask",
+    "roundtrip_tolerance_px": 1.5,
+    "appendix_candidate_pixels_with_two_or_more_valid_frames": 0.95767,
+    "mesoappendix_candidate_pixels_with_two_or_more_valid_frames": 0.99831,
+    "appendix_candidate_per_frame": [
+      {"decoded_time_seconds": 7.96, "flow_p95_px": 14.715, "flow_max_px": 16.916, "consistent_fraction": 0.68039},
+      {"decoded_time_seconds": 8.04, "flow_p95_px": 13.823, "flow_max_px": 15.633, "consistent_fraction": 0.94794}
+    ],
+    "mesoappendix_candidate_per_frame": [
+      {"decoded_time_seconds": 7.96, "flow_p95_px": 26.797, "flow_max_px": 27.6, "consistent_fraction": 0.84495},
+      {"decoded_time_seconds": 8.04, "flow_p95_px": 16.696, "flow_max_px": 20.585, "consistent_fraction": 0.9435}
+    ],
+    "physical_3d_tracking": false
+  },
+  "appearance_diagnostics": {
+    "metric_definition": "fraction of pixels whose max RGB > 230 and channel range < 45; plus mean absolute adjacent RGB difference; narrow diagnostics, not realism scores",
+    "appendix_candidate": {
+      "source_frame_bright_low_chroma_fraction": 0.00277,
+      "temporal_median_bright_low_chroma_fraction": 0.002701,
+      "source_frame_p99_value": 255.0,
+      "temporal_median_p99_value": 254.0,
+      "source_frame_mean_neighbor_rgb_difference": 2.3386,
+      "temporal_median_mean_neighbor_rgb_difference": 1.8271
+    },
+    "mesoappendix_candidate": {
+      "source_frame_bright_low_chroma_fraction": 0.002029,
+      "temporal_median_bright_low_chroma_fraction": 0.00189,
+      "source_frame_p99_value": 236.0,
+      "temporal_median_p99_value": 235.0,
+      "source_frame_mean_neighbor_rgb_difference": 2.5868,
+      "temporal_median_mean_neighbor_rgb_difference": 1.8176
+    },
+    "interpretation": "Temporal fusion slightly reduces the narrow bright-pixel measure but also lowers local gradients; do not describe it as recovered albedo or improved realism."
+  },
+  "textures": {
+    "appendix_candidate": {"native_patch_px": [360, 360], "texture_px": [1024, 1024], "sha256": "2ea5c1a5de22dcdf7144e79e831f1bebda1e1441c9ef606f4efe72c705b70f4f"},
+    "mesoappendix_candidate": {"native_patch_px": [360, 360], "texture_px": [1024, 1024], "sha256": "033609281703c2b676c528f81e8ded8c80aabbf382fab5b98b13e82ecb14e5bf"},
+    "cross_case_texture_randomization": false,
+    "camera_to_mesh_registration": false,
+    "measured_albedo_or_brdf": false
+  },
+  "static_usd_validation": {
+    "candidate_path": "out/ct_appendectomy/appendix300_temporal_texture_v15/appearance.usda (local, git-ignored)",
+    "candidate_layer_sha256": "d84c59b90298ba99fc758a6ddb1d88baeabb98630ecda175cca906e8ac58bd37",
+    "parent_layer_sha256": "ec1677ba37c6551ac4502c18d2f15961734a7cc02357def7dc12f28a80fe0df8",
+    "usd_core_stage_opened": true,
+    "mesh_count_checked": 54,
+    "geometry_face_indices_face_counts_normals_and_uvs_unchanged": true,
+    "only_two_rgb_texture_asset_paths_changed": true,
+    "source_scene_layer_sha256": [
+      "26acbec1de64c3d125e6606cf245995bd6956517acbb5068ca6d588892bb1233",
+      "d77425e0000d6c2dc35162d5eb7dda6e29c7d3add1ac3143664a98bdc64fcc70"
+    ],
+    "isaac_runtime_load_verified": false,
+    "moving_endoscope_render_verified": false,
+    "contact_or_deformation_validation": false
+  },
+  "reproducibility": "Two independent dense-flow runs matched selected frame hashes, duplicate handling, flow reports, median patch hashes, and texture hashes.",
+  "tests": {
+    "available_environment": "8 Appendix300 texture tests passed in work/venv, including dense-flow recovery of a synthetic shift.",
+    "broader_targeted_tests": "12 tests ran in bundled Python: 11 passed and the optional dense-flow test skipped because scikit-image is absent there."
+  },
+  "privacy": "Only public-dataset source hashes and aggregate image diagnostics are tracked. Source videos, frames, ROI images, and texture images remain local and git-ignored.",
+  "clinical_visual_gate_passed": false,
+  "remaining_gates": [
+    "Run the candidate in Isaac Sim and inspect actual moving-endoscope RGB with the FEM mesh deforming.",
+    "Replace provisional rectangles with verified tissue segmentation and validate anatomy labels.",
+    "Measure material appearance independently of endoscope illumination and compare against held-out real sequences.",
+    "Complete blinded expert visual review before promoting this material candidate."
+  ]
+}

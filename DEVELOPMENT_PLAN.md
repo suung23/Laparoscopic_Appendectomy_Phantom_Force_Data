@@ -129,6 +129,45 @@ python ct_appendectomy/appendix300_temporal_texture.py `
 통계의 출처로 활용할 수 있지만, 현 파이프라인은 실물 표면 재현 게이트를 통과하지
 못했다.
 
+### 2026-10-06 Center2 dense-flow 및 USD 구조 검증
+
+Center1의 약한 혈관 디테일과 넓은 구간 정렬 실패를 보완하려고 별도 사례인
+`Center2_2.mp4`의 8초 endoscope frame을 선택했다. 검토한 두 수작업 사각 ROI에
+scikit-image TV-L1 dense optical flow와 forward/backward 왕복 일관성 mask를 적용하고,
+중복 디코드 프레임은 SHA-256으로 제거했다. 5개 요청 시각 중 실제 고유 프레임은
+3개였고, 두 조직 후보 영역에서 각각 95.8%, 99.8%의 픽셀이 두 장 이상으로 지지됐다.
+이는 2D image-flow 신뢰도이지 3D 조직 변형이나 해부학 분할 검증이 아니다.
+
+로컬 Appendix300 provenance에 영상 해시를 대조했고 두 1024² 텍스처의 고유 해시를
+보관했다. 이전 USD layer의 두 색상 파일 참조만 교체해 정적 후보를 만들었다.
+usd-core로 두 stage를 열고 54개 mesh 전체에서 점, 면, 노멀, face-varying UV의
+동일성을 비교했으며 재질 파일을 찾을 수 있음을 확인했다. 반복 실행에서 frame,
+flow, texture 해시도 일치했다.
+
+시각 합격은 아니다. 작은 픽셀 진단에서 밝은 중성 반사는 충수 후보 0.277%→0.270%,
+지방층 후보 0.203%→0.189%로만 바뀌었고, 인접 픽셀 색차는 각각 2.339→1.827,
+2.587→1.818로 줄어 표면 세부가 부드러워졌다. ROI는 수작업이고 조직 라벨과
+CT mesh 대응은 확인되지 않았다. USD 구조 검증 기록은
+`ct_appendectomy/validate_appendix300_usd_layer.py`와
+`validation/appendix300-center2-dense-flow-appearance-v1.json`에 있다.
+Isaac 실행 정책이 차단되어 런타임 로드·내시경 render는 아직 확인되지 않았다.
+따라서 production material이나 Appendix300 시각 게이트로 승격하지 않는다.
+
+재현 명령:
+
+```powershell
+..\..\work\venv\Scripts\python.exe ct_appendectomy/appendix300_temporal_texture.py `
+  --reference out/appendix300_reference `
+  --out out/ct_appendectomy/appendix300_temporal_texture_v15 `
+  --ffmpeg .cache/bin/ffmpeg.exe `
+  --center-seconds 8 --frame-count 5 --spacing-seconds 0.035 `
+  --source-video Center2_2.mp4 `
+  --roi appendix=1780,430,2140,790 `
+  --roi mesoappendix=1420,590,1780,950 `
+  --alignment-method dense_flow_tvl1 `
+  --parent-layer out/ct_appendectomy/appendix300_video_texture_v7/appearance.usda
+```
+
 ## M2 — 기구와 물리 접촉
 
 두 기구의 shaft/jaw, 포트 기반 RCM 및 속도/행동 제한을 구현한다. 접촉 파지와 보조 attachment를 구분한다. 접근–닫기–견인–열기 시퀀스, 비접촉 negative control, 관통/미끄러짐/핀 drift를 측정한다. 실제 물성 데이터가 없으면 estimated로 유지한다.

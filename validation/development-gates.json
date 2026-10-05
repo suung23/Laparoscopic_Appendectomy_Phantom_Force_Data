@@ -78,10 +78,11 @@
     },
     {
       "id": "real-video-appearance",
-      "status": "not achieved; single- and multi-frame Appendix300 candidates remain visually rejected/unrendered; no calibrated image-to-surface map",
+      "status": "not achieved; Center2 dense-flow candidate and 54-mesh USD structure are verified, but anatomy labels, Isaac moving-endoscope render, and held-out visual review remain incomplete",
       "evidence": [
         "validation/appendix300-texture-v7-preflight.json",
-        "validation/appendix300-temporal-texture-v1.json"
+        "validation/appendix300-temporal-texture-v1.json",
+        "validation/appendix300-center2-dense-flow-appearance-v1.json"
       ],
       "requires": [
         "visible target-specific material comparison",
