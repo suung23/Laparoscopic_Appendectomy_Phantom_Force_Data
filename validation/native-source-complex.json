@@ -1,0 +1,406 @@
+{
+  "status": "unreviewed native anatomical assembly",
+  "license": "CC BY 4.0 (DBCLS archive license updated 2025-02-27)",
+  "attribution": "BodyParts3D, Database Center for Life Science",
+  "source_metadata_sha256": "3a0fce533b17705755722584358c968d5f119511c5a3cb384686244fbbb98057",
+  "asset_sha256": "cad6294ed4e7a151bd968ff5c7147d47e4e57d1345c330d60d3221a362fbb68c",
+  "raw_source_to_asset_matrix": [
+    [
+      0.001,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.001,
+      0.0,
+      0.13
+    ],
+    [
+      0.0,
+      0.0,
+      0.001,
+      -0.9
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "structures": [
+    {
+      "id": "appendix_FJ2565",
+      "source_file": "FJ2565_BP23696_FMA14542_Appendix.obj",
+      "sha256": "6b08aeecda3239f4224f92b8ceba642625f6463dc5a482fd886cacbb1fbfce18",
+      "source_triangles": 442,
+      "previous_display_triangles": 7072,
+      "previous_display_to_source_volume_ratio": 0.9362140048324151,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ascending_colon_FJ2566",
+      "source_file": "FJ2566_BP22851_FMA14545_Ascending colon.obj",
+      "sha256": "0724a484ff53f644d5c0104edcf23823ac723fd9d03ef7cea08678ff7e53c605",
+      "source_triangles": 3310,
+      "previous_display_triangles": 13240,
+      "previous_display_to_source_volume_ratio": 0.9922464996473704,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2574",
+      "source_file": "FJ2574_BP21558_FMA14964_Proximal part of ileum.obj",
+      "sha256": "bd0866f49702a9701248bb239f548b0f57c8e0756dc801c76c12cee0ce992165",
+      "source_triangles": 380,
+      "previous_display_triangles": 1520,
+      "previous_display_to_source_volume_ratio": 0.962762521447874,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2575",
+      "source_file": "FJ2575_BP21558_FMA14964_Proximal part of ileum.obj",
+      "sha256": "0b8f9d20cb8db1361f3ca18ac2fda58e14f933dab61ac6218d48f2ecf18aeec3",
+      "source_triangles": 276,
+      "previous_display_triangles": 1104,
+      "previous_display_to_source_volume_ratio": 0.959764099024828,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2576",
+      "source_file": "FJ2576_BP22937_FMA14965_Middle part of ileum.obj",
+      "sha256": "2ce78308407ac9793d1f0a681711d3ff1802253ab60867beb39eb3a480875b5b",
+      "source_triangles": 172,
+      "previous_display_triangles": 688,
+      "previous_display_to_source_volume_ratio": 0.9405226084379388,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2577",
+      "source_file": "FJ2577_BP22937_FMA14965_Middle part of ileum.obj",
+      "sha256": "c236c4293685fa579d3600ecdf54888443d74c00618567123469a9f741166e8f",
+      "source_triangles": 314,
+      "previous_display_triangles": 1256,
+      "previous_display_to_source_volume_ratio": 0.9576297412849992,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2578",
+      "source_file": "FJ2578_BP22937_FMA14965_Middle part of ileum.obj",
+      "sha256": "2edf3b911e1f315b7d9deb645c1a0db606de3a4db78aafca1d6eaac68b6c5263",
+      "source_triangles": 292,
+      "previous_display_triangles": 1168,
+      "previous_display_to_source_volume_ratio": 0.9438763841535583,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2579",
+      "source_file": "FJ2579_BP22937_FMA14965_Middle part of ileum.obj",
+      "sha256": "588739bd8f3719586d0f4c9b36031af990cf260441bd1c1ca045d6fd20cfc4de",
+      "source_triangles": 280,
+      "previous_display_triangles": 1120,
+      "previous_display_to_source_volume_ratio": 0.9550148257017269,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2580",
+      "source_file": "FJ2580_BP22937_FMA14965_Middle part of ileum.obj",
+      "sha256": "aecae1f3ef51f5dcd867eb3cb8650bf09d48bf07d020fe10715ffecb1c80c75c",
+      "source_triangles": 344,
+      "previous_display_triangles": 1376,
+      "previous_display_to_source_volume_ratio": 0.9679349301307294,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2581",
+      "source_file": "FJ2581_BP22937_FMA14965_Middle part of ileum.obj",
+      "sha256": "01810189074546a871fbe937eece5801d443cc5b07355a6cfd265354ff1d2435",
+      "source_triangles": 198,
+      "previous_display_triangles": 792,
+      "previous_display_to_source_volume_ratio": 0.9524978976092596,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2582",
+      "source_file": "FJ2582_BP22937_FMA14965_Middle part of ileum.obj",
+      "sha256": "5c813771f64e9f867d715b124f7ef145e79ff70ce6df22d678401d5f681edb16",
+      "source_triangles": 212,
+      "previous_display_triangles": 848,
+      "previous_display_to_source_volume_ratio": 0.9453277748298072,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2583",
+      "source_file": "FJ2583_BP22937_FMA14965_Middle part of ileum.obj",
+      "sha256": "9823b269382c1fb1d3cce568ca83e4e1a9e734219cc7673ad5226c2b214cd33a",
+      "source_triangles": 198,
+      "previous_display_triangles": 792,
+      "previous_display_to_source_volume_ratio": 0.9517967846444075,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2584",
+      "source_file": "FJ2584_BP22937_FMA14965_Middle part of ileum.obj",
+      "sha256": "15b0d0f7cad4d9f15ec3c9983e3f053f27706bc91614f5804e3c2c671819d358",
+      "source_triangles": 228,
+      "previous_display_triangles": 912,
+      "previous_display_to_source_volume_ratio": 0.9551383696394844,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2585",
+      "source_file": "FJ2585_BP21558_FMA14964_Proximal part of ileum.obj",
+      "sha256": "4c6d5bbc1696335b3d9370b526ecf45d9ae7913d9cfdbf56eda5431c020033d1",
+      "source_triangles": 288,
+      "previous_display_triangles": 1152,
+      "previous_display_to_source_volume_ratio": 0.9511356367738066,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2586",
+      "source_file": "FJ2586_BP22937_FMA14965_Middle part of ileum.obj",
+      "sha256": "876fb01167eb6603452d7235d9ed79e7f78c6a374f7ddd190188e3dce2be2603",
+      "source_triangles": 264,
+      "previous_display_triangles": 1056,
+      "previous_display_to_source_volume_ratio": 0.956422939818347,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2587",
+      "source_file": "FJ2587_BP23004_FMA14966_Distal part of ileum.obj",
+      "sha256": "b206d71913e488fb807c6e038f8ec2fd2d15119a8a1a7268b0e3471b66ba2802",
+      "source_triangles": 228,
+      "previous_display_triangles": 912,
+      "previous_display_to_source_volume_ratio": 0.9497313235576815,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2588",
+      "source_file": "FJ2588_BP23004_FMA14966_Distal part of ileum.obj",
+      "sha256": "96a4017bfdcb97dcbee9c3bd894ad41d2f7fcf3ad02a9fb46edf7c42e907e0c4",
+      "source_triangles": 266,
+      "previous_display_triangles": 1064,
+      "previous_display_to_source_volume_ratio": 0.9536774542798847,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2589",
+      "source_file": "FJ2589_BP23004_FMA14966_Distal part of ileum.obj",
+      "sha256": "81e62be6a3e5ae267d61f06e840d9c12a69cfeea707b76e353114d28ee28b663",
+      "source_triangles": 326,
+      "previous_display_triangles": 1304,
+      "previous_display_to_source_volume_ratio": 0.9614319473876841,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2590",
+      "source_file": "FJ2590_BP23004_FMA14966_Distal part of ileum.obj",
+      "sha256": "7442195288c12d56c4ad52b032be2c89a439f43c5914b7365b95e8fd2099635a",
+      "source_triangles": 184,
+      "previous_display_triangles": 736,
+      "previous_display_to_source_volume_ratio": 0.9463314339379043,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2591",
+      "source_file": "FJ2591_BP23004_FMA14966_Distal part of ileum.obj",
+      "sha256": "f3826032301d2cb0d8fc57b02d7ad445d0e4ab798313b85b3688d50a767a1d5f",
+      "source_triangles": 226,
+      "previous_display_triangles": 904,
+      "previous_display_to_source_volume_ratio": 0.9459764666944728,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2592",
+      "source_file": "FJ2592_BP23004_FMA14966_Distal part of ileum.obj",
+      "sha256": "bf9717fbc26bd87e1017f9f854a09751fdcd137c54a695ea2088e23e600a1b1d",
+      "source_triangles": 236,
+      "previous_display_triangles": 944,
+      "previous_display_to_source_volume_ratio": 0.9456611842282886,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2593",
+      "source_file": "FJ2593_BP23004_FMA14966_Distal part of ileum.obj",
+      "sha256": "53c1cf29192a3d552550519b616982aab9e4c8c34e5fb64f5e98b60d2b210cac",
+      "source_triangles": 262,
+      "previous_display_triangles": 1048,
+      "previous_display_to_source_volume_ratio": 0.9590504681737717,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2594",
+      "source_file": "FJ2594_BP23004_FMA14966_Distal part of ileum.obj",
+      "sha256": "f6dd6d4909eb4a14c62c6312bf5a363842aa574c3c65e52526f5f43607347dd1",
+      "source_triangles": 220,
+      "previous_display_triangles": 880,
+      "previous_display_to_source_volume_ratio": 0.9460851091591073,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2595",
+      "source_file": "FJ2595_BP23004_FMA14966_Distal part of ileum.obj",
+      "sha256": "939bc15f7c7f0cba4fea081bd23568aaa3b8ceafeca5249e440b1ec0c041bbfe",
+      "source_triangles": 258,
+      "previous_display_triangles": 1032,
+      "previous_display_to_source_volume_ratio": 0.9550756429220494,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2596",
+      "source_file": "FJ2596_BP21558_FMA14964_Proximal part of ileum.obj",
+      "sha256": "b5c57d9d2a80e91425875e5354ba9527962a733dba6913767408451d2162acc5",
+      "source_triangles": 226,
+      "previous_display_triangles": 904,
+      "previous_display_to_source_volume_ratio": 0.9456578608979801,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2597",
+      "source_file": "FJ2597_BP23004_FMA14966_Distal part of ileum.obj",
+      "sha256": "59b946e20d6d89ddc48712aa005fb826321594fe4b0b02227ca35768185b81a1",
+      "source_triangles": 202,
+      "previous_display_triangles": 808,
+      "previous_display_to_source_volume_ratio": 0.9567834134077569,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2598",
+      "source_file": "FJ2598_BP23004_FMA14966_Distal part of ileum.obj",
+      "sha256": "111d0e770cdfc8bdac58535b8ce55689c9e14f2d2784818643f7bd869d6d1261",
+      "source_triangles": 246,
+      "previous_display_triangles": 984,
+      "previous_display_to_source_volume_ratio": 0.9494296229201056,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2599",
+      "source_file": "FJ2599_BP23004_FMA14966_Distal part of ileum.obj",
+      "sha256": "0a9c1759c7ec6d82593ec8180191517781fd6613084a4207eda82e58a5ff8275",
+      "source_triangles": 288,
+      "previous_display_triangles": 1152,
+      "previous_display_to_source_volume_ratio": 0.9608665221909802,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2600",
+      "source_file": "FJ2600_BP21558_FMA14964_Proximal part of ileum.obj",
+      "sha256": "7ea3bc2f95c0473711656b30754f370dc2648adb01713f8ec633567fbe011ecc",
+      "source_triangles": 256,
+      "previous_display_triangles": 1024,
+      "previous_display_to_source_volume_ratio": 0.9526567653335344,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2601",
+      "source_file": "FJ2601_BP21558_FMA14964_Proximal part of ileum.obj",
+      "sha256": "58f472b01fefe43958bbc5fdd3f0adab6b799a4ff4e4e703cb4b7451716d4c73",
+      "source_triangles": 208,
+      "previous_display_triangles": 832,
+      "previous_display_to_source_volume_ratio": 0.9432656462199382,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2602",
+      "source_file": "FJ2602_BP21558_FMA14964_Proximal part of ileum.obj",
+      "sha256": "5d4a012758ae1762b04a3eb565092e8f76d4982718f0db2e958fb263e4ad0615",
+      "source_triangles": 270,
+      "previous_display_triangles": 1080,
+      "previous_display_to_source_volume_ratio": 0.9533522859370454,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2603",
+      "source_file": "FJ2603_BP21558_FMA14964_Proximal part of ileum.obj",
+      "sha256": "f457755fccfa3f979400e74d9ff5d4a060adeaf6a1eaf9303385f9acf9e85132",
+      "source_triangles": 294,
+      "previous_display_triangles": 1176,
+      "previous_display_to_source_volume_ratio": 0.9595853385495454,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2604",
+      "source_file": "FJ2604_BP21558_FMA14964_Proximal part of ileum.obj",
+      "sha256": "c31d9e4795f0376d3ca8421d4d864550e103be8537caa9c9d7db1ae076445cac",
+      "source_triangles": 198,
+      "previous_display_triangles": 792,
+      "previous_display_to_source_volume_ratio": 0.9498060345168534,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "ileum_FJ2605",
+      "source_file": "FJ2605_BP21558_FMA14964_Proximal part of ileum.obj",
+      "sha256": "b43b6e6a1bcec8963dde479c6813fa5b964b68707a380d66ab95c2b918544bc3",
+      "source_triangles": 332,
+      "previous_display_triangles": 1328,
+      "previous_display_to_source_volume_ratio": 0.9547014606616488,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "mesentery_FJ3396",
+      "source_file": "FJ3396_BP22743_FMA14643_Mesentery of small intestine.obj",
+      "sha256": "ae276a914a727f048b35de9b7d72660122b3b74d328e5609f3144cc73bdd8f73",
+      "source_triangles": 38274,
+      "previous_display_triangles": 38274,
+      "previous_display_to_source_volume_ratio": 0.9999999876864172,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "mesoappendix_FJ3397",
+      "source_file": "FJ3397_BP22741_FMA16549_Mesoappendix.obj",
+      "sha256": "4bd2925e968946f9f48d6f8238301a51af16cefefe745561085e662c95549e68",
+      "source_triangles": 1388,
+      "previous_display_triangles": 5552,
+      "previous_display_to_source_volume_ratio": 0.9886534289072468,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "appendicular_artery_FJ3410",
+      "source_file": "FJ3410_BP22112_FMA14818_Appendicular artery.obj",
+      "sha256": "85aa1b58c1c34a4f07470fb411c6811ca65af43fa1515a85c337a133065e5317",
+      "source_triangles": 868,
+      "previous_display_triangles": 3472,
+      "previous_display_to_source_volume_ratio": 0.9360697298775222,
+      "source_surface_watertight_after_welding": true
+    },
+    {
+      "id": "peritoneum_FJ4651",
+      "source_file": "FJ4651_BP29770_FMA19757_Posterior part of abdominal peritoneum.obj",
+      "sha256": "b1f0054d4fc098ae05c34fd26dff367c2e47ee380af2eb52fbec946092364f30",
+      "source_triangles": 1484,
+      "previous_display_triangles": 5936,
+      "previous_display_to_source_volume_ratio": 0.9627552497670446,
+      "source_surface_watertight_after_welding": true
+    }
+  ],
+  "proximity": {
+    "ascending_colon_FJ2566": {
+      "appendix_vertex_to_surface_mm_min_p05_median": [
+        0.645277634160253,
+        2.6095175277442557,
+        21.00755719059757
+      ],
+      "scope": "Unsigned source-surface proximity, not attachment or nonintersection validation"
+    },
+    "mesoappendix_FJ3397": {
+      "appendix_vertex_to_surface_mm_min_p05_median": [
+        0.0028010943614556125,
+        0.5987069343280018,
+        3.9331212895776506
+      ],
+      "scope": "Unsigned source-surface proximity, not attachment or nonintersection validation"
+    }
+  },
+  "smoothing_applied": false,
+  "cross_subject_registration": false,
+  "physical_attachments": false,
+  "clinical_geometry_validated": false,
+  "limitations": [
+    "Source atlas is coarse and lacks surgical tissue layers and fatty lobules",
+    "No new geometric information is introduced by this assembly",
+    "No patient-specific CT or Appendix300 reconstruction",
+    "Proximity does not establish tissue junction topology or mechanical coupling",
+    "Not substituted into the production simulator before visual and contact validation"
+  ]
+}
