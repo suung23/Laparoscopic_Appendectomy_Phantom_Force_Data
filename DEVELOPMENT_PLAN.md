@@ -112,7 +112,7 @@ relaxation 시험이며, 실제 Isaac 실행과 force readback 없이는 통과�
 
 노출·혈관 제어·base closure·절제·회수·최종 검사의 simulator state와 성공/실패를 정의한다. Gymnasium seed/reset/step, terminated/truncated, RGB와 privileged state 분리, 잘못된 action 거절을 검증한다. scripted 성공·실패 baseline 후 작은 학습 실험으로 환경이 실제 학습 가능한지 확인한다.
 
-2026-10-06: PPO checkpoint의 학습 자산 해시 검증을 유지하면서 별도 평가 자산으로 Kit 장면을 바꾸는 `--eval-assets` 경로를 추가했다. 사람 충수 ex-vivo storage-modulus 평균을 작은 변형 isotropic equivalent로 매핑한 세 재질 민감도 자산을 작성했고 USD 수준에서 메시 형상·위상·노멀 불변성과 체크포인트 asset config 일치를 검사했다. 이는 재질 변화 한 축의 domain-shift preflight일 뿐, Isaac에서 접촉 동역학을 검증하거나 환자별 일반화를 평가한 결과가 아니다. 검증 기록: `validation/material-sensitivity-holdout-preflight.json`. 실제 평가 episode는 Isaac 런타임 실행 제한 해소 후 필요하다.
+2026-10-06: PPO checkpoint의 학습 자산 해시 검증을 유지하면서 별도 평가 자산으로 Kit 장면을 바꾸는 `--eval-assets` 경로를 추가했다. 사람 충수 ex-vivo storage-modulus 평균을 작은 변형 isotropic equivalent로 매핑한 세 재질 민감도 자산을 작성했고 USD 수준에서 메시 형상·위상·노멀 불변성, 체크포인트 asset config 일치, appendix 변형체에서 물리 재질까지의 USD binding 해석을 검사했다. 이는 재질 변화 한 축의 domain-shift preflight일 뿐, Isaac/PhysX가 runtime에서 override를 소비하는지 또는 접촉 동역학·환자별 일반화를 검증한 결과가 아니다. 검증 기록: `validation/material-sensitivity-holdout-preflight.json`. 실제 평가 episode는 Isaac 런타임 실행 제한 해소 후 필요하다.
 
 ## M5 — 충실도와 성능
 

@@ -22,6 +22,9 @@
     "all_mesh_normals_unchanged": true,
     "other_material_properties_unchanged": true,
     "forceps_config_other_fields_unchanged": true,
+    "appendix_body_physics_binding_resolves_to_tissue_material": true,
+    "binding_relationship": "/World/Atlas/appendix.material:binding:physics",
+    "runtime_physx_material_consumption_verified": false,
     "mesh_count": 15,
     "geometry_edited": false,
     "production_assets_edited": false

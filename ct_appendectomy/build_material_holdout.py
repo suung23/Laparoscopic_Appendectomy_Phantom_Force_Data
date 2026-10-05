@@ -10,10 +10,11 @@ import json
 import os
 from pathlib import Path
 
-from pxr import Usd
+from pxr import Usd, UsdShade
 
 
 MATERIAL_PATH = "/World/TissueMaterial"
+BODY_PATH = "/World/Atlas/appendix/sim"
 MODULUS_ATTR = "omniphysics:youngsModulus"
 POISSON_ATTR = "omniphysics:poissonsRatio"
 
@@ -37,9 +38,13 @@ def build(source_assets, output, reference, group):
     measured_g, measured_sd = source["rheometry"]["storage_modulus_pa_mean_sd"][group]
     source_usd = Usd.Stage.Open(str(source_stage))
     material = source_usd.GetPrimAtPath(MATERIAL_PATH)
+    body = source_usd.GetPrimAtPath(BODY_PATH)
     e_attr, nu_attr = material.GetAttribute(MODULUS_ATTR), material.GetAttribute(POISSON_ATTR)
-    if not material.IsValid() or not e_attr or not nu_attr:
+    if not material.IsValid() or not body.IsValid() or not e_attr or not nu_attr:
         raise ValueError("Source scene is missing its documented tissue material parameters")
+    bound_material, binding_rel = UsdShade.MaterialBindingAPI(body).ComputeBoundMaterial("physics")
+    if not bound_material or bound_material.GetPath() != MATERIAL_PATH:
+        raise ValueError(f"Appendix deformable body does not resolve to {MATERIAL_PATH} for physics")
     baseline_e, poisson = float(e_attr.Get()), float(nu_attr.Get())
     if baseline_e <= 0 or not 0 <= poisson < 0.5 or measured_g <= 0 or measured_sd < 0:
         raise ValueError("Invalid source or literature material values")
@@ -54,6 +59,13 @@ def build(source_assets, output, reference, group):
     variant_attr = stage.GetPrimAtPath(MATERIAL_PATH).GetAttribute(MODULUS_ATTR)
     variant_attr.Set(float(target_e))
     stage.GetRootLayer().Save()
+    composed = Usd.Stage.Open(str(variant_stage))
+    variant_body = composed.GetPrimAtPath(BODY_PATH)
+    resolved_material, resolved_rel = UsdShade.MaterialBindingAPI(variant_body).ComputeBoundMaterial("physics")
+    if not resolved_material or resolved_material.GetPath() != MATERIAL_PATH:
+        raise ValueError("Variant stage no longer resolves the appendix physics material binding")
+    if abs(float(composed.GetPrimAtPath(MATERIAL_PATH).GetAttribute(MODULUS_ATTR).Get()) - target_e) > 0.1:
+        raise ValueError("Variant Young's modulus failed USD readback")
     config["stage_sha256"] = sha256(variant_stage)
     config_path = output / "forceps_config.json"
     config_path.write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
@@ -75,6 +87,13 @@ def build(source_assets, output, reference, group):
         "material_change": {"prim": MATERIAL_PATH, "attribute": MODULUS_ATTR,
                             "baseline_pa": baseline_e, "variant_pa": target_e,
                             "ratio_to_baseline": target_e / baseline_e},
+        "physics_material_binding": {
+            "body_prim": BODY_PATH,
+            "resolved_material": str(resolved_material.GetPath()),
+            "binding_relationship": str(resolved_rel.GetPath()),
+            "source_and_variant_resolution_passed": True,
+            "runtime_physx_consumption_verified": False,
+        },
         "source_assets": {"stage_sha256": sha256(source_stage),
                           "config_sha256": sha256(source_config)},
         "variant_assets": {"stage_sha256": sha256(variant_stage),
