@@ -1,0 +1,37 @@
+{
+  "status": "backbone_asset_visual_gate_failed",
+  "method": "Two local Appendix300 clips sampled every 2 seconds; sequential contact sheets and full-resolution Center1 frames at 12 and 34 seconds inspected. Not a review of the entire dataset.",
+  "reference_files": {
+    "Center1_014.mp4": "af050e90b66076f7dd83e8278be3cc4bd50ea490a375165e9747946b0e94c2bc",
+    "Center2_2.mp4": "a38b416c45928266e333c46d40c278eff0386a0ca695d268c35ccf807fab04d5",
+    "Center1_t12.png": "78e7fb39426e77b88f786afb0ccdf6668ab1881e531840cca9002fc4a493dd89",
+    "Center1_t34.png": "2a923d84ba4f91b4a549cde691c8cc7268930bef87ca6e38d1edec0f3c9e855d"
+  },
+  "observed": [
+    "Curved tubular tissue with nonuniform contours and attached yellow tissue",
+    "Lobulated yellow fat interspersed with thin membrane-like sheets and branching vessels",
+    "Overlapping bowel folds and layers rather than a few isolated smooth solids",
+    "Instrument-associated changes in tissue configuration and exposure across the sequence",
+    "Local wet highlights and heterogeneous pink, yellow, pale and red appearance"
+  ],
+  "current_asset_mismatches": [
+    "Mesoappendix appears as an opaque broad yellow solid; thin sheet and lobulated fat components are not resolved",
+    "Large smooth surfaces suppress the layered tissue structure seen in the clips",
+    "Appendix-to-cecum registration is heuristic and remains unvalidated",
+    "Current rest geometry and render do not establish the tissue connection behaviour visible under manipulation"
+  ],
+  "decision": "Rework the surgical-region anatomy and connected tissue layers before further texture-only polishing or claiming baseline visual parity. Keep CT as spatial context; existing atlas is provisional rather than a validated final surgical asset.",
+  "next_asset_requirements": [
+    "Explicit appendix, cecal junction, membrane and fatty tissue components with documented provenance",
+    "Separate observed structures from authored geometry; no claim of patient-specific reconstruction from these monocular snippets",
+    "Validate both unloaded shape and connected tissue motion during approach, grasp, traction and release",
+    "Review additional cases before treating one visible anatomy as representative"
+  ],
+  "limitations": [
+    "Two convenience-selected clips are not a representative cohort",
+    "Exact labels, wall thickness and metric depth cannot be established from these frames alone",
+    "The 34-second frame contains strong compression artifacts; exclude those artifacts from surface-detail modelling",
+    "No force or calibrated material parameters inferred from video"
+  ],
+  "attribution": "Kolbinger et al., Appendix300, DOI 10.25532/OPARA-1173, CC BY 4.0"
+}
