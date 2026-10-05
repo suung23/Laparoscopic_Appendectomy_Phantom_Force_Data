@@ -70,6 +70,7 @@ def main():
         import torch
         from PIL import Image
         from agent_env import bind_simulation_app,scripted_action,ENV_ID,STATE_NAMES
+        from episode_physics_metrics import EpisodePhysicsMetrics
         from ppo_agent import ActorCritic,advantages,update,save_checkpoint,load_checkpoint
         torch.set_num_threads(2)
         torch.manual_seed(args.seed)
@@ -90,6 +91,7 @@ def main():
             warm_start_used=warm_start_used or metadata.get('demo_warm_start',False)
         report.update(contract,trained_steps_before=trained_steps,observation_mode=env.get_wrapper_attr('observation_mode'),
                       anatomical_randomization=False,compact_state_is_privileged=True,
+                      contact_force_readback_available=False,
                       checkpoint_loaded=bool(args.checkpoint),demo_warm_start=args.demo_warm_start,
                       engine='Isaac Sim 5.1 / PhysX GPU',control_dt_s=1/30,
                       torch_version=str(torch.__version__),policy_device='cpu')
@@ -182,6 +184,7 @@ def main():
         started=time.perf_counter();total=0;episode=0;episode_return=0.;episode_steps=0
         if args.train_steps:
             obs=reset(args.seed)
+            training_episode_physics=EpisodePhysicsMetrics()
             training_episodes=[];updates=[]
             with (args.out/'training.jsonl').open('a',encoding='utf-8') as journal:
                 while total<args.train_steps and app.is_running():
@@ -190,6 +193,7 @@ def main():
                         if not app.is_running():break
                         action,raw,logp,value,_=predict(obs)
                         next_obs,reward,term,trunc,info=env.step(action[0].numpy())
+                        training_episode_physics.update(info)
                         with torch.no_grad():next_value=predict(next_obs,True)[3].item()
                         entries=(obs,raw[0].numpy(),logp.item(),value.item(),next_value,reward,term,term or trunc)
                         for key,value in zip(batch,entries):batch[key].append(value)
@@ -198,10 +202,12 @@ def main():
                         obs=next_obs
                         if term or trunc:
                             result={'run_id':report['run_id'],'episode':episode,'steps':episode_steps,'return':episode_return,
-                                    'success':info['is_success'],'termination_reason':info['termination_reason']}
+                                    'success':info['is_success'],'termination_reason':info['termination_reason'],
+                                    'physical_metrics':training_episode_physics.as_dict()}
                             training_episodes.append(result)
                             journal.write(json.dumps(result)+'\n');journal.flush()
                             episode+=1;episode_return=0.;episode_steps=0
+                            training_episode_physics=EpisodePhysicsMetrics()
                             obs=reset(args.seed+episode)
                     if not batch['obs']:break
                     adv,returns=advantages(batch['reward'],batch['value'],batch['next_value'],batch['terminated'],batch['ended'])
@@ -257,6 +263,7 @@ def main():
                     report['evaluation_policy']=evaluation_policy
                 seed=args.seed+10000+episode
                 obs=reset(seed);episode_return=0.;trajectory=[]
+                episode_physics=EpisodePhysicsMetrics()
                 if not env.observation_space.contains(obs):
                     raise RuntimeError('Evaluation reset observation violates the environment contract')
                 recorded=[]
@@ -275,12 +282,17 @@ def main():
                     else:action=predict(obs,True)[0][0].numpy()
                     before=state(obs).copy()
                     obs,reward,term,trunc,info=env.step(action)
+                    episode_physics.update(info)
                     if not env.observation_space.contains(obs):raise RuntimeError('Observation contract violation')
                     episode_return+=reward
                     trajectory.append({'step':step,'observation':before.tolist(),'action':action.tolist(),
                                        'next_observation':state(obs).tolist(),'reward':reward,
                                        'terminated':term,'truncated':trunc,
-                                       'termination_reason':info['termination_reason']})
+                                       'termination_reason':info['termination_reason'],
+                                       'physical_sample':{'pin_drift_m':info['pin_drift_m'],
+                                           'tracking_error_m':info['tracking_error_m'],
+                                           'maximum_displacement_m':info['maximum_displacement_m'],
+                                           'tissue_health':info['tissue_health']}})
                     visible_update(evaluation_policy,episode+1,step+1,episode_return,info)
                     if (step+1)%25==0:
                         report['progress']={'episode':episode,'step':step+1,'policy':evaluation_policy,'return':episode_return}
@@ -294,7 +306,8 @@ def main():
                 result={'run_id':report['run_id'],'policy':evaluation_policy,'episode':episode,'seed':seed,'steps':step+1,'return':episode_return,
                         'success':info['is_success'],'terminated':term,'truncated':trunc,
                         'termination_reason':info['termination_reason'],'lift_m':info['lift_m'],
-                        'pin_drift_m':info['pin_drift_m'],'inverted_tetrahedra':info['tissue_health']['inverted_tetrahedra']}
+                        'pin_drift_m':info['pin_drift_m'],'inverted_tetrahedra':info['tissue_health']['inverted_tetrahedra'],
+                        'physical_metrics':episode_physics.as_dict()}
                 journal.write(json.dumps(result)+'\n');journal.flush()
                 if args.record_every:
                     recording={'policy':evaluation_policy,'control_dt_s':1/30,'capture_every_actions':args.record_every,

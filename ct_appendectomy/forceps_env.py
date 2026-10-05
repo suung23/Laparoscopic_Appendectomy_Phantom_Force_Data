@@ -57,6 +57,7 @@ class AppendixForcepsEnv(AppendixRetractionEnv):
                 'privileged_state_observation':True,'grip_attachment_present':False,
                 'trocar_constraint_integrated':False,'lift_m':self.lift,
                 'pin_drift_m':self.pin_drift,'tracking_error_m':self.tracking_error,
+                'maximum_displacement_m':self.maximum_displacement,
                 'tissue_health':self.health}
 
     def step(self,action):

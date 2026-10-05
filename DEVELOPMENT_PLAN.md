@@ -114,6 +114,8 @@ relaxation 시험이며, 실제 Isaac 실행과 force readback 없이는 통과�
 
 2026-10-06: PPO checkpoint의 학습 자산 해시 검증을 유지하면서 별도 평가 자산으로 Kit 장면을 바꾸는 `--eval-assets` 경로를 추가했다. 사람 충수 ex-vivo storage-modulus 평균을 작은 변형 isotropic equivalent로 매핑한 세 재질 민감도 자산을 작성했고 USD 수준에서 메시 형상·위상·노멀 불변성, 체크포인트 asset config 일치, appendix 변형체에서 물리 재질까지의 USD binding 해석을 검사했다. 이는 재질 변화 한 축의 domain-shift preflight일 뿐, Isaac/PhysX가 runtime에서 override를 소비하는지 또는 접촉 동역학·환자별 일반화를 검증한 결과가 아니다. 검증 기록: `validation/material-sensitivity-holdout-preflight.json`. 실제 평가 episode는 Isaac 런타임 실행 제한 해소 후 필요하다.
 
+같은 forceps RL 로그에는 각 제어 단계의 pin drift, tool tracking error, 최대 노드 변위, 최소 signed tet volume ratio, p99 volume 변화와 inversion 수를 보존한다. fixture에는 힘 센서가 없으므로 `force_readback_available=false`로 기록한다. 집계 유닛 회귀는 `tests/test_episode_physics_metrics.py`에서 검사하지만, 이것은 Isaac episode나 물성·힘 검증 결과가 아니다.
+
 ## M5 — 충실도와 성능
 
 RTX4090 단일 환경 1280×720 end-to-end 30 Hz를 개발 목표로 측정한다. p50/p95, VRAM, physics/render/transfer 지연을 분리한다. 수술 영상과 광학/재질을 비교하고 해부학 변이 및 seed별 회귀 검사를 수행한다. 느린 물리 정밀 모드와 학습 모드의 차이를 기록한다.
