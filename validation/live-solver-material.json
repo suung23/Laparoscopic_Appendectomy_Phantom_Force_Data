@@ -1,0 +1,10 @@
+{
+  "source": "live_physx_tensor",
+  "stage_meters_per_unit": 1.0,
+  "values": {
+    "youngs_modulus": 12000.0,
+    "poissons_ratio": 0.44999998807907104,
+    "dynamic_friction": 0.5
+  },
+  "scope": "Runtime parameter readback only; not experimentally calibrated tissue"
+}
