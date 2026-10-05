@@ -1,7 +1,8 @@
 """Extract a candidate midsurface from a closed atlas envelope.
 
 PCA-axis paired intersections are an authoring approximation, not measured
-histological layers. Rays with multiple intervals are rejected, not bridged.
+histological layers. The legacy mode rejects multiple intervals; --multilayer
+keeps separate paired intervals with checked local sheet correspondence.
 The output has no assigned thickness, density, force law or fat reconstruction.
 """
 import argparse
@@ -14,7 +15,7 @@ from pxr import Usd,UsdGeom
 from build_scene import mesh_prim
 
 
-def extract(mesh, spacing=.00075):
+def sample_envelope(mesh, spacing=.00075):
     if not np.isfinite(spacing) or spacing<=0:raise ValueError('Positive finite spacing required')
     if not mesh.is_watertight:raise ValueError('Closed envelope required')
     center=mesh.vertices.mean(axis=0)
@@ -38,6 +39,11 @@ def extract(mesh, spacing=.00075):
     for ray,value in zip(rays,depth):
         values=groups.setdefault(int(ray),[])
         if not values or value-values[-1]>1e-8:values.append(float(value))
+    return center,axes,x,y,xx,yy,origins,groups
+
+
+def extract(mesh, spacing=.00075):
+    center,axes,x,y,xx,yy,origins,groups=sample_envelope(mesh,spacing)
     points=np.full((len(origins),3),np.nan);chord=np.full(len(origins),np.nan)
     multi=[];odd=[]
     for ray,values in groups.items():
@@ -78,13 +84,17 @@ def extract(mesh, spacing=.00075):
     return surface,arrays,data
 
 
-def build(source,out,spacing):
+def build(source,out,spacing,multilayer=False):
     stage=Usd.Stage.Open(str(source))
     path='/SurgicalRegion/mesoappendix_FJ3397'
     mesh=UsdGeom.Mesh(stage.GetPrimAtPath(path))
     source_mesh=trimesh.Trimesh(np.asarray(mesh.GetPointsAttr().Get()),
         np.asarray(mesh.GetFaceVertexIndicesAttr().Get()).reshape(-1,3),process=False)
-    surface,arrays,report=extract(source_mesh,spacing)
+    if multilayer:
+        from multilayer_mesentery import extract_multilayer
+        surface,arrays,report=extract_multilayer(source_mesh,spacing)
+    else:
+        surface,arrays,report=extract(source_mesh,spacing)
     out.mkdir(parents=True,exist_ok=True)
     result=Usd.Stage.CreateNew(str((out/'meso_midsurface.usda').resolve()))
     root=UsdGeom.Xform.Define(result,'/MesoappendixCandidate');result.SetDefaultPrim(root.GetPrim())
@@ -108,4 +118,5 @@ if __name__=='__main__':
     p.add_argument('--source',type=Path,default=Path('out/ct_appendectomy/native_source_complex/surgical_region.usda'))
     p.add_argument('--out',type=Path,default=Path('out/ct_appendectomy/meso_midsurface_v1'))
     p.add_argument('--spacing',type=float,default=.00075)
-    a=p.parse_args();build(a.source,a.out,a.spacing)
+    p.add_argument('--multilayer',action='store_true',help='Keep separate paired intervals; unresolved sheet junctions can remain open')
+    a=p.parse_args();build(a.source,a.out,a.spacing,a.multilayer)

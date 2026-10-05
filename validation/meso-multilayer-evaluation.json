@@ -1,0 +1,144 @@
+{
+  "status": "multilayer extraction implemented; rejected for production anatomy",
+  "tests_passed": 4,
+  "coarse": {
+    "method": "multilayer paired intervals with interior edge samples and one-to-one correspondence",
+    "grid_shape": [
+      58,
+      94
+    ],
+    "grid_spacing_m": 0.00075,
+    "rays": 5452,
+    "intersected_rays": 1829,
+    "multiple_interval_rays": 142,
+    "represented_multiple_interval_rays": 142,
+    "generated_midpoints": 1971,
+    "rejected_outside_midpoints": 1,
+    "rejected_edge_candidates": 830,
+    "rejected_triangle_centroids": 0,
+    "max_candidate_edge_length_m": 0.003,
+    "edge_interior_sample_fractions": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "vertices": 1967,
+    "triangles": 3498,
+    "boundary_edges": 440,
+    "split_disconnected_vertex_fans": 7,
+    "connected_surface_components": 1,
+    "nonmanifold_edges": 0,
+    "frame_axes": [
+      [
+        0.8231928559368396,
+        0.4776847411247669,
+        -0.3068726283511033
+      ],
+      [
+        0.2720248931836491,
+        0.14258735234671144,
+        0.9516676438963233
+      ],
+      [
+        0.49835326769569227,
+        -0.8668829996298921,
+        -0.012565250881161963
+      ]
+    ],
+    "frame_center_m": [
+      -0.05627611403396332,
+      0.019144234794122434,
+      -0.013728819010025447
+    ],
+    "unresolved": "Finite interior samples do not prove continuous containment; sheet merges can remain disconnected",
+    "source_sha256": "cad6294ed4e7a151bd968ff5c7147d47e4e57d1345c330d60d3221a362fbb68c",
+    "source_prim": "/SurgicalRegion/mesoappendix_FJ3397",
+    "status": "authoring candidate; not anatomical or physical validation",
+    "shell_thickness_m": null,
+    "calibrated": false,
+    "fat_reconstructed": false,
+    "physics_integrated": false,
+    "limitations": [
+      "PCA projection can lose folds; rejected rays are retained in NPZ",
+      "Grid sampling loses narrow features and trims boundaries",
+      "Envelope chord includes all atlas volume, not anatomical membrane thickness",
+      "Midsurface has open boundaries and no material thickness or contact model",
+      "No replacement of the production simulator geometry"
+    ]
+  },
+  "fine": {
+    "method": "multilayer paired intervals with interior edge samples and one-to-one correspondence",
+    "grid_shape": [
+      174,
+      281
+    ],
+    "grid_spacing_m": 0.00025,
+    "rays": 48894,
+    "intersected_rays": 16349,
+    "multiple_interval_rays": 1307,
+    "represented_multiple_interval_rays": 1303,
+    "generated_midpoints": 17658,
+    "rejected_outside_midpoints": 1,
+    "rejected_edge_candidates": 8160,
+    "rejected_triangle_centroids": 0,
+    "max_candidate_edge_length_m": 0.001,
+    "edge_interior_sample_fractions": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "vertices": 17635,
+    "triangles": 33778,
+    "boundary_edges": 1480,
+    "split_disconnected_vertex_fans": 3,
+    "connected_surface_components": 6,
+    "nonmanifold_edges": 0,
+    "frame_axes": [
+      [
+        0.8231928559368396,
+        0.4776847411247669,
+        -0.3068726283511033
+      ],
+      [
+        0.2720248931836491,
+        0.14258735234671144,
+        0.9516676438963233
+      ],
+      [
+        0.49835326769569227,
+        -0.8668829996298921,
+        -0.012565250881161963
+      ]
+    ],
+    "frame_center_m": [
+      -0.05627611403396332,
+      0.019144234794122434,
+      -0.013728819010025447
+    ],
+    "unresolved": "Finite interior samples do not prove continuous containment; sheet merges can remain disconnected",
+    "source_sha256": "cad6294ed4e7a151bd968ff5c7147d47e4e57d1345c330d60d3221a362fbb68c",
+    "source_prim": "/SurgicalRegion/mesoappendix_FJ3397",
+    "status": "authoring candidate; not anatomical or physical validation",
+    "shell_thickness_m": null,
+    "calibrated": false,
+    "fat_reconstructed": false,
+    "physics_integrated": false,
+    "limitations": [
+      "PCA projection can lose folds; rejected rays are retained in NPZ",
+      "Grid sampling loses narrow features and trims boundaries",
+      "Envelope chord includes all atlas volume, not anatomical membrane thickness",
+      "Midsurface has open boundaries and no material thickness or contact model",
+      "No replacement of the production simulator geometry"
+    ]
+  },
+  "coarse_render_sha256": "d874494cdec7df216abb773d79c2b6c32f6e193914e8f2189c16a82b1d5b117d",
+  "visual_review": [
+    "Restores some tissue discarded by single-interval projection",
+    "Prominent serrated boundaries and incomplete attachments persist"
+  ],
+  "refinement_conclusion": "Reducing spacing from 0.75 mm to 0.25 mm changes connected components from 1 to 6; topology is not stable under refinement. Finer candidate not promoted or rendered.",
+  "next_action": "Stop grid-spacing tuning as the asset strategy. Use explicit attachment boundary curves and a connected folded surface model; atlas envelopes and these extracted surfaces remain positional references.",
+  "clinical_validation": false,
+  "force_validation": false,
+  "production_geometry_changed": false
+}
