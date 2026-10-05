@@ -1,0 +1,22 @@
+{
+  "status": "failed",
+  "runs": [
+    {
+      "run": "newton_first_inversion_v1",
+      "steps": 30,
+      "first_inversion_tick": 10,
+      "maximum_inversions": 28,
+      "minimum_volume_ratio": -2.1072602583576607,
+      "maximum_penetration_m": 0.0
+    },
+    {
+      "run": "newton_vertex_contact_v1",
+      "steps": 30,
+      "first_inversion_tick": 21,
+      "maximum_inversions": 17,
+      "minimum_volume_ratio": -0.6533563152067173,
+      "maximum_penetration_m": 0.0
+    }
+  ],
+  "scope": "30-step ablation only. Removing edge/face contacts delays but does not eliminate inversion; not a valid replacement contact model."
+}
