@@ -11,6 +11,7 @@ import csv
 import io
 import json
 import math
+import random
 from collections import defaultdict
 from pathlib import Path
 from typing import Iterable
@@ -57,6 +58,31 @@ def _vector(row: dict[str, str], prefix: str, line: int) -> tuple[float, float, 
     return tuple(_number(row, f"{prefix}_{axis}_N", line) for axis in "xyz")
 
 
+def _cluster_bootstrap_ci(
+    groups: dict[str, list[dict[str, object]]],
+    squared_error,
+    replicates: int = 2000,
+) -> dict[str, object] | None:
+    """Percentile CI by resampling whole heldout specimens/builds, not frames."""
+    names = sorted(name for name, values in groups.items() if values)
+    if len(names) < 2:
+        return None
+    rng = random.Random(1729)
+    estimates = []
+    for _ in range(replicates):
+        draw = [rng.choice(names) for _ in names]
+        errors = [squared_error(item) for name in draw for item in groups[name]]
+        estimates.append(math.sqrt(sum(errors) / len(errors)))
+    estimates.sort()
+    return {
+        "lower_95": estimates[math.floor(.025 * (replicates - 1))],
+        "upper_95": estimates[math.ceil(.975 * (replicates - 1))],
+        "heldout_groups": len(names),
+        "replicates": replicates,
+        "method": "specimen/build cluster percentile bootstrap",
+    }
+
+
 def score(rows: Iterable[dict[str, str]]) -> dict[str, object]:
     records = list(rows)
     if not records:
@@ -96,6 +122,9 @@ def score(rows: Iterable[dict[str, str]]) -> dict[str, object]:
             raise ValueError("each heldout trajectory needs at least two strictly increasing timestamps")
 
     samples = [item for values in heldout.values() for item in values]
+    group_samples: dict[str, list[dict[str, object]]] = defaultdict(list)
+    for (group, _), values in heldout.items():
+        group_samples[group].extend(values)
 
     def rmse(pairs: list[tuple[float, float]]) -> float | None:
         return math.sqrt(sum((a - b) ** 2 for a, b in pairs) / len(pairs)) if pairs else None
@@ -111,6 +140,17 @@ def score(rows: Iterable[dict[str, str]]) -> dict[str, object]:
             "max_vector_error_N": max(norms),
             "bias_xyz_N": [sum(error[i] for error in errors) / len(errors) for i in range(3)],
         }
+
+    def force_error_squared(item: dict[str, object]) -> float:
+        return sum((float(a) - float(b)) ** 2 for a, b in zip(item["fm"], item["fp"]))
+
+    displacement_groups = {
+        group: items for group, items in group_samples.items()
+    }
+    relaxation_groups = {
+        group: [item for item in items if item["phase"] == "relaxation"]
+        for group, items in group_samples.items()
+    }
 
     by_phase: dict[str, list[dict[str, object]]] = defaultdict(list)
     for item in samples:
@@ -142,6 +182,15 @@ def score(rows: Iterable[dict[str, str]]) -> dict[str, object]:
             "contact_transition_time_mae_s": sum(transition_errors) / len(transition_errors) if transition_errors else None,
             "contact_transition_pairs_scored": len(transition_errors),
         },
+        "heldout_rmse_95ci": {
+            "force_vector_N": _cluster_bootstrap_ci(group_samples, force_error_squared),
+            "displacement_mm": _cluster_bootstrap_ci(
+                displacement_groups,
+                lambda x: (float(x["dm"]) - float(x["dp"])) ** 2,
+            ),
+            "relaxation_force_vector_N": _cluster_bootstrap_ci(relaxation_groups, force_error_squared),
+        },
+        "uncertainty_note": "cluster bootstrap resamples whole heldout specimens/builds; CI is null with fewer than two eligible groups",
         "limitations": [
             "parameters must be frozen before scoring heldout groups",
             "thresholds must be preregistered from instrument repeatability and specimen variability",
@@ -165,6 +214,7 @@ heldout,test-1,t-2,2,relaxation,1,0,0,2,0,0,2,2,1,1
     assert math.isclose(float(metrics["displacement_rmse_mm"]), math.sqrt(0.25 / 3))
     assert metrics["contact_transition_count_error"] == 0
     assert metrics["contact_transition_direction_mismatches"] == 0
+    assert result["heldout_rmse_95ci"]["force_vector_N"] is None
     leaking = list(csv.DictReader(io.StringIO(sample)))
     leaking.append(dict(leaking[0], split="heldout", trajectory_id="leak", time_s="2"))
     try:
@@ -173,6 +223,17 @@ heldout,test-1,t-2,2,relaxation,1,0,0,2,0,0,2,2,1,1
         assert "both" in str(exc)
     else:
         raise AssertionError("specimen/build leakage must be rejected")
+    multi_group = list(csv.DictReader(io.StringIO(sample)))
+    for row in list(multi_group):
+        if row["split"] == "heldout":
+            duplicate = dict(row, specimen_or_build_id="test-2", trajectory_id="t-3")
+            for axis in "xyz":
+                duplicate[f"force_predicted_{axis}_N"] = duplicate[f"force_measured_{axis}_N"]
+            duplicate["displacement_predicted_mm"] = duplicate["displacement_measured_mm"]
+            multi_group.append(duplicate)
+    multi_result = score(multi_group)
+    interval = multi_result["heldout_rmse_95ci"]["force_vector_N"]
+    assert interval is not None and interval["lower_95"] <= interval["upper_95"]
 
 
 def main() -> None:
