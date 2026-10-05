@@ -54,6 +54,24 @@ Appendix300 두 원본 클립을 2초 간격 순차 프레임과 확대 프레�
 4. Isaac RGB·semantic segmentation·depth와 현재 시야 검사를 같은 장면에서 저장한다.
 5. 합격: 투시/장기 숨김 없이 충수 작업 부위가 실제 RGB에 나타남, camera 조직 침투 없음, 재시작 시 동일 시야, geometry/optics 파라미터와 한계 기록. 임상적인 port 타당성은 전문가 확인 전 pending.
 
+### 2026-10-06 Appendix300 영상 유래 재질 후보
+
+`ct_appendectomy/appendix300_video_texture.py`는 로컬 `Center1_014.mp4`
+12초 프레임에서 수작업 지정한 조직 ROI 두 곳을 추출해 appendix 및
+mesoappendix USD 재질 레이어를 생성한다. Appendix300 DOI·CC BY 4.0,
+원본 영상·프레임·텍스처 해시와 ROI 좌표를 출력 manifest에 기록한다.
+CT와 지방층을 합성한 USD에 후보 레이어를 얹은 뒤 54개 메시의 점,
+면 인덱스, 노멀 불변성과 두 표면의 UV 코너 대응을 확인했다.
+
+이것은 비디오 프레임의 색을 옮긴 미검토 시각 후보다. ROI는 인스턴스
+분할되지 않아 해당 영상 조직과 명명된 mesh가 해부학적으로 같은지
+검증하지 않았다. 조명 반사와 타일 반복이 남을 수 있고 재질 파라미터도
+보정되지 않았다. Isaac Sim Python 실행은 Windows Application Control에
+차단되어 실제 endoscope 렌더·운동 비교가 미완료다. 정적 장면 레이어에는
+PhysX 속성이 없으므로 물리 불변성이나 접촉 충실도도 이 시험의 범위 밖이다.
+원본 프레임, 추출 텍스처, 생성 USD는 로컬 `out/` 아래에만 두며 Git에서
+제외한다. 이 후보는 M1 시각 합격이 아니다.
+
 ## M2 — 기구와 물리 접촉
 
 두 기구의 shaft/jaw, 포트 기반 RCM 및 속도/행동 제한을 구현한다. 접촉 파지와 보조 attachment를 구분한다. 접근–닫기–견인–열기 시퀀스, 비접촉 negative control, 관통/미끄러짐/핀 drift를 측정한다. 실제 물성 데이터가 없으면 estimated로 유지한다.
