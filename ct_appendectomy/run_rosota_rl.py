@@ -49,6 +49,7 @@ def train_ppo(env, model, optimizer, *, total_steps, seed, rollout_steps=256):
     """Collect actual adapter episodes and apply PPO updates; simulator injected by caller."""
     import torch
     from ppo_agent import advantages, update
+    from physics_substep_audit import EpisodeSubstepHealth
 
     torch.manual_seed(seed)
     np.random.seed(seed)
@@ -59,6 +60,7 @@ def train_ppo(env, model, optimizer, *, total_steps, seed, rollout_steps=256):
     episode_return = 0.0
     episode_length = 0
     episode_min_distance = float("inf")
+    episode_substep_health = EpisodeSubstepHealth()
     episode_index = 0
 
     for step_index in range(total_steps):
@@ -70,6 +72,7 @@ def train_ppo(env, model, optimizer, *, total_steps, seed, rollout_steps=256):
             logp = float(log_prob[0].cpu())
             v = float(value[0].cpu())
         next_obs, reward, terminated, truncated, info = env.step(action_np)
+        episode_substep_health.update(info.get("physics_substep_health"))
         ended = bool(terminated or truncated)
         with torch.no_grad():
             next_state = torch.as_tensor(next_obs, dtype=torch.float32).unsqueeze(0)
@@ -96,12 +99,14 @@ def train_ppo(env, model, optimizer, *, total_steps, seed, rollout_steps=256):
                 "waypoint_success": bool(info.get("waypoint_is_success", False)),
                 "minimum_bimanual_waypoint_distance_m": episode_min_distance,
                 "failure": failure or "",
+                "physics_substep_health": episode_substep_health.as_dict(),
             })
             episode_index += 1
             obs, _ = env.reset(seed=seed + episode_index)
             episode_return = 0.0
             episode_length = 0
             episode_min_distance = float("inf")
+            episode_substep_health = EpisodeSubstepHealth()
 
         if len(trajectories["obs"]) >= rollout_steps or step_index + 1 == total_steps:
             adv, returns = advantages(trajectories["reward"], trajectories["value"],
@@ -118,7 +123,9 @@ def train_ppo(env, model, optimizer, *, total_steps, seed, rollout_steps=256):
                             **update(model, optimizer, batch)})
             trajectories = {key: [] for key in trajectories}
     return {"environment_steps": total_steps, "episodes": episodes, "updates": updates,
-            "unclosed_episode_at_rollout_end": bool(episode_length)}
+            "unclosed_episode_at_rollout_end": bool(episode_length),
+            "unclosed_episode_physics_substep_health": episode_substep_health.as_dict()
+            if episode_length else None}
 
 
 def _points_hash(env):
@@ -130,6 +137,7 @@ def _points_hash(env):
 
 def evaluate_policy(env, model, policy, *, seeds):
     import torch
+    from physics_substep_audit import EpisodeSubstepHealth
     results = []
     if policy == "random":
         env.action_space.seed(seeds[0] if seeds else 0)
@@ -138,6 +146,7 @@ def evaluate_policy(env, model, policy, *, seeds):
         start_hash = _points_hash(env)
         total_reward, length = 0.0, 0
         min_distance = float("inf")
+        episode_substep_health = EpisodeSubstepHealth()
         info = {}
         while True:
             if policy == "scripted":
@@ -151,6 +160,7 @@ def evaluate_policy(env, model, policy, *, seeds):
             else:
                 raise ValueError("Unknown evaluation policy: " + policy)
             obs, reward, terminated, truncated, info = env.step(action)
+            episode_substep_health.update(info.get("physics_substep_health"))
             total_reward += float(reward)
             length += 1
             min_distance = min(min_distance,
@@ -164,12 +174,16 @@ def evaluate_policy(env, model, policy, *, seeds):
             "failure": info.get("failure") or "",
             "minimum_bimanual_waypoint_distance_m": min_distance,
             "initial_tissue_state_sha256": start_hash,
+            "physics_substep_health": episode_substep_health.as_dict(),
             "appendectomy_completed": False,
         })
     return results
 
 
 def summarize(rows):
+    physics = [row.get("physics_substep_health") or {} for row in rows]
+    sampled_ratios = [audit["minimum_signed_volume_ratio"] for audit in physics
+                      if audit.get("minimum_signed_volume_ratio") is not None]
     return {
         "episodes": len(rows),
         "waypoint_success_rate": float(np.mean([r["waypoint_success"] for r in rows])) if rows else None,
@@ -179,6 +193,19 @@ def summarize(rows):
             [r["minimum_bimanual_waypoint_distance_m"] for r in rows])) if rows else None,
         "failures": {name: sum(r["failure"] == name for r in rows)
                      for name in sorted({r["failure"] for r in rows if r["failure"]})},
+        "physics_substep_safety": {
+            "sampling_complete": bool(rows) and all(audit.get("sampling_complete") is True
+                                                      for audit in physics),
+            "physics_ticks": sum(int(audit.get("physics_ticks", 0)) for audit in physics),
+            "ticks_with_inversion": sum(int(audit.get("ticks_with_inversion", 0))
+                                         for audit in physics),
+            "max_inverted_tetrahedra_in_one_tick": max(
+                (int(audit.get("max_inverted_tetrahedra_in_one_tick", 0)) for audit in physics),
+                default=0),
+            "minimum_signed_volume_ratio": min(sampled_ratios) if sampled_ratios else None,
+            "all_sampled_ticks_inversion_free": bool(rows) and all(
+                audit.get("all_sampled_ticks_inversion_free") is True for audit in physics),
+        },
     }
 
 

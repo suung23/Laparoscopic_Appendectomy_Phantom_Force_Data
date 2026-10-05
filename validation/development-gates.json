@@ -32,7 +32,11 @@
     },
     {
       "id": "ct-grasp-traction-release",
-      "status": "One assisted engineering sequence passed; material interpretation limited by unverified fixed-wait settlement; repeated matched controls pending",
+      "status": "One assisted engineering sequence passed; material interpretation limited by unverified fixed-wait settlement; exact solver-tick health sampling is now instrumented in the bimanual runner but has not been exercised in Isaac; repeated matched controls pending",
+      "evidence": [
+        "ct_appendectomy/physics_substep_audit.py",
+        "tests/test_physics_substep_audit.py"
+      ],
       "requires": [
         "live tissue inside jaw mouth",
         "explicitly labelled assistance",
@@ -96,8 +100,12 @@
     },
     {
       "id": "rl-validation",
-      "status": "not achieved; normalized Rosota PPO harness and paired-policy evaluation are implemented, but only CPU/mock preflight ran and simulator rollouts remain at zero; 2026-10-06 official CT launch failed before simulation because Windows Application Control blocked the Python select module",
-      "evidence": "validation/rosota-rl-adapter-preflight.json",
+      "status": "not achieved; normalized Rosota PPO harness, paired-policy evaluation, and solver-tick tissue-health aggregation are implemented, but only CPU/mock preflight ran and simulator rollouts remain at zero; 2026-10-06 official CT launch failed before simulation because Windows Application Control blocked the Python select module",
+      "evidence": [
+        "validation/rosota-rl-adapter-preflight.json",
+        "ct_appendectomy/physics_substep_audit.py",
+        "tests/test_physics_substep_audit.py"
+      ],
       "requires": [
         "multiple seeds and held-out anatomy",
         "unassisted contact task baseline",
@@ -105,6 +113,21 @@
         "wall-clock throughput and reproducible resets",
         "comparison with original Rosota and LapGym",
         "no reward improvement via invalid tissue physics"
+      ]
+    },
+    {
+      "id": "physics-substep-audit",
+      "status": "instrumented and CPU/mock tested; live PhysX sampling remains unverified because Isaac is blocked before startup",
+      "evidence": [
+        "ct_appendectomy/rosota_ct_env.py",
+        "ct_appendectomy/run_rosota_rl.py",
+        "ct_appendectomy/physics_substep_audit.py",
+        "tests/test_physics_substep_audit.py"
+      ],
+      "requires": [
+        "live Isaac run confirms sample count equals actual sim.step calls",
+        "transient inversion stops remaining solver substeps and fails episode",
+        "repeated bimanual contact trials remain inversion free"
       ]
     },
     {

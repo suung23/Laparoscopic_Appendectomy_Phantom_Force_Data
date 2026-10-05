@@ -334,7 +334,7 @@ class RosotaCTEnv(gym.Env):
         # One controller interval remains 1/480 s at every solver resolution.
         for _ in range(self.physics_substeps):
             self.sim.step(render=False)
-            if after_substep is not None:after_substep()
+            if after_substep is not None and after_substep() is False:break
 
     @staticmethod
     def _array(value):
@@ -418,7 +418,7 @@ class RosotaCTEnv(gym.Env):
                 'tissue_held':np.asarray([h in self.grasp.held for h in self.specs],np.int8),
                 'scope_pose':self.scope.pose.astype(np.float32),'goal_position':self.goal.astype(np.float32)}
 
-    def measure(self):
+    def measure(self,tissue_override=None,health_override=None):
         from pxr import UsdGeom
         from tissue_metrics import tetra_health
         ports={};mismatch=[];tool_frames={}
@@ -429,7 +429,8 @@ class RosotaCTEnv(gym.Env):
             tool_frames[h]=(tip,M[:3,:3])
             ports[h]=aperture_metrics(s['port'],s['normal'],tip,axis)
             fk=self.controllers[h].pose(self.q(h))[0];mismatch.append(float(np.linalg.norm(tip-fk)))
-        tissue=self.points();health=tetra_health(self.rest,tissue,self.tets)
+        tissue=self.points() if tissue_override is None else tissue_override
+        health=tetra_health(self.rest,tissue,self.tets) if health_override is None else health_override
         drift=float(np.linalg.norm(tissue[self.pin]-self.rest[self.pin],axis=1).max())
         scope=self.scope.metrics();failure=''
         if any(not x['aperture_clear'] or x['insertion_m']<.1-1e-6 for x in ports.values()):failure='trocar_violation'
@@ -464,6 +465,7 @@ class RosotaCTEnv(gym.Env):
     def step(self,action):
         if self.done:raise RuntimeError('Reset required')
         if not isinstance(action,dict) or set(action)!={'tools','scope'}:raise ValueError('tools and scope required')
+        from tissue_metrics import tetra_health
         tools=check_chunk(action['tools'],1);scope=np.asarray(action['scope'],float)
         if scope.shape!=(4,) or not np.isfinite(scope).all() or np.any(np.abs(scope)>1):raise ValueError('Invalid scope action')
         # Contact commissioning profile: cap requested travel to 3.6 mm/s.
@@ -475,6 +477,8 @@ class RosotaCTEnv(gym.Env):
         rejected={h:np.zeros(2) for h in self.specs}
         try:
             for tick in range(16):
+                substep_health_samples=[]
+                latest_tissue_points=[]
                 # Both hands act on the same pre-step state. Reading USD's
                 # FEM buffer once avoids four identical host conversions.
                 grasp_points=self.points() if self.grasp_mode!='none' else None
@@ -505,9 +509,23 @@ class RosotaCTEnv(gym.Env):
                     half=np.deg2rad(self.jaw_open[h]/2)
                     self.robots[h].apply_action(ArticulationAction(joint_positions=np.array([half,-half]),joint_indices=self.jaw_indices[h]))
                 self.scope.step(scope,1/480);self.scope.apply_usd(self.stage)
-                self._physics_step()
+                def sample_substep_health():
+                    tissue_points=self.points()
+                    health=tetra_health(self.rest,tissue_points,self.tets)
+                    latest_tissue_points.append(tissue_points)
+                    substep_health_samples.append(health)
+                    return health['inverted_tetrahedra']==0
+                self._physics_step(sample_substep_health)
                 for h in self.specs:self.update_guard(h)
-                info=self.measure();self.trace.append(info)
+                info=self.measure(tissue_override=latest_tissue_points[-1],
+                    health_override=substep_health_samples[-1])
+                from physics_substep_audit import summarize_interval
+                substep_health=summarize_interval(substep_health_samples,self.physics_dt)
+                info['physics_substep_health']=substep_health
+                if substep_health['ticks_with_inversion'] and info['failure']!='tet_inversion':
+                    info['failure_detail']=info['failure']
+                    info['failure']='tet_inversion'
+                self.trace.append(info)
                 if info['failure']:break
             self.sim.render()
         except Exception:
