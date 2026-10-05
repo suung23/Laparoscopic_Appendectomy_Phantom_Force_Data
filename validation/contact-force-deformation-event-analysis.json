@@ -1,0 +1,278 @@
+{
+  "status": "hash-verified force/deformation trace analysis; no biological calibration",
+  "source_manifest": "validation/ct-contact-feedback.json",
+  "jaw_effort_trip_threshold_nm": 0.0003,
+  "trial_count": 6,
+  "trials": {
+    "contact_baseline_v1": {
+      "source_report_sha256": "717f9b8e071c0769b172d80a343d65c093324d5529fe7e6c682f31c7feb8a701",
+      "source_trace_sha256": "ae763e502c42bd2bd9816592a44558ba986e0cde2d91d4e6279d5b109cb5f255",
+      "summary": {
+        "report_status": "passed",
+        "reported_failure": "",
+        "physics_frequency_hz": 480.0,
+        "trace_time_convention": "zero-origin at the first saved physics tick; excludes reset/settling; one-tick timing resolution",
+        "trace_samples": 480,
+        "minimum_signed_volume_ratio": 0.6440473618144217,
+        "maximum_inverted_tetrahedra": 0,
+        "first_inversion_tick": null,
+        "first_inversion_trace_time_s": null,
+        "first_any_jaw_threshold_crossing_tick": null,
+        "jaw_effort_trip_precedes_or_matches_first_inversion": null,
+        "arms": {
+          "left": {
+            "peak_absolute_jaw_effort_nm": 6.824272986705182e-07,
+            "jaw_effort_trip_threshold_nm": 0.0003,
+            "first_threshold_crossing_tick": null,
+            "first_threshold_crossing_trace_time_s": null,
+            "first_jaw_limit_tick": null,
+            "first_jaw_limit_trace_time_s": null,
+            "peak_locally_tared_mount_residual_n": 0.03418419080719288,
+            "mount_residual_is_calibrated_tissue_force": false
+          },
+          "right": {
+            "peak_absolute_jaw_effort_nm": 5.424303139989206e-07,
+            "jaw_effort_trip_threshold_nm": 0.0003,
+            "first_threshold_crossing_tick": null,
+            "first_threshold_crossing_trace_time_s": null,
+            "first_jaw_limit_tick": null,
+            "first_jaw_limit_trace_time_s": null,
+            "peak_locally_tared_mount_residual_n": 0.023900907417045078,
+            "mount_residual_is_calibrated_tissue_force": false
+          }
+        },
+        "measurement_scope": [
+          "Jaw effort is actuator-joint effort, not external tissue force.",
+          "Mount residual is locally tared joint reaction, not calibrated tissue wrench.",
+          "Tissue health is sampled on saved physics ticks; it is numerical mesh integrity, not biological injury."
+        ]
+      }
+    },
+    "contact_probe_v1": {
+      "source_report_sha256": "a41efbf04b8914c0c5aeb0a2de1a4e2f860405f26d19d0e5f16f76a2d1bbad5e",
+      "source_trace_sha256": "bc5262e82c93856d4bbcd67dd315a7b30d7f570e2c0c9ead13df361637ee8fdf",
+      "summary": {
+        "report_status": "passed",
+        "reported_failure": "",
+        "physics_frequency_hz": 480.0,
+        "trace_time_convention": "zero-origin at the first saved physics tick; excludes reset/settling; one-tick timing resolution",
+        "trace_samples": 4800,
+        "minimum_signed_volume_ratio": 0.6429382393123606,
+        "maximum_inverted_tetrahedra": 0,
+        "first_inversion_tick": null,
+        "first_inversion_trace_time_s": null,
+        "first_any_jaw_threshold_crossing_tick": null,
+        "jaw_effort_trip_precedes_or_matches_first_inversion": null,
+        "arms": {
+          "left": {
+            "peak_absolute_jaw_effort_nm": 6.667986554020899e-07,
+            "jaw_effort_trip_threshold_nm": 0.0003,
+            "first_threshold_crossing_tick": null,
+            "first_threshold_crossing_trace_time_s": null,
+            "first_jaw_limit_tick": null,
+            "first_jaw_limit_trace_time_s": null,
+            "peak_locally_tared_mount_residual_n": 0.031224791738364104,
+            "mount_residual_is_calibrated_tissue_force": false
+          },
+          "right": {
+            "peak_absolute_jaw_effort_nm": 5.46500473319611e-07,
+            "jaw_effort_trip_threshold_nm": 0.0003,
+            "first_threshold_crossing_tick": null,
+            "first_threshold_crossing_trace_time_s": null,
+            "first_jaw_limit_tick": null,
+            "first_jaw_limit_trace_time_s": null,
+            "peak_locally_tared_mount_residual_n": 0.045864760613502954,
+            "mount_residual_is_calibrated_tissue_force": false
+          }
+        },
+        "measurement_scope": [
+          "Jaw effort is actuator-joint effort, not external tissue force.",
+          "Mount residual is locally tared joint reaction, not calibrated tissue wrench.",
+          "Tissue health is sampled on saved physics ticks; it is numerical mesh integrity, not biological injury."
+        ]
+      }
+    },
+    "contact_surface_v1": {
+      "source_report_sha256": "afe6014abba028f75cef26c1bee8666669eed61960d88cde7a0a124af1f27b05",
+      "source_trace_sha256": "6c7c86943de1d52bf5af4013cc9f774d0ad31496a7a183846c6187f0509a8dab",
+      "summary": {
+        "report_status": "failed",
+        "reported_failure": "tet_inversion",
+        "physics_frequency_hz": 480.0,
+        "trace_time_convention": "zero-origin at the first saved physics tick; excludes reset/settling; one-tick timing resolution",
+        "trace_samples": 3611,
+        "minimum_signed_volume_ratio": -0.1984417180523184,
+        "maximum_inverted_tetrahedra": 1,
+        "first_inversion_tick": 3610,
+        "first_inversion_trace_time_s": 7.520833333333333,
+        "first_any_jaw_threshold_crossing_tick": 3559,
+        "jaw_effort_trip_precedes_or_matches_first_inversion": true,
+        "arms": {
+          "left": {
+            "peak_absolute_jaw_effort_nm": 0.0007161175599321723,
+            "jaw_effort_trip_threshold_nm": 0.0003,
+            "first_threshold_crossing_tick": 3559,
+            "first_threshold_crossing_trace_time_s": 7.414583333333334,
+            "first_jaw_limit_tick": null,
+            "first_jaw_limit_trace_time_s": null,
+            "peak_locally_tared_mount_residual_n": 0.04552447867115046,
+            "mount_residual_is_calibrated_tissue_force": false
+          },
+          "right": {
+            "peak_absolute_jaw_effort_nm": 5.411507686403638e-07,
+            "jaw_effort_trip_threshold_nm": 0.0003,
+            "first_threshold_crossing_tick": null,
+            "first_threshold_crossing_trace_time_s": null,
+            "first_jaw_limit_tick": null,
+            "first_jaw_limit_trace_time_s": null,
+            "peak_locally_tared_mount_residual_n": 0.027762908107535806,
+            "mount_residual_is_calibrated_tissue_force": false
+          }
+        },
+        "measurement_scope": [
+          "Jaw effort is actuator-joint effort, not external tissue force.",
+          "Mount residual is locally tared joint reaction, not calibrated tissue wrench.",
+          "Tissue health is sampled on saved physics ticks; it is numerical mesh integrity, not biological injury."
+        ]
+      }
+    },
+    "contact_surface_v2": {
+      "source_report_sha256": "98cf6a6225afafc0c2bfc28bf49f005fdc3eddd9e27ebcc7635d032a89c9eb65",
+      "source_trace_sha256": "2c52cf2984d42738a32cf0f200c502a84119ba12f83ca940381b55d16a63b1ae",
+      "summary": {
+        "report_status": "passed",
+        "reported_failure": "",
+        "physics_frequency_hz": 480.0,
+        "trace_time_convention": "zero-origin at the first saved physics tick; excludes reset/settling; one-tick timing resolution",
+        "trace_samples": 4800,
+        "minimum_signed_volume_ratio": 0.47205251545172916,
+        "maximum_inverted_tetrahedra": 0,
+        "first_inversion_tick": null,
+        "first_inversion_trace_time_s": null,
+        "first_any_jaw_threshold_crossing_tick": 3553,
+        "jaw_effort_trip_precedes_or_matches_first_inversion": null,
+        "arms": {
+          "left": {
+            "peak_absolute_jaw_effort_nm": 0.0003437156556174159,
+            "jaw_effort_trip_threshold_nm": 0.0003,
+            "first_threshold_crossing_tick": 3553,
+            "first_threshold_crossing_trace_time_s": 7.402083333333334,
+            "first_jaw_limit_tick": 3553,
+            "first_jaw_limit_trace_time_s": 7.402083333333334,
+            "peak_locally_tared_mount_residual_n": 0.04497884339806231,
+            "mount_residual_is_calibrated_tissue_force": false
+          },
+          "right": {
+            "peak_absolute_jaw_effort_nm": 5.418714295046811e-07,
+            "jaw_effort_trip_threshold_nm": 0.0003,
+            "first_threshold_crossing_tick": null,
+            "first_threshold_crossing_trace_time_s": null,
+            "first_jaw_limit_tick": null,
+            "first_jaw_limit_trace_time_s": null,
+            "peak_locally_tared_mount_residual_n": 0.029387569568849428,
+            "mount_residual_is_calibrated_tissue_force": false
+          }
+        },
+        "measurement_scope": [
+          "Jaw effort is actuator-joint effort, not external tissue force.",
+          "Mount residual is locally tared joint reaction, not calibrated tissue wrench.",
+          "Tissue health is sampled on saved physics ticks; it is numerical mesh integrity, not biological injury."
+        ]
+      }
+    },
+    "contact_surface_v3": {
+      "source_report_sha256": "f4d45f05be31e8a8a027d9c79b23c2c59bc80f92d44e72b40a0c564db11c7b65",
+      "source_trace_sha256": "fe504a2ba5b0030643ce65031de8f87bd0d6d46a2e9afdde8027b2f301b7ccae",
+      "summary": {
+        "report_status": "passed",
+        "reported_failure": "",
+        "physics_frequency_hz": 480.0,
+        "trace_time_convention": "zero-origin at the first saved physics tick; excludes reset/settling; one-tick timing resolution",
+        "trace_samples": 5760,
+        "minimum_signed_volume_ratio": 0.5939162665738477,
+        "maximum_inverted_tetrahedra": 0,
+        "first_inversion_tick": null,
+        "first_inversion_trace_time_s": null,
+        "first_any_jaw_threshold_crossing_tick": 3546,
+        "jaw_effort_trip_precedes_or_matches_first_inversion": null,
+        "arms": {
+          "left": {
+            "peak_absolute_jaw_effort_nm": 0.00031493150163441896,
+            "jaw_effort_trip_threshold_nm": 0.0003,
+            "first_threshold_crossing_tick": 3546,
+            "first_threshold_crossing_trace_time_s": 7.3875,
+            "first_jaw_limit_tick": 3546,
+            "first_jaw_limit_trace_time_s": 7.3875,
+            "peak_locally_tared_mount_residual_n": 0.044220270148489976,
+            "mount_residual_is_calibrated_tissue_force": false
+          },
+          "right": {
+            "peak_absolute_jaw_effort_nm": 5.418665409706591e-07,
+            "jaw_effort_trip_threshold_nm": 0.0003,
+            "first_threshold_crossing_tick": null,
+            "first_threshold_crossing_trace_time_s": null,
+            "first_jaw_limit_tick": null,
+            "first_jaw_limit_trace_time_s": null,
+            "peak_locally_tared_mount_residual_n": 0.030776553712213557,
+            "mount_residual_is_calibrated_tissue_force": false
+          }
+        },
+        "measurement_scope": [
+          "Jaw effort is actuator-joint effort, not external tissue force.",
+          "Mount residual is locally tared joint reaction, not calibrated tissue wrench.",
+          "Tissue health is sampled on saved physics ticks; it is numerical mesh integrity, not biological injury."
+        ]
+      }
+    },
+    "contact_free_control_v1": {
+      "source_report_sha256": "1cf93551be8b83cf09cb4a979cc11f5332fc644de7adb3f092a557f2cd11764b",
+      "source_trace_sha256": "b44383e707a20f299d217d9febac1810d5f3b1df288ac8372856e32cfa63e6e8",
+      "summary": {
+        "report_status": "passed",
+        "reported_failure": "",
+        "physics_frequency_hz": 480.0,
+        "trace_time_convention": "zero-origin at the first saved physics tick; excludes reset/settling; one-tick timing resolution",
+        "trace_samples": 3360,
+        "minimum_signed_volume_ratio": 0.6426746284494876,
+        "maximum_inverted_tetrahedra": 0,
+        "first_inversion_tick": null,
+        "first_inversion_trace_time_s": null,
+        "first_any_jaw_threshold_crossing_tick": null,
+        "jaw_effort_trip_precedes_or_matches_first_inversion": null,
+        "arms": {
+          "left": {
+            "peak_absolute_jaw_effort_nm": 6.346078293972823e-07,
+            "jaw_effort_trip_threshold_nm": 0.0003,
+            "first_threshold_crossing_tick": null,
+            "first_threshold_crossing_trace_time_s": null,
+            "first_jaw_limit_tick": null,
+            "first_jaw_limit_trace_time_s": null,
+            "peak_locally_tared_mount_residual_n": 0.0440552612149322,
+            "mount_residual_is_calibrated_tissue_force": false
+          },
+          "right": {
+            "peak_absolute_jaw_effort_nm": 5.153037250238413e-07,
+            "jaw_effort_trip_threshold_nm": 0.0003,
+            "first_threshold_crossing_tick": null,
+            "first_threshold_crossing_trace_time_s": null,
+            "first_jaw_limit_tick": null,
+            "first_jaw_limit_trace_time_s": null,
+            "peak_locally_tared_mount_residual_n": 0.03947344468128426,
+            "mount_residual_is_calibrated_tissue_force": false
+          }
+        },
+        "measurement_scope": [
+          "Jaw effort is actuator-joint effort, not external tissue force.",
+          "Mount residual is locally tared joint reaction, not calibrated tissue wrench.",
+          "Tissue health is sampled on saved physics ticks; it is numerical mesh integrity, not biological injury."
+        ]
+      }
+    }
+  },
+  "limitations": [
+    "All traces are prior local Isaac runs; this analysis does not rerun or validate the current executable.",
+    "Locally tared mount reactions and actuator-joint efforts are not calibrated tissue force.",
+    "A jaw-effort threshold preceding inversion does not prove absence of sub-inversion tissue damage.",
+    "One contact site was tested on one fixed anatomy; right-side contact and bimanual grasp remain unvalidated."
+  ]
+}

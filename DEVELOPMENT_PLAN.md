@@ -116,6 +116,8 @@ relaxation 시험이며, 실제 Isaac 실행과 force readback 없이는 통과�
 
 같은 forceps RL 로그에는 각 제어 단계의 pin drift, tool tracking error, 최대 노드 변위, 최소 signed tet volume ratio, p99 volume 변화와 inversion 수를 보존한다. fixture에는 힘 센서가 없으므로 `force_readback_available=false`로 기록한다. 집계 유닛 회귀는 `tests/test_episode_physics_metrics.py`에서 검사하지만, 이것은 Isaac episode나 물성·힘 검증 결과가 아니다.
 
+기존 Rosota CT force/tissue trace 6개도 저장된 SHA-256과 대조한 뒤 jaw-effort trip 및 tet inversion 시점을 한 tick 단위로 분석했다. 실패 trial에서 effort threshold가 inversion보다 약 0.106 s 먼저 발생했고, free-space 대조군에서는 false trip이 없었다. 이 비교는 시뮬레이터 내부 보호 로직의 event ordering만 평가한다. measured tissue force, 생물학적 손상 한계나 오른손 접촉 검증으로 확대 해석하지 않는다. 근거: `validation/contact-force-deformation-event-analysis.json`.
+
 ## M5 — 충실도와 성능
 
 RTX4090 단일 환경 1280×720 end-to-end 30 Hz를 개발 목표로 측정한다. p50/p95, VRAM, physics/render/transfer 지연을 분리한다. 수술 영상과 광학/재질을 비교하고 해부학 변이 및 seed별 회귀 검사를 수행한다. 느린 물리 정밀 모드와 학습 모드의 차이를 기록한다.

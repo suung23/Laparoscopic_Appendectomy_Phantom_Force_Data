@@ -86,3 +86,27 @@ engineering probe; no learned policy or sustained grasp is claimed.
 Free-space commissioning uses the same command without `--contact-probe`.
 Inspect report status and every-tick `physics_trace.json`, not just process
 exit code. Tet inversions or trocar violations invalidate the run.
+
+## Hash-verified force/deformation event review
+
+`analyze_contact_trial.py` checks each local report/trace hash against
+`validation/ct-contact-feedback.json` before deriving tick-aligned summaries.
+The six-trial summary is `validation/contact-force-deformation-event-analysis.json`.
+The failed 0.003 N.m contact trial first crossed the 0.0003 N.m jaw-effort
+threshold at trace time 7.4146 s, 51 physics ticks (0.1063 s) before the first
+inverted tetrahedron at 7.5208 s. At threshold crossing, the minimum signed
+volume ratio was 0.5999; the final observed minimum reached -0.1984. The peak
+locally tared mount residual was 0.0455 N, below its 0.15 N arm-stop threshold.
+This is why the jaw-effort latch was added; it does not prove that the chosen
+threshold protects biological tissue.
+
+In the capped/latching surface trials v2 and v3, the left jaw limit occurred at
+7.4021 s and 7.3875 s, with zero inverted tetrahedra. Their minimum signed
+volume ratios still fell to 0.4721 and 0.5939, so absence of inversion is only
+a mesh-integrity observation, not a tissue-safety pass. The free-space control
+peaked at 6.35e-7 N.m and produced no jaw trip. Neither surface trial validates
+right-hand tissue contact. Reproduce the hash-checked analysis with
+`python ct_appendectomy/analyze_contact_trial.py --out
+validation/contact-force-deformation-event-analysis.json` using the local
+asset Python environment. Joint effort and tared mount reaction remain
+simulator signals, not measured external tissue force.
