@@ -6,6 +6,15 @@
     "implementation": "ct_appendectomy/newton_contact_probe.py::_sum_tool_contact_wrenches",
     "implementation_sha256": "2b33ff86d65b609c74b0d579909961a378a419d102ec36d144b32500602aab3b",
     "force_law": "Re-evaluates Newton VBD _eval_soft_ef_contact on the solver's contact arrays and per-contact AVBD penalty/material parameters; sums the opposite body-side force and moment per diagnostic tool.",
+    "known_load_oracle": {
+      "test": "tests/test_newton_contact_wrench_kernel.py::test_known_penalty_contact_force_and_moment",
+      "result": "passed",
+      "method": "CPU Warp kernel output compared with an independent closed-form k*penetration result for 0.01 m overlap at 1000 N/m; known 0.5 m lever arm checks torque.",
+      "expected_force_on_tool_n": [0.0, -10.0, 0.0],
+      "expected_torque_on_tool_nm": [0.0, 0.0, -5.0],
+      "force_absolute_tolerance_n": 0.00001,
+      "torque_absolute_tolerance_nm": 0.00001
+    },
     "is_independent_sensor": false,
     "is_actuator_feedback": false,
     "is_calibrated_tissue_force": false,

@@ -74,7 +74,8 @@
     "Reran 1440-tick full-scene 5.1.0.0 baseline with implementation/helper hashes and load protocol; prior force error reproduced",
     "Added strict runtime comparator rejecting changed scenes/helpers, incomplete traces, and green statuses contradicted by measured errors",
     "Implemented calibrated multi-view surface-to-UV observation baking with fail-closed depth, mask, occlusion, and surface-facing checks; synthetic projection suite passed",
-    "Added per-tool Newton VBD contact-law wrench logging and ran one stable 960 Hz paired coupon; preserved the low-rate inverted-mesh failure and invalid force spike"
+    "Added per-tool Newton VBD contact-law wrench logging and ran one stable 960 Hz paired coupon; preserved the low-rate inverted-mesh failure and invalid force spike",
+    "Verified the wrench aggregation kernel against an independent closed-form 10 N force / 5 Nm moment synthetic load oracle; this validates logging arithmetic, not Newton's tissue-force model"
   ],
   "next_actions": [
     "Keep TGS external integration disabled: 6.1 failed pin gate before force testing. Investigate independent-process reset controls while preserving paired tolerance.",
