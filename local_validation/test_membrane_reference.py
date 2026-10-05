@@ -2,9 +2,23 @@ import sys,unittest
 from pathlib import Path
 import numpy as np
 import trimesh
+import torch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'ct_appendectomy'))
 from membrane_reference import MembraneReference
 class MembraneTests(unittest.TestCase):
+    def test_batch_independence_and_scalar_agreement(self):
+        p=np.array([[0.,0,0],[.01,0,0],[0,.01,0],[.01,.01,0]])
+        m=MembraneReference(p,[[0,1,2],[1,3,2]],12000,.45,.0002,1e-8)
+        q=p.copy();q[3,2]=.003
+        states=torch.tensor(np.stack([p,q,p+[.1,.2,.3]]),dtype=torch.float64)
+        e,f=m.batch_energy_forces(states)
+        for i in range(3):
+            scalar_e,scalar_f=m.energy_forces(states[i].numpy())
+            self.assertAlmostEqual(float(e[i]),scalar_e,places=12)
+            np.testing.assert_allclose(f[i].numpy(),scalar_f,atol=1e-12)
+        permutation=[2,0,1];ee,ff=m.batch_energy_forces(states[permutation])
+        torch.testing.assert_close(ee,e[permutation]);torch.testing.assert_close(ff,f[permutation])
+        self.assertFalse(states.requires_grad)
     def test_objectivity_and_force_gradient(self):
         p=np.array([[0.,0,0],[.01,0,0],[0,.01,0],[.01,.01,0]])
         m=MembraneReference(p,[[0,1,2],[1,3,2]],12000,.45,.0002)

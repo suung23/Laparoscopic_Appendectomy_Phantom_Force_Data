@@ -1,0 +1,20 @@
+{
+  "batch_size": 16,
+  "repeats_per_timing": 20,
+  "timings_seconds": {
+    "cpu_sequential": [
+      0.971449999982724,
+      0.9699227999954019,
+      0.9701869999989867
+    ],
+    "gpu_batch": [
+      0.05897809998714365,
+      0.0593232000246644,
+      0.05985079999663867
+    ]
+  },
+  "median_speedup": 16.35425937231334,
+  "max_force_difference_N": 4.3651918021162416e-17,
+  "max_energy_difference_J": 5.9293693571775246e-21,
+  "scope": "GPU-resident batched float64 membrane and bending force kernel; no contact, dynamics solver, rendering, or RL throughput claim"
+}

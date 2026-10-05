@@ -43,3 +43,30 @@ class MembraneReference:
         if p.shape!=self.shape or not torch.isfinite(p).all():raise ValueError('Invalid current points')
         energy=self.energy(p);force=-torch.autograd.grad(energy,p)[0]
         return float(energy.detach()),force.detach().cpu().numpy()
+
+    def batch_energy_forces(self,points):
+        """Independent BxNx3 states; tensors and returned results stay on device."""
+        if points.ndim!=3 or tuple(points.shape[1:])!=tuple(self.shape) or points.device!=self.faces.device or points.dtype!=torch.float64:
+            raise ValueError('Expected float64 batch on model device')
+        if not torch.isfinite(points).all():raise ValueError('Nonfinite batch')
+        p=points.detach().requires_grad_(True)
+        tri=p[:,self.faces];ds=torch.stack([tri[:,:,1]-tri[:,:,0],tri[:,:,2]-tri[:,:,0]],dim=-1)
+        f=ds@self.inverse
+        cross=torch.linalg.cross(f[:,:,:,0],f[:,:,:,1],dim=-1)
+        det=(cross*cross).sum(dim=-1)
+        if torch.any(det<=1e-16):raise ValueError('Collapsed batched membrane triangle')
+        logj=.5*torch.log(det);trace=(f*f).sum(dim=(-2,-1))
+        density=.5*self.mu*(trace-2-2*logj)+.5*self.lam*logj**2
+        energy=(density*self.area*self.thickness).sum(dim=1)
+        if self.bending is not None:
+            b=self.bending
+            cross=torch.linalg.cross(tri[:,:,1]-tri[:,:,0],tri[:,:,2]-tri[:,:,0],dim=-1)
+            length=torch.linalg.vector_norm(cross,dim=-1)
+            if torch.any(length<=1e-14):raise ValueError('Degenerate batched face')
+            normal=cross/length[:,:,None];a=normal[:,b.pairs[:,0]];c=normal[:,b.pairs[:,1]]
+            edge=p[:,b.edges[:,1]]-p[:,b.edges[:,0]];edge=edge/torch.linalg.vector_norm(edge,dim=-1)[:,:,None]
+            cosine=(a*c).sum(dim=-1);sine=(torch.linalg.cross(a,c,dim=-1)*edge).sum(dim=-1)
+            delta=torch.atan2(sine*b.rest_cos-cosine*b.rest_sin,cosine*b.rest_cos+sine*b.rest_sin)
+            energy=energy+.5*b.stiffness*(b.weight*delta**2).sum(dim=1)
+        forces=-torch.autograd.grad(energy.sum(),p)[0]
+        return energy.detach(),forces.detach()
