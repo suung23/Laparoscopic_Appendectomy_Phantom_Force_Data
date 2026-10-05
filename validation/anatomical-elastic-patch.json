@@ -1,0 +1,38 @@
+{
+  "status": "passed",
+  "scope": "Anatomical tetrahedral constitutive patch consistency only; no contact, dynamics, fitted tissue, or visual validation",
+  "mesh_sha256": "e601a3601ad3d6ce4414bf4ded7e5389678ac9e2b96931aca7ba31a784ced944",
+  "source_sha256": "36eea9c2f4fde35f75d17259d1106406b53bbe4499f7a274238c6cadd116221b",
+  "nodes": 5311,
+  "elements": 22312,
+  "boundary_nodes": 3538,
+  "parameters": {
+    "young_pa": 12000.0,
+    "poisson": 0.45,
+    "provenance": "engineering placeholders"
+  },
+  "energy_j": 0.001116611201829469,
+  "affine_volume_ratio": 0.89964,
+  "maximum_interior_residual_n": 8.786374405822528e-16,
+  "net_force_n": 2.613023241773535e-16,
+  "net_torque_nm": 6.61234341393062e-18,
+  "directional_derivative_n": 0.0001869876342714754,
+  "derivative_checks": [
+    {
+      "epsilon_m": 1e-07,
+      "finite_difference_n": 0.00018698763240912464,
+      "absolute_error_n": 1.8623507683918072e-12
+    },
+    {
+      "epsilon_m": 1e-08,
+      "finite_difference_n": 0.0001869876215671029,
+      "absolute_error_n": 1.2704372493246852e-11
+    },
+    {
+      "epsilon_m": 1e-09,
+      "finite_difference_n": 0.00018698768661923326,
+      "absolute_error_n": 5.2347757855883414e-11
+    }
+  ],
+  "patch_solve_status": "converged"
+}

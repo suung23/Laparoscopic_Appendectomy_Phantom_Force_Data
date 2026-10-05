@@ -1,0 +1,167 @@
+{
+  "status": "relaxation_incomplete",
+  "scope": "Anatomical tetrahedral constitutive patch consistency only; no contact, dynamics, fitted tissue, or visual validation",
+  "mesh_sha256": "e601a3601ad3d6ce4414bf4ded7e5389678ac9e2b96931aca7ba31a784ced944",
+  "source_sha256": "36eea9c2f4fde35f75d17259d1106406b53bbe4499f7a274238c6cadd116221b",
+  "nodes": 5311,
+  "elements": 22312,
+  "boundary_nodes": 3538,
+  "parameters": {
+    "young_pa": 12000.0,
+    "poisson": 0.45,
+    "provenance": "engineering placeholders"
+  },
+  "energy_j": 0.001116611201829469,
+  "affine_volume_ratio": 0.89964,
+  "maximum_interior_residual_n": 8.786374405822528e-16,
+  "net_force_n": 2.613023241773535e-16,
+  "net_torque_nm": 6.61234341393062e-18,
+  "directional_derivative_n": 0.0001869876342714754,
+  "derivative_checks": [
+    {
+      "epsilon_m": 1e-07,
+      "finite_difference_n": 0.00018698763240912464,
+      "absolute_error_n": 1.8623507683918072e-12
+    },
+    {
+      "epsilon_m": 1e-08,
+      "finite_difference_n": 0.0001869876215671029,
+      "absolute_error_n": 1.2704372493246852e-11
+    },
+    {
+      "epsilon_m": 1e-09,
+      "finite_difference_n": 0.00018698768661923326,
+      "absolute_error_n": 5.2347757855883414e-11
+    }
+  ],
+  "patch_solve_status": "converged",
+  "interior_relaxation": {
+    "status": "iteration_limit",
+    "requested_iterations": 30,
+    "initial_residual_n": 0.0006011075879938238,
+    "final_residual_n": 0.00022747510061725394,
+    "maximum_position_error_m": 1.992624827523194e-06,
+    "history": [
+      {
+        "energy_j": 0.0011167500905361989,
+        "residual_n": 0.0006011075879938238
+      },
+      {
+        "energy_j": 0.0011167022754519373,
+        "residual_n": 0.002811592798530653
+      },
+      {
+        "energy_j": 0.0011166672281904151,
+        "residual_n": 0.0015492714541733385
+      },
+      {
+        "energy_j": 0.0011166635217099135,
+        "residual_n": 0.002985871168484404
+      },
+      {
+        "energy_j": 0.0011166505384494663,
+        "residual_n": 0.0015893660326235693
+      },
+      {
+        "energy_j": 0.0011166441605416789,
+        "residual_n": 0.0006794412137537502
+      },
+      {
+        "energy_j": 0.0011166422095443564,
+        "residual_n": 0.0013869595310027523
+      },
+      {
+        "energy_j": 0.0011166374298426777,
+        "residual_n": 0.0006148892795849272
+      },
+      {
+        "energy_j": 0.001116635014486781,
+        "residual_n": 0.0004946722999652291
+      },
+      {
+        "energy_j": 0.0011166331097844245,
+        "residual_n": 0.0004458646526172062
+      },
+      {
+        "energy_j": 0.0011166315564831455,
+        "residual_n": 0.00041829107722641314
+      },
+      {
+        "energy_j": 0.0011166301467466348,
+        "residual_n": 0.0003774442083190585
+      },
+      {
+        "energy_j": 0.0011166289235597354,
+        "residual_n": 0.0003531687006174949
+      },
+      {
+        "energy_j": 0.0011166277994758736,
+        "residual_n": 0.00031939427137465243
+      },
+      {
+        "energy_j": 0.001116626806505311,
+        "residual_n": 0.00029810221362135353
+      },
+      {
+        "energy_j": 0.0011166258919062743,
+        "residual_n": 0.00027030657871955513
+      },
+      {
+        "energy_j": 0.001116625073460137,
+        "residual_n": 0.0002516306467911266
+      },
+      {
+        "energy_j": 0.0011166243178142188,
+        "residual_n": 0.00022882831588904163
+      },
+      {
+        "energy_j": 0.0011166241943679053,
+        "residual_n": 0.0006291988585381398
+      },
+      {
+        "energy_j": 0.0011166233566490599,
+        "residual_n": 0.0005712088503756162
+      },
+      {
+        "energy_j": 0.0011166227224224921,
+        "residual_n": 0.0005327271517884957
+      },
+      {
+        "energy_j": 0.0011166220527353426,
+        "residual_n": 0.0004822036465530362
+      },
+      {
+        "energy_j": 0.0011166215172942096,
+        "residual_n": 0.0004492893258145321
+      },
+      {
+        "energy_j": 0.0011166209712648225,
+        "residual_n": 0.00040720819293648693
+      },
+      {
+        "energy_j": 0.001116620515266546,
+        "residual_n": 0.00037887428024714766
+      },
+      {
+        "energy_j": 0.0011166200615563863,
+        "residual_n": 0.0003440065486080324
+      },
+      {
+        "energy_j": 0.0011166196696438346,
+        "residual_n": 0.0003195545268200057
+      },
+      {
+        "energy_j": 0.0011166192861814743,
+        "residual_n": 0.0002907240662722609
+      },
+      {
+        "energy_j": 0.0011166189462427606,
+        "residual_n": 0.0002695827431321404
+      },
+      {
+        "energy_j": 0.0011166186172499582,
+        "residual_n": 0.0002457856030219518
+      }
+    ]
+  }
+}
