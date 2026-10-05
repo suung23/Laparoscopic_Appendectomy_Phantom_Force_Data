@@ -1,0 +1,41 @@
+{
+  "status": "source review; no restricted CT data acquired",
+  "purpose": "Find a provenance-compatible human appendix volume and annotation to replace the heuristic atlas graft.",
+  "local_asset": {
+    "ct_case": "s0042",
+    "available_structures": ["colon", "small bowel", "iliopsoas", "iliac vessels", "duodenum", "liver", "bladder"],
+    "appendix_mask_present": false,
+    "appendix_source": "BodyParts3D atlas mesh with heuristic CT placement",
+    "registration_validated": false,
+    "evidence": "ct_appendectomy/profiles/s0042_hybrid.json and ct_appendectomy/build_scene.py"
+  },
+  "candidates": [
+    {
+      "name": "AOCR2024 AI Challenge",
+      "url": "https://www.kaggle.com/competitions/aocr2024/data",
+      "available_labels": "NIfTI masks delineating abnormal appendices in 500 appendicitis CT scans; 500 non-appendicitis controls",
+      "access_terms": "Subject to Kaggle competition rules",
+      "decision": "Not acquired or used; terms and permitted commercial simulator use require review",
+      "limits_for_asset": "Abnormal-appendix masks do not provide a validated mesoappendix, fat, vessel, or full surgical field model"
+    },
+    {
+      "name": "MaskAppendix study cohort",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11544770/",
+      "available_labels": "940 expert-labeled axial slices from 299 patients",
+      "access_terms": "The paper states raw data are available from the authors on request",
+      "decision": "Not acquired; not an openly downloadable volumetric asset source",
+      "limits_for_asset": "Selected 2D appendix slices are not a complete 3D operative-region reconstruction"
+    }
+  ],
+  "video_geometry_evidence": {
+    "report": "validation/appendix300-rigid-track-feasibility.json",
+    "clips_reviewed": 2,
+    "median_essential_inliers": {
+      "Center1_014.mp4": 11,
+      "Center2_2.mp4": 19
+    },
+    "interpretation": "Sparse and inconsistent rigid correspondences; insufficient evidence for a dependable metric 3D reconstruction from these clips alone"
+  },
+  "decision": "Keep the current atlas graft explicitly provisional. Build no patient-specific geometry from the monocular snippets or access-restricted CT masks. Continue provenance review for a complete, lawfully usable human CT volume with surrounding anatomy and expert appendix segmentation.",
+  "privacy": "No source CT or video copied into this report or Git. No patient metadata included."
+}
