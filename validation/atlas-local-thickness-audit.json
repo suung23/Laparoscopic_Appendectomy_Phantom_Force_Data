@@ -1,0 +1,70 @@
+{
+  "scene": "out/ct_appendectomy/appendix300_appearance_v1/appearance.usda",
+  "scene_sha256": "bdf6e62074876bf7046f5f35e96e929333635a7080d16adf608fbe043f1fb187",
+  "seed": 47,
+  "sampling": "Uniform faces, not uniform surface area",
+  "correction": "Excludes emitting face and zero-distance intersections; supersedes epsilon-offset audit",
+  "scope": "Local-coordinate normal chords, not anatomical wall thickness. Curvature and folds affect chords. No patient calibration.",
+  "meshes": {
+    "appendix": {
+      "vertices": 3538,
+      "triangles": 7072,
+      "watertight": true,
+      "winding_consistent": true,
+      "signed_volume_ml": 4.370395318500156,
+      "normal_interpolation": "vertex",
+      "normal_agreement_min": 0.9999999603170631,
+      "requested_rays": 1024,
+      "valid_rays": 1024,
+      "uv_seams": {
+        "shared_edges": 10608,
+        "discontinuous_uv_edges": 1196,
+        "interpretation": "UV seams are permitted, but unrelated image samples across them can produce visible colour discontinuities. This is not proof of a shading defect."
+      },
+      "inward_chord_mm_p05_p50_p95": [
+        7.3452037682460105,
+        8.494772755258003,
+        13.621604668096484
+      ]
+    },
+    "mesoappendix": {
+      "vertices": 2778,
+      "triangles": 5552,
+      "watertight": true,
+      "winding_consistent": true,
+      "signed_volume_ml": 3.185311471914684,
+      "normal_interpolation": "vertex",
+      "normal_agreement_min": 0.9999999593750412,
+      "requested_rays": 1024,
+      "valid_rays": 1024,
+      "uv_seams": {
+        "shared_edges": 8328,
+        "discontinuous_uv_edges": 1084,
+        "interpretation": "UV seams are permitted, but unrelated image samples across them can produce visible colour discontinuities. This is not proof of a shading defect."
+      },
+      "inward_chord_mm_p05_p50_p95": [
+        0.9317546468454665,
+        2.1870667447658128,
+        10.990198163497315
+      ]
+    },
+    "appendicular_artery": {
+      "vertices": 1738,
+      "triangles": 3472,
+      "watertight": true,
+      "winding_consistent": true,
+      "signed_volume_ml": 0.19366838567384795,
+      "normal_interpolation": "vertex",
+      "normal_agreement_min": 0.9999999618586013,
+      "requested_rays": 1024,
+      "valid_rays": 1024,
+      "uv_seams": null,
+      "inward_chord_mm_p05_p50_p95": [
+        0.8032057575656334,
+        1.303024769588019,
+        2.087902204554901
+      ]
+    }
+  },
+  "analytic_cube_regression_passed": true
+}
