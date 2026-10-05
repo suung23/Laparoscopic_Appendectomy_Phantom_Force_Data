@@ -1,0 +1,64 @@
+{
+  "status": "incomplete",
+  "render_sha256": "f05e15baea40300b437d5bf5ea36d511f3e331a3c8b5f2baf5fc4479a6550d35",
+  "visual_observations": [
+    "Root bunching reduced compared with early strip",
+    "Connected lobulated layer visible",
+    "Surrounding anatomy and uniform material remain inadequate for real endoscope similarity"
+  ],
+  "collision_review": {
+    "status": "sampled diagnostic only",
+    "backend": "independent scipy ray parity / exhaustive closest point",
+    "surface": "out\\ct_appendectomy\\fat_layer_v7\\layer.npz",
+    "samples": {
+      "vertices": 49858,
+      "edge_midpoints": 149568,
+      "face_centroids": 99712
+    },
+    "penetrations": {
+      "/SurgicalRegion/appendix_FJ2565": {
+        "vertices": {
+          "count_over_0_1mm": 113,
+          "max_depth_mm": 0.5997055527620292
+        },
+        "edge_midpoints": {
+          "count_over_0_1mm": 289,
+          "max_depth_mm": 0.579870682796018
+        },
+        "face_centroids": {
+          "count_over_0_1mm": 187,
+          "max_depth_mm": 0.5649427797551881
+        }
+      },
+      "/SurgicalRegion/appendicular_artery_FJ3410": {
+        "vertices": {
+          "count_over_0_1mm": 582,
+          "max_depth_mm": 0.5684030177563909
+        },
+        "edge_midpoints": {
+          "count_over_0_1mm": 1746,
+          "max_depth_mm": 0.5619499735269938
+        },
+        "face_centroids": {
+          "count_over_0_1mm": 1171,
+          "max_depth_mm": 0.5339700797286338
+        }
+      }
+    },
+    "exhaustive_intersection_check": false,
+    "clinical_validity": false
+  },
+  "usd_follower_test": {
+    "vertices": 49858,
+    "parent_translation_m": 0.001,
+    "position_tolerance_m": 1e-08,
+    "session_layer_only": true,
+    "writes": [
+      "points",
+      "normals",
+      "extent"
+    ],
+    "scope": "USD visual following only; no force transfer or RL loop integration"
+  },
+  "adopted": false
+}
