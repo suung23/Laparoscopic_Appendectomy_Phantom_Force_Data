@@ -1,0 +1,124 @@
+{
+  "status": "material_sensitivity_failed_for_literature_scaled_values",
+  "engine": "Newton 1.4.0 / Warp 1.15.0 CUDA VBD",
+  "device": "NVIDIA GeForce RTX 4090",
+  "scope": "offline reduced CT appendix contact coupon; not Isaac runtime, not force calibration, not surgical validation",
+  "source_mesh": {
+    "path": "out/ct_appendectomy/cavity/appendix.ply (git-ignored)",
+    "sha256": "1706f6459b47735bd3f32f0f7597f0d50b5650e3e136b1bf46efff055cea7803",
+    "nodes": 1614,
+    "tetrahedra": 5940,
+    "voxel_size_m": 0.002
+  },
+  "matched_protocol": {
+    "physics_frequency_hz": 960,
+    "vbd_iterations": 32,
+    "substeps_per_60hz_control_frame": 16,
+    "simulated_seconds": 3.5,
+    "density_kg_m3": 1050,
+    "poissons_ratio": 0.45,
+    "gravity_m_s2": [0, -9.81, 0],
+    "tool_geometry": "two kinematic 3 mm radius spheres at 40% and 75% of appendix-axis length",
+    "tool_path": "same scripted 9 mm approach, hold and retreat for every material; contact-enabled and contact-disabled matched runs",
+    "contact_material": "Newton soft contact, mu=0.5; not a CAD jaw or friction-grasp model",
+    "boundary": "proximal CT-anchor neighborhood pinned; gravity support plane",
+    "health_sampling": "every 60 Hz control frame, not every internal solver substep"
+  },
+  "material_sources": {
+    "rheology_reference_doi": "10.3390/biomedicines12112588",
+    "conversion": "E = 2 * (1 + nu) * G_prime",
+    "interpretation": "small-strain isotropic equivalent of ex-vivo 1 Hz, 1% shear storage modulus; not measured Young modulus, not fitted constitutive response",
+    "baseline_youngs_modulus_pa": 12000,
+    "literature_scaled_youngs_modulus_pa": {
+      "control": 3294.4,
+      "purulent": 1931.4,
+      "gangrenous": 1861.8
+    }
+  },
+  "results": [
+    {
+      "condition": "current_baseline",
+      "youngs_modulus_pa": 12000,
+      "local_report": "out/ct_appendectomy/newton_contact_fine/report.json (git-ignored)",
+      "local_report_sha256": "92a8ea9feb7915db6d742edadb46892feba3090de02a2ed86e581033fe41e3e8",
+      "contact_disabled": {"inverted_tetrahedra": 0, "minimum_signed_volume_ratio": 0.7251434},
+      "contact_enabled": {"inverted_tetrahedra": 0, "minimum_signed_volume_ratio": 0.7002975},
+      "contact_induced_max_displacement_m": 0.0063451,
+      "overall_status": "passed numerical-health checks in the existing matched coupon"
+    },
+    {
+      "condition": "control_literature_scaled",
+      "youngs_modulus_pa": 3294.4,
+      "local_report": "out/ct_appendectomy/newton_material_sweep_control_960hz/report.json (git-ignored)",
+      "local_report_sha256": "a886928dc5571901951e01dc5078124c4e2709af1892d2cbdf113eea8ff6105f",
+      "contact_disabled": {"inverted_tetrahedra": 0, "minimum_signed_volume_ratio": 0.4517014},
+      "contact_enabled": {"inverted_tetrahedra": 9, "minimum_signed_volume_ratio": -2.3469952},
+      "contact_induced_max_displacement_m": 0.0250244,
+      "overall_status": "failed; contact run inverted tetrahedra"
+    },
+    {
+      "condition": "purulent_literature_scaled",
+      "youngs_modulus_pa": 1931.4,
+      "local_report": "out/ct_appendectomy/newton_material_sweep_purulent_960hz/report.json (git-ignored)",
+      "local_report_sha256": "27bd8381c609db821f61a960e012afa17158fede99517f84194e68c2289e51b0",
+      "contact_disabled": {"inverted_tetrahedra": 2, "minimum_signed_volume_ratio": -0.1175932},
+      "contact_enabled": {"inverted_tetrahedra": 8, "minimum_signed_volume_ratio": -2.2819124},
+      "contact_induced_max_displacement_m": 0.0285336,
+      "overall_status": "failed; both matched runs inverted tetrahedra"
+    },
+    {
+      "condition": "gangrenous_literature_scaled",
+      "youngs_modulus_pa": 1861.8,
+      "local_report": "out/ct_appendectomy/newton_material_sweep_gangrenous_960hz/report.json (git-ignored)",
+      "local_report_sha256": "a5ba694a087613d013f07044cced395ced8fb16a358bcdd8d9d71124f4be0249",
+      "contact_disabled": {"inverted_tetrahedra": 0, "minimum_signed_volume_ratio": 0.3248348},
+      "contact_enabled": {"inverted_tetrahedra": 12, "minimum_signed_volume_ratio": -1.7514084},
+      "contact_induced_max_displacement_m": 0.0287414,
+      "overall_status": "failed; contact run inverted tetrahedra"
+    }
+  ],
+  "numerical_sensitivity_followups": [
+    {
+      "condition": "control_literature_scaled_more_vbd_iterations",
+      "youngs_modulus_pa": 3294.4,
+      "physics_frequency_hz": 960,
+      "vbd_iterations": 64,
+      "local_report": "out/ct_appendectomy/newton_material_sweep_control_960hz_iter64/report.json (git-ignored)",
+      "local_report_sha256": "2e10a2a645b3411a59ce85347a59e53de3ded1fdd900f6b157fdb32aba00f4b5",
+      "contact_disabled": {"inverted_tetrahedra": 0, "minimum_signed_volume_ratio": 0.4614508},
+      "contact_enabled": {"inverted_tetrahedra": 8, "minimum_signed_volume_ratio": -3.0521188},
+      "contact_induced_max_displacement_m": 0.0234093,
+      "interpretation": "failed; doubling VBD iterations reduced inverted count from 9 to 8 but did not stabilize contact, and minimum signed-volume ratio worsened"
+    },
+    {
+      "condition": "control_literature_scaled_half_time_step",
+      "youngs_modulus_pa": 3294.4,
+      "physics_frequency_hz": 1920,
+      "vbd_iterations": 32,
+      "local_report": "out/ct_appendectomy/newton_material_sweep_control_1920hz_iter32/report.json (git-ignored)",
+      "local_report_sha256": "3339e59caf3f87ba573f1d4c1859fc2f436c34ef7d38dd241bba6599b0433800",
+      "contact_disabled": {"inverted_tetrahedra": 0, "minimum_signed_volume_ratio": 0.4538512},
+      "contact_enabled": {"inverted_tetrahedra": 7, "minimum_signed_volume_ratio": -1.6176795},
+      "contact_induced_max_displacement_m": 0.0278861,
+      "interpretation": "failed; halving the time step modestly reduced inverted count from 9 to 7 and improved the minimum volume ratio, but did not prevent inversion"
+    }
+  ],
+  "force_measurement": {
+    "calibrated_tissue_force_n": false,
+    "tool_reaction_force_recorded": false,
+    "reason": "The coupon reports deformation and element health only; its kinematic-sphere contact response is not instrumented as an independently verified force sensor."
+  },
+  "interpretation": [
+    "The lower literature-scaled scalar moduli are not stable in this fixed-mesh, fixed-boundary Newton contact setup; do not swap them into production or RL assets.",
+    "The failures identify a solver/material compatibility problem for this coupon. They do not refute the human rheology measurements and do not prove that a nonlinear, viscoelastic, layered tissue model would fail.",
+    "Reported contact-induced displacement is a numerical response, not a biological target value."
+  ],
+  "privacy": "Only mesh hash and aggregate solver metrics are tracked. CT-derived mesh files, simulation traces and point arrays remain local and git-ignored.",
+  "limitations": [
+    "Voxelized reduced mesh, not the production deformable mesh",
+    "Isotropic linear-elastic VBD material with no measured loss modulus, rate dependence, compression stiffening, tearing or disease heterogeneity",
+    "Spherical kinematic contacts, not instrument CAD or trocar-constrained arms",
+    "No physical force-displacement ground truth and no runtime Isaac integration",
+    "Health checks sample control frames, not every solver substep"
+  ]
+}

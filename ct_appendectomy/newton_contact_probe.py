@@ -22,6 +22,14 @@ from tetra_cut import signed_volumes,boundary_faces
 from tissue_metrics import tetra_health
 
 
+def isotropic_lame_parameters(youngs_modulus_pa, poissons_ratio):
+    """Map an isotropic Young's modulus prior to Newton's Lamé coefficients."""
+    young=float(youngs_modulus_pa);nu=float(poissons_ratio)
+    if not np.isfinite(young) or young<=0 or not np.isfinite(nu) or not 0<=nu<.5:
+        raise ValueError('Young modulus must be positive and Poisson ratio in [0, 0.5)')
+    return young/(2*(1+nu)), young*nu/((1+nu)*(1-2*nu))
+
+
 def volume_mesh(source):
     mesh=trimesh.load(source,force='mesh')
     if not mesh.is_watertight:raise ValueError('Watertight appendix surface required')
@@ -44,12 +52,13 @@ def volume_mesh(source):
     return points,cells
 
 
-def simulate(points,cells,base,contact,substeps=4,iterations=12,use_graph=False):
+def simulate(points,cells,base,contact,substeps=4,iterations=12,use_graph=False,
+             youngs_modulus_pa=12000.,poissons_ratio=.45):
     builder=newton.ModelBuilder(up_axis=newton.Axis.Y,gravity=-9.81)
-    young=12000.;nu=.45
+    k_mu,k_lambda=isotropic_lame_parameters(youngs_modulus_pa,poissons_ratio)
     builder.add_soft_mesh(pos=wp.vec3(),rot=wp.quat_identity(),scale=1.,vel=wp.vec3(),
         vertices=[wp.vec3(*q) for q in points],indices=cells.ravel().tolist(),density=1050.,
-        k_mu=young/(2*(1+nu)),k_lambda=young*nu/((1+nu)*(1-2*nu)),k_damp=.01,
+        k_mu=k_mu,k_lambda=k_lambda,k_damp=.01,
         particle_radius=.0004,validate_mesh=True)
     distance=np.linalg.norm(points-base,axis=1)
     pin=np.flatnonzero(distance<max(.004,distance.min()+.002))
@@ -103,7 +112,8 @@ def simulate(points,cells,base,contact,substeps=4,iterations=12,use_graph=False)
         trace.append({'frame':frame,'inverted_tetrahedra':health['inverted_tetrahedra'],
                       'min_volume_ratio':health['minimum_signed_volume_ratio']})
     wp.synchronize();elapsed=time.perf_counter()-started
-    return {'contact_enabled':contact,'worst_inverted_tetrahedra':worst,'minimum_volume_ratio':minimum,
+    return {'contact_enabled':contact,'youngs_modulus_pa':float(youngs_modulus_pa),
+        'poissons_ratio':float(poissons_ratio),'worst_inverted_tetrahedra':worst,'minimum_volume_ratio':minimum,
         'pin_drift_m':float(np.linalg.norm(q[pin]-points[pin],axis=1).max()),
         'wall_seconds_including_kernel_load':elapsed,'simulated_seconds':3.5},reference,pressed,q,trace
 
@@ -115,12 +125,16 @@ def main():
     p.add_argument('--substeps',type=int,default=4)
     p.add_argument('--iterations',type=int,default=12)
     p.add_argument('--cuda-graph',action='store_true',help='Experimental negative-control path; failed contact stability validation')
+    p.add_argument('--youngs-modulus-pa',type=float,default=12000.)
+    p.add_argument('--poissons-ratio',type=float,default=.45)
     a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True)
     if a.substeps<1 or a.iterations<1:p.error('Positive integration settings required')
     if a.cuda_graph and a.substeps%2:p.error('CUDA graph requires an even substep count for state ping-pong')
     report={'status':'starting','engine':f'Newton {newton.__version__} / Warp CUDA VBD',
             'scope':'dual spherical contact coupon','isaac_integrated':False,'cad_jaws':False,
-            'substeps':a.substeps,'iterations':a.iterations,'cuda_graph':a.cuda_graph}
+            'substeps':a.substeps,'iterations':a.iterations,'cuda_graph':a.cuda_graph,
+            'material':{'youngs_modulus_pa':a.youngs_modulus_pa,'poissons_ratio':a.poissons_ratio,
+                        'interpretation':'uncalibrated isotropic parameter sweep; not a fit to appendix force-displacement data'}}
     def save():(a.out/'report.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
     save()
     try:
@@ -131,7 +145,8 @@ def main():
         report.update(nodes=len(points),tetrahedra=len(cells),source_sha256=hashlib.sha256(a.source.read_bytes()).hexdigest())
         results=[];pressed=[]
         for contact in (False,True):
-            metrics,reference,press,final,trace=simulate(points,cells,np.array(manifest['ct_anchor_m']),contact,a.substeps,a.iterations,a.cuda_graph)
+            metrics,reference,press,final,trace=simulate(points,cells,np.array(manifest['ct_anchor_m']),contact,
+                a.substeps,a.iterations,a.cuda_graph,a.youngs_modulus_pa,a.poissons_ratio)
             results.append(metrics);pressed.append(press)
             np.savez_compressed(a.out/f'contact_{contact}.npz',rest=points,reference=reference,pressed=press,final=final,tetrahedra=cells)
             (a.out/f'trace_{contact}.json').write_text(json.dumps(trace))
