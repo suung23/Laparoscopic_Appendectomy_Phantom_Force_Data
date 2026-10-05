@@ -1,0 +1,7 @@
+{
+  "before": "SdfTokenListOp(Explicit Items: [OmniPhysicsDeformableBodyAPI, MaterialBindingAPI])",
+  "after": "SdfTokenListOp(Explicit Items: [OmniPhysicsDeformableBodyAPI, MaterialBindingAPI, PhysxBaseDeformableBodyAPI])",
+  "authored_iterations": 64,
+  "authored_linear_damping": 0.1,
+  "scope": "Schema correction candidate only. Material, mesh, anchors and support unchanged; runtime validation pending."
+}

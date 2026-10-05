@@ -1,0 +1,153 @@
+{
+  "status": "failed",
+  "observation": "physx_tensor",
+  "floor_top_y_m": -0.027332229539752007,
+  "inverted_elements": [
+    {
+      "element": 1216,
+      "signed_volume_ratio": -0.44598964194529245,
+      "nodes": [
+        1534,
+        1532,
+        388,
+        1536
+      ],
+      "pin_nodes": [
+        1534,
+        1536
+      ],
+      "minimum_height_above_support_m": 0.056787487119436264,
+      "rest_condition_number": 61.505400171239614,
+      "principal_stretches": [
+        2.039077112881191,
+        1.1113846979093425,
+        0.19680073199490208
+      ],
+      "nearest_pin_rest_distance_m": 0.0
+    },
+    {
+      "element": 1411,
+      "signed_volume_ratio": -0.18127034944568543,
+      "nodes": [
+        2220,
+        560,
+        2218,
+        2222
+      ],
+      "pin_nodes": [],
+      "minimum_height_above_support_m": 0.018680693581700325,
+      "rest_condition_number": 108.77336740771482,
+      "principal_stretches": [
+        1.3153405349886507,
+        0.8900373672150247,
+        0.15483898920097297
+      ],
+      "nearest_pin_rest_distance_m": 0.025236140287553045
+    },
+    {
+      "element": 2928,
+      "signed_volume_ratio": -0.024935985351381168,
+      "nodes": [
+        1951,
+        1946,
+        94,
+        1968
+      ],
+      "pin_nodes": [],
+      "minimum_height_above_support_m": 0.03246536199003458,
+      "rest_condition_number": 71.2164214657434,
+      "principal_stretches": [
+        1.5961851883827987,
+        0.8490662016106254,
+        0.018399317096861448
+      ],
+      "nearest_pin_rest_distance_m": 0.016342426921512263
+    },
+    {
+      "element": 6577,
+      "signed_volume_ratio": -0.48103549906669635,
+      "nodes": [
+        1498,
+        1344,
+        342,
+        1491
+      ],
+      "pin_nodes": [
+        1344,
+        1491,
+        1498
+      ],
+      "minimum_height_above_support_m": 0.06159880943596363,
+      "rest_condition_number": 39.979356216428975,
+      "principal_stretches": [
+        1.3674182456405304,
+        1.0000282920099475,
+        0.35177378356925465
+      ],
+      "nearest_pin_rest_distance_m": 0.0
+    },
+    {
+      "element": 6765,
+      "signed_volume_ratio": -0.15311776496214904,
+      "nodes": [
+        342,
+        1498,
+        1345,
+        1496
+      ],
+      "pin_nodes": [
+        1496,
+        1498
+      ],
+      "minimum_height_above_support_m": 0.061958519741892815,
+      "rest_condition_number": 56.21036204763496,
+      "principal_stretches": [
+        1.3177548652143778,
+        0.99518870660406,
+        0.11675769530752182
+      ],
+      "nearest_pin_rest_distance_m": 0.0
+    },
+    {
+      "element": 8952,
+      "signed_volume_ratio": -1.4822215858960803,
+      "nodes": [
+        1607,
+        1605,
+        60,
+        1529
+      ],
+      "pin_nodes": [
+        1529
+      ],
+      "minimum_height_above_support_m": 0.055627988651394844,
+      "rest_condition_number": 27.69084538152208,
+      "principal_stretches": [
+        2.792766209896999,
+        1.2772559922113735,
+        0.41552829655095935
+      ],
+      "nearest_pin_rest_distance_m": 0.0
+    },
+    {
+      "element": 12371,
+      "signed_volume_ratio": -0.00838445363438428,
+      "nodes": [
+        1945,
+        491,
+        1948,
+        1953
+      ],
+      "pin_nodes": [],
+      "minimum_height_above_support_m": 0.0314885382540524,
+      "rest_condition_number": 59.70748115669332,
+      "principal_stretches": [
+        1.712826357685436,
+        0.8780133157594072,
+        0.005575198409662532
+      ],
+      "nearest_pin_rest_distance_m": 0.01705438828202486
+    }
+  ],
+  "scope": "Localization and strain diagnostic, not causal proof. Singular values alone cannot detect inversion; signed determinant retained."
+}
