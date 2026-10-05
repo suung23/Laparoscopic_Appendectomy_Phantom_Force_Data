@@ -1,0 +1,60 @@
+{
+  "grid_shape": [
+    58,
+    94
+  ],
+  "grid_spacing_m": 0.00075,
+  "rays": 5452,
+  "intersected_rays": 1829,
+  "paired_rays": 1686,
+  "multiple_intervals": 142,
+  "odd_intersections": 0,
+  "accepted_fraction_of_intersected_rays": 0.9218151995626025,
+  "rejected_outside_midpoints": 1,
+  "supported_projected_area_fraction": 0.3092443140132062,
+  "axis_chord_mm_p05_p50_p95": [
+    0.9637768138167206,
+    1.9706625457615394,
+    7.896902016358977
+  ],
+  "vertices": 1684,
+  "triangles": 2998,
+  "connected_surface_components": 1,
+  "boundary_edges": 370,
+  "frame_axes": [
+    [
+      0.8231928559368396,
+      0.4776847411247669,
+      -0.3068726283511033
+    ],
+    [
+      0.2720248931836491,
+      0.14258735234671144,
+      0.9516676438963233
+    ],
+    [
+      0.49835326769569227,
+      -0.8668829996298921,
+      -0.012565250881161963
+    ]
+  ],
+  "frame_center_m": [
+    -0.05627611403396332,
+    0.019144234794122434,
+    -0.013728819010025447
+  ],
+  "source_sha256": "cad6294ed4e7a151bd968ff5c7147d47e4e57d1345c330d60d3221a362fbb68c",
+  "source_prim": "/SurgicalRegion/mesoappendix_FJ3397",
+  "status": "authoring candidate; not anatomical or physical validation",
+  "shell_thickness_m": null,
+  "calibrated": false,
+  "fat_reconstructed": false,
+  "physics_integrated": false,
+  "limitations": [
+    "PCA projection can lose folds; rejected rays are retained in NPZ",
+    "Grid sampling loses narrow features and trims boundaries",
+    "Envelope chord includes all atlas volume, not anatomical membrane thickness",
+    "Midsurface has open boundaries and no material thickness or contact model",
+    "No replacement of the production simulator geometry"
+  ]
+}
