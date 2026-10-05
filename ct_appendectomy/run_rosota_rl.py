@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 
 import numpy as np
 
@@ -22,7 +23,33 @@ def file_sha256(path):
     return h.hexdigest()
 
 
-def asset_contract(assets, fr3_urdf, task="waypoint"):
+def usd_dependency_hashes(path):
+    """Hash local files referenced by text USD layers without recording paths."""
+    root=Path(path).resolve()
+    pending=[root];visited=set();hashes=set()
+    while pending:
+        layer=pending.pop().resolve()
+        if layer in visited:continue
+        visited.add(layer)
+        if not layer.is_file():raise FileNotFoundError("Missing local USD asset: "+layer.name)
+        try:text=layer.read_text(encoding="utf-8")
+        except UnicodeDecodeError as error:
+            raise ValueError("Appearance contract requires text USD so texture dependencies can be hashed") from error
+        for reference in sorted(set(re.findall(r"@([^@]+)@",text))):
+            if "://" in reference:
+                raise ValueError("Remote USD dependencies are not allowed in a local appearance contract")
+            dependency=Path(reference)
+            if not dependency.is_absolute():dependency=(layer.parent/dependency).resolve()
+            if not dependency.is_file():
+                raise FileNotFoundError("Missing USD dependency: "+Path(reference).name)
+            digest=file_sha256(dependency)
+            hashes.add(digest)
+            if dependency.suffix.lower() in {".usd",".usda",".usdc"}:
+                pending.append(dependency)
+    return sorted(hashes)
+
+
+def asset_contract(assets, fr3_urdf, task="waypoint", appearance=None):
     task_dimensions={"waypoint":("RosotaCTEnv/waypoint-reach-v1","privileged_state_v1",53,
                                   "mlp_privileged_v1"),
                      "unassisted-traction":("RosotaCTEnv/unassisted-bimanual-traction-v1",
@@ -45,12 +72,15 @@ def asset_contract(assets, fr3_urdf, task="waypoint"):
         "action_dim": 14,
         "policy_architecture": policy_architecture,
         "rgb_observation_shape": [90,160,3] if task=="vision-traction" else None,
+        "appearance_sha256": file_sha256(appearance) if appearance else None,
+        "appearance_dependency_sha256": usd_dependency_hashes(appearance) if appearance else [],
         "scene_sha256": file_sha256(scene),
         "config_sha256": file_sha256(config),
         "fr3_urdf_sha256": file_sha256(fr3_urdf),
         "adapter_sha256": file_sha256(Path(__file__).with_name("rosota_rl_adapter.py")),
         "controller_sha256": file_sha256(Path(__file__).with_name("rosota_controller.py")),
         "ppo_sha256": file_sha256(Path(__file__).with_name("ppo_agent.py")),
+        "runner_sha256": file_sha256(__file__),
         "policy_observes_rgb": task=="vision-traction",
         "tissue_force_calibrated": False,
         "patient_level_holdout_verified": False,
@@ -270,9 +300,9 @@ def main():
         parser.error("Evaluation-only mode requires --checkpoint")
     if not args.fr3_urdf.is_file():
         parser.error("FR3 URDF is missing: " + str(args.fr3_urdf))
-    training_contract = asset_contract(args.assets, args.fr3_urdf, args.task)
+    training_contract = asset_contract(args.assets, args.fr3_urdf, args.task,args.appearance)
     evaluation_assets = args.eval_assets or args.assets
-    evaluation_contract = asset_contract(evaluation_assets, args.fr3_urdf, args.task)
+    evaluation_contract = asset_contract(evaluation_assets, args.fr3_urdf, args.task,args.appearance)
     if args.checkpoint and not args.checkpoint.is_file():
         parser.error("Checkpoint not found: " + str(args.checkpoint))
 

@@ -29,10 +29,12 @@
     "observation_space_contract": "passed",
     "cnn_forward_and_backward": "passed",
     "checkpoint_architecture_contract": "passed; vision checkpoints reject the privileged MLP architecture",
+    "checkpoint_appearance_contract": "passed; local USD and recursively referenced asset contents affect the checkpoint hash contract",
+    "local_appendix300_candidate_dependencies_hashed": 7,
     "ppo_environment_steps": 64,
     "ppo_updates": 1,
     "finite_loss": true,
-    "repository_unittest_suite": "40 passed on 2026-10-06"
+    "repository_unittest_suite": "41 passed on 2026-10-06"
   },
   "live_validation": {
     "simulation_app_started": false,

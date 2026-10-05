@@ -6,6 +6,7 @@ from pathlib import Path
 
 import gymnasium as gym
 import numpy as np
+from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "ct_appendectomy"))
 from rosota_rl_adapter import (TRACTION_OBSERVATION_DIM,
@@ -17,7 +18,7 @@ from rosota_rl_adapter import (TRACTION_OBSERVATION_DIM,
                                encode_rosota_traction_observation,
                                traction_task_metrics)
 from tissue_metrics import target_patch_motion
-from run_rosota_rl import asset_contract
+from run_rosota_rl import asset_contract, usd_dependency_hashes
 
 
 def observation(contacts=(0, 0)):
@@ -77,16 +78,34 @@ class RosotaTractionAdapterTests(unittest.TestCase):
             (assets / "bimanual_config.json").write_text(json.dumps({}), encoding="utf-8")
             urdf = root / "fr3.urdf"
             urdf.write_text("urdf", encoding="utf-8")
-            waypoint = asset_contract(assets, urdf, "waypoint")
-            traction = asset_contract(assets, urdf, "unassisted-traction")
-            vision = asset_contract(assets, urdf, "vision-traction")
-        self.assertEqual(waypoint["observation_dim"], 53)
-        self.assertEqual(traction["observation_dim"], TRACTION_OBSERVATION_DIM)
-        self.assertNotEqual(waypoint["environment"], traction["environment"])
-        self.assertFalse(traction["appendectomy_completed"])
-        self.assertEqual(vision["rgb_observation_shape"], [90, 160, 3])
-        self.assertTrue(vision["policy_observes_rgb"])
-        self.assertEqual(vision["policy_architecture"], "cnn_endoscope_rgb_proprio_v1")
+            appearance=root/"appearance.usda"
+            appearance.write_text('#usda 1.0\nasset inputs:file = @texture.png@\n',encoding="utf-8")
+            texture=root/"texture.png"
+            Image.new("RGB",(4,4),(90,80,70)).save(texture)
+            waypoint = asset_contract(assets, urdf, "waypoint", appearance)
+            traction = asset_contract(assets, urdf, "unassisted-traction", appearance)
+            vision = asset_contract(assets, urdf, "vision-traction", appearance)
+            self.assertEqual(waypoint["observation_dim"], 53)
+            self.assertEqual(traction["observation_dim"], TRACTION_OBSERVATION_DIM)
+            self.assertNotEqual(waypoint["environment"], traction["environment"])
+            self.assertFalse(traction["appendectomy_completed"])
+            self.assertEqual(vision["rgb_observation_shape"], [90, 160, 3])
+            self.assertTrue(vision["policy_observes_rgb"])
+            self.assertEqual(vision["policy_architecture"], "cnn_endoscope_rgb_proprio_v1")
+            changed_texture=Image.new("RGB",(4,4),(10,20,30))
+            changed_texture.save(texture)
+            changed_appearance_contract=asset_contract(assets,urdf,"vision-traction",appearance)
+            self.assertEqual(vision["appearance_sha256"],changed_appearance_contract["appearance_sha256"])
+            self.assertNotEqual(vision["appearance_dependency_sha256"],
+                                changed_appearance_contract["appearance_dependency_sha256"])
+
+    def test_appearance_contract_rejects_remote_texture_dependencies(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            layer=Path(tmp)/"appearance.usda"
+            layer.write_text('#usda 1.0\nasset inputs:file = @https://example.invalid/texture.png@\n',
+                             encoding="utf-8")
+            with self.assertRaisesRegex(ValueError,"Remote USD dependencies"):
+                usd_dependency_hashes(layer)
 
     def test_vision_checkpoint_load_requires_matching_policy_contract(self):
         import torch
