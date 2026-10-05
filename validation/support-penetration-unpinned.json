@@ -1,0 +1,94 @@
+{
+  "status": "penetration_detected",
+  "run": "out/ct_appendectomy/unpinned_support_equilibrium_v1",
+  "tolerance_m": 0.0001,
+  "bounds": {
+    "support_shape": "axis-aligned box authored as convex-hull triangle mesh",
+    "support_min_m": [
+      0.014190318062901497,
+      -0.039332229644060135,
+      -0.13212426006793976
+    ],
+    "support_max_m": [
+      0.2141903191804886,
+      -0.027332229539752007,
+      0.06787573546171188
+    ],
+    "nodes_more_than_0_1mm_inside_box": 1029,
+    "maximum_depth_below_top_m": 0.007398905232548714,
+    "scope": "Geometric overlap diagnostic from live tensor snapshot; no contact force attribution or causal proof."
+  },
+  "phases": [
+    {
+      "phase": "before_initialize",
+      "observation_source": "usd",
+      "nodes": 5311,
+      "boundary_nodes": 3538,
+      "penetrating_nodes": 0,
+      "penetrating_boundary_nodes": 0,
+      "maximum_interior_distance_m": 0.0,
+      "scope": "Node samples only; does not exclude element-face crossings between nodes."
+    },
+    {
+      "phase": "after_initialize",
+      "observation_source": "physx_tensor",
+      "nodes": 5311,
+      "boundary_nodes": 3538,
+      "penetrating_nodes": 0,
+      "penetrating_boundary_nodes": 0,
+      "maximum_interior_distance_m": 0.0,
+      "scope": "Node samples only; does not exclude element-face crossings between nodes."
+    },
+    {
+      "phase": "before_warmup",
+      "observation_source": "physx_tensor",
+      "nodes": 5311,
+      "boundary_nodes": 3538,
+      "penetrating_nodes": 0,
+      "penetrating_boundary_nodes": 0,
+      "maximum_interior_distance_m": 0.0,
+      "scope": "Node samples only; does not exclude element-face crossings between nodes."
+    },
+    {
+      "phase": "warmup_1",
+      "observation_source": "physx_tensor",
+      "nodes": 5311,
+      "boundary_nodes": 3538,
+      "penetrating_nodes": 0,
+      "penetrating_boundary_nodes": 0,
+      "maximum_interior_distance_m": 0.0,
+      "scope": "Node samples only; does not exclude element-face crossings between nodes."
+    },
+    {
+      "phase": "warmup_60",
+      "observation_source": "physx_tensor",
+      "nodes": 5311,
+      "boundary_nodes": 3538,
+      "penetrating_nodes": 2595,
+      "penetrating_boundary_nodes": 1807,
+      "maximum_interior_distance_m": 0.005995407700538635,
+      "scope": "Node samples only; does not exclude element-face crossings between nodes."
+    },
+    {
+      "phase": "warmup_480",
+      "observation_source": "physx_tensor",
+      "nodes": 5311,
+      "boundary_nodes": 3538,
+      "penetrating_nodes": 2357,
+      "penetrating_boundary_nodes": 1662,
+      "maximum_interior_distance_m": 0.005998589098453522,
+      "scope": "Node samples only; does not exclude element-face crossings between nodes."
+    },
+    {
+      "phase": "settlement_timeout",
+      "observation_source": "physx_tensor",
+      "nodes": 5311,
+      "boundary_nodes": 3538,
+      "penetrating_nodes": 2454,
+      "penetrating_boundary_nodes": 1715,
+      "maximum_interior_distance_m": 0.005998816341161728,
+      "scope": "Node samples only; does not exclude element-face crossings between nodes."
+    }
+  ],
+  "limitations": "Axis-aligned static box only; no force attribution or mechanical acceptance."
+}

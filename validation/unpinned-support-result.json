@@ -1,0 +1,26 @@
+{
+  "status": "failed",
+  "duration_s": 8.0,
+  "last": {
+    "rms_speed_m_s": 0.006186690174563328,
+    "p99_speed_m_s": 0.009518961885539405,
+    "max_speed_m_s": 0.00988430809735091,
+    "stable_windows": 0,
+    "peak_node_speed_rms_m_s": 0.14487184272927983,
+    "peak_node_speed_p99_m_s": 0.45962552103191046,
+    "peak_node_speed_max_m_s": 0.8524750005464448,
+    "step_displacement_peak_rms_m_s": 0.16581392752991309,
+    "step_displacement_peak_p99_m_s": 0.510236159012137,
+    "maximum_endpoint_vs_step_mean_velocity_rms_gap_m_s": 0.13722158699542977
+  },
+  "health": {
+    "tetrahedra": 22312,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 9,
+    "minimum_signed_volume_ratio": -1.5813564002063156,
+    "median_volume_ratio": 1.0004756220765638,
+    "total_absolute_volume_ratio": 0.9998419453730591,
+    "p99_absolute_volume_change": 0.3898385323247765
+  },
+  "scope": "Unpinned diagnostic still exhibits support penetration and fails equilibrium. This does not isolate a single cause; not valid surgical configuration."
+}
