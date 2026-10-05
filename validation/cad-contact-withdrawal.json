@@ -1,0 +1,23 @@
+{
+  "status": "completed reference run",
+  "source_report_sha256": "529f6cbfb86fc46a07037b31cbda062d3850b83bec8b21a9420a2a9340e1018b",
+  "steps": 79,
+  "simulated_seconds": 0.395,
+  "wall_seconds": 27.63770910000312,
+  "fixed_error_m": 0.0,
+  "withdrawal_start_step": 42,
+  "all_withdrawal_samples_contact_free": true,
+  "final_layer_displacement_mm": 0.04839162545408888,
+  "maximum_layer_displacement_mm": 0.08373722666544836,
+  "maximum_solver_residual_N": 9.950513850636225e-07,
+  "recovered_rest_shape": false,
+  "scope": "Single-jaw frictionless CPU reference; kinematic pivot approach, hold and withdrawal",
+  "material_calibrated": false,
+  "RL": false,
+  "Isaac_physics": false,
+  "limitations": [
+    "Residual motion after withdrawal; settling not established",
+    "No damping calibration or empirical relaxation curve",
+    "No bimanual grasp or full-organ contact"
+  ]
+}

@@ -35,6 +35,7 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
         local_jaw=load_jaw(cad);jaw=local_jaw.copy()
         if approach:
             data=np.load(approach);poses=data['poses']
+            if 'dt' in data and not np.isclose(float(data['dt']),dt,rtol=0,atol=1e-12):raise ValueError('Trajectory timestep mismatch')
             if poses.ndim!=3 or poses.shape[1:]!=(4,4) or not len(poses) or not np.isfinite(poses).all():raise ValueError('Invalid approach poses')
             if not np.allclose(data['jaw_points'],local_jaw.vertices) or not np.array_equal(data['jaw_faces'],local_jaw.faces):raise ValueError('Approach CAD mismatch')
             axes=poses[:,:3,:3]
