@@ -6,11 +6,15 @@ import trimesh
 from cad_penalty_contact import load_jaw,penalty
 from instrument_kinematics import PortInstrument
 
-def build(cad,layer_file,out,hold_steps=0,withdraw=False):
+def build(cad,layer_file,out,hold_steps=0,withdraw=False,forward_override=None):
     if hold_steps<0:raise ValueError('Nonnegative hold steps required')
     d=np.load(layer_file);tissue=trimesh.Trimesh(d['points'],d['faces'],process=False);local=load_jaw(cad)
     area=np.zeros(len(tissue.vertices));np.add.at(area,tissue.faces.ravel(),np.repeat(tissue.area_faces/3,3))
     index=710;target=tissue.vertices[index];forward=-tissue.vertex_normals[index];forward/=np.linalg.norm(forward)
+    if forward_override is not None:
+        forward=np.asarray(forward_override,float)
+        if forward.shape!=(3,) or not np.isfinite(forward).all() or np.linalg.norm(forward)<1e-12:raise ValueError('Invalid approach direction')
+        forward=forward/np.linalg.norm(forward)
     helper=np.eye(3)[np.argmin(np.abs(forward))];x=np.cross(helper,forward);x/=np.linalg.norm(x);y=np.cross(forward,x);axes=np.column_stack([x,y,forward])
     tip_z=local.vertices[:,2].max();start_tip=target-forward*.004;pivot=start_tip-forward*tip_z
     instrument=PortInstrument(pivot-forward*.1,axes);instrument.state[2]=.1
@@ -38,4 +42,5 @@ if __name__=='__main__':
     import argparse
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--cad',type=Path,required=True);p.add_argument('--layer',type=Path,required=True);p.add_argument('--out',type=Path,required=True)
     p.add_argument('--hold-steps',type=int,default=0);p.add_argument('--withdraw',action='store_true')
-    a=p.parse_args();build(a.cad,a.layer,a.out,a.hold_steps,a.withdraw)
+    p.add_argument('--forward',type=float,nargs=3)
+    a=p.parse_args();build(a.cad,a.layer,a.out,a.hold_steps,a.withdraw,a.forward)

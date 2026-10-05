@@ -1,0 +1,51 @@
+{
+  "status": "anatomy penetration found",
+  "surgical_approach_accepted": false,
+  "poses_checked": [
+    0,
+    35,
+    74
+  ],
+  "parts_checked": [
+    "gripper_shaft_inner",
+    "gripper_shaft_outer",
+    "gripper_tip_left",
+    "gripper_tip_right",
+    "laparo_shaft",
+    "part_13",
+    "part_15"
+  ],
+  "closed_organs_checked": 38,
+  "open_meshes_skipped": [],
+  "penetrations": [
+    {
+      "part": "gripper_tip_left",
+      "pose_index": 35,
+      "organ": "/SurgicalRegion/appendicular_artery_FJ3410",
+      "samples_over_0_1mm": 21,
+      "max_depth_mm": 0.153077739060697
+    },
+    {
+      "part": "gripper_tip_right",
+      "pose_index": 35,
+      "organ": "/SurgicalRegion/mesoappendix_FJ3397",
+      "samples_over_0_1mm": 64,
+      "max_depth_mm": 0.1644212356510658
+    },
+    {
+      "part": "gripper_tip_right",
+      "pose_index": 35,
+      "organ": "/SurgicalRegion/appendicular_artery_FJ3410",
+      "samples_over_0_1mm": 8,
+      "max_depth_mm": 0.1472194632285725
+    }
+  ],
+  "scope": "Static source anatomy against subdivided convex CAD hull samples at selected poses",
+  "continuous_collision": false,
+  "clinical_port_calibration": false,
+  "sources": {
+    "scene": "1d6f6b56f9725b8851a69d73ebfe79424e36a21df9de0bbfabd52534cfaacff3",
+    "cad": "ee97b1f0de75ec1ff3116b8a117fe20db331cb8d02d887b3cd9d4bb57f5c2c94",
+    "approach": "e341737f6ddaeba407345359dbd0bdce2609231b3ab3ef9eb9270caf426512ad"
+  }
+}
