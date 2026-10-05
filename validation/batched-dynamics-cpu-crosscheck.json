@@ -1,0 +1,94 @@
+{
+  "surface_sha256": "8971d1cd23df539c1a8fba58d3723a73f74feac25b0d4543629e79fd0668f199",
+  "cpu_seconds": 14.452621200005524,
+  "gpu_seconds": 7.623386599996593,
+  "max_position_difference_m_per_environment": [
+    2.0996796190182485e-08,
+    1.4380525055703304e-08,
+    1.0565184075493413e-08,
+    1.6363689849611898e-08
+  ],
+  "max_velocity_difference_m_s_per_environment": [
+    4.199359238036497e-06,
+    2.8761050111406608e-06,
+    2.1130368150986825e-06,
+    3.2727379699223795e-06
+  ],
+  "cpu_residual_reports": [
+    {
+      "optimizer_success": true,
+      "iterations": 824,
+      "residual_N": 8.875742277854377e-10,
+      "tolerance_N": 1e-07,
+      "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "inertial_residual_defect_m": 6.103003659587907e-07,
+      "defect_tolerance_m": 1e-06,
+      "defect_is_position_error_bound": false,
+      "status": "converged"
+    },
+    {
+      "optimizer_success": true,
+      "iterations": 913,
+      "residual_N": 1.3538298866712577e-09,
+      "tolerance_N": 1e-07,
+      "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "inertial_residual_defect_m": 8.013188176272394e-07,
+      "defect_tolerance_m": 1e-06,
+      "defect_is_position_error_bound": false,
+      "status": "converged"
+    },
+    {
+      "optimizer_success": true,
+      "iterations": 966,
+      "residual_N": 1.2018522513353791e-09,
+      "tolerance_N": 1e-07,
+      "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "inertial_residual_defect_m": 7.113647249808109e-07,
+      "defect_tolerance_m": 1e-06,
+      "defect_is_position_error_bound": false,
+      "status": "converged"
+    },
+    {
+      "optimizer_success": true,
+      "iterations": 1051,
+      "residual_N": 7.503785074185843e-10,
+      "tolerance_N": 1e-07,
+      "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "inertial_residual_defect_m": 4.441417819604989e-07,
+      "defect_tolerance_m": 1e-06,
+      "defect_is_position_error_bound": false,
+      "status": "converged"
+    }
+  ],
+  "gpu_residual_report": {
+    "force_residual_N": [
+      5.008413483645743e-10,
+      8.972015475472225e-10,
+      1.4882940770347457e-09,
+      1.0147877784737312e-09
+    ],
+    "inertial_defect_m": [
+      3.8640958331568447e-07,
+      5.500155144811812e-07,
+      8.809068715593344e-07,
+      5.203994550018641e-07
+    ],
+    "objective_calls": 1348,
+    "batch_size": 4,
+    "optimizer_iterations": 0,
+    "max_iterations": 3000,
+    "max_evaluations": 15000,
+    "history_size": 10,
+    "independent_optimizer": {
+      "objective_calls": 1348,
+      "iterations_per_environment": [
+        872,
+        999,
+        990,
+        1067
+      ]
+    }
+  },
+  "fixed_point_error_m": 0.0,
+  "scope": "One implicit step for four synthetic loads; no contact trajectory, force calibration, or RL claim"
+}

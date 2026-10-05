@@ -51,7 +51,8 @@ class BatchedMembraneDynamics:
         updated,_,residual=evaluate()
         maximum=residual.abs().amax(dim=(1,2));defect=(residual.abs()*dt**2/self.mass[free,None]).amax(dim=(1,2))
         report={'force_residual_N':maximum.cpu().tolist(),'inertial_defect_m':defect.cpu().tolist(),'objective_calls':calls,'batch_size':len(old),
-                'optimizer_iterations':int(optimizer.state[z].get('n_iter',0)),'max_iterations':maxiter,'max_evaluations':5*maxiter,'history_size':history_size}
+                'optimizer_iterations':None if independent else int(optimizer.state[z].get('n_iter',0)),
+                'max_iterations':maxiter,'max_evaluations':None if independent else 5*maxiter,'history_size':history_size}
         self.last_report=report
         report['independent_optimizer']=independent_report
         if not torch.isfinite(residual).all() or torch.any(maximum>tolerance) or torch.any(defect>defect_tolerance):
