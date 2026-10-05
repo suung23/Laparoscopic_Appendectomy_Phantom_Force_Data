@@ -5,6 +5,15 @@ from ct_appendectomy.elastic_preconditioner import rest_stiffness
 
 
 class TangentTests(unittest.TestCase):
+    def test_cached_tangent_owns_deformation_state(self):
+        x = self.x.copy()
+        action = self.model.tangent_at(x)
+        direction = self.rng.normal(size=x.shape)
+        expected = action(direction)
+        x *= 1.2
+        np.testing.assert_array_equal(action(direction),expected)
+        self.assertGreater(np.linalg.norm(action(direction)-self.model.hessian_vector(x,direction)),1e-3)
+
     def setUp(self):
         self.x = .01*np.array([[0.,0,0],[1,.1,0],[.1,1,.1],[0,.1,1]])
         self.model = ElasticReference(self.x,[[0,1,2,3]],12000,.45)

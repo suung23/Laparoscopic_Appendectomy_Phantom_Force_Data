@@ -11,8 +11,9 @@ from .elastic_preconditioner import make_preconditioner
 def newton_direction(elastic, positions, gradient, potential):
     shape = positions.shape
     auxiliary = potential.hessian(positions)
+    tangent = elastic.tangent_at(positions)
     def action(vector):
-        return elastic.hessian_vector(positions,vector.reshape(shape)).ravel()+auxiliary@vector
+        return tangent(vector.reshape(shape)).ravel()+auxiliary@vector
     precondition = make_preconditioner(elastic,positions,np.zeros(shape,bool),potential,rotate=True)
     operator = LinearOperator((positions.size,positions.size),matvec=action,dtype=float)
     metric = LinearOperator(operator.shape,matvec=lambda v:-precondition(v.reshape(shape)).ravel(),dtype=float)
