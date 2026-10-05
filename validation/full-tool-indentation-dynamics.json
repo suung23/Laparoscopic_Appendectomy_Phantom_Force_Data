@@ -1,0 +1,22 @@
+{
+  "status": "completed reference run",
+  "error": null,
+  "steps": 83,
+  "wall_seconds": 57.99598900001729,
+  "simulated_seconds": 0.41500000000000004,
+  "source_report_sha256": "4dfd6b8028859879ba3103885ee21d7ca99a0ef0c5d44945e00bc8d3215b5d32",
+  "active_parts": [
+    "gripper_tip_left",
+    "gripper_tip_right"
+  ],
+  "max_layer_motion_mm": 0.5565312706444888,
+  "previous_single_jaw_max_motion_mm": 0.5487366544747667,
+  "final_contact_nodes": 0,
+  "full_tool_contact": true,
+  "limitations": [
+    "Additive convex hull penalties may over-stiffen overlapping regions",
+    "Uncalibrated material and contact constants",
+    "No articulated jaw closure or friction",
+    "Not bimanual robot control or RL"
+  ]
+}

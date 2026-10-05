@@ -34,3 +34,12 @@ def penalty(mesh,points,area,stiffness):
         closest,distance,_=trimesh.proximity.closest_point_naive(query,local[chunk]);delta=(closest-local[chunk])/scale
         force[chunk]=stiffness*area[chunk,None]*delta;depth[chunk]=distance/scale
     return force,{'active_nodes':int((depth>1e-10).sum()),'max_penetration_m':float(depth.max(initial=0)),'energy_J':float(.5*stiffness*np.sum(area*depth**2)),'reaction_N':(-force.sum(axis=0)).tolist()}
+
+def compound_penalty(parts,points,area,stiffness):
+    """Add per-part potentials; overlapping hulls can over-stiffen contact."""
+    total=np.zeros_like(points,dtype=float);records={};active=np.zeros(len(points),bool)
+    for name,mesh in parts.items():
+        force,record=penalty(mesh,points,area,stiffness)
+        total+=force;records[name]=record;active|=np.linalg.norm(force,axis=1)>0
+    return total,{'active_nodes':int(active.sum()),'max_penetration_m':max((r['max_penetration_m'] for r in records.values()),default=0.),
+                  'energy_J':sum(r['energy_J'] for r in records.values()),'reaction_N':(-total.sum(axis=0)).tolist(),'parts':records}

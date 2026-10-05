@@ -12,7 +12,7 @@ from attached_visual_layer import AttachedVisualLayer
 from layer_force_mapping import pullback_forces
 from build_fat_layer import evaluate
 
-def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,artery_shape=False,cad=None,approach=None):
+def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,artery_shape=False,cad=None,approach=None,full_tool_contact=False):
     if not np.isfinite(dt) or dt<=0 or steps<1:raise ValueError("Positive timestep and steps required")
     out.mkdir(parents=True,exist_ok=True)
     stage=Usd.Stage.CreateNew(str((out/'review.usda').resolve()))
@@ -27,12 +27,19 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
     dynamics=MembraneDynamics(MembraneReference(p,z['faces'],12000,.45,.0002,1e-8),p,1000,fixed)
     patch=np.argsort(np.linalg.norm(layer['points']-p[710],axis=1))[:100]
     force=np.zeros_like(layer['points']);force[patch,2]=.0002/len(patch)
-    jaw=None;poses=None
+    jaw=None;poses=None;local_parts=None;parts=None
+    if full_tool_contact and (not cad or not approach):raise ValueError('Full tool contact requires CAD and approach')
     if approach and not cad:raise ValueError("Approach requires CAD")
     if cad:
         from cad_penalty_contact import load_jaw,penalty
         from build_scene import mesh_prim
         local_jaw=load_jaw(cad);jaw=local_jaw.copy()
+        if full_tool_contact:
+            from cad_penalty_contact import compound_penalty
+            from pxr import UsdGeom
+            source=Usd.Stage.Open(str(cad.resolve()))
+            names=[p.GetName() for p in source.GetPrimAtPath('/Tool').GetChildren() if UsdGeom.Mesh(source.GetPrimAtPath(str(p.GetPath())+'/mesh'))]
+            local_parts={name:load_jaw(cad,name) for name in names}
         if approach:
             data=np.load(approach);poses=data['poses']
             if 'dt' in data and not np.isclose(float(data['dt']),dt,rtol=0,atol=1e-12):raise ValueError('Trajectory timestep mismatch')
@@ -59,10 +66,13 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
             if poses is not None:
                 pose=poses[min(step,len(poses)-1)]
                 jaw.vertices=local_jaw.vertices@pose[:3,:3].T+pose[:3,3]
+                if local_parts is not None:
+                    parts={name:mesh.copy() for name,mesh in local_parts.items()}
+                    for name,mesh in parts.items():mesh.vertices=local_parts[name].vertices@pose[:3,:3].T+pose[:3,3]
                 mesh_prim(stage,'/World/FixedCADContactJaw',jaw,(.45,.48,.5),roughness=.2)
             current=evaluate(dynamics.points,layer['nodes'],layer['weights'],layer['frame_offsets'])
             contact_before=None
-            if jaw is not None:force,contact_before=penalty(jaw,current,area,1e5)
+            if jaw is not None:force,contact_before=compound_penalty(parts,current,area,1e5) if parts is not None else penalty(jaw,current,area,1e5)
             if poses is not None and step==0 and contact_before["active_nodes"]:raise ValueError("Approach begins in sampled contact")
             mapped=pullback_forces(dynamics.points,layer['nodes'],layer['weights'],layer['frame_offsets'],force)
             torque_error=np.linalg.norm(np.cross(dynamics.points,mapped).sum(axis=0)-np.cross(current,force).sum(axis=0))
@@ -75,13 +85,14 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
                 artery_points=artery.update();info['artery_max_motion_mm']=float(np.linalg.norm(artery_points-artery_rest,axis=1).max()*1000)
             displayed=follower.update();trajectory.append(dynamics.points.copy())
             if jaw is not None:
-                _,contact_after=penalty(jaw,displayed,area,1e5)
+                _,contact_after=compound_penalty(parts,displayed,area,1e5) if parts is not None else penalty(jaw,displayed,area,1e5)
                 info.update(contact_before=contact_before,contact_after=contact_after)
             info.update(step=step,load_torque_error_Nm=float(torque_error),layer_max_motion_mm=float(np.linalg.norm(displayed-layer['points'],axis=1).max()*1000));reports.append(info)
     except Exception as exc:error=str(exc)
     stage.GetRootLayer().Save()
     np.savez_compressed(out/'trajectory.npz',points=np.array(trajectory),dt=dt)
     report={'status':'completed reference run' if error is None else 'failed','error':error,'steps':reports,'dt':dt,'simulated_seconds':len(reports)*dt,'wall_seconds':time.perf_counter()-start,'fixed_error_m':float(np.abs(dynamics.points[fixed]-p[fixed]).max()),'last_layer_force_N':force.sum(axis=0).tolist(),'force_source':'CAD area-weighted penalty' if jaw is not None else 'synthetic nodal load','scope':'CPU reference dynamics and USD display coupled; layer force lagged at step start','tool_contact':jaw is not None,'RCM_controlled':False,'kinematic_pivot_trajectory':poses is not None,'friction':False,'collision_geometry':'convex CAD hull' if jaw is not None else None,'contact_stiffness_N_per_m3':1e5 if jaw is not None else None,'tool_pose':('recorded kinematic pivot trajectory; no FR3 controller' if poses is not None else 'fixed synthetic placement') if jaw is not None else None,'RL':False,'Isaac_physics':False,'material_calibrated':False,'artery_visual_following':artery is not None,'vessel_mechanics':False,'artery_shape_regularization':artery_shape}
+    report.update(full_tool_contact=full_tool_contact,compound_contact_model='additive part potentials; overlapping hulls may over-stiffen' if full_tool_contact else None)
     (out/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
 
 if __name__=='__main__':
@@ -91,4 +102,5 @@ if __name__=='__main__':
     p.add_argument('--artery-shape',action='store_true')
     p.add_argument('--cad',type=Path)
     p.add_argument('--approach',type=Path)
-    a=p.parse_args();run(a.scene,a.parent,a.layer,a.out,a.steps,a.dt,a.artery_binding,a.artery_shape,a.cad,a.approach)
+    p.add_argument('--full-tool-contact',action='store_true')
+    a=p.parse_args();run(a.scene,a.parent,a.layer,a.out,a.steps,a.dt,a.artery_binding,a.artery_shape,a.cad,a.approach,a.full_tool_contact)
