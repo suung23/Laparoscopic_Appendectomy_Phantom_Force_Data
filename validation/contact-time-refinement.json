@@ -1,0 +1,56 @@
+{
+  "scope": "Three-resolution self-convergence on a single short plane-contact trajectory, not temporal accuracy certification or empirical tissue validation",
+  "terminal_time_s": 0.0625,
+  "dt_s": [
+    0.004166666666666667,
+    0.0020833333333333333,
+    0.0010416666666666667
+  ],
+  "source_versions": [
+    {
+      "implicit_reference.py": "a0b301c62c28f2d7eed3f12d694bc531e20ca8cc84d99b0671a8831f13df158a",
+      "constrained_elasticity.py": "c779e8aeeecf537cb3afaf3512e5a30d3b367fa8d1a193db8491df8fe699f41d",
+      "elastic_preconditioner.py": "2f58b26d43e37cd91f1529971283f148e93b8e8de0fd8b583b14569ca4e34ae4",
+      "determinant_step.py": "54454fbc93278d161a9e7918978733699492358103a6167a599636b32ca1ef86",
+      "plane_barrier.py": "898a50ea9926a514434b2b7d226439ce17b409b20f96984752fe2e6553041e27",
+      "newton_direction.py": "6b268da50cef926d975b6107f01ccb7f8db80729d021b6cb7c05fbd76cb56204"
+    },
+    {
+      "implicit_reference.py": "a0b301c62c28f2d7eed3f12d694bc531e20ca8cc84d99b0671a8831f13df158a",
+      "constrained_elasticity.py": "52d2a7fd12937e0c7931ba3b94248275d568884612126bbac605f1e06060ba8f",
+      "elastic_preconditioner.py": "2f58b26d43e37cd91f1529971283f148e93b8e8de0fd8b583b14569ca4e34ae4",
+      "determinant_step.py": "54454fbc93278d161a9e7918978733699492358103a6167a599636b32ca1ef86",
+      "plane_barrier.py": "898a50ea9926a514434b2b7d226439ce17b409b20f96984752fe2e6553041e27",
+      "newton_direction.py": "3c5c8e0596594bcb9d0618abdefea6513e95595da0c197b1f64f9dcbf3ff27f0"
+    },
+    {
+      "implicit_reference.py": "a0b301c62c28f2d7eed3f12d694bc531e20ca8cc84d99b0671a8831f13df158a",
+      "constrained_elasticity.py": "c779e8aeeecf537cb3afaf3512e5a30d3b367fa8d1a193db8491df8fe699f41d",
+      "elastic_preconditioner.py": "2f58b26d43e37cd91f1529971283f148e93b8e8de0fd8b583b14569ca4e34ae4",
+      "determinant_step.py": "54454fbc93278d161a9e7918978733699492358103a6167a599636b32ca1ef86",
+      "plane_barrier.py": "898a50ea9926a514434b2b7d226439ce17b409b20f96984752fe2e6553041e27",
+      "newton_direction.py": "6b268da50cef926d975b6107f01ccb7f8db80729d021b6cb7c05fbd76cb56204"
+    }
+  ],
+  "implementation_note": "480 Hz predates objective/tangent caching; prior checks found unchanged cache results. No mechanics parameters changed.",
+  "comparisons": {
+    "points": {
+      "rms_successive_differences": [
+        0.000657778983270754,
+        0.0003500051772273626
+      ],
+      "units": "m",
+      "decreasing": true,
+      "observed_order": 0.9102266509305742
+    },
+    "velocity": {
+      "rms_successive_differences": [
+        0.023155880246166934,
+        0.014998908496682572
+      ],
+      "units": "m/s",
+      "decreasing": true,
+      "observed_order": 0.6265210841288381
+    }
+  }
+}

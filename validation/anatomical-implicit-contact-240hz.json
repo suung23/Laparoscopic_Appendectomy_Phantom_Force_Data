@@ -1,0 +1,491 @@
+{
+  "status": "passed",
+  "scope": "Frictionless implicit Euler plane-contact diagnostic; uncalibrated material and contact, numerical damping, no self contact or surgical acceptance",
+  "mesh_sha256": "e601a3601ad3d6ce4414bf4ded7e5389678ac9e2b96931aca7ba31a784ced944",
+  "dt_s": 0.004166666666666667,
+  "requested_steps": 15,
+  "parameters": {
+    "young_pa": 12000.0,
+    "poisson": 0.45,
+    "density_kg_m3": 1050.0,
+    "activation_m": 0.0008,
+    "barrier_stiffness_n_m3": 100000000.0,
+    "tolerance_n": 1e-11
+  },
+  "source_sha256": {
+    "implicit_reference.py": "a0b301c62c28f2d7eed3f12d694bc531e20ca8cc84d99b0671a8831f13df158a",
+    "constrained_elasticity.py": "c779e8aeeecf537cb3afaf3512e5a30d3b367fa8d1a193db8491df8fe699f41d",
+    "elastic_preconditioner.py": "2f58b26d43e37cd91f1529971283f148e93b8e8de0fd8b583b14569ca4e34ae4",
+    "determinant_step.py": "54454fbc93278d161a9e7918978733699492358103a6167a599636b32ca1ef86",
+    "plane_barrier.py": "898a50ea9926a514434b2b7d226439ce17b409b20f96984752fe2e6553041e27",
+    "newton_direction.py": "6b268da50cef926d975b6107f01ccb7f8db80729d021b6cb7c05fbd76cb56204"
+  },
+  "rows": [
+    {
+      "tick": 1,
+      "residual_n": 1.7071012162333227e-15,
+      "newton_refinements": [
+        {
+          "cg_iterations": 5,
+          "linear_residual_n": 2.6886237050971627e-16,
+          "slope_j": -4.864684233990433e-20,
+          "alpha": 1.0,
+          "residual_n": 1.7071012162333227e-15,
+          "energy_change_j": -2.329340604949326e-20,
+          "energy_roundoff_allowance_j": 1.5624052450362137e-19
+        }
+      ],
+      "contact_force_n": [
+        -0.0,
+        0.0014632056196743634,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 4.763506423501281e-20,
+      "minimum_gap_m": 0.0007346756016178152,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.968517851941071,
+        "median_volume_ratio": 0.9999981480748997,
+        "total_absolute_volume_ratio": 0.9999609884983808,
+        "p99_absolute_volume_change": 0.0015939586641201624
+      }
+    },
+    {
+      "tick": 2,
+      "residual_n": 1.0221248006713076e-14,
+      "newton_refinements": [
+        {
+          "cg_iterations": 7,
+          "linear_residual_n": 3.1089242565732494e-15,
+          "slope_j": -2.0558623103624205e-17,
+          "alpha": 1.0,
+          "residual_n": 1.0221248006713076e-14,
+          "energy_change_j": -1.0279591847878189e-17,
+          "energy_roundoff_allowance_j": 3.383071008437044e-19
+        }
+      ],
+      "contact_force_n": [
+        -0.0,
+        0.006405218656730806,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 9.52200729236457e-17,
+      "minimum_gap_m": 0.000708353803460661,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9394448237992378,
+        "median_volume_ratio": 0.999985225266913,
+        "total_absolute_volume_ratio": 0.9998011006583934,
+        "p99_absolute_volume_change": 0.007264509432240144
+      }
+    },
+    {
+      "tick": 3,
+      "residual_n": 4.7171629056759305e-15,
+      "newton_refinements": [
+        {
+          "cg_iterations": 7,
+          "linear_residual_n": 1.1066835775151054e-14,
+          "slope_j": -4.7325620893057296e-18,
+          "alpha": 1.0,
+          "residual_n": 4.7171629056759305e-15,
+          "energy_change_j": -2.371692252312041e-18,
+          "energy_roundoff_allowance_j": 5.789014652817908e-19
+        }
+      ],
+      "contact_force_n": [
+        -0.0,
+        0.012456734334529807,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 9.249325070399606e-18,
+      "minimum_gap_m": 0.000696536738667132,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9249581518922636,
+        "median_volume_ratio": 0.9999473193456159,
+        "total_absolute_volume_ratio": 0.9995231359538306,
+        "p99_absolute_volume_change": 0.0167721978560169
+      }
+    },
+    {
+      "tick": 4,
+      "residual_n": 1.6498916440016312e-15,
+      "newton_refinements": [
+        {
+          "cg_iterations": 8,
+          "linear_residual_n": 3.1235940462187755e-15,
+          "slope_j": -9.629875152973895e-19,
+          "alpha": 1.0,
+          "residual_n": 1.6498916440016312e-15,
+          "energy_change_j": -4.743384504624082e-19,
+          "energy_roundoff_allowance_j": 8.603075870241499e-19
+        }
+      ],
+      "contact_force_n": [
+        -0.0,
+        0.017576247496823447,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 2.7511919454250793e-18,
+      "minimum_gap_m": 0.0006913883151490885,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.9088731116924376,
+        "median_volume_ratio": 0.9998851579651609,
+        "total_absolute_volume_ratio": 0.9991860712563859,
+        "p99_absolute_volume_change": 0.02724162622010142
+      }
+    },
+    {
+      "tick": 5,
+      "residual_n": 2.735538219420441e-15,
+      "newton_refinements": [
+        {
+          "cg_iterations": 9,
+          "linear_residual_n": 1.4047398300272073e-15,
+          "slope_j": -1.5022227541050319e-19,
+          "alpha": 1.0,
+          "residual_n": 2.735538219420441e-15,
+          "energy_change_j": -5.421010862427522e-20,
+          "energy_roundoff_allowance_j": 1.1734671781468717e-18
+        }
+      ],
+      "contact_force_n": [
+        -0.0,
+        0.020795783736464284,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 4.898684915028866e-19,
+      "minimum_gap_m": 0.0006887828203873264,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.8992664284952605,
+        "median_volume_ratio": 0.9998108318521158,
+        "total_absolute_volume_ratio": 0.998863679965241,
+        "p99_absolute_volume_change": 0.03871516093478706
+      }
+    },
+    {
+      "tick": 6,
+      "residual_n": 4.587485549583086e-15,
+      "newton_refinements": [
+        {
+          "cg_iterations": 11,
+          "linear_residual_n": 8.125851890946698e-15,
+          "slope_j": -5.609004783682485e-18,
+          "alpha": 1.0,
+          "residual_n": 4.587485549583086e-15,
+          "energy_change_j": -2.8324781756183803e-18,
+          "energy_roundoff_allowance_j": 1.516279594263379e-18
+        }
+      ],
+      "contact_force_n": [
+        -0.0,
+        0.02194195101311997,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 1.9773156741113637e-17,
+      "minimum_gap_m": 0.0006862690222048592,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.8717978607628721,
+        "median_volume_ratio": 0.9997479065617505,
+        "total_absolute_volume_ratio": 0.9986098761168776,
+        "p99_absolute_volume_change": 0.047965968370394345
+      }
+    },
+    {
+      "tick": 7,
+      "residual_n": 3.2805852862537437e-15,
+      "newton_refinements": [
+        {
+          "cg_iterations": 13,
+          "linear_residual_n": 6.689695800182075e-15,
+          "slope_j": -7.810130725386475e-19,
+          "alpha": 1.0,
+          "residual_n": 3.2805852862537437e-15,
+          "energy_change_j": -3.5236570605778894e-19,
+          "energy_roundoff_allowance_j": 1.8941250446286042e-18
+        }
+      ],
+      "contact_force_n": [
+        -0.0,
+        0.021523173102709344,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 3.469467638328903e-18,
+      "minimum_gap_m": 0.0006829280127348195,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.8342365482817946,
+        "median_volume_ratio": 0.9997220028431164,
+        "total_absolute_volume_ratio": 0.9984380480881582,
+        "p99_absolute_volume_change": 0.05853225746303833
+      }
+    },
+    {
+      "tick": 8,
+      "residual_n": 3.477365439461021e-15,
+      "newton_refinements": [
+        {
+          "cg_iterations": 15,
+          "linear_residual_n": 6.993805466961739e-15,
+          "slope_j": -1.4155372981364665e-19,
+          "alpha": 1.0,
+          "residual_n": 3.477365439461021e-15,
+          "energy_change_j": -5.421010862427522e-20,
+          "energy_roundoff_allowance_j": 2.3208855897151916e-18
+        }
+      ],
+      "contact_force_n": [
+        -0.0,
+        0.02038995877628085,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 4.458830869201953e-18,
+      "minimum_gap_m": 0.0006808505172542986,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.8026835990066955,
+        "median_volume_ratio": 0.9997128478094177,
+        "total_absolute_volume_ratio": 0.9983297706090074,
+        "p99_absolute_volume_change": 0.06532106762216851
+      }
+    },
+    {
+      "tick": 9,
+      "residual_n": 7.223415659021737e-15,
+      "newton_refinements": [
+        {
+          "cg_iterations": 17,
+          "linear_residual_n": 1.4027871858183362e-14,
+          "slope_j": -4.933223349618167e-19,
+          "alpha": 1.0,
+          "residual_n": 7.223415659021737e-15,
+          "energy_change_j": -3.2526065174565133e-19,
+          "energy_roundoff_allowance_j": 2.8166140594404414e-18
+        }
+      ],
+      "contact_force_n": [
+        -0.0,
+        0.019273201794552924,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 3.343324676441707e-19,
+      "minimum_gap_m": 0.000682766354289481,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.777306343400827,
+        "median_volume_ratio": 0.9997015813267253,
+        "total_absolute_volume_ratio": 0.9982648682224358,
+        "p99_absolute_volume_change": 0.07021370719575712
+      }
+    },
+    {
+      "tick": 10,
+      "residual_n": 4.206927728304477e-15,
+      "newton_refinements": [
+        {
+          "cg_iterations": 17,
+          "linear_residual_n": 1.644386639468923e-14,
+          "slope_j": -3.0912428695428623e-19,
+          "alpha": 1.0,
+          "residual_n": 4.206927728304477e-15,
+          "energy_change_j": -8.131516293641283e-20,
+          "energy_roundoff_allowance_j": 3.4013164885517622e-18
+        }
+      ],
+      "contact_force_n": [
+        -0.0,
+        0.01845613235874407,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 6.7909256850301985e-18,
+      "minimum_gap_m": 0.0006839814161877025,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.7556496061492896,
+        "median_volume_ratio": 0.9997141004208071,
+        "total_absolute_volume_ratio": 0.9982437067363623,
+        "p99_absolute_volume_change": 0.07148605239029271
+      }
+    },
+    {
+      "tick": 11,
+      "residual_n": 7.312666580996747e-15,
+      "newton_refinements": [
+        {
+          "cg_iterations": 18,
+          "linear_residual_n": 1.7473027913853348e-14,
+          "slope_j": -1.0945909429959414e-18,
+          "alpha": 1.0,
+          "residual_n": 7.312666580996747e-15,
+          "energy_change_j": -5.421010862427522e-19,
+          "energy_roundoff_allowance_j": 4.0899612202888704e-18
+        }
+      ],
+      "contact_force_n": [
+        -0.0,
+        0.017777490404651593,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 6.853684833312711e-19,
+      "minimum_gap_m": 0.000684706942477048,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.7368793501470544,
+        "median_volume_ratio": 0.999727955528517,
+        "total_absolute_volume_ratio": 0.9982833036283898,
+        "p99_absolute_volume_change": 0.07191960127110007
+      }
+    },
+    {
+      "tick": 12,
+      "residual_n": 6.78386368703276e-15,
+      "newton_refinements": [
+        {
+          "cg_iterations": 19,
+          "linear_residual_n": 7.916892748548491e-15,
+          "slope_j": -4.689022861230386e-19,
+          "alpha": 1.0,
+          "residual_n": 6.78386368703276e-15,
+          "energy_change_j": -2.168404344971009e-19,
+          "energy_roundoff_allowance_j": 4.8861473073142124e-18
+        }
+      ],
+      "contact_force_n": [
+        -0.0,
+        0.017591465413176403,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 1.3736806926405523e-18,
+      "minimum_gap_m": 0.0006884308291604732,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.7229775560707047,
+        "median_volume_ratio": 0.9997670349590173,
+        "total_absolute_volume_ratio": 0.9983877147332334,
+        "p99_absolute_volume_change": 0.07116635003958897
+      }
+    },
+    {
+      "tick": 13,
+      "residual_n": 9.795405792371002e-15,
+      "newton_refinements": [
+        {
+          "cg_iterations": 16,
+          "linear_residual_n": 1.686574424283362e-14,
+          "slope_j": -2.195212473656526e-19,
+          "alpha": 1.0,
+          "residual_n": 9.795405792371002e-15,
+          "energy_change_j": -5.421010862427522e-20,
+          "energy_roundoff_allowance_j": 5.781899231121936e-18
+        }
+      ],
+      "contact_force_n": [
+        -0.0,
+        0.017802397311775218,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 5.407569241087556e-18,
+      "minimum_gap_m": 0.0006855152596536157,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.6478147864126619,
+        "median_volume_ratio": 0.9998412070829784,
+        "total_absolute_volume_ratio": 0.9985549961458976,
+        "p99_absolute_volume_change": 0.06664210978274185
+      }
+    },
+    {
+      "tick": 14,
+      "residual_n": 7.288418661459926e-15,
+      "newton_refinements": [
+        {
+          "cg_iterations": 17,
+          "linear_residual_n": 1.2214668031096002e-14,
+          "slope_j": -1.8619100075928698e-19,
+          "alpha": 1.0,
+          "residual_n": 7.288418661459926e-15,
+          "energy_change_j": -1.6263032587282567e-19,
+          "energy_roundoff_allowance_j": 6.763009694245903e-18
+        }
+      ],
+      "contact_force_n": [
+        -0.0,
+        0.017944126303247477,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 1.085833445539622e-18,
+      "minimum_gap_m": 0.0006798033166739922,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.6642904336585064,
+        "median_volume_ratio": 0.999900424807562,
+        "total_absolute_volume_ratio": 0.9987809994545049,
+        "p99_absolute_volume_change": 0.06272057489719643
+      }
+    },
+    {
+      "tick": 15,
+      "residual_n": 6.8226250793694196e-15,
+      "newton_refinements": [
+        {
+          "cg_iterations": 18,
+          "linear_residual_n": 1.1363140525557813e-14,
+          "slope_j": -2.724561949453924e-19,
+          "alpha": 1.0,
+          "residual_n": 6.8226250793694196e-15,
+          "energy_change_j": 0.0,
+          "energy_roundoff_allowance_j": 7.812061831372622e-18
+        }
+      ],
+      "contact_force_n": [
+        -0.0,
+        0.01918806467287389,
+        -0.0
+      ],
+      "momentum_balance_error_ns": 3.6731555250993646e-18,
+      "minimum_gap_m": 0.000694456587794233,
+      "health": {
+        "tetrahedra": 22312,
+        "degenerate_rest_tetrahedra": 0,
+        "inverted_tetrahedra": 0,
+        "minimum_signed_volume_ratio": 0.7211891525635703,
+        "median_volume_ratio": 0.9999523221368025,
+        "total_absolute_volume_ratio": 0.9990326477633841,
+        "p99_absolute_volume_change": 0.060745911297333734
+      }
+    }
+  ],
+  "elapsed_s": 50.327443599991966
+}

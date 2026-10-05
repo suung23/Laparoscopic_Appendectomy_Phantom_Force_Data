@@ -15,6 +15,7 @@ from ct_appendectomy.tissue_metrics import tetra_health
 
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--steps',type=int,default=30)
+p.add_argument('--physics-hz',type=int,choices=[240,480,960],default=480)
 p.add_argument('--out',type=Path,required=True)
 a=p.parse_args()
 if a.steps<1: p.error('Positive step count required')
@@ -32,7 +33,7 @@ for i in range(4): np.add.at(mass,tets[:,i],1050*elastic.volume/4)
 loads=np.zeros_like(rest); loads[:,1]=-9.81*mass
 plane=float(rest[:,1].min()-.0008)
 contact=PlaneBarrier([0,1,0],plane,.0008,1e8,weights)
-x=rest.copy(); velocity=x*0; dt=1/480; rows=[]; started=time.perf_counter()
+x=rest.copy(); velocity=x*0; dt=1/a.physics_hz; rows=[]; started=time.perf_counter()
 report=dict(status='running',scope='Frictionless implicit Euler plane-contact diagnostic; uncalibrated material and contact, numerical damping, no self contact or surgical acceptance',
     mesh_sha256=hashlib.sha256(mesh.read_bytes()).hexdigest(),dt_s=dt,requested_steps=a.steps,
     parameters=dict(young_pa=12000.,poisson=.45,density_kg_m3=1050.,activation_m=.0008,barrier_stiffness_n_m3=1e8,tolerance_n=1e-11),
