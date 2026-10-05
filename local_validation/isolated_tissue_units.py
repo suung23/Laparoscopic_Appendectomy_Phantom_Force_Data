@@ -105,6 +105,8 @@ try:
                 transient['samples']+=1
                 if health['inverted_tetrahedra'] and transient['first_inversion_tick'] is None:
                     transient['first_inversion_tick']=tick
+                    np.savez_compressed(a.out/f'first_inversion_{mpu}.npz',tick=tick,
+                        points=every_state['position_m'],velocity=every_state['velocity_m_s'],rest=rest,tets=tets)
                 transient['maximum_inverted_elements']=max(transient['maximum_inverted_elements'],health['inverted_tetrahedra'])
                 transient['minimum_signed_volume_ratio']=min(transient['minimum_signed_volume_ratio'],health['minimum_signed_volume_ratio'])
                 if a.support_gap is not None:

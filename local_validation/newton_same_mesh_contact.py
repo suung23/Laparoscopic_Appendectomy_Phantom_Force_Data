@@ -40,7 +40,10 @@ try:
     rows=[];first=None;worst=0;minimum=1.;penetration=0.
     for tick in range(a.steps+1):
         x=s0.particle_q.numpy();health=tetra_health(rest,x,tets)
-        if health['inverted_tetrahedra'] and first is None:first=tick
+        if health['inverted_tetrahedra'] and first is None:
+            first=tick
+            np.savez_compressed(a.out/'first_inversion.npz',tick=tick,points=x,
+                                rest=rest,tets=tets,velocity=s0.particle_qd.numpy())
         worst=max(worst,health['inverted_tetrahedra']);minimum=min(minimum,health['minimum_signed_volume_ratio'])
         depth=float(max(0,floor-x[:,1].min()));penetration=max(penetration,depth)
         if tick%60==0 or tick==a.steps:
