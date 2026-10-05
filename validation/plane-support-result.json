@@ -1,0 +1,15 @@
+{
+  "status": "failed",
+  "health": {
+    "tetrahedra": 22312,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 21,
+    "minimum_signed_volume_ratio": -1.6602966722920722,
+    "median_volume_ratio": 1.0049629979285652,
+    "total_absolute_volume_ratio": 1.0051176591741477,
+    "p99_absolute_volume_change": 0.39811674168894723
+  },
+  "nodes_below_plane_by_over_0_1mm": 977,
+  "maximum_depth_m": 0.006551148369908333,
+  "scope": "Same-height plane support at warmup 480; not surgical geometry or mechanical acceptance."
+}
