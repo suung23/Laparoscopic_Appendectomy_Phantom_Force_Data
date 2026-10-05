@@ -23,9 +23,14 @@ def mesh_at(stage,path):
         np.asarray(m.GetFaceVertexIndicesAttr().Get()).reshape(-1,3),process=False)
 
 
-def edge_path(mesh,near_distance,start,end,bias_scale=.002):
+def edge_path(mesh,near_distance,start,end,bias_scale=.002,allowed_vertices=None):
     if not np.isfinite(bias_scale) or bias_scale<=0:raise ValueError('Positive finite bias scale required')
     edges=mesh.edges_unique
+    if allowed_vertices is not None:
+        allowed=np.asarray(allowed_vertices,dtype=bool)
+        if allowed.shape!=(len(mesh.vertices),) or not allowed[start] or not allowed[end]:
+            raise ValueError("Endpoints must lie in the allowed attachment region")
+        edges=edges[allowed[edges].all(axis=1)]
     length=np.linalg.norm(mesh.vertices[edges[:,0]]-mesh.vertices[edges[:,1]],axis=1)
     weights=length*(1+(np.asarray(near_distance)[edges].mean(axis=1)/bias_scale)**2)
     graph=coo_matrix((np.r_[weights,weights],

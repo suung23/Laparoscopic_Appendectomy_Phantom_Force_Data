@@ -1,0 +1,102 @@
+{
+  "source_scene_sha256": "1d6f6b56f9725b8851a69d73ebfe79424e36a21df9de0bbfabd52534cfaacff3",
+  "appendix_profile_sha256": "bd1cb17bf9181db2a21044be2777b21f2ac611881136e248d88fa91ac5800ee6",
+  "second_parent": "/SurgicalRegion/mesentery_FJ3396",
+  "vertices": 1625,
+  "triangles": 3072,
+  "connected_components": 1,
+  "boundary_position_error_m": 1.3877787807814457e-17,
+  "penetrations": {
+    "/SurgicalRegion/appendix_FJ2565": {
+      "centroids_inside_over_0_1mm": 3,
+      "max_depth_mm": 0.21505235533769929
+    },
+    "/SurgicalRegion/ascending_colon_FJ2566": {
+      "centroids_inside_over_0_1mm": 13,
+      "max_depth_mm": 1.2252001263834618
+    },
+    "/SurgicalRegion/ileum_FJ2599": {
+      "centroids_inside_over_0_1mm": 242,
+      "max_depth_mm": 6.62783539497804
+    },
+    "/SurgicalRegion/appendicular_artery_FJ3410": {
+      "centroids_inside_over_0_1mm": 38,
+      "max_depth_mm": 0.49034204391336766
+    }
+  },
+  "anatomy_accepted": false,
+  "physics_integrated": false,
+  "self_intersections_tested": false,
+  "assumptions": [
+    "Mesenteric endpoints selected by nearest projection of appendix curve endpoints",
+    "Mesenteric path edge cost biased toward native mesoappendix envelope",
+    "Two free edges are straight interpolants; no measured fold or thickness"
+  ],
+  "limitations": [
+    "Candidate may cross organs despite being topologically connected",
+    "Centroid containment is not exhaustive collision detection",
+    "Both attachment footprints require anatomical review"
+  ],
+  "attribution": "BodyParts3D, Database Center for Life Science; CC BY 4.0 per native assembly provenance",
+  "status": "rejected",
+  "decision": "Do not integrate this candidate. Nearest-point mesenteric endpoints and straight interior interpolation cross the ileum. Re-author the attachment footprint and membrane trajectory; connectivity alone is not anatomical validity.",
+  "reference_review": "appendix300-backbone-review.json",
+  "visual_review_this_pass": [
+    "Center1_t12.png",
+    "Center2_review_2s.jpg"
+  ],
+  "reference_scope": "Two local clips, sampled frames; not the whole Appendix300 cohort.",
+  "boundary_diagnosis": {
+    "appendix_boundary": {
+      "ascending_colon_FJ2566": {
+        "inside_count": 5,
+        "max_depth_mm": 1.4948299319740492
+      },
+      "appendix_FJ2565": {
+        "inside_count": 0,
+        "max_depth_mm": 3.469446951953614e-15
+      },
+      "distance_to_native_meso_mm_quantiles": [
+        0.01398475096849874,
+        0.5176945835987999,
+        2.4536006772034904
+      ]
+    },
+    "mesentery_boundary": {
+      "ileum_FJ2599": {
+        "inside_count": 14,
+        "max_depth_mm": 6.719490442305294
+      },
+      "distance_to_native_meso_mm_quantiles": [
+        0.035306524871657696,
+        13.405690669095637,
+        24.974880532586525
+      ]
+    },
+    "native_meso_centroids": {
+      "ileum_FJ2599": {
+        "inside_count": 243,
+        "max_depth_mm": 2.9532804359424687
+      },
+      "ascending_colon_FJ2566": {
+        "inside_count": 73,
+        "max_depth_mm": 4.069680619919362
+      },
+      "appendix_FJ2565": {
+        "inside_count": 441,
+        "max_depth_mm": 4.210942259628621
+      },
+      "distance_to_native_meso_mm_quantiles": [
+        0.0,
+        2.4532694666933986e-15,
+        0.22097192616981626
+      ]
+    }
+  },
+  "corridor_attempt": {
+    "corridor_mm": 3,
+    "ileum_vertices_excluded": true,
+    "result": "both endpoints collapse to one vertex; no candidate emitted",
+    "interpretation": "Two long opposite curves are not supported by this local parent region. Root footprint needs explicit authoring; do not widen corridor to recover the rejected strip."
+  }
+}
