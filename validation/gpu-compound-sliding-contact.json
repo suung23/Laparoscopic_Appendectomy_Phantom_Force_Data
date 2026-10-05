@@ -1,0 +1,26 @@
+{
+  "parts": [
+    "gripper_shaft_inner",
+    "gripper_shaft_outer",
+    "gripper_tip_left",
+    "gripper_tip_right",
+    "laparo_shaft",
+    "part_13",
+    "part_15"
+  ],
+  "states": [
+    0,
+    40,
+    80,
+    120
+  ],
+  "max_force_difference_N": 1.3647818362634914e-19,
+  "max_friction_power_difference_W": 3.441071348220595e-22,
+  "friction_power_W": [
+    0.0,
+    0.0,
+    -1.1802212056472559e-08,
+    -1.1399101067737454e-08
+  ],
+  "scope": "Seven articulated CAD parts, four recorded states, prescribed relative velocity; no integrated GPU trajectory or empirical validation"
+}

@@ -31,3 +31,29 @@ class ConvexContact:
             force[:,start:end]=stiffness*area[None,start:end,None]*penetration[:,:,None]*normal
             depth[:,start:end]=penetration
         return force,{'depth_m':depth,'energy_J':.5*stiffness*(area*depth**2).sum(1),'reaction_N':-force.sum(1)}
+
+class CompoundContact:
+    """Additive part penalties and regularized sliding, matching CPU reference."""
+    def __init__(self,meshes,device='cuda'):
+        if not meshes:raise ValueError('Contact parts required')
+        self.parts={name:ConvexContact(mesh,device) for name,mesh in meshes.items()}
+
+    def penalty(self,points,poses,area,stiffness=1e5,relative_velocities=None,mu=0.,regularization_speed=.001):
+        if not np.isfinite([mu,regularization_speed]).all() or mu<0 or regularization_speed<=0:raise ValueError('Invalid friction parameters')
+        if set(poses)!=set(self.parts):raise ValueError('Part pose keys mismatch')
+        if relative_velocities is None and mu:raise ValueError('Sliding friction needs relative velocities')
+        total=torch.zeros_like(points);records={}
+        for name,part in self.parts.items():
+            force,record=part.penalty(points,poses[name],area,stiffness)
+            if relative_velocities is not None:
+                v=relative_velocities[name]
+                if v.shape!=points.shape or v.device!=points.device or v.dtype!=points.dtype or not torch.isfinite(v).all():raise ValueError('Invalid relative velocities')
+                magnitude=torch.linalg.vector_norm(force,dim=-1)
+                normal=force/magnitude.clamp_min(1e-30)[:,:,None]
+                tangent=v-normal*(v*normal).sum(-1)[:,:,None]
+                friction=-mu*magnitude[:,:,None]*tangent/torch.sqrt((tangent*tangent).sum(-1)+regularization_speed**2)[:,:,None]
+                record['friction_power_W']=(friction*v).sum(dim=(1,2))
+                record['friction_force_N']=friction.sum(1)
+                force=force+friction;record['reaction_N']=-force.sum(1)
+            total+=force;records[name]=record
+        return total,{'parts':records,'energy_J':torch.stack([r['energy_J'] for r in records.values()]).sum(0),'reaction_N':-total.sum(1)}
