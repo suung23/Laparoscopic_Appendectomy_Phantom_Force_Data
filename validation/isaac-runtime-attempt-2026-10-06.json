@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-06",
+  "status": "failed_before_simulation_startup",
+  "purpose": "Revalidate the local Isaac CT scene before running the Appendix300 appearance layer or real-simulator RL rollouts",
+  "launch_path": "repository run-rosota-ct.ps1 helper with the installed Isaac Python runtime",
+  "headless": true,
+  "physics_steps_requested": 5,
+  "result": {
+    "simulation_app_constructed": false,
+    "physics_steps_completed": 0,
+    "render_captured": false,
+    "rl_rollout_completed": false,
+    "exception_type": "ImportError",
+    "module": "select",
+    "diagnostic": "Windows Application Control reported that the application control policy blocked a file while Python imported select"
+  },
+  "privacy": "No user information, local videos, extracted frames, or generated texture pixels were transmitted; the diagnostic contains no personal metadata.",
+  "next_required_external_change": "Use an organization-approved Isaac runtime/policy configuration that permits its bundled Python standard-library extension modules, then rerun the repository helper.",
+  "claims_not_supported": [
+    "Isaac runtime started",
+    "RTX endoscope render validated",
+    "physics or contact rollout completed",
+    "simulator-based RL trained or evaluated"
+  ]
+}

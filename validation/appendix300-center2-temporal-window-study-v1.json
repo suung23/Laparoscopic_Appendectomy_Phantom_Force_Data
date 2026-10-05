@@ -1,0 +1,89 @@
+{
+  "status": "nine_frame_candidate_retained_for_render_review; visual_gate_not_passed",
+  "dataset": "Appendix300",
+  "doi": "10.25532/OPARA-1173",
+  "license": "CC BY 4.0",
+  "source_video": "Video_Snippets/Center2/Center2_2.mp4",
+  "source_video_sha256": "a38b416c45928266e333c46d40c278eff0386a0ca695d268c35ccf807fab04d5",
+  "roi_method": "Manually reviewed rectangular crops, not segmentation or expert-confirmed anatomy labels",
+  "appendix_roi_xyxy": [1780, 430, 2140, 790],
+  "mesoappendix_roi_xyxy": [1420, 590, 1780, 950],
+  "alignment": "scikit-image TV-L1 dense optical flow with forward/backward consistency mask; 2-D only",
+  "candidate_comparison": [
+    {
+      "local_candidate": "out/ct_appendectomy/appendix300_temporal_texture_v15",
+      "window_seconds": [7.96, 8.04],
+      "unique_frames": 3,
+      "appendix_supported_fraction": 0.95767,
+      "mesoappendix_supported_fraction": 0.99831,
+      "decision": "baseline; too few frames to sample more than a very short interval",
+      "appendix_texture_sha256": "2ea5c1a5de22dcdf7144e79e831f1bebda1e1441c9ef606f4efe72c705b70f4f",
+      "mesoappendix_texture_sha256": "033609281703c2b676c528f81e8ded8c80aabbf382fab5b98b13e82ecb14e5bf"
+    },
+    {
+      "local_candidate": "out/ct_appendectomy/appendix300_temporal_texture_v16",
+      "window_seconds": [7.2, 8.8],
+      "unique_frames": 21,
+      "appendix_supported_fraction": 0.71172,
+      "mesoappendix_supported_fraction": 0.57471,
+      "decision": "reject for promotion; broad window introduced flow disagreement and visible warp/occlusion seams",
+      "appendix_texture_sha256": "f3ed3ab441afff2c35263c50bf0fb1f3b3b19d0a804ec7f5e16a0e795ab6f46a",
+      "mesoappendix_texture_sha256": "685826ab584cfbac67200dac7a6ecbbcb9e9b4027a8ee63edfaf242a34304505"
+    },
+    {
+      "local_candidate": "out/ct_appendectomy/appendix300_temporal_texture_v17",
+      "window_seconds": [7.68, 8.32],
+      "unique_frames": 9,
+      "appendix_supported_fraction": 0.68204,
+      "mesoappendix_supported_fraction": 0.55367,
+      "decision": "reject for promotion; support was insufficient despite the shorter temporal window",
+      "appendix_texture_sha256": "c19f4681758c844738ee8f0706dbe181a384254c1b1f20657793b1d5d22a595d",
+      "mesoappendix_texture_sha256": "c18980391dc680308496ffa4e8731c2896d61d8e1f5b4ceab88ca5c04c4f5757"
+    },
+    {
+      "local_candidate": "out/ct_appendectomy/appendix300_temporal_texture_v18",
+      "window_seconds": [7.84, 8.16],
+      "unique_frames": 9,
+      "appendix_supported_fraction": 0.97508,
+      "mesoappendix_supported_fraction": 0.99831,
+      "appendix_max_flow_p95_px": 27.066,
+      "mesoappendix_max_flow_p95_px": 26.797,
+      "decision": "retain as the current texture candidate because 9 unique frames fit the consistency mask; not visually accepted",
+      "appendix_texture_sha256": "8beca8997be2f5de4debd74695c39357ed423024f96ac4a28e6287df6c0466e7",
+      "mesoappendix_texture_sha256": "1ef26e92b72c63b07595efeed628102fe2eb44c6b4caa933fbb5e73c328d611e",
+      "appearance_diagnostics": {
+        "metric": "bright low-chroma fraction (max RGB > 230 and channel range < 45); mean adjacent RGB difference; p99 value",
+        "v15_baseline": {
+          "appendix": [0.002701, 1.82709, 254.0]
+        },
+        "v18_candidate": {
+          "appendix": [0.002585, 1.74702, 254.0]
+        },
+        "interpretation": "Narrow diagnostics show slightly fewer bright low-chroma pixels and lower gradients, consistent with smoothing; they do not establish better realism, intrinsic albedo, or specular/diffuse separation."
+      }
+    }
+  ],
+  "static_usd_validation": {
+    "result": "usd_structure_verified_render_pending",
+    "candidate_usd_sha256": "d84c59b90298ba99fc758a6ddb1d88baeabb98630ecda175cca906e8ac58bd37",
+    "parent_usd_sha256": "ec1677ba37c6551ac4502c18d2f15961734a7cc02357def7dc12f28a80fe0df8",
+    "mesh_count": 54,
+    "mesh_geometry_normals_and_uvs_unchanged": true,
+    "only_reviewed_rgb_paths_changed": true,
+    "isaac_runtime_load_verified": false,
+    "moving_endoscope_render_verified": false
+  },
+  "verification": {
+    "test_suite": "18 repository unittest cases passed in the local venv",
+    "artifact_privacy": "Source videos, frames, ROI crops, and texture pixels remain under git-ignored out/; only hashes and aggregate diagnostics are tracked.",
+    "clinical_appearance_gate_passed": false,
+    "patient_level_generalization_verified": false
+  },
+  "next_required_evidence": [
+    "expert-confirmed tissue segmentation and labels",
+    "Isaac render through the moving endoscope with deforming FEM meshes",
+    "camera/light calibration and appearance comparison on held-out videos",
+    "blinded expert visual review",
+    "image-to-surface registration before describing this as surface reconstruction"
+  ]
+}

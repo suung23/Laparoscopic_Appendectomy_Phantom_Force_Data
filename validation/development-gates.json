@@ -78,11 +78,12 @@
     },
     {
       "id": "real-video-appearance",
-      "status": "not achieved; Center2 dense-flow candidate and 54-mesh USD structure are verified, but anatomy labels, Isaac moving-endoscope render, and held-out visual review remain incomplete",
+      "status": "not achieved; Center2 dense-flow candidate and 54-mesh USD structure are verified, but anatomy labels, Isaac moving-endoscope render, and held-out visual review remain incomplete; a nine-frame 0.32 s candidate has the best tracked 2-D support, while longer windows failed; 2026-10-06 runtime attempt was blocked before Isaac startup by Windows Application Control blocking the Python select module",
       "evidence": [
         "validation/appendix300-texture-v7-preflight.json",
         "validation/appendix300-temporal-texture-v1.json",
-        "validation/appendix300-center2-dense-flow-appearance-v1.json"
+        "validation/appendix300-center2-dense-flow-appearance-v1.json",
+        "validation/appendix300-center2-temporal-window-study-v1.json"
       ],
       "requires": [
         "visible target-specific material comparison",
@@ -95,7 +96,7 @@
     },
     {
       "id": "rl-validation",
-      "status": "not achieved; normalized Rosota PPO harness and paired-policy evaluation are implemented, but only CPU/mock preflight ran and simulator rollouts remain at zero",
+      "status": "not achieved; normalized Rosota PPO harness and paired-policy evaluation are implemented, but only CPU/mock preflight ran and simulator rollouts remain at zero; 2026-10-06 official CT launch failed before simulation because Windows Application Control blocked the Python select module",
       "evidence": "validation/rosota-rl-adapter-preflight.json",
       "requires": [
         "multiple seeds and held-out anatomy",
@@ -104,6 +105,16 @@
         "wall-clock throughput and reproducible resets",
         "comparison with original Rosota and LapGym",
         "no reward improvement via invalid tissue physics"
+      ]
+    },
+    {
+      "id": "local-isaac-runtime-launch",
+      "status": "failed before SimulationApp startup on 2026-10-06; Windows Application Control blocked import of the Python select module",
+      "evidence": "validation/isaac-runtime-attempt-2026-10-06.json",
+      "requires": [
+        "approved Isaac Python runtime can import Python standard-library extension modules",
+        "headless CT commissioning completes physics steps",
+        "moving-endoscope render and actual simulator RL rollout are captured"
       ]
     },
     {
