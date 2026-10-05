@@ -27,20 +27,28 @@ def build(scene,profile,out):
     mesentery_path='/SurgicalRegion/mesentery_FJ3396'
     parent=mesh_at(stage,mesentery_path)
     envelope=mesh_at(stage,'/SurgicalRegion/mesoappendix_FJ3397')
-    _,near,_=trimesh.proximity.closest_point(envelope,parent.vertices)
+    # Refine only the overlapping source patch for search: interpolation leaves
+    # the original planar triangles unchanged. Final bindings use original IDs.
+    tri=parent.triangles
+    keep=((tri.max(axis=1)>=envelope.bounds[0]-.003)&
+          (tri.min(axis=1)<=envelope.bounds[1]+.003)).all(axis=1)
+    local=parent.submesh([np.flatnonzero(keep)],append=True)
+    vertices,faces=trimesh.remesh.subdivide_to_size(local.vertices,local.faces,max_edge=.001,max_iter=8)
+    search=trimesh.Trimesh(vertices,faces,process=True)
+    _,near,_=trimesh.proximity.closest_point(envelope,search.vertices)
     # Explicit authoring corridor, not an anatomical tolerance. Reject paths
     # outside the native envelope neighborhood or within adjacent ileum.
     allowed=near<=.003
     ileum=mesh_at(stage,'/SurgicalRegion/ileum_FJ2599')
-    allowed &= ~ileum.contains(parent.vertices)
+    allowed &= ~ileum.contains(search.vertices)
     ids=np.flatnonzero(allowed)
     if not len(ids):raise ValueError('No feasible mesenteric attachment region')
-    endpoints=[int(ids[np.argmin(np.linalg.norm(parent.vertices[ids]-point,axis=1))])
+    endpoints=[int(ids[np.argmin(np.linalg.norm(search.vertices[ids]-point,axis=1))])
                for point in bottom[[0,-1]]]
     if endpoints[0]==endpoints[1]:
         raise ValueError("Both endpoints collapse to one attachment vertex; author a root footprint instead of forcing a strip")
-    path=edge_path(parent,near,*endpoints,allowed_vertices=allowed)
-    landmarks,length=resample_path(parent.vertices[path],len(bottom))
+    path=edge_path(search,near,*endpoints,allowed_vertices=allowed)
+    landmarks,length=resample_path(search.vertices[path],len(bottom))
     second,projection_error=project_boundary(parent,landmarks,1e-7)
     top=second.positions(parent.vertices)
     v=np.linspace(0,1,25)[:,None]
@@ -75,7 +83,8 @@ def build(scene,profile,out):
         second_parent_vertices_sha256=hashlib.sha256(parent.vertices.tobytes()).hexdigest(),
         second_parent_faces_sha256=hashlib.sha256(parent.faces.tobytes()).hexdigest(),
         second_binding_nodes=second.nodes.tolist(),second_binding_weights=second.weights.tolist(),
-        second_rest_curve_m=top.tolist(),second_path_vertex_indices=path.tolist(),
+        second_rest_curve_m=top.tolist(),search_path_vertex_indices=path.tolist(),search_vertex_count=len(search.vertices),
+        search_max_edge_m=.001,search_allowed_vertices=int(allowed.sum()),
         second_curve_length_mm=float(length*1000),max_projection_error_m=float(projection_error.max()),
         vertices=len(surface.vertices),triangles=len(surface.faces),
         connected_components=len(surface.split(only_watertight=False)),winding_consistent=bool(surface.is_winding_consistent),

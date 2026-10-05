@@ -1,0 +1,35 @@
+{
+  "status": "rejected: organ penetration detected",
+  "source_scene_sha256": "1d6f6b56f9725b8851a69d73ebfe79424e36a21df9de0bbfabd52534cfaacff3",
+  "appendix_profile_sha256": "bd1cb17bf9181db2a21044be2777b21f2ac611881136e248d88fa91ac5800ee6",
+  "second_parent": "/SurgicalRegion/mesentery_FJ3396",
+  "search_vertex_count": 108751,
+  "search_max_edge_m": 0.001,
+  "search_allowed_vertices": 1290,
+  "second_curve_length_mm": 34.833153596564294,
+  "vertices": 1625,
+  "triangles": 3072,
+  "connected_components": 1,
+  "boundary_position_error_m": 1.3877787807814457e-17,
+  "penetrations": {
+    "/SurgicalRegion/appendix_FJ2565": {
+      "centroids_inside_over_0_1mm": 45,
+      "max_depth_mm": 1.5664084985160485
+    },
+    "/SurgicalRegion/ascending_colon_FJ2566": {
+      "centroids_inside_over_0_1mm": 15,
+      "max_depth_mm": 1.247770354686045
+    },
+    "/SurgicalRegion/appendicular_artery_FJ3410": {
+      "centroids_inside_over_0_1mm": 30,
+      "max_depth_mm": 0.4495899041019937
+    }
+  },
+  "anatomy_accepted": false,
+  "physics_integrated": false,
+  "self_intersections_tested": false,
+  "change": "Refine local original parent triangles for search without smoothing; bind final samples back to original parent topology.",
+  "correction": "Previous endpoint collapse reflected sparse atlas vertices; it did not prove absence of an attachment footprint.",
+  "result": "Ileum centroid penetrations absent in this candidate; appendix and ascending-colon intersections remain. Not accepted or rendered.",
+  "next": "Repair appendix-side path and interior trajectory; preserve all failed candidates."
+}
