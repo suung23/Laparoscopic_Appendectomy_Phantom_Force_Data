@@ -113,6 +113,8 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
                 _,contact_after=compound_penalty(parts,displayed,area,1e5) if parts is not None else penalty(jaw,displayed,area,1e5)
                 info.update(contact_before=contact_before,contact_after=contact_after)
             info.update(step=step,load_torque_error_Nm=float(torque_error),layer_max_motion_mm=float(np.linalg.norm(displayed-layer['points'],axis=1).max()*1000));reports.append(info)
+            if step%10==0 or step==steps-1:
+                print(json.dumps({'progress_step':step,'residual_N':info['residual_N'],'inertial_defect_m':info['inertial_residual_defect_m']}),flush=True)
     except Exception as exc:error=str(exc)
     stage.GetRootLayer().Save()
     np.savez_compressed(out/'trajectory.npz',points=np.array(trajectory),dt=dt)

@@ -11,6 +11,8 @@ def compare(runs,out):
         if len(data['points'])!=len(r['steps'])+1:raise ValueError('Trajectory/report length mismatch')
         if not np.isclose(float(data['dt']),r['dt'],rtol=0,atol=1e-12):raise ValueError('Trajectory/report timestep mismatch')
         settings={key:r.get(key) for key in ('friction_mu','full_tool_contact','contact_stiffness_N_per_m3','articulated_jaw_trajectory','artery_shape_regularization')}
+        settings['solver_tolerance_N']=r.get('solver_tolerance_N',r['steps'][0]['tolerance_N'])
+        settings['inertial_defect_tolerance_m']=r.get('inertial_defect_tolerance_m')
         if configuration is not None and settings!=configuration:raise ValueError('Reference contact settings differ')
         configuration=settings
         records.append({'dt':r['dt'],'duration':r['simulated_seconds'],'wall_seconds':r['wall_seconds'],

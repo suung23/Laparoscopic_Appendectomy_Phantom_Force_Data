@@ -1,0 +1,16 @@
+{
+  "status": "completed reference run",
+  "error": null,
+  "steps": 83,
+  "wall_seconds": 294.4112633000186,
+  "simulated_seconds": 0.41500000000000004,
+  "max_inertial_defect_m": 8.962317124663327e-07,
+  "max_force_residual_N": 1.5141854291058358e-09,
+  "max_difference_from_force_only_1e_7_mm": 0.009278603300882048,
+  "final_max_difference_mm": 0.009278603300882048,
+  "final_contact_nodes": 0,
+  "source_report_sha256": "0bbf70d185a049d86840e899fe19515d802f9c460bd0a6e61c9057b65a9ef133",
+  "empirical_validation": false,
+  "temporal_convergence_proven": false,
+  "scope": "Mass-scaled residual acceptance over full CAD sliding-contact trajectory"
+}
