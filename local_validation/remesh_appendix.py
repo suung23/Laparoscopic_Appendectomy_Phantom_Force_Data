@@ -14,7 +14,10 @@ p.add_argument('--mesher-path',type=Path,required=True)
 p.add_argument('--out',type=Path,required=True)
 p.add_argument('--target-faces',type=int,help='Offline simplification experiment; original geometry gates remain unchanged')
 p.add_argument('--preserve-boundary',action='store_true',help='Disallow TetGen boundary Steiner points')
+p.add_argument('--optimization-iterations',type=int,default=3)
+p.add_argument('--optimization-flip-level',type=int,default=3)
 a=p.parse_args()
+if a.optimization_iterations<1 or a.optimization_flip_level<1:p.error('Positive optimization settings required')
 sys.path.append(str(a.mesher_path.resolve()))
 import tetgen
 a.out.mkdir(parents=True,exist_ok=True)
@@ -40,7 +43,8 @@ if a.target_faces is not None:
         original_faces=len(faces),target_faces=a.target_faces,actual_faces=len(meshing_faces))
 generator=tetgen.TetGen(meshing_points,meshing_faces)
 options=dict(order=1,minratio=1.5,mindihedral=10.,steinerleft=50000,quality=True,
-             nomergefacet=True,nomergevertex=True)
+             nomergefacet=True,nomergevertex=True,opt_iterations=a.optimization_iterations,
+             opt_max_flip_level=a.optimization_flip_level)
 if a.preserve_boundary:options['nobisect']=True
 result=generator.tetrahedralize(**options)
 nodes,cells=np.asarray(result[0]),np.asarray(result[1])
