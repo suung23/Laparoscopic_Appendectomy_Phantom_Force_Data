@@ -1,0 +1,305 @@
+{
+  "rates_Hz": [
+    240,
+    480,
+    960
+  ],
+  "simulated_seconds": 0.0125,
+  "max_endpoint_difference_mm": [
+    0.07459636865411101,
+    0.05269334003890631
+  ],
+  "decreasing_difference": true,
+  "scope": "Short synthetic load self-comparison; not measured tissue validation or established asymptotic convergence",
+  "runs": [
+    {
+      "status": "completed reference run",
+      "error": null,
+      "steps": [
+        {
+          "optimizer_success": true,
+          "iterations": 274,
+          "residual_N": 7.819781896229336e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 0,
+          "load_torque_error_Nm": 3.594462122630743e-21,
+          "layer_max_motion_mm": 0.4067704215530664
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 313,
+          "residual_N": 8.337376866882129e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 1,
+          "load_torque_error_Nm": 3.4926320009779975e-21,
+          "layer_max_motion_mm": 0.7280104157320739
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 363,
+          "residual_N": 4.132967169759542e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 2,
+          "load_torque_error_Nm": 8.578273740810689e-22,
+          "layer_max_motion_mm": 0.9341821652756854
+        }
+      ],
+      "wall_seconds": 7.21327750000637,
+      "fixed_error_m": 0.0,
+      "synthetic_force_N": [
+        0.0,
+        0.0,
+        0.00019999999999999963
+      ],
+      "scope": "CPU reference dynamics and USD display coupled; layer force lagged at step start",
+      "tool_contact": false,
+      "RL": false,
+      "Isaac_physics": false,
+      "material_calibrated": false
+    },
+    {
+      "status": "completed reference run",
+      "error": null,
+      "steps": [
+        {
+          "optimizer_success": true,
+          "iterations": 162,
+          "residual_N": 2.638108089868194e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 0,
+          "load_torque_error_Nm": 3.594462122630743e-21,
+          "layer_max_motion_mm": 0.21524469964286272
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 202,
+          "residual_N": 7.356565003274838e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 1,
+          "load_torque_error_Nm": 1.8986416985507276e-21,
+          "layer_max_motion_mm": 0.42574346930238444
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 205,
+          "residual_N": 7.443700799031348e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 2,
+          "load_torque_error_Nm": 2.3958280825177678e-21,
+          "layer_max_motion_mm": 0.6118040276827686
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 192,
+          "residual_N": 4.776760385525126e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 3,
+          "load_torque_error_Nm": 1.7000298377264347e-21,
+          "layer_max_motion_mm": 0.7709869903691039
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 204,
+          "residual_N": 9.436653508101055e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 4,
+          "load_torque_error_Nm": 8.484857298099523e-22,
+          "layer_max_motion_mm": 0.8969177205058241
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 202,
+          "residual_N": 9.039913303017736e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 5,
+          "load_torque_error_Nm": 1.1979266072121804e-21,
+          "layer_max_motion_mm": 0.9876934047787637
+        }
+      ],
+      "dt": 0.00208333333333333,
+      "simulated_seconds": 0.01249999999999998,
+      "wall_seconds": 11.750222000002395,
+      "fixed_error_m": 0.0,
+      "synthetic_force_N": [
+        0.0,
+        0.0,
+        0.00019999999999999963
+      ],
+      "scope": "CPU reference dynamics and USD display coupled; layer force lagged at step start",
+      "tool_contact": false,
+      "RL": false,
+      "Isaac_physics": false,
+      "material_calibrated": false
+    },
+    {
+      "status": "completed reference run",
+      "error": null,
+      "steps": [
+        {
+          "optimizer_success": true,
+          "iterations": 72,
+          "residual_N": 6.107584435198255e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 0,
+          "load_torque_error_Nm": 3.594462122630743e-21,
+          "layer_max_motion_mm": 0.10440982747247851
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 98,
+          "residual_N": 5.761298374945296e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 1,
+          "load_torque_error_Nm": 3.596092723779738e-21,
+          "layer_max_motion_mm": 0.2222995015026733
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 107,
+          "residual_N": 4.733507966057071e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 2,
+          "load_torque_error_Nm": 1.2005146690307764e-21,
+          "layer_max_motion_mm": 0.3345895972365648
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 104,
+          "residual_N": 9.641231259814532e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 3,
+          "load_torque_error_Nm": 1.9010914060090095e-21,
+          "layer_max_motion_mm": 0.43716303044117744
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 111,
+          "residual_N": 6.302897625020133e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 4,
+          "load_torque_error_Nm": 2.6895706067151936e-21,
+          "layer_max_motion_mm": 0.5315067619144805
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 106,
+          "residual_N": 6.30787820055162e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 5,
+          "load_torque_error_Nm": 8.935511124866192e-22,
+          "layer_max_motion_mm": 0.6229237191158232
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 110,
+          "residual_N": 3.8047389076605246e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 6,
+          "load_torque_error_Nm": 2.3962512915131725e-21,
+          "layer_max_motion_mm": 0.7098611319451489
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 113,
+          "residual_N": 4.029079500254197e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 7,
+          "load_torque_error_Nm": 2.4060055039263923e-21,
+          "layer_max_motion_mm": 0.7903856250088861
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 114,
+          "residual_N": 7.653288880461921e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 8,
+          "load_torque_error_Nm": 1.9172897504334306e-21,
+          "layer_max_motion_mm": 0.8635137727978984
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 126,
+          "residual_N": 4.159098874864022e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 9,
+          "load_torque_error_Nm": 1.2558683100447243e-21,
+          "layer_max_motion_mm": 0.9278380206839386
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 108,
+          "residual_N": 7.420169113758771e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 10,
+          "load_torque_error_Nm": 1.894439370749008e-21,
+          "layer_max_motion_mm": 0.9815910420119056
+        },
+        {
+          "optimizer_success": true,
+          "iterations": 105,
+          "residual_N": 6.634713209135708e-07,
+          "tolerance_N": 1e-06,
+          "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+          "status": "converged",
+          "step": 11,
+          "load_torque_error_Nm": 3.788416406840037e-21,
+          "layer_max_motion_mm": 1.024818219612101
+        }
+      ],
+      "dt": 0.00104166666666667,
+      "simulated_seconds": 0.012500000000000039,
+      "wall_seconds": 13.75052129998221,
+      "fixed_error_m": 0.0,
+      "synthetic_force_N": [
+        0.0,
+        0.0,
+        0.00019999999999999963
+      ],
+      "scope": "CPU reference dynamics and USD display coupled; layer force lagged at step start",
+      "tool_contact": false,
+      "RL": false,
+      "Isaac_physics": false,
+      "material_calibrated": false
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "status": "incomplete",
+  "render_sha256": "10de357b588a5cccf31001b28a29f8afa710b4f7dd1b08c5694b9aee419d3331",
+  "visual_observations": [
+    "Deformed membrane and attached adipose render successfully",
+    "Artery remains an independently static asset",
+    "Uniform material and surrounding atlas anatomy still visually inadequate"
+  ],
+  "collision_review": {
+    "status": "sampled diagnostic only",
+    "backend": "independent scipy ray parity / exhaustive closest point",
+    "surface": "out\\ct_appendectomy\\layer_membrane_reference_v1\\deformed_layer.npz",
+    "samples": {
+      "vertices": 49858,
+      "edge_midpoints": 149568,
+      "face_centroids": 99712
+    },
+    "penetrations": {
+      "/SurgicalRegion/appendix_FJ2565": {
+        "vertices": {
+          "count_over_0_1mm": 93,
+          "max_depth_mm": 0.5689560854125243
+        },
+        "edge_midpoints": {
+          "count_over_0_1mm": 247,
+          "max_depth_mm": 0.550028495701578
+        },
+        "face_centroids": {
+          "count_over_0_1mm": 157,
+          "max_depth_mm": 0.5355437870893679
+        }
+      },
+      "/SurgicalRegion/appendicular_artery_FJ3410": {
+        "vertices": {
+          "count_over_0_1mm": 453,
+          "max_depth_mm": 0.4822399596664285
+        },
+        "edge_midpoints": {
+          "count_over_0_1mm": 1353,
+          "max_depth_mm": 0.5025868914625532
+        },
+        "face_centroids": {
+          "count_over_0_1mm": 913,
+          "max_depth_mm": 0.4892593879021669
+        }
+      }
+    },
+    "exhaustive_intersection_check": false,
+    "clinical_validity": false
+  },
+  "scope": "Final state only; no continuous collision validation",
+  "adopted": false
+}
