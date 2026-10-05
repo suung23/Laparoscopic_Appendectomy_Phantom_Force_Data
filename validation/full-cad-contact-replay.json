@@ -1,0 +1,43 @@
+{
+  "status": "USD replay exported and tissue samples reopened",
+  "samples": 42,
+  "duration_seconds": 0.20500000000000002,
+  "dt": 0.005,
+  "max_saved_tissue_error_m": 3.722509134274077e-09,
+  "sources": {
+    "scene": {
+      "sha256": "d77425e0000d6c2dc35162d5eb7dda6e29c7d3add1ac3143664a98bdc64fcc70"
+    },
+    "parent": {
+      "sha256": "8971d1cd23df539c1a8fba58d3723a73f74feac25b0d4543629e79fd0668f199"
+    },
+    "layer": {
+      "sha256": "b21dcbffb7fd1b484fc2542841a5e7f898a01e755cabab60da2403e7250842f3"
+    },
+    "trajectory": {
+      "sha256": "1ab6f55b22838697eb1a9f4cba85491d2faa6d7c6293dce2f280cad7c3bbaed6"
+    },
+    "approach": {
+      "sha256": "2c462c8fe87759df562e5be21a040efb989f97fb9172c876d482d5a9092a8a68"
+    },
+    "artery": {
+      "sha256": "8fb8e7ea3144670ec3a1970170ff708e651240180274655fb827d13cf8f5ad67"
+    },
+    "cad": {
+      "sha256": "ee97b1f0de75ec1ff3116b8a117fe20db331cb8d02d887b3cd9d4bb57f5c2c94"
+    }
+  },
+  "max_saved_jaw_error_m": 1.862495525861707e-09,
+  "max_saved_fat_error_m": 3.72528785597126e-09,
+  "scope": "CPU reference single-jaw contact replay; time codes are solver steps",
+  "RL": false,
+  "Isaac_physics": false,
+  "render_verified": false,
+  "material_calibrated": false,
+  "artery_is_visual_only": true,
+  "full_distal_CAD_displayed": true,
+  "CAD_mesh_parts": 7,
+  "CAD_world_alignment_error_m": 0.0,
+  "additional_CAD_parts_contact_validated": false,
+  "jaw_articulation": "source CAD rest pose; recorded left jaw hull contact only"
+}
