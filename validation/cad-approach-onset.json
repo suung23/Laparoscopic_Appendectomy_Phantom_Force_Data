@@ -1,0 +1,931 @@
+{
+  "status": "contact onset found",
+  "initial_clear": true,
+  "steps": [
+    {
+      "step": 0,
+      "insertion_m": 0.1,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.1,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 1,
+      "insertion_m": 0.10010000000000001,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10010000000000001,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 2,
+      "insertion_m": 0.10020000000000001,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10020000000000001,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 3,
+      "insertion_m": 0.10030000000000001,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10030000000000001,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 4,
+      "insertion_m": 0.10040000000000002,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10040000000000002,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 5,
+      "insertion_m": 0.10050000000000002,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 1.6996749443881478e-17,
+        "bite_m": -0.000499999999999997,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10050000000000003,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 6,
+      "insertion_m": 0.10060000000000002,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10060000000000002,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 7,
+      "insertion_m": 0.10070000000000003,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10070000000000003,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 8,
+      "insertion_m": 0.10080000000000003,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10080000000000003,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 9,
+      "insertion_m": 0.10090000000000003,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10090000000000003,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 10,
+      "insertion_m": 0.10100000000000003,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10100000000000003,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 11,
+      "insertion_m": 0.10110000000000004,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 6.938893903907228e-18,
+        "bite_m": -0.0004999999999999939,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10110000000000002,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 12,
+      "insertion_m": 0.10120000000000004,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10120000000000004,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 13,
+      "insertion_m": 0.10130000000000004,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 1.5515838457795457e-17,
+        "bite_m": -0.0004999999999999879,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10130000000000006,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 14,
+      "insertion_m": 0.10140000000000005,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10140000000000005,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 15,
+      "insertion_m": 0.10150000000000005,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10150000000000005,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 16,
+      "insertion_m": 0.10160000000000005,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10160000000000005,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 17,
+      "insertion_m": 0.10170000000000005,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10170000000000005,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 18,
+      "insertion_m": 0.10180000000000006,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10180000000000006,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 19,
+      "insertion_m": 0.10190000000000006,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 1.6996749443881478e-17,
+        "bite_m": -0.000499999999999997,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10190000000000005,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 20,
+      "insertion_m": 0.10200000000000006,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10200000000000006,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 21,
+      "insertion_m": 0.10210000000000007,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 9.813077866773595e-18,
+        "bite_m": -0.0004999999999999922,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10210000000000005,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 22,
+      "insertion_m": 0.10220000000000007,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10220000000000007,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 23,
+      "insertion_m": 0.10230000000000007,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 9.813077866773595e-18,
+        "bite_m": -0.0004999999999999922,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10230000000000009,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 24,
+      "insertion_m": 0.10240000000000007,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10240000000000007,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 25,
+      "insertion_m": 0.10250000000000008,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10250000000000008,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 26,
+      "insertion_m": 0.10260000000000008,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10260000000000008,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 27,
+      "insertion_m": 0.10270000000000008,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10270000000000008,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 28,
+      "insertion_m": 0.10280000000000009,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10280000000000009,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 29,
+      "insertion_m": 0.10290000000000009,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 1.5515838457795457e-17,
+        "bite_m": -0.0004999999999999939,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.1029000000000001,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 30,
+      "insertion_m": 0.10300000000000009,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10300000000000009,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 31,
+      "insertion_m": 0.1031000000000001,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 9.813077866773595e-18,
+        "bite_m": -0.0004999999999999922,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10310000000000008,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 32,
+      "insertion_m": 0.1032000000000001,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.1032000000000001,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 33,
+      "insertion_m": 0.1033000000000001,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 9.813077866773595e-18,
+        "bite_m": -0.0004999999999999922,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10330000000000011,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 34,
+      "insertion_m": 0.1034000000000001,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.1034000000000001,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 35,
+      "insertion_m": 0.1035000000000001,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 1.6996749443881478e-17,
+        "bite_m": -0.000499999999999997,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10350000000000012,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 36,
+      "insertion_m": 0.10360000000000011,
+      "contact": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10360000000000011,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    },
+    {
+      "step": 37,
+      "insertion_m": 0.10370000000000011,
+      "contact": {
+        "active_nodes": 4,
+        "max_penetration_m": 8.575891268689647e-05,
+        "energy_J": 1.3438669612731775e-10,
+        "reaction_N": [
+          6.606371181228101e-07,
+          -1.8290526852122065e-06,
+          -2.9765528729288527e-06
+        ]
+      },
+      "trocar": {
+        "offset_m": 0.0,
+        "bite_m": -0.0004999999999999996,
+        "tilt_rad": 0.0,
+        "insertion_m": 0.10370000000000011,
+        "inward": true,
+        "aperture_clear": true,
+        "normal_source": "configured tool port frame; not CT wall calibration",
+        "controller": "legacy kinematic pivot; not Rosota FR3 TipController"
+      }
+    }
+  ],
+  "source_cad": "out\\ct_appendectomy\\bimanual_scene\\rosota_distal.usda",
+  "source_layer": "out\\ct_appendectomy\\fat_layer_v7\\layer.npz",
+  "scope": "Kinematic pivot approach against frozen anatomy; nodal penetration detection only",
+  "controller": "PortInstrument legacy pivot, not Rosota FR3 TipController",
+  "port_anatomically_calibrated": false,
+  "dynamics_integrated": false,
+  "contact_stiffness_calibrated": false,
+  "verification": {
+    "max_axis_offset_m": 8.498374721940739e-18,
+    "max_origin_speed_m_s": 0.020000000000002283,
+    "all_apertures_clear": true
+  },
+  "remaining": "Replay poses into coupled membrane dynamics and actual robot controller; full tool/organ and continuous collision checks remain."
+}
