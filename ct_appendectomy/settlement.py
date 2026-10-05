@@ -3,7 +3,7 @@ import numpy as np
 
 
 class SettlementGate:
-    def __init__(self,initial,interval_s=.125,rms_limit_m_s=.0001,p99_limit_m_s=.0005,consecutive=4):
+    def __init__(self,initial,interval_s=.125,rms_limit_m_s=.0001,p99_limit_m_s=.0005,consecutive=4,require_velocity_peak=False):
         self.previous=np.asarray(initial,float).copy()
         if self.previous.ndim!=2 or self.previous.shape[1]!=3 or not len(self.previous) or not np.isfinite(self.previous).all():
             raise ValueError('Finite XYZ node array required')
@@ -13,15 +13,27 @@ class SettlementGate:
             raise ValueError('Positive settlement parameters required')
         self.dt=interval_s;self.rms_limit=rms_limit_m_s;self.p99_limit=p99_limit_m_s
         self.required=consecutive;self.streak=0;self.rows=[]
+        self.require_velocity_peak=bool(require_velocity_peak)
 
-    def update(self,current):
+    def update(self,current,peak_speed_m_s=None):
         q=np.asarray(current,float)
         if q.shape!=self.previous.shape or not np.isfinite(q).all():raise ValueError('Invalid settlement state')
         speed=np.linalg.norm(q-self.previous,axis=1)/self.dt
         rms=float(np.sqrt(np.mean(speed**2)));p99=float(np.percentile(speed,99))
         stable=rms<=self.rms_limit and p99<=self.p99_limit
+        velocity_metrics={}
+        if peak_speed_m_s is None:
+            if self.require_velocity_peak:raise ValueError('Per-node velocity peaks required for settlement')
+        else:
+            peak=np.asarray(peak_speed_m_s,float)
+            if peak.shape!=(len(q),) or not np.isfinite(peak).all() or np.any(peak<0):
+                raise ValueError('Invalid settlement velocity peaks')
+            peak_rms=float(np.sqrt(np.mean(peak**2)));peak_p99=float(np.percentile(peak,99))
+            stable=stable and peak_rms<=self.rms_limit and peak_p99<=self.p99_limit
+            velocity_metrics=dict(peak_node_speed_rms_m_s=peak_rms,peak_node_speed_p99_m_s=peak_p99,
+                                  peak_node_speed_max_m_s=float(peak.max()))
         self.streak=self.streak+1 if stable else 0
         self.previous=q.copy()
         self.rows.append(dict(rms_speed_m_s=rms,p99_speed_m_s=p99,max_speed_m_s=float(speed.max()),
-                              stable_windows=self.streak))
+                              stable_windows=self.streak,**velocity_metrics))
         return self.streak>=self.required

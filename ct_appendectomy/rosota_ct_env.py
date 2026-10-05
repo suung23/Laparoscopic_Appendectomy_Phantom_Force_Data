@@ -211,19 +211,27 @@ class RosotaCTEnv(gym.Env):
         if self.settle_policy=='adaptive':
             from settlement import SettlementGate
             gate=SettlementGate(self.points(),rms_limit_m_s=1e-6 if self.fine_settlement else 1e-4,
-                p99_limit_m_s=5e-6 if self.fine_settlement else 5e-4)
+                p99_limit_m_s=5e-6 if self.fine_settlement else 5e-4,
+                require_velocity_peak=self._tissue_observer is not None)
             settled=False
             for window in range(120 if self.fine_settlement else 56):
-                for _ in range(60):self.sim.step(render=False)
-                settled=gate.update(self.points())
+                peak_speed=np.zeros(len(self.rest)) if self._tissue_observer else None
+                for _ in range(60):
+                    self.sim.step(render=False)
+                    if self._tissue_observer:
+                        state=self._tissue_observer.snapshot(omni.usd.get_context().get_stage_id())
+                        peak_speed=np.maximum(peak_speed,np.linalg.norm(state['velocity_m_s'],axis=1))
+                settled=gate.update(state['position_m'] if self._tissue_observer else self.points(),peak_speed)
                 (self.out/'settlement_progress.json').write_text(json.dumps(dict(
                     window=window+1,physics_ticks=480+60*(window+1),latest=gate.rows[-1])),encoding='utf-8')
                 if window>=7 and settled:break
             self.settlement.update(measured_equilibrium=settled,physics_ticks=480+60*len(gate.rows),
                 limits={'rms_speed_m_s':gate.rms_limit,'p99_speed_m_s':gate.p99_limit,'consecutive_windows':gate.required},
-                interval_s=gate.dt,trace=gate.rows)
+                interval_s=gate.dt,velocity_sampling_hz=480 if self._tissue_observer else None,trace=gate.rows)
             (self.out/'settlement.json').write_text(json.dumps(self.settlement,indent=2),encoding='utf-8')
-            if not settled:raise RuntimeError('Tissue did not reach the measured reset equilibrium gate')
+            if not settled:
+                self._audit_tissue('settlement_timeout')
+                raise RuntimeError('Tissue did not reach the measured reset equilibrium gate')
         self.sim.render()
         self.controllers={h:RosotaArmController(s['chain'],s['base'],s['port'],s['normal'],self.q(h),hand=s['tool_hand']) for h,s in self.specs.items()}
         self.control=self.controllers  # Shared RGB renderer's initialized-state guard.

@@ -23,5 +23,19 @@ class SettlementTests(unittest.TestCase):
         g=SettlementGate(np.zeros((20,3)))
         with self.assertRaises(ValueError):g.update(np.full((20,3),np.nan))
 
+    def test_return_to_same_position_does_not_hide_intermediate_motion(self):
+        p=np.zeros((20,3));g=SettlementGate(p,require_velocity_peak=True)
+        for _ in range(6):self.assertFalse(g.update(p,np.full(20,.01)))
+        self.assertEqual(g.rows[-1]['rms_speed_m_s'],0)
+        self.assertEqual(g.rows[-1]['stable_windows'],0)
+        for _ in range(3):self.assertFalse(g.update(p,np.zeros(20)))
+        self.assertTrue(g.update(p,np.zeros(20)))
+
+    def test_missing_or_invalid_velocity_evidence_rejected(self):
+        p=np.zeros((20,3));g=SettlementGate(p,require_velocity_peak=True)
+        for peak in [None,np.zeros(19),np.full(20,np.nan),np.full(20,-1.)]:
+            with self.assertRaises(ValueError):g.update(p,peak)
+        self.assertEqual(g.streak,0)
+
 
 if __name__=='__main__':unittest.main()
