@@ -78,7 +78,8 @@
     },
     {
       "id": "real-video-appearance",
-      "status": "not achieved; first liver texture experiment is outside current endoscope field of view",
+      "status": "not achieved; Appendix300 texture candidate has USD transfer preflight only and remains unrendered",
+      "evidence": "validation/appendix300-texture-v7-preflight.json",
       "requires": [
         "visible target-specific material comparison",
         "camera and light calibration",
