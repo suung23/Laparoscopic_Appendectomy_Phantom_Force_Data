@@ -1,0 +1,42 @@
+{
+  "status": "sampled diagnostic only",
+  "surface": "out\\ct_appendectomy\\bound_membrane_v6\\surface.npz",
+  "samples": {
+    "vertices": 1625,
+    "edge_midpoints": 4696,
+    "face_centroids": 3072
+  },
+  "penetrations": {
+    "/SurgicalRegion/appendix_FJ2565": {
+      "edge_midpoints": {
+        "count_over_0_1mm": 2,
+        "max_depth_mm": 0.1291254210958709
+      }
+    },
+    "/SurgicalRegion/appendicular_artery_FJ3410": {
+      "vertices": {
+        "count_over_0_1mm": 14,
+        "max_depth_mm": 0.3451727603494662
+      },
+      "edge_midpoints": {
+        "count_over_0_1mm": 45,
+        "max_depth_mm": 0.466628136469181
+      },
+      "face_centroids": {
+        "count_over_0_1mm": 23,
+        "max_depth_mm": 0.44211649041610596
+      }
+    }
+  },
+  "exhaustive_intersection_check": false,
+  "clinical_validity": false,
+  "render_sha256": "7135c7710e1d61e6fc7eab9502e5cffcc2a7cc29e90bc71c62f9edcb370a384e",
+  "visual_gate": "failed",
+  "observed": [
+    "Upper membrane extends continuously along appendix",
+    "Root bunching remains",
+    "No lobulated fatty layer; uniform opaque membrane appearance",
+    "Unvalidated inspection camera with substantial black background"
+  ],
+  "next": "Separate authored fatty lobules from thin membrane and connect their motion; do not equate centroid clearance with anatomical realism."
+}

@@ -136,6 +136,6 @@ def build(scene,profile,out):
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--scene',type=Path,default=Path('out/ct_appendectomy/native_source_review/review.usda'))
-    p.add_argument('--profile',type=Path,default=Path('ct_appendectomy/profiles/native_appendix_attachment_candidate.json'))
-    p.add_argument('--out',type=Path,default=Path('out/ct_appendectomy/bound_membrane_v1'))
+    p.add_argument('--profile',type=Path,default=Path('ct_appendectomy/profiles/native_appendix_attachment_exterior_candidate.json'))
+    p.add_argument('--out',type=Path,default=Path('out/ct_appendectomy/bound_membrane_current'))
     a=p.parse_args();build(a.scene,a.profile,a.out)
