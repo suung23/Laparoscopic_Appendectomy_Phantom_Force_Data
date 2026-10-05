@@ -1,0 +1,16 @@
+{
+  "scope": "Saved binding round-trip and nonuniform synthetic deformation fixture; not a physics simulation",
+  "round_trip_max_error_m": 0.0,
+  "resultant_force_error": 4.39625888431457e-15,
+  "moment_error": 1.2182650628633384e-16,
+  "virtual_work_error": 0.0,
+  "render_review_pending": false,
+  "anatomical_attachment_validated": false,
+  "clinical_force_calibration": false,
+  "render_review": {
+    "image_sha256": "19fa647434b24d540cfe58f687deeb837307af09eb9d9cff86b0b7e1d50b63fb",
+    "curve_visibility": "Most of the surface-bound curve is occluded in the native anatomy view; only a distal segment is clearly visible",
+    "anatomical_curve_approved": false,
+    "production_adopted": false
+  }
+}
