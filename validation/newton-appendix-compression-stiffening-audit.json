@@ -1,0 +1,197 @@
+{
+  "status": "compression_stiffening_gate_failed_for_current_newton_stable_neo_hookean_law",
+  "model": "Newton 1.4 stable Neo-Hookean first Piola law evaluated analytically",
+  "deformation_assumptions": {
+    "axial_loading": "Prescribed axial stretch 1-c; two equal free lateral stretches are solved from zero lateral first Piola stress.",
+    "oscillatory_shear": "Small-amplitude shear in the plane transverse to axial compression; current Cauchy shear stress is differentiated with respect to current simple shear.",
+    "poisson_ratio": 0.45,
+    "baseline_parameter_mapping": "mu is set equal to the measured uncompressed G-prime mean; lambda is derived from isotropic nu. This is a scale comparison, not a fitted dynamic parameter."
+  },
+  "groups": {
+    "control": {
+      "baseline_storage_modulus_pa": 1136.0,
+      "reported_storage_modulus_increase_at_40pct_percent": 200.0,
+      "reported_40pct_modulus_factor": 3.0,
+      "newton_stable_nh_predicted_40pct_factor": 1.6666666666666665,
+      "newton_stable_nh_predicted_40pct_modulus_pa": 1893.3333333333333,
+      "reported_implied_40pct_modulus_pa": 3408.0,
+      "relative_underprediction_of_40pct_factor": 0.44444444444444453,
+      "increase_reported_as_approximately": false,
+      "compression_curve": [
+        {
+          "axial_compression_fraction": 0.0,
+          "axial_stretch": 1.0,
+          "free_lateral_stretch": 1.0,
+          "volume_ratio": 1.0,
+          "free_lateral_piola_residual_pa": -1.1368683772161603e-12,
+          "current_cauchy_shear_tangent_pa": 1136.0,
+          "tangent_ratio_to_uncompressed": 1.0
+        },
+        {
+          "axial_compression_fraction": 0.1,
+          "axial_stretch": 0.9,
+          "free_lateral_stretch": 1.048220125784067,
+          "volume_ratio": 0.9888888888888889,
+          "free_lateral_piola_residual_pa": -6.821210263296962e-13,
+          "current_cauchy_shear_tangent_pa": 1262.2222222222222,
+          "tangent_ratio_to_uncompressed": 1.1111111111111112
+        },
+        {
+          "axial_compression_fraction": 0.2,
+          "axial_stretch": 0.8,
+          "free_lateral_stretch": 1.10397010829098,
+          "volume_ratio": 0.9749999999999986,
+          "free_lateral_piola_residual_pa": -1.4779288903810084e-11,
+          "current_cauchy_shear_tangent_pa": 1420.0,
+          "tangent_ratio_to_uncompressed": 1.25
+        },
+        {
+          "axial_compression_fraction": 0.3,
+          "axial_stretch": 0.7,
+          "free_lateral_stretch": 1.169336110267493,
+          "volume_ratio": 0.9571428571428574,
+          "free_lateral_piola_residual_pa": 1.5916157281026244e-12,
+          "current_cauchy_shear_tangent_pa": 1622.8571428571431,
+          "tangent_ratio_to_uncompressed": 1.4285714285714288
+        },
+        {
+          "axial_compression_fraction": 0.4,
+          "axial_stretch": 0.6,
+          "free_lateral_stretch": 1.2472191289246473,
+          "volume_ratio": 0.9333333333333336,
+          "free_lateral_piola_residual_pa": 9.094947017729282e-13,
+          "current_cauchy_shear_tangent_pa": 1893.3333333333333,
+          "tangent_ratio_to_uncompressed": 1.6666666666666665
+        }
+      ]
+    },
+    "purulent": {
+      "baseline_storage_modulus_pa": 666.0,
+      "reported_storage_modulus_increase_at_40pct_percent": 350.0,
+      "reported_40pct_modulus_factor": 4.5,
+      "newton_stable_nh_predicted_40pct_factor": 1.666666666666667,
+      "newton_stable_nh_predicted_40pct_modulus_pa": 1110.0000000000002,
+      "reported_implied_40pct_modulus_pa": 2997.0,
+      "relative_underprediction_of_40pct_factor": 0.6296296296296295,
+      "increase_reported_as_approximately": false,
+      "compression_curve": [
+        {
+          "axial_compression_fraction": 0.0,
+          "axial_stretch": 1.0,
+          "free_lateral_stretch": 1.0,
+          "volume_ratio": 1.0,
+          "free_lateral_piola_residual_pa": -6.821210263296962e-13,
+          "current_cauchy_shear_tangent_pa": 666.0,
+          "tangent_ratio_to_uncompressed": 1.0
+        },
+        {
+          "axial_compression_fraction": 0.1,
+          "axial_stretch": 0.9,
+          "free_lateral_stretch": 1.048220125784067,
+          "volume_ratio": 0.9888888888888889,
+          "free_lateral_piola_residual_pa": -3.410605131648481e-13,
+          "current_cauchy_shear_tangent_pa": 740.0,
+          "tangent_ratio_to_uncompressed": 1.1111111111111112
+        },
+        {
+          "axial_compression_fraction": 0.2,
+          "axial_stretch": 0.8,
+          "free_lateral_stretch": 1.10397010829098,
+          "volume_ratio": 0.9749999999999986,
+          "free_lateral_piola_residual_pa": -8.640199666842818e-12,
+          "current_cauchy_shear_tangent_pa": 832.5000000000002,
+          "tangent_ratio_to_uncompressed": 1.2500000000000004
+        },
+        {
+          "axial_compression_fraction": 0.3,
+          "axial_stretch": 0.7,
+          "free_lateral_stretch": 1.1693361102674928,
+          "volume_ratio": 0.9571428571428571,
+          "free_lateral_piola_residual_pa": -9.094947017729282e-13,
+          "current_cauchy_shear_tangent_pa": 951.4285714285714,
+          "tangent_ratio_to_uncompressed": 1.4285714285714286
+        },
+        {
+          "axial_compression_fraction": 0.4,
+          "axial_stretch": 0.6,
+          "free_lateral_stretch": 1.2472191289246473,
+          "volume_ratio": 0.9333333333333336,
+          "free_lateral_piola_residual_pa": 5.684341886080801e-13,
+          "current_cauchy_shear_tangent_pa": 1110.0000000000002,
+          "tangent_ratio_to_uncompressed": 1.666666666666667
+        }
+      ]
+    },
+    "gangrenous": {
+      "baseline_storage_modulus_pa": 642.0,
+      "reported_storage_modulus_increase_at_40pct_percent": 400.0,
+      "reported_40pct_modulus_factor": 5.0,
+      "newton_stable_nh_predicted_40pct_factor": 1.6666666666666667,
+      "newton_stable_nh_predicted_40pct_modulus_pa": 1070.0,
+      "reported_implied_40pct_modulus_pa": 3210.0,
+      "relative_underprediction_of_40pct_factor": 0.6666666666666666,
+      "increase_reported_as_approximately": true,
+      "compression_curve": [
+        {
+          "axial_compression_fraction": 0.0,
+          "axial_stretch": 1.0,
+          "free_lateral_stretch": 1.0,
+          "volume_ratio": 1.0,
+          "free_lateral_piola_residual_pa": -7.958078640513122e-13,
+          "current_cauchy_shear_tangent_pa": 642.0,
+          "tangent_ratio_to_uncompressed": 1.0
+        },
+        {
+          "axial_compression_fraction": 0.1,
+          "axial_stretch": 0.9,
+          "free_lateral_stretch": 1.048220125784067,
+          "volume_ratio": 0.9888888888888889,
+          "free_lateral_piola_residual_pa": -4.547473508864641e-13,
+          "current_cauchy_shear_tangent_pa": 713.3333333333333,
+          "tangent_ratio_to_uncompressed": 1.111111111111111
+        },
+        {
+          "axial_compression_fraction": 0.2,
+          "axial_stretch": 0.8,
+          "free_lateral_stretch": 1.10397010829098,
+          "volume_ratio": 0.9749999999999986,
+          "free_lateral_piola_residual_pa": -8.526512829121202e-12,
+          "current_cauchy_shear_tangent_pa": 802.5,
+          "tangent_ratio_to_uncompressed": 1.25
+        },
+        {
+          "axial_compression_fraction": 0.3,
+          "axial_stretch": 0.7,
+          "free_lateral_stretch": 1.169336110267493,
+          "volume_ratio": 0.9571428571428574,
+          "free_lateral_piola_residual_pa": 6.821210263296962e-13,
+          "current_cauchy_shear_tangent_pa": 917.1428571428572,
+          "tangent_ratio_to_uncompressed": 1.4285714285714286
+        },
+        {
+          "axial_compression_fraction": 0.4,
+          "axial_stretch": 0.6,
+          "free_lateral_stretch": 1.2472191289246473,
+          "volume_ratio": 0.9333333333333336,
+          "free_lateral_piola_residual_pa": 4.547473508864641e-13,
+          "current_cauchy_shear_tangent_pa": 1070.0,
+          "tangent_ratio_to_uncompressed": 1.6666666666666667
+        }
+      ]
+    }
+  },
+  "conclusion": "The current stable Neo-Hookean law predicts only the geometric prestress factor 1/(1-c), reaching 1.667x at 40% compression. Published Appendix data report about 3x, 4.5x, and about 5x for control, purulent, and gangrenous groups. The current isotropic law therefore lacks enough compression-dependent shear response to represent those reported group means under this explicitly stated kinematic comparison.",
+  "limitations": [
+    "The article reports small-sample rheometer group means and normalized compression curves, not in-vivo surgical force-displacement ground truth.",
+    "The numeric 40% increase is read from the article text; raw per-sample compression curves are not digitized here.",
+    "The analytical audit mirrors Newton's law and does not directly audit PhysX FEM material response.",
+    "No candidate material was fitted or promoted; viscoelastic loss, rate dependence, shear weakening, anisotropy, fluid flow, and tissue damage remain unmodelled."
+  ],
+  "source": {
+    "doi": "10.3390/biomedicines12112588",
+    "dataset_file": "research/appendix-mechanics-reference.json",
+    "newton_source_sha256": "118a2205de9e907ed65639aca626366ab38d2e04c74852bef1b92fb96c6517b7",
+    "analysis_sha256": "66e3e74b0a169ee6b0ebf0f8e351042095cf5eb62e391fea56b16867bcb9962a",
+    "figure_and_methods_reference": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11591559/"
+  }
+}
