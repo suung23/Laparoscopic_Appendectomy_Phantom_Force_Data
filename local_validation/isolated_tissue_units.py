@@ -52,6 +52,11 @@ try:
             raise RuntimeError('Cannot apply PhysX deformable parameter schema')
         prim.CreateAttribute('physxDeformableBody:solverPositionIterationCount',Sdf.ValueTypeNames.UInt).Set(64)
         prim.CreateAttribute('physxDeformableBody:linearDamping',Sdf.ValueTypeNames.Float).Set(0.)
+        # A free-fall covariance test must not introduce unit-dependent default
+        # settling/sleep thresholds or hidden settling damping.
+        prim.CreateAttribute('physxDeformableBody:settlingDamping',Sdf.ValueTypeNames.Float).Set(0.)
+        prim.CreateAttribute('physxDeformableBody:settlingThreshold',Sdf.ValueTypeNames.Float).Set(0.)
+        prim.CreateAttribute('physxDeformableBody:sleepThreshold',Sdf.ValueTypeNames.Float).Set(0.)
         prim.CreateAttribute('physxDeformableBody:selfCollision',Sdf.ValueTypeNames.Bool).Set(False)
         du.add_deformable_material(stage,'/World/Material',density=1050*mpu**3,youngs_modulus=12000*mpu,poissons_ratio=.45)
         UsdShade.MaterialBindingAPI.Apply(prim).Bind(UsdShade.Material.Get(stage,'/World/Material'),UsdShade.Tokens.weakerThanDescendants,'physics')
@@ -93,6 +98,7 @@ try:
         report['cases'].append(dict(meters_per_unit=mpu,status='geometry_dynamics_passed' if passed else 'failed',
             observation_source='live_physx_tensor' if a.tensor_readback else 'usd',
             authored_density=1050*mpu**3,authored_youngs_modulus=12000*mpu,authored_gravity=9.81/mpu,
+            settling_damping=0.,settling_threshold=0.,sleep_threshold=0.,
             acceleration_m_s2=acceleration.tolist(),max_acceleration_error_m_s2=float(error.max()),rows=rows))
         (a.out/'report.json').write_text(json.dumps(report,indent=2)+'\n')
         if a.tensor_readback:observer.close();del observer
