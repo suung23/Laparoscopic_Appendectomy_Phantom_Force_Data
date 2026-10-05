@@ -1,0 +1,14 @@
+{
+  "status": "completed reference run",
+  "steps": 83,
+  "baseline_seconds": 294.4112633000186,
+  "optimized_seconds": 161.91747649997706,
+  "combined_speedup": 1.8182797167053202,
+  "max_position_difference_mm": 0.00010576302882403364,
+  "max_inertial_defect_m": 8.747352241798331e-07,
+  "torch_threads": 4,
+  "optimized_report_sha256": "18ce8112671c2da9efe55620c0956289eb6d8dfc7875e46985fd5075f054ba95",
+  "scope": "Combined Gram-kernel and CPU-thread changes; not an isolated full-run thread comparison",
+  "real_time": false,
+  "empirically_calibrated": false
+}

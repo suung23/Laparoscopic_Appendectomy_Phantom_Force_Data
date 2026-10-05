@@ -12,7 +12,10 @@ from attached_visual_layer import AttachedVisualLayer
 from layer_force_mapping import pullback_forces
 from build_fat_layer import evaluate
 
-def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,artery_shape=False,cad=None,approach=None,full_tool_contact=False,friction_mu=0.,solver_tolerance=1e-6,defect_tolerance=None):
+def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,artery_shape=False,cad=None,approach=None,full_tool_contact=False,friction_mu=0.,solver_tolerance=1e-6,defect_tolerance=None,torch_threads=4):
+    import torch
+    if torch_threads<1:raise ValueError('Positive CPU thread count required')
+    torch.set_num_threads(torch_threads)
     if not np.isfinite(dt) or dt<=0 or steps<1:raise ValueError("Positive timestep and steps required")
     if not np.isfinite(solver_tolerance) or solver_tolerance<=0:raise ValueError('Positive solver tolerance required')
     out.mkdir(parents=True,exist_ok=True)
@@ -123,6 +126,7 @@ def run(scene,parent_file,layer_file,out,steps,dt=1/240,artery_binding=None,arte
     report['articulated_jaw_trajectory']=jaw_angles is not None
     report['solver_tolerance_N']=solver_tolerance
     report['inertial_defect_tolerance_m']=defect_tolerance
+    report['torch_cpu_threads']=torch.get_num_threads()
     report.update(friction=bool(friction_mu),friction_mu=friction_mu,friction_model='lagged regularized sliding Coulomb; no static friction',friction_regularization_speed_m_s=.001)
     (out/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
 
@@ -137,4 +141,5 @@ if __name__=='__main__':
     p.add_argument('--friction-mu',type=float,default=0.)
     p.add_argument('--solver-tolerance',type=float,default=1e-6)
     p.add_argument('--defect-tolerance',type=float,default=None)
-    a=p.parse_args();run(a.scene,a.parent,a.layer,a.out,a.steps,a.dt,a.artery_binding,a.artery_shape,a.cad,a.approach,a.full_tool_contact,a.friction_mu,a.solver_tolerance,a.defect_tolerance)
+    p.add_argument('--torch-threads',type=int,default=4)
+    a=p.parse_args();run(a.scene,a.parent,a.layer,a.out,a.steps,a.dt,a.artery_binding,a.artery_shape,a.cad,a.approach,a.full_tool_contact,a.friction_mu,a.solver_tolerance,a.defect_tolerance,a.torch_threads)

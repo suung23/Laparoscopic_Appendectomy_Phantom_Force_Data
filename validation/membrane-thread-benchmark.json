@@ -1,0 +1,50 @@
+{
+  "default_threads": 24,
+  "results": [
+    {
+      "threads": 1,
+      "seconds_per_100_calls": [
+        0.32410289999097586,
+        0.3192356000072323,
+        0.324317400023574
+      ],
+      "median_seconds": 0.32410289999097586,
+      "max_force_difference_N": 0.0,
+      "energy_difference_J": 0.0
+    },
+    {
+      "threads": 2,
+      "seconds_per_100_calls": [
+        0.30066249999799766,
+        0.3093255000130739,
+        0.30159980000462383
+      ],
+      "median_seconds": 0.30159980000462383,
+      "max_force_difference_N": 0.0,
+      "energy_difference_J": 0.0
+    },
+    {
+      "threads": 4,
+      "seconds_per_100_calls": [
+        0.30049339999095537,
+        0.2982166000001598,
+        0.29895949998172
+      ],
+      "median_seconds": 0.29895949998172,
+      "max_force_difference_N": 0.0,
+      "energy_difference_J": 0.0
+    },
+    {
+      "threads": 24,
+      "seconds_per_100_calls": [
+        0.5692633999860846,
+        0.5691869999864139,
+        0.5348634000110906
+      ],
+      "median_seconds": 0.5691869999864139,
+      "max_force_difference_N": 0.0,
+      "energy_difference_J": 0.0
+    }
+  ],
+  "scope": "CPU float64 energy and force kernel; one deformed authored membrane; not full runtime or GPU throughput"
+}
