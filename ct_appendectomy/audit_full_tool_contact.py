@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 import trimesh
 from pxr import Usd, UsdGeom
-from cad_penalty_contact import load_jaw, penalty
+from cad_penalty_contact import load_jaw, penalty, part_pose
 from build_fat_layer import evaluate
 
 
@@ -23,10 +23,12 @@ def audit(cad, layer, trajectory, approach, out):
     for index, state in enumerate(states['points']):
         points = evaluate(state, data['nodes'], data['weights'], data['frame_offsets'])
         pose = motion['poses'][min(max(index-1, 0), len(motion['poses'])-1)]
+        angle=float(motion['jaw_half_angles'][min(max(index-1,0),len(motion['poses'])-1)]) if 'jaw_half_angles' in motion else 0.
         contacts = {}
         for name, local in hulls.items():
             hull = local.copy()
-            hull.vertices = local.vertices @ pose[:3, :3].T + pose[:3, 3]
+            transform=part_pose(pose,name,angle)
+            hull.vertices = local.vertices @ transform[:3, :3].T + transform[:3, 3]
             try:
                 _, contacts[name] = penalty(hull, points, area, 1e5)
             except ValueError as exc:
