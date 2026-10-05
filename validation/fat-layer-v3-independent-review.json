@@ -1,0 +1,63 @@
+{
+  "status": "sampled diagnostic only",
+  "backend": "independent scipy ray parity / exhaustive closest point",
+  "surface": "out\\ct_appendectomy\\fat_layer_v3\\layer.npz",
+  "samples": {
+    "vertices": 49858,
+    "edge_midpoints": 149568,
+    "face_centroids": 99712
+  },
+  "penetrations": {
+    "/SurgicalRegion/appendix_FJ2565": {
+      "vertices": {
+        "count_over_0_1mm": 197,
+        "max_depth_mm": 0.7313967024999336
+      },
+      "edge_midpoints": {
+        "count_over_0_1mm": 589,
+        "max_depth_mm": 0.7260056638700715
+      },
+      "face_centroids": {
+        "count_over_0_1mm": 381,
+        "max_depth_mm": 0.7106321893043815
+      }
+    },
+    "/SurgicalRegion/mesentery_FJ3396": {
+      "vertices": {
+        "count_over_0_1mm": 36,
+        "max_depth_mm": 0.18643468390546433
+      },
+      "edge_midpoints": {
+        "count_over_0_1mm": 80,
+        "max_depth_mm": 0.1926730517546431
+      },
+      "face_centroids": {
+        "count_over_0_1mm": 46,
+        "max_depth_mm": 0.19229687151516672
+      }
+    },
+    "/SurgicalRegion/appendicular_artery_FJ3410": {
+      "vertices": {
+        "count_over_0_1mm": 513,
+        "max_depth_mm": 0.48636633716091343
+      },
+      "edge_midpoints": {
+        "count_over_0_1mm": 1524,
+        "max_depth_mm": 0.5044960681189099
+      },
+      "face_centroids": {
+        "count_over_0_1mm": 1029,
+        "max_depth_mm": 0.49190747626763337
+      }
+    }
+  },
+  "exhaustive_intersection_check": false,
+  "clinical_validity": false,
+  "test_evidence": "Three unittest cases passed: scaled rotated translated cube with reversed winding, sphere away from tessellation boundary, open mesh rejection",
+  "decision": "Fat candidate remains rejected: appendix, mesentery and artery overlap detected. Independent diagnostic completed without Rtree.",
+  "limitations": [
+    "Single generic ray direction; near-boundary and grazing cases can be ambiguous",
+    "Samples do not establish exhaustive triangle intersection freedom",
+    "Not a replacement for dynamics contact response"
+  ]
+}
