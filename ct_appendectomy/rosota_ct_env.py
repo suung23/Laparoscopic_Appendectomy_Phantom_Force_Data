@@ -91,6 +91,8 @@ class RosotaCTEnv(gym.Env):
         for _ in range(20):self.app.update()
         self.stage=omni.usd.get_context().get_stage()
         self.stage.Reload()  # Reload referenced layers as well as the root.
+        from deformable_parameters import validate_deformable_parameters
+        validate_deformable_parameters(self.stage.GetPrimAtPath('/World/Atlas/appendix'))
         # Older authored stages used a bare Xform; modern PhysX attachments
         # require a rigid actor for this stationary attachment target.
         anchor=self.stage.GetPrimAtPath('/World/BaseAnchor')

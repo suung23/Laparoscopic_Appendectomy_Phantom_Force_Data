@@ -14,5 +14,7 @@
     "max_speed_m_s": 0.008167073878978462,
     "stable_windows": 0
   },
-  "scope": "No measured equilibrium within the configured reset horizon. Not proof of divergence or solver convergence."
+  "scope": "No measured equilibrium within the configured reset horizon. Not proof of divergence or solver convergence.",
+  "configuration_validity": "invalid",
+  "conclusion_withdrawal": "Authored solver iteration count 256 exceeds the documented PhysX 110.3 range [1,255]. Effective runtime handling was not verified. Do not use as a valid 256-iteration or convergence result."
 }

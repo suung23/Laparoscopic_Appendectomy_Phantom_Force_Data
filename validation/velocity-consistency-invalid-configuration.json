@@ -1,0 +1,6 @@
+{
+  "status": "cancelled_invalid_configuration",
+  "reason": "Authored solver iteration count 256 exceeds the documented PhysX 110.3 range [1,255]. Effective runtime handling was not verified. Do not use as a valid 256-iteration or convergence result.",
+  "raw_output": "out/ct_appendectomy/velocity_consistency_v1",
+  "scope": "Cancelled before acceptance analysis; raw files retained."
+}

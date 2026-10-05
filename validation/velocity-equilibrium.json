@@ -21,5 +21,7 @@
     "total_absolute_volume_ratio": 1.006146697987724,
     "p99_absolute_volume_change": 0.3270221937063827
   },
-  "scope": "Failed measured equilibrium and actual GPU tissue geometry. No accepted surgical state."
+  "scope": "Failed measured equilibrium and actual GPU tissue geometry. No accepted surgical state.",
+  "configuration_validity": "invalid",
+  "conclusion_withdrawal": "Authored solver iteration count 256 exceeds the documented PhysX 110.3 range [1,255]. Effective runtime handling was not verified. Do not use as a valid 256-iteration or convergence result."
 }

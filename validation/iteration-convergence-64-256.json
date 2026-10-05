@@ -170,5 +170,7 @@
       ]
     }
   ],
-  "scope": "Trajectory comparison, not an acceptance pass. Requires independently verified matched experimental inputs and timing."
+  "scope": "Trajectory comparison, not an acceptance pass. Requires independently verified matched experimental inputs and timing.",
+  "configuration_validity": "invalid",
+  "conclusion_withdrawal": "Authored solver iteration count 256 exceeds the documented PhysX 110.3 range [1,255]. Effective runtime handling was not verified. Do not use as a valid 256-iteration or convergence result."
 }
