@@ -1,0 +1,138 @@
+{
+  "status": "completed reference run",
+  "error": null,
+  "steps": 83,
+  "wall_seconds": 51.28369699997711,
+  "simulated_seconds": 0.41500000000000004,
+  "source_report_sha256": "48c1e6c0ee93fe9423d78abc66b42cbf33b276a66e4b3793ec92c0160833affc",
+  "postcontact_insertion_mm": 0.5,
+  "max_layer_motion_mm": 0.5487366544747667,
+  "max_penetration_before_mm": 0.2554730005771389,
+  "peak_reaction_N": 2.3473247174008634e-05,
+  "final_contact_nodes": 0,
+  "checkpoints": [
+    {
+      "step": 39,
+      "contact_before": {
+        "active_nodes": 5,
+        "max_penetration_m": 0.0002554730005771389,
+        "energy_J": 2.7599178164113715e-09,
+        "reaction_N": [
+          4.413838198558268e-06,
+          -1.5921812269477573e-05,
+          -1.6673549691189506e-05
+        ]
+      },
+      "contact_after": {
+        "active_nodes": 4,
+        "max_penetration_m": 0.00017392367306091807,
+        "energy_J": 1.179709498050654e-09,
+        "reaction_N": [
+          1.5646548596391e-06,
+          -1.1061403232229512e-05,
+          -1.0432068161881127e-05
+        ]
+      },
+      "layer_max_motion_mm": 0.35019243467666267
+    },
+    {
+      "step": 43,
+      "contact_before": {
+        "active_nodes": 2,
+        "max_penetration_m": 4.972855529915935e-05,
+        "energy_J": 8.742518113814516e-11,
+        "reaction_N": [
+          2.2544085996470436e-07,
+          -2.4345370911011765e-06,
+          -2.664729163087159e-06
+        ]
+      },
+      "contact_after": {
+        "active_nodes": 2,
+        "max_penetration_m": 5.248682649158745e-05,
+        "energy_J": 1.0142526158141779e-10,
+        "reaction_N": [
+          2.3667730451795407e-07,
+          -2.628973484235164e-06,
+          -2.8673768395462573e-06
+        ]
+      },
+      "layer_max_motion_mm": 0.5396642328008215
+    },
+    {
+      "step": 44,
+      "contact_before": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "contact_after": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "layer_max_motion_mm": 0.5487366544747667
+    },
+    {
+      "step": 50,
+      "contact_before": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "contact_after": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "layer_max_motion_mm": 0.1572193516994377
+    },
+    {
+      "step": 82,
+      "contact_before": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "contact_after": {
+        "active_nodes": 0,
+        "max_penetration_m": 0.0,
+        "energy_J": 0.0,
+        "reaction_N": [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      },
+      "layer_max_motion_mm": 0.11495075823611094
+    }
+  ],
+  "scope": "Uncalibrated single-jaw CPU penalty contact and membrane response",
+  "full_tool_forces_integrated": false,
+  "clinical_force_validated": false
+}
