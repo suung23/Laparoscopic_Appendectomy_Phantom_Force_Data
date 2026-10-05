@@ -1,0 +1,9 @@
+{
+  "scope": "Regular 16 mm cube diagnostic only, not anatomical replacement",
+  "nodes": 125,
+  "tets": 384,
+  "minimum_determinant_m3": 6.4e-08,
+  "nonmanifold_faces": 0,
+  "volume_m3": 4.096000000000001e-06,
+  "generation": "5 cubed lattice vertices; six axis-permutation tetrahedra per cell, oriented positive"
+}
