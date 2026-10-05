@@ -23,10 +23,13 @@ class MembraneReference:
         self.bending=HingeBending(points,faces,bending_stiffness) if bending_stiffness else None
     def energy(self,points):
         tri=points[self.faces];ds=torch.stack([tri[:,1]-tri[:,0],tri[:,2]-tri[:,0]],dim=2)
-        f=ds@self.inverse;c=f.transpose(1,2)@f
-        det=torch.linalg.det(c)
+        f=ds@self.inverse
+        # det(F.T F)=|F[:,0] x F[:,1]|^2 for a 3x2 surface gradient.
+        # Avoid batched LU for tiny 2x2 matrices and cancellation in ac-b^2.
+        cross=torch.linalg.cross(f[:,:,0],f[:,:,1])
+        det=(cross*cross).sum(dim=1)
         if torch.any(det<=1e-16):raise ValueError('Collapsed current membrane triangle')
-        logj=.5*torch.log(det);trace=c[:,0,0]+c[:,1,1]
+        logj=.5*torch.log(det);trace=(f*f).sum(dim=(1,2))
         density=.5*self.mu*(trace-2-2*logj)+.5*self.lam*logj**2
         energy=(density*self.area*self.thickness).sum()
         return energy+self.bending.energy(points) if self.bending is not None else energy

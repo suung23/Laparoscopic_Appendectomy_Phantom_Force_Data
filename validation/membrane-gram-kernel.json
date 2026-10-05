@@ -1,0 +1,9 @@
+{
+  "calls": 100,
+  "old_seconds": 0.5138260000094306,
+  "new_seconds": 0.4779819000104908,
+  "speedup": 1.0749904964982002,
+  "energy_difference_J": 2.932355271500483e-21,
+  "max_force_difference_N": 1.0681085464876727e-18,
+  "scope": "One deformed authored membrane; CPU float64 kernel only, not full simulation throughput"
+}
