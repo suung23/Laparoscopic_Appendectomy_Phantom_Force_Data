@@ -1,0 +1,24 @@
+{
+  "status": "completed reference run",
+  "error": null,
+  "target_vertex": 13348,
+  "target_selection": "Within 3-8 mm of previous target; outward-normal alignment >0.7; ranked by nearest artery vertex distance. Engineering heuristic, not clinical annotation.",
+  "source_report_sha256": "501b175256dfba9ca14f64c51c009c84f7e425b30f61250c8b54ed0f6b3ebe58",
+  "steps": 73,
+  "wall_seconds": 19.41678529998171,
+  "simulated_seconds": 0.365,
+  "max_layer_motion_mm": 0.00986583374106111,
+  "contact_steps": [
+    34,
+    35,
+    36,
+    37,
+    38
+  ],
+  "final_contact_nodes": 0,
+  "maximum_penetration_mm": 0.002383917566347467,
+  "scope": "Shallow single-jaw contact commissioning; not grasping or RL",
+  "all_pose_anatomy_collision_verified": false,
+  "clinical_port_calibration": false,
+  "material_calibrated": false
+}

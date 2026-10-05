@@ -1,0 +1,29 @@
+{
+  "status": "no penetration at inspected samples",
+  "surgical_approach_accepted": false,
+  "poses_checked": [
+    0,
+    34,
+    72
+  ],
+  "parts_checked": [
+    "gripper_shaft_inner",
+    "gripper_shaft_outer",
+    "gripper_tip_left",
+    "gripper_tip_right",
+    "laparo_shaft",
+    "part_13",
+    "part_15"
+  ],
+  "closed_organs_checked": 38,
+  "open_meshes_skipped": [],
+  "penetrations": [],
+  "scope": "Static source anatomy against subdivided convex CAD hull samples at selected poses",
+  "continuous_collision": false,
+  "clinical_port_calibration": false,
+  "sources": {
+    "scene": "1d6f6b56f9725b8851a69d73ebfe79424e36a21df9de0bbfabd52534cfaacff3",
+    "cad": "ee97b1f0de75ec1ff3116b8a117fe20db331cb8d02d887b3cd9d4bb57f5c2c94",
+    "approach": "e4c6ecb16055e87b40467252d9b1984a35985417948471092e73dbf03a84b250"
+  }
+}
