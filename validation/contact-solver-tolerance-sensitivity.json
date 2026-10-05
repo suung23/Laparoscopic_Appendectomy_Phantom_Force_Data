@@ -1,0 +1,15 @@
+{
+  "status": "completed reference run",
+  "error": null,
+  "steps": 83,
+  "wall_seconds": 135.22953209999832,
+  "dt": 0.005,
+  "solver_tolerance_N": 1e-07,
+  "matched_states": 84,
+  "maximum_difference_from_loose_tolerance_mm": 0.3298926479153042,
+  "last_matched_max_difference_mm": 0.16000495755380714,
+  "maximum_actual_residual_N": 9.629629667916873e-08,
+  "source_sha256": "4135d273235b34ed5d99abbf693db761fce15f55ea5ddb82f08b7a5bd785ed0d",
+  "convergence_proven": false,
+  "scope": "Solver tolerance sensitivity at fixed 5ms timestep; same uncalibrated contact model"
+}
