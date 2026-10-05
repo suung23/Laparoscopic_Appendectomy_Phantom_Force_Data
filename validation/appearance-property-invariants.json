@@ -1,0 +1,27 @@
+{
+  "source_scene_sha256": "35a72aae333539cd30f79f398389356d137d4ed6525165d041d0a22094e1c7de",
+  "meshes": [
+    "/World/CT/colon",
+    "/World/CT/small_bowel",
+    "/World/Atlas/appendix/render",
+    "/World/Atlas/mesoappendix/render",
+    "/World/BodyEnvelope/render"
+  ],
+  "texture_sha256": {
+    "bowel_0_color.png": "0bab4593f7f9c26b2a3515179acf866b2f7e5e89b47de7d42b7402923bf974d1",
+    "bowel_0_roughness.png": "87fb4768bc053ac88aed54b338cd71995b3ad14066ac563d4c4c601635a73033",
+    "bowel_1_color.png": "888a81106d97913293200a7ad4f611893ed84f0c08e6e3f3bb852e670897e23e",
+    "bowel_1_roughness.png": "2108de35a73da320f41d526b947bb3dbc96a9dd5516971a5ed5ec3d116b08cc1",
+    "appendix_0_color.png": "bbc1c1f9e42769bef6091b274cb770ba319a08857ccb226b89e126111580c044",
+    "appendix_0_roughness.png": "9db077f606dd529ed96c0b4bd345a09a7d17f262b80a15137e97cd544bd55833",
+    "mesentery_0_color.png": "1a8fafd98bbc49dfdd7282b0c511e481664195c9d792ba1d5975d1d3d4de1ce3",
+    "mesentery_0_roughness.png": "ad9e06541cfc6e84c9770f89a57b9931c32e1ce55b5195f7fbe2f5618e038248",
+    "lining_0_color.png": "49b64fdbb60db33ee717ce00c67319058a66481007c687225112028dfd3758a1",
+    "lining_0_roughness.png": "5f308a80ced8b459776d8437d7618692a0f248653ff7451977b9f7ef046e5040"
+  },
+  "scope": "Material bindings and UVs only; no geometry, camera, lighting or physics copied",
+  "clinical_appearance_validated": false,
+  "unchanged_nonappearance_property_count": 1640,
+  "nonappearance_values_sha256": "bce6ef84f33fa76dfccacb81b6232aeabeeb904625f1be0577f26e78d54894e1",
+  "scope_verified": "Offline USD property values and relationship targets, not runtime physics"
+}
