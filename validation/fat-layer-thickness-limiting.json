@@ -1,0 +1,82 @@
+{
+  "status": "unreviewed continuous visual candidate",
+  "vertices": 49858,
+  "triangles": 99712,
+  "components": 1,
+  "watertight": true,
+  "winding_consistent": true,
+  "height_mm_min_median_max": [
+    0.02,
+    0.5143010484982705,
+    1.5004365410765115
+  ],
+  "binding_error_m": 8.673617379884035e-19,
+  "source_sha256": "4b4fc9fc972a7646ac6f237360952949887ddb783e4cc97f4c4f1d8d88f2d91a",
+  "provenance": "Procedurally authored over BodyParts3D-derived membrane; DBCLS CC BY 4.0",
+  "reference": "Appendix300 sampled visual observations; no reconstructed metric geometry",
+  "physics_integrated": false,
+  "anatomy_validated": false,
+  "collision_checked": false,
+  "self_intersections_checked": false,
+  "parameters": "seed 1729; 2.8 mm seed spacing; Gaussian widths 0.9-1.8 mm; sixth-power smooth maximum; all authoring choices",
+  "lobe_centers": 65,
+  "neighbor_clipping": {
+    "appendix_FJ2565": {
+      "changed_vertices": 356,
+      "baseline_inside_vertices": 160,
+      "max_reduction_mm": 0.8045374793372044
+    },
+    "mesentery_FJ3396": {
+      "changed_vertices": 91,
+      "baseline_inside_vertices": 135,
+      "max_reduction_mm": 0.28100177951597305
+    }
+  },
+  "clipping_scope": "Eight normal-line samples and ten bisections; not continuous collision detection; pre-existing membrane penetrations remain",
+  "face_normal_rotation_over_90_degrees_vs_v3": 18,
+  "previous_unsmoothed_collision_review": {
+    "status": "sampled diagnostic only",
+    "backend": "independent scipy ray parity / exhaustive closest point",
+    "surface": "out\\ct_appendectomy\\fat_layer_v4\\layer.npz",
+    "samples": {
+      "vertices": 49858,
+      "edge_midpoints": 149568,
+      "face_centroids": 99712
+    },
+    "penetrations": {
+      "/SurgicalRegion/appendix_FJ2565": {
+        "vertices": {
+          "count_over_0_1mm": 27,
+          "max_depth_mm": 0.6962679485841453
+        },
+        "edge_midpoints": {
+          "count_over_0_1mm": 92,
+          "max_depth_mm": 0.6545861102700087
+        },
+        "face_centroids": {
+          "count_over_0_1mm": 62,
+          "max_depth_mm": 0.640215646063881
+        }
+      },
+      "/SurgicalRegion/appendicular_artery_FJ3410": {
+        "vertices": {
+          "count_over_0_1mm": 513,
+          "max_depth_mm": 0.48636633716091343
+        },
+        "edge_midpoints": {
+          "count_over_0_1mm": 1523,
+          "max_depth_mm": 0.5044960681189099
+        },
+        "face_centroids": {
+          "count_over_0_1mm": 1030,
+          "max_depth_mm": 0.49190747626763337
+        }
+      }
+    },
+    "exhaustive_intersection_check": false,
+    "clinical_validity": false
+  },
+  "v5_collision_and_render": "pending",
+  "slope_limit": 0.5,
+  "adopted": false
+}

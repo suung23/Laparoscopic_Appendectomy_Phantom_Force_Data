@@ -9,7 +9,7 @@ from build_scene import mesh_prim
 from boundary_surface import project_boundary
 from build_fat_layer import frames,evaluate
 
-def build(scene,surface,out):
+def build(scene,surface,out,clip_neighbors=False):
     data=np.load(surface);parent=trimesh.Trimesh(data['points'],data['faces'],process=False)
     refined=parent.subdivide().subdivide();points=refined.vertices
     edges=refined.edges_sorted;unique,counts=np.unique(edges,axis=0,return_counts=True);boundary=unique[counts==1]
@@ -30,6 +30,44 @@ def build(scene,surface,out):
         if len(centers)>=65:break
     field=field**(1/6)
     height=.00002+taper*(.00012+field)
+    clipping={}
+    if clip_neighbors:
+        from independent_containment import contains
+        from author_attachment_curve import mesh_at
+        source=Usd.Stage.Open(str(scene.resolve()))
+        for name in ['appendix_FJ2565','mesentery_FJ3396']:
+            obstacle=mesh_at(source,'/SurgicalRegion/'+name)
+            baseline_inside=contains(obstacle,points)
+            first=np.full(len(points),np.inf)
+            for fraction in np.linspace(.125,1,8):
+                hit=contains(obstacle,points+refined.vertex_normals*(height*fraction)[:,None])
+                first[(first==np.inf)&hit]=fraction
+            candidates=np.flatnonzero(np.isfinite(first)&~baseline_inside)
+            low=np.maximum(0,first[candidates]-.125);high=first[candidates]
+            for _ in range(10):
+                middle=(low+high)/2
+                hit=contains(obstacle,points[candidates]+refined.vertex_normals[candidates]*(height[candidates]*middle)[:,None])
+                high=np.where(hit,middle,high);low=np.where(hit,low,middle)
+            before=height.copy()
+            height[candidates]=np.maximum(.00002,height[candidates]*low*.95)
+            clipping[name]={'changed_vertices':int(np.sum(height<before)),
+                'baseline_inside_vertices':int(baseline_inside.sum()),
+                'max_reduction_mm':float((before-height).max()*1000)}
+    if clip_neighbors:
+        # Monotone lower envelope: limit edgewise thickness gradients without
+        # increasing any collision-constrained height (authoring slope 0.5).
+        import heapq
+        adjacency=[[] for _ in points]
+        for a,b in refined.edges_unique:
+            cost=.5*np.linalg.norm(points[a]-points[b])
+            adjacency[a].append((b,cost));adjacency[b].append((a,cost))
+        queue=[(float(h),i) for i,h in enumerate(height)];heapq.heapify(queue)
+        while queue:
+            value,i=heapq.heappop(queue)
+            if value>height[i]:continue
+            for j,cost in adjacency[i]:
+                if height[j]>value+cost:
+                    height[j]=value+cost;heapq.heappush(queue,(height[j],j))
     top=points+refined.vertex_normals*height[:,None]
     bottom=points-refined.vertex_normals*.00002
     n=len(points);faces=[refined.faces,refined.faces[:,::-1]+n]
@@ -50,10 +88,11 @@ def build(scene,surface,out):
     mesh_prim(stage,'/SurgicalRegion/authored_fat_layer',shell,(.68,.48,.23),roughness=.34)
     stage.GetRootLayer().Save()
     np.savez_compressed(out/'layer.npz',points=shell.vertices,faces=shell.faces,nodes=binding.nodes,weights=binding.weights,frame_offsets=offset,height=height,lobe_centers=np.array(centers))
-    report={'status':'unreviewed continuous visual candidate','vertices':len(shell.vertices),'triangles':len(shell.faces),'components':len(shell.split()),'watertight':bool(shell.is_watertight),'winding_consistent':bool(shell.is_winding_consistent),'height_mm_min_median_max':(np.quantile(height,[0,.5,1])*1000).tolist(),'binding_error_m':error,'source_sha256':hashlib.sha256(surface.read_bytes()).hexdigest(),'provenance':'Procedurally authored over BodyParts3D-derived membrane; DBCLS CC BY 4.0','reference':'Appendix300 sampled visual observations; no reconstructed metric geometry','physics_integrated':False,'anatomy_validated':False,'collision_checked':False,'self_intersections_checked':False,'parameters':'seed 1729; 2.8 mm seed spacing; Gaussian widths 0.9-1.8 mm; sixth-power smooth maximum; all authoring choices','lobe_centers':len(centers)}
+    report={'status':'unreviewed continuous visual candidate','vertices':len(shell.vertices),'triangles':len(shell.faces),'components':len(shell.split()),'watertight':bool(shell.is_watertight),'winding_consistent':bool(shell.is_winding_consistent),'height_mm_min_median_max':(np.quantile(height,[0,.5,1])*1000).tolist(),'binding_error_m':error,'source_sha256':hashlib.sha256(surface.read_bytes()).hexdigest(),'provenance':'Procedurally authored over BodyParts3D-derived membrane; DBCLS CC BY 4.0','reference':'Appendix300 sampled visual observations; no reconstructed metric geometry','physics_integrated':False,'anatomy_validated':False,'collision_checked':False,'self_intersections_checked':False,'parameters':'seed 1729; 2.8 mm seed spacing; Gaussian widths 0.9-1.8 mm; sixth-power smooth maximum; all authoring choices','lobe_centers':len(centers),'neighbor_clipping':clipping,'clipping_scope':'Eight normal-line samples and ten bisections; not continuous collision detection; pre-existing membrane penetrations remain'}
     (out/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
 
 if __name__=='__main__':
     import argparse
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--scene',type=Path,required=True);p.add_argument('--surface',type=Path,required=True);p.add_argument('--out',type=Path,required=True)
-    a=p.parse_args();build(a.scene,a.surface,a.out)
+    p.add_argument('--clip-neighbors',action='store_true')
+    a=p.parse_args();build(a.scene,a.surface,a.out,a.clip_neighbors)
