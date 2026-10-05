@@ -12,6 +12,8 @@ class Body:
     def get_simulation_element_indices(self):return self.tets[None]
     def get_simulation_nodal_positions(self):return self.position[None]
     def get_simulation_nodal_velocities(self):return self.velocity[None]
+    def get_collision_nodal_positions(self):return self.position[None]
+    def get_collision_element_indices(self):return self.tets[None]
 
 
 class ObserverTests(unittest.TestCase):
@@ -43,6 +45,20 @@ class ObserverTests(unittest.TestCase):
     def test_changed_geometry_rejected_before_observation(self):
         self.body.rest=self.body.rest.copy();self.body.rest[0,0]+=.01
         with self.assertRaises(ValueError):TissueTensorObserver(self.body,self.rest,self.tets,.01,42)
+
+    def test_collision_snapshot_preserves_its_own_order_and_copies(self):
+        result=self.observer.collision_snapshot(42)
+        np.testing.assert_allclose(result['collision_points_m'],self.body.position*.01)
+        np.testing.assert_array_equal(result['collision_tets'],self.body.tets)
+        self.body.position+=10
+        np.testing.assert_allclose(result['collision_points_m'],(self.body.rest+2)*.01)
+
+    def test_invalid_collision_topology_and_stale_stage_rejected(self):
+        with self.assertRaises(RuntimeError):self.observer.collision_snapshot(43)
+        self.body.tets[0,0]=4
+        with self.assertRaises(RuntimeError):self.observer.collision_snapshot(42)
+        self.observer.close()
+        with self.assertRaises(RuntimeError):self.observer.collision_snapshot(42)
 
 
 if __name__=='__main__':unittest.main()
