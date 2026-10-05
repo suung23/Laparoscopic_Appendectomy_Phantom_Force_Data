@@ -48,7 +48,7 @@ class ElasticReference:
         if fixed.shape != x.shape or max_iterations < 1 or not np.isfinite(tolerance) or tolerance <= 0:
             raise ValueError('Invalid solve constraints')
         history = []
-        if method not in ('gradient', 'lbfgs'):
+        if method not in ('gradient', 'lbfgs', 'rest_preconditioned'):
             raise ValueError('Unknown search method')
         pairs = []
         previous_x = previous_free = None
@@ -56,6 +56,10 @@ class ElasticReference:
         length = np.cbrt(self.volume.sum())
         stiffness = max(self.mu * length, 1e-12)
         status = 'iteration_limit'
+        precondition = None
+        if method == 'rest_preconditioned' and not fixed.all():
+            from .elastic_preconditioner import make_preconditioner
+            precondition = make_preconditioner(self, x, fixed, contact)
         def objective(positions):
             energy, gradient = self.energy_gradient(positions, loads)
             if contact is not None:
@@ -70,6 +74,8 @@ class ElasticReference:
             if residual <= tolerance:
                 status = 'converged'; break
             direction = -free / stiffness
+            if precondition is not None:
+                direction = precondition(free)
             if method == 'lbfgs':
                 if previous_x is not None:
                     s, y = x-previous_x, free-previous_free

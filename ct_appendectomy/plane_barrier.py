@@ -40,6 +40,20 @@ class PlaneBarrier:
         gradient[active] = derivative[:,None]*self.normal
         return float(energy), gradient
 
+    def hessian(self, x):
+        from scipy.sparse import coo_matrix
+        d = self.gaps(x)
+        active = np.flatnonzero((self.weights > 0) & (d < self.activation))
+        gap = d[active]; delta = gap-self.activation
+        curvature = -self.stiffness*self.weights[active]*(2*np.log(gap/self.activation)+4*delta/gap-delta**2/gap**2)
+        rows, columns, values = [], [], []
+        for i in range(3):
+            for j in range(3):
+                rows.append(3*active+i); columns.append(3*active+j)
+                values.append(curvature*self.normal[i]*self.normal[j])
+        size = 3*len(d)
+        return coo_matrix((np.concatenate(values),(np.concatenate(rows),np.concatenate(columns))),shape=(size,size)).tocsc()
+
     def feasible_step(self, x, direction, safety=.9):
         d = self.gaps(x)
         direction = np.asarray(direction, float)
