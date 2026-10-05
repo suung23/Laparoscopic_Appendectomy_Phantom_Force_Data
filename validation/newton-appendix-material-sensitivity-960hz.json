@@ -1,5 +1,10 @@
 {
-  "status": "material_sensitivity_failed_for_literature_scaled_values",
+  "status": "historical_contact_failures_confounded_by_initial_tool_overlap",
+  "supersession": {
+    "corrected_protocol_report": "validation/newton-appendix-settled-contact-960hz.json",
+    "evidence": "The historical contact-enabled control trace had 141 soft-contact points on tool 2 at frame 0 before commanded approach. Corrected runs stage tools away, derive poses from the settled surface and enforce a measured surface clearance.",
+    "interpretation": "Retain the raw numerical failures, but do not attribute them to the literature-scaled material alone."
+  },
   "engine": "Newton 1.4.0 / Warp 1.15.0 CUDA VBD",
   "device": "NVIDIA GeForce RTX 4090",
   "scope": "offline reduced CT appendix contact coupon; not Isaac runtime, not force calibration, not surgical validation",

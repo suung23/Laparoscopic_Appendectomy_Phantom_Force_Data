@@ -1,0 +1,109 @@
+{
+  "status": "corrected_contact_initialization_contact_runs_stable_unloaded_controls_incomplete",
+  "engine": "Newton 1.4.0 / Warp 1.15.0 CUDA VBD",
+  "device": "NVIDIA GeForce RTX 4090",
+  "scope": "offline reduced CT appendix, two spherical proxy tools, material sensitivity; no force calibration or Isaac integration",
+  "source_mesh": {
+    "path": "out/ct_appendectomy/cavity/appendix.ply (git-ignored)",
+    "sha256": "1706f6459b47735bd3f32f0f7597f0d50b5650e3e136b1bf46efff055cea7803",
+    "nodes": 1614,
+    "tetrahedra": 5940,
+    "voxel_size_m": 0.002
+  },
+  "matched_protocol": {
+    "physics_frequency_hz": 960,
+    "vbd_iterations": 32,
+    "simulation_duration_s": 3.5,
+    "health_sampling": "each 60 Hz control frame; internal solver-substep health is not recorded",
+    "tool_geometry": "two kinematic 3 mm radius spheres; not CAD jaws or wristed instruments",
+    "tool_initialization": "tools staged 50 mm above the tissue for 1 s gravity settling; then closest points on the settled tetrahedral boundary are used to place each sphere with a computed 5 mm surface clearance after radius",
+    "approach": "9 mm over 1 s along the local surface normal, 0.5 s hold and 1 s retreat",
+    "matched_control": "same settled anatomy and tool trajectory, particle-tool contact disabled",
+    "trocar_constraint": false
+  },
+  "material_input": {
+    "source_doi": "10.3390/biomedicines12112588",
+    "conversion": "E = 2 * (1 + nu) * G_prime with nu=0.45",
+    "interpretation": "small-strain isotropic equivalent of ex-vivo 1 Hz, 1% shear storage modulus; not measured Young modulus or calibrated nonlinear material",
+    "youngs_modulus_pa": {"control": 3294.4, "purulent": 1931.4, "gangrenous": 1861.8},
+    "production_asset_changed": false
+  },
+  "historical_initialization_failure": {
+    "local_report": "out/ct_appendectomy/newton_material_repeat_control_960hz_b/report.json (git-ignored)",
+    "local_report_sha256": "cb13af9ba361aabd61d0199fc0da4074639004f00561670430a5f7ed08466277",
+    "trace_sha256": "1e27b304dfac0843750e5665990530e2e1c9efd3f7b9dd3ccb1b097e98b0c8e3",
+    "frame_0_tool_soft_contact_points_by_sphere": [0, 141],
+    "peak_frame": 7,
+    "inverted_tetrahedron_ids": [4980, 4981, 4985],
+    "reassessment": "The tools were already colliding before commanded approach. Preserve this negative run, but do not interpret it as evidence that the literature-scaled material fails during a controlled grasp."
+  },
+  "corrected_protocol_results": [
+    {
+      "condition": "control",
+      "youngs_modulus_pa": 3294.4,
+      "local_report": "out/ct_appendectomy/newton_material_settled_control_960hz_verified/report.json (git-ignored)",
+      "report_sha256": "f473e86d8d5c958c9ddef53d9183ee3a2616d7620a8e8b4dd8e96d5ef3b830ca",
+      "contact_disabled": {"status": "passed", "inverted_tetrahedra": 0, "minimum_signed_volume_ratio": 0.4528247},
+      "contact_enabled": {"status": "passed", "inverted_tetrahedra": 0, "minimum_signed_volume_ratio": 0.4714921, "first_contact_frame": 99, "contact_frames": 64},
+      "tool_contact": {
+        "left_frames": 40,
+        "right_frames": 64,
+        "simultaneous_bimanual_contact_frames": 40,
+        "peak_contact_points_per_tool": [18, 45]
+      },
+      "contact_induced_max_displacement_m": 0.0022121,
+      "pair_status": "passed numerical mesh-health criterion in this one matched run"
+    },
+    {
+      "condition": "purulent",
+      "youngs_modulus_pa": 1931.4,
+      "local_report": "out/ct_appendectomy/newton_material_settled_purulent_960hz/report.json (git-ignored)",
+      "report_sha256": "e0b013378f8be5aca10f617818ddd31a1acb384ea49eaba0ba7e345dc0843488",
+      "contact_disabled": {"status": "failed", "inverted_tetrahedra": 2, "minimum_signed_volume_ratio": -0.0190966, "first_inversion_frame": 154},
+      "contact_enabled": {"status": "passed", "inverted_tetrahedra": 0, "minimum_signed_volume_ratio": 0.0147907, "first_contact_frame": 87, "contact_frames": 94},
+      "tool_contact": {
+        "left_frames": 93,
+        "right_frames": 87,
+        "simultaneous_bimanual_contact_frames": 86,
+        "peak_contact_points_per_tool": [65, 61]
+      },
+      "contact_induced_max_displacement_m": 0.0050999,
+      "pair_status": "failed because the unloaded control inverted tetrahedra"
+    },
+    {
+      "condition": "gangrenous",
+      "youngs_modulus_pa": 1861.8,
+      "local_report": "out/ct_appendectomy/newton_material_settled_gangrenous_960hz/report.json (git-ignored)",
+      "report_sha256": "537d16a7c28ac4be302b78f48288c199635da059eb521eb827ddf48aac1ca363",
+      "contact_disabled": {"status": "failed", "inverted_tetrahedra": 3, "minimum_signed_volume_ratio": -0.5142034, "first_inversion_frame": 1},
+      "contact_enabled": {"status": "passed", "inverted_tetrahedra": 0, "minimum_signed_volume_ratio": 0.3231044, "first_contact_frame": 77, "contact_frames": 114},
+      "tool_contact": {
+        "left_frames": 113,
+        "right_frames": 92,
+        "simultaneous_bimanual_contact_frames": 91,
+        "peak_contact_points_per_tool": [84, 73]
+      },
+      "contact_induced_max_displacement_m": 0.0058163,
+      "pair_status": "failed because the unloaded control inverted tetrahedra"
+    }
+  ],
+  "force_measurement": {
+    "calibrated_tissue_force_n": false,
+    "two_way_robot_reaction_transfer_validated": false,
+    "reason": "This coupon records geometry, contact point counts, and deformation only. It does not measure a calibrated tissue wrench or link it to instrument actuator force/torque."
+  },
+  "interpretation": [
+    "Safe, surface-distance-checked initialization eliminated early sphere overlap; all three contact-enabled runs had zero inverted tetrahedra at sampled control frames in this single trial per material.",
+    "Control also passed its matched unloaded run. Purulent and gangrenous unloaded runs failed, so those material conditions are not robustly validated despite their contact-enabled runs passing.",
+    "Simultaneous contact of both proxy spheres occurred, but this is not trocar-constrained bimanual instrument contact and does not establish a surgical grasp.",
+    "The initial overlaps explain the earlier apparent contact instability; the 960/1920 Hz and 32/64 iteration comparisons made before the start-pose correction are initialization-confounded. Their raw failure reports remain available locally."
+  ],
+  "privacy": "Only source hashes, material values, aggregate contact counts, and element IDs are tracked. Mesh points, frames and solver arrays remain local and git-ignored.",
+  "remaining_limitations": [
+    "One mesh and one trial per corrected material condition; repeatability and mesh/time-step convergence are not established",
+    "No calibrated force-displacement reference, rate response, compression stiffening, tissue tearing, or viscoelasticity",
+    "Spherical tools are not instrument CAD, articulated wrists, or trocar constrained arms",
+    "Two-way contact force transfer to the robot and Isaac runtime behavior are not verified",
+    "The 60 Hz health sampling can miss transient inversion inside solver substeps"
+  ]
+}

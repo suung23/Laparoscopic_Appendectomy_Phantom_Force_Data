@@ -50,7 +50,7 @@
     },
     {
       "id": "material-validation",
-      "status": "not achieved; a matched Newton/Warp coupon sweep on one fixed 2 mm voxelized CT appendix mesh found the current 12 kPa scalar baseline stable, while all three human-rheology-scaled scalar candidates inverted tetrahedra during two-sphere contact (purulent also inverted without contact). For the control candidate, doubling VBD iterations left 8 inverted tets; halving the time step to 1/1920 s left 7, so neither resolved contact instability. This is a negative solver/material-compatibility result, not biological calibration; no calibrated tissue force was measured.",
+      "status": "not achieved; earlier literature-scaled contact failures were confounded by starting sphere overlap (141 soft-contact points on tool 2 at frame 0). With settled-surface clearance checked at 5 mm, a single 960 Hz corrected run per condition had zero inverted tets in the contact-enabled control, purulent and gangrenous cases; simultaneous two-sphere contact occurred. The control matched unloaded run passed, but purulent and gangrenous unloaded runs inverted 2 and 3 tets. No calibrated force was measured; this is still an uncalibrated proxy coupon, not material validation.",
       "requires": [
         "measured force-displacement reference",
         "mesh and time-step convergence",
@@ -62,6 +62,7 @@
       ],
       "evidence": [
         "validation/newton-appendix-material-sensitivity-960hz.json",
+        "validation/newton-appendix-settled-contact-960hz.json",
         "ct_appendectomy/newton_contact_probe.py",
         "tests/test_newton_material_parameters.py"
       ]
