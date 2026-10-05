@@ -181,6 +181,10 @@ class RosotaCTEnv(gym.Env):
         if self.gpu_tissue_observation:
             from tissue_observer import TissueTensorObserver
             self._tissue_observer=TissueTensorObserver.bind(self.stage,'/World/Atlas/appendix',self.config['data']['sim_path'],omni.usd.get_context().get_stage_id())
+            material=self._tissue_observer.material_snapshot(omni.usd.get_context().get_stage_id(),'/World/TissueMaterial')
+            (self.out/'solver_material.json').write_text(json.dumps(dict(
+                source='live_physx_tensor',stage_meters_per_unit=1.,values=material,
+                scope='Runtime parameter readback only; not experimentally calibrated tissue'),indent=2),encoding='utf-8')
         self._audit_tissue('after_initialize')
         if not np.isclose(self.sim.get_physics_dt(),self.physics_dt):raise RuntimeError('Wrong physics interval')
         if not np.array_equal(self.mesh.GetAttribute('omniphysics:restShapePoints').Get(),self.rest):

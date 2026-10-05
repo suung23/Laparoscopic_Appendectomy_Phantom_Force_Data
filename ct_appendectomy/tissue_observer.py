@@ -51,6 +51,23 @@ class TissueTensorObserver:
     def close(self):
         self._closed=True;self._body=None;self._owner=None
 
+    def material_snapshot(self,stage_id,path):
+        """Query supported solver material parameters in authored stage units."""
+        if self._closed or int(stage_id)!=self.stage_id:
+            raise RuntimeError('Stale material observer')
+        if self._owner is None:raise RuntimeError('Missing simulation view')
+        material=self._owner.create_deformable_material_view(path)
+        if material.count!=1:raise RuntimeError('Expected exactly one solver material')
+        result={}
+        for key,getter in [('youngs_modulus',material.get_youngs_modulus),
+                           ('poissons_ratio',material.get_poissons_ratio),
+                           ('dynamic_friction',material.get_dynamic_friction)]:
+            value=self._array(getter())
+            if value.size!=1 or not np.isfinite(value).all():
+                raise RuntimeError('Invalid solver material buffer: '+key)
+            result[key]=float(value.reshape(-1)[0])
+        return result
+
     def collision_snapshot(self,stage_id):
         """Raw collision topology and SI world points; no simulation-node mapping."""
         if self._closed:raise RuntimeError('Observer is closed; rebind after reset')
