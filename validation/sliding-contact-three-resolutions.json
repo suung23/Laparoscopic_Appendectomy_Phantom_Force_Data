@@ -1,0 +1,61 @@
+{
+  "runs": [
+    {
+      "dt": 0.005,
+      "duration": 0.41500000000000004,
+      "wall_seconds": 60.31768830001238,
+      "report_sha256": "da0d77ce8f1777bdf7ae6806aef0c0361625a42fb0b50b56497613c6ac586bec",
+      "trajectory_sha256": "50b0299db8b9efa6f9907e2f3c66ac0bca94d3dd2a04ebf6dc2c37aa9639bb94",
+      "peak_reaction_N": 2.7315998192430997e-05,
+      "maximum_solver_residual_N": 9.926205966633073e-07,
+      "peak_layer_motion_mm": 0.5601966651334702
+    },
+    {
+      "dt": 0.0025,
+      "duration": 0.41500000000000004,
+      "wall_seconds": 95.74148019999848,
+      "report_sha256": "2859ae17418bb171de5e07910438b747719f1b3b6e3e4162ccc4ddcbdadb34fa",
+      "trajectory_sha256": "0d22e2f29e78f498d6ff7b2890585754f61c8d94a8bff51d1004889691a7a66b",
+      "peak_reaction_N": 2.7451457872990894e-05,
+      "maximum_solver_residual_N": 9.96944362940287e-07,
+      "peak_layer_motion_mm": 0.5679009686731823
+    },
+    {
+      "dt": 0.00125,
+      "duration": 0.41500000000000004,
+      "wall_seconds": 159.75103810001747,
+      "report_sha256": "db82104f70c8f00aa72917a07154f15bd9738cd2faa09fb4b2a3831bcb4354fe",
+      "trajectory_sha256": "e89196b1d012258119d9034c318054fa363b0da5b47c7ba645cd3a5d9acd9f39",
+      "peak_reaction_N": 2.7146049958302364e-05,
+      "maximum_solver_residual_N": 9.946127794508977e-07,
+      "peak_layer_motion_mm": 0.5770086101988577
+    }
+  ],
+  "pairs": [
+    {
+      "coarse_dt": 0.005,
+      "fine_dt": 0.0025,
+      "max_difference_mm": 0.10076613825065715,
+      "rms_difference_mm": 0.011314355429604104,
+      "final_max_difference_mm": 0.09908116810393308
+    },
+    {
+      "coarse_dt": 0.0025,
+      "fine_dt": 0.00125,
+      "max_difference_mm": 0.16692704752682627,
+      "rms_difference_mm": 0.011054748966269179,
+      "final_max_difference_mm": 0.16692704752682627
+    }
+  ],
+  "contact_settings": {
+    "friction_mu": 0.3,
+    "full_tool_contact": true,
+    "contact_stiffness_N_per_m3": 100000.0,
+    "articulated_jaw_trajectory": false,
+    "artery_shape_regularization": true
+  },
+  "empirical_validation": false,
+  "convergence_proven": false,
+  "scope": "Same-model temporal sensitivity only; no clinical material or grasp validation",
+  "successive_max_difference_ratio": 1.6565787914943504
+}
