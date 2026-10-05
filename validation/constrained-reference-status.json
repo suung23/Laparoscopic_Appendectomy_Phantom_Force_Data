@@ -1,0 +1,26 @@
+{
+  "status": "numerical_unit_tests_only",
+  "implementation": "ct_appendectomy/constrained_elasticity.py",
+  "constitutive_model": "compressible log-determinant Neo-Hookean",
+  "method": "quasistatic gradient descent with positive-volume feasible Armijo line search",
+  "tests_passed": 9,
+  "checks": [
+    "analytic energy derivative versus finite differences",
+    "rigid motion invariance",
+    "single tetrahedron compression force balance and unloading",
+    "27-node 48-tetrahedron affine patch equilibrium",
+    "inversion rejection",
+    "translation feasible step",
+    "collapse step bound",
+    "invalid intermediate path despite positive endpoints",
+    "invalid initial state rejection"
+  ],
+  "limitations": [
+    "CPU correctness prototype, not integrated into Isaac or RL",
+    "no collision, friction, dynamics, cutting, or force calibration",
+    "isotropic hyperelastic model is not validated appendix tissue",
+    "no anatomical mesh solve validated",
+    "floating-point feasible step is not a formal arithmetic certificate",
+    "does not resolve previously recorded PhysX or Newton failures"
+  ]
+}

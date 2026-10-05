@@ -1,0 +1,79 @@
+"""Reference quasistatic compressible Neo-Hookean solve in SI units.
+
+CPU correctness prototype, not calibrated tissue or a contact/dynamics solver.
+Uses a log(J) constitutive domain and feasible Armijo steps, never repairs a
+completed trajectory. Prescribed nodes must initially satisfy their constraints.
+"""
+import numpy as np
+from .determinant_step import positive_volume_step
+
+
+class ElasticReference:
+    def __init__(self, rest, tets, young, poisson):
+        self.rest = np.asarray(rest, dtype=float)
+        self.tets = np.asarray(tets)
+        if not np.isfinite(young) or young <= 0 or not 0 <= poisson < .5:
+            raise ValueError('Invalid elastic parameters')
+        positive_volume_step(self.rest, self.rest, np.zeros_like(self.rest), self.tets)
+        q = self.rest[self.tets]
+        dm = np.stack([q[:, i] - q[:, 0] for i in (1, 2, 3)], axis=2)
+        self.inverse = np.linalg.inv(dm)
+        self.volume = np.linalg.det(dm) / 6
+        self.mu = young / (2 * (1 + poisson))
+        self.lam = young * poisson / ((1 + poisson) * (1 - 2 * poisson))
+
+    def energy_gradient(self, x, loads):
+        x, loads = np.asarray(x, float), np.asarray(loads, float)
+        if x.shape != self.rest.shape or loads.shape != x.shape or not np.isfinite(x).all() or not np.isfinite(loads).all():
+            raise ValueError('Invalid positions or nodal loads')
+        q = x[self.tets]
+        ds = np.stack([q[:, i] - q[:, 0] for i in (1, 2, 3)], axis=2)
+        f = ds @ self.inverse
+        j = np.linalg.det(f)
+        if np.any(j <= 0):
+            raise ValueError('Non-positive determinant')
+        logj = np.log(j)
+        density = .5 * self.mu * (np.sum(f*f, axis=(1, 2)) - 3) - self.mu*logj + .5*self.lam*logj**2
+        p = self.mu*f + (self.lam*logj-self.mu)[:, None, None]*np.linalg.inv(f).transpose(0, 2, 1)
+        h = self.volume[:, None, None] * (p @ self.inverse.transpose(0, 2, 1))
+        gradient = -loads.copy()
+        for i in range(3):
+            np.add.at(gradient, self.tets[:, i+1], h[:, :, i])
+        np.add.at(gradient, self.tets[:, 0], -h.sum(axis=2))
+        return float(self.volume @ density - np.sum(loads*(x-self.rest))), gradient
+
+    def solve(self, initial, loads, fixed, max_iterations=2000, tolerance=1e-7, floor=.01):
+        x = np.asarray(initial, float).copy()
+        fixed = np.asarray(fixed, bool)
+        if fixed.shape != x.shape or max_iterations < 1 or not np.isfinite(tolerance) or tolerance <= 0:
+            raise ValueError('Invalid solve constraints')
+        history = []
+        # Diagonal length scale approximation; Armijo decides accepted steps.
+        length = np.cbrt(self.volume.sum())
+        stiffness = max(self.mu * length, 1e-12)
+        status = 'iteration_limit'
+        for iteration in range(max_iterations):
+            energy, gradient = self.energy_gradient(x, loads)
+            free = gradient.copy(); free[fixed] = 0
+            residual = float(np.max(np.abs(free)))
+            history.append(dict(energy_j=energy, residual_n=residual))
+            if residual <= tolerance:
+                status = 'converged'; break
+            direction = -free / stiffness
+            alpha = positive_volume_step(self.rest, x, direction, self.tets, floor=floor)['alpha']
+            slope = float(np.sum(gradient*direction))
+            for _ in range(60):
+                candidate = x + alpha*direction
+                trial, _ = self.energy_gradient(candidate, loads)
+                if trial <= energy + 1e-4*alpha*slope:
+                    x = candidate; break
+                alpha *= .5
+            else:
+                status = 'line_search_failed'; break
+        energy, gradient = self.energy_gradient(x, loads)
+        residual_gradient = gradient.copy(); residual_gradient[fixed] = 0
+        residual = float(np.max(np.abs(residual_gradient)))
+        if residual <= tolerance:
+            status = 'converged'
+        return dict(positions=x, status=status, residual_n=residual,
+                    constraint_reaction_n=np.where(fixed, gradient, 0), history=history)
