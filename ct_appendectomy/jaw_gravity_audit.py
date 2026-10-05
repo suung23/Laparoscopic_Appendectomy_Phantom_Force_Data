@@ -2,6 +2,10 @@
 import numpy as np
 
 
+def _array(value):
+    return np.asarray(value.numpy() if hasattr(value,'numpy') else value)
+
+
 class JawGravityModel:
     """Pose-dependent static model; does not compensate inertia or contact."""
     def __init__(self,env):
@@ -10,8 +14,8 @@ class JawGravityModel:
         self.bodies={}
         for hand,spec in env.specs.items():
             view=env.robots[hand]._articulation_view
-            masses=np.asarray(view.get_body_masses())[0]
-            coms=np.asarray(view.get_body_coms()[0])[0]
+            masses=_array(view.get_body_masses())[0]
+            coms=_array(view.get_body_coms()[0])[0]
             self.bodies[hand]=[]
             for name in ('left','right'):
                 i=view.body_names.index(name)
@@ -25,7 +29,7 @@ class JawGravityModel:
         values=[]
         for body,mass,com in self.bodies[hand]:
             _,q=body.get_world_pose()
-            R=Rotation.from_quat(np.asarray(q)[[1,2,3,0]]).as_matrix()
+            R=Rotation.from_quat(_array(q)[[1,2,3,0]]).as_matrix()
             values.append(support_torque(mass,com,R,self.gravity))
         return np.asarray(values)
 
@@ -43,8 +47,8 @@ def audit(env):
     result=dict(scope='static load model diagnostic; no contact-force validation',hands={})
     for hand,spec in env.specs.items():
         view=env.robots[hand]._articulation_view
-        masses=np.asarray(view.get_body_masses())[0]
-        coms=np.asarray(view.get_body_coms()[0])[0]
+        masses=_array(view.get_body_masses())[0]
+        coms=_array(view.get_body_coms()[0])[0]
         measured=env.sensor(hand)[1]
         records=[]
         for j,name in enumerate(('left','right')):
@@ -53,7 +57,7 @@ def audit(env):
                                 name=hand+'_'+name+'_gravity_audit',reset_xform_properties=False)
             body.initialize()
             _,q=body.get_world_pose()
-            R=Rotation.from_quat(np.asarray(q)[[1,2,3,0]]).as_matrix()
+            R=Rotation.from_quat(_array(q)[[1,2,3,0]]).as_matrix()
             expected=support_torque(float(masses[index]),coms[index],R,gravity)
             records.append(dict(body=name,mass_kg=float(masses[index]),
                 com_body_m=coms[index].tolist(),body_rotation_world=R.tolist(),

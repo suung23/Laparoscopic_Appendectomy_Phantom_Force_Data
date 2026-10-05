@@ -16,7 +16,7 @@ from bimanual_env import BimanualEnv
 
 class RosotaCTEnv(gym.Env):
     metadata={'render_modes':['rgb_array'],'render_fps':30}
-    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False,enhanced_determinism=False,reset_checkpoint=None,fine_settlement=False,external_every_iteration=False,cutter_cad=None,jaw_gravity_compensation=False):
+    def __init__(self,app,assets,fr3_urdf,out,max_steps=300,grasp_mode='none',workspace='legacy',settle_policy='fixed',diagnostic_no_tool_collision=False,diagnostic_zero_gravity=False,enhanced_determinism=False,reset_checkpoint=None,fine_settlement=False,external_every_iteration=False,cutter_cad=None,jaw_gravity_compensation=False,gpu_tissue_observation=False):
         if settle_policy not in ('fixed','adaptive'):raise ValueError('Unknown settlement policy')
         self.cutter_cad=Path(cutter_cad) if cutter_cad else None
         if self.cutter_cad and grasp_mode!='none':raise ValueError('Cutter cannot use assisted tissue grasp')
@@ -26,6 +26,9 @@ class RosotaCTEnv(gym.Env):
                 raise ValueError('Cutter asset hash mismatch')
             if manifest['units']!='metres' or manifest['open_total_deg']!=50 or not np.allclose(manifest['hinge_to_tip_m'],[0,0,.021],atol=1e-7):
                 raise ValueError('Unsupported cutter geometry contract')
+        self.gpu_tissue_observation=bool(gpu_tissue_observation)
+        self._tissue_observer=None
+        if self.gpu_tissue_observation and grasp_mode!='none':raise ValueError('GPU observation grasp path requires separate validation')
         self.jaw_gravity_compensation=bool(jaw_gravity_compensation)
         self.settle_policy=settle_policy
         self.enhanced_determinism=bool(enhanced_determinism)
@@ -64,6 +67,8 @@ class RosotaCTEnv(gym.Env):
         if options:raise ValueError('No reset options')
         super().reset(seed=seed)
         self.done=True
+        if self._tissue_observer:self._tissue_observer.close();self._tissue_observer=None
+        self.shaft_bodies={}
         self.reset_sequence=getattr(self,'reset_sequence',0)+1
         self.config=json.loads((self.assets/'bimanual_config.json').read_text())
         import omni.usd
@@ -113,7 +118,8 @@ class RosotaCTEnv(gym.Env):
         self.mesh=self.stage.GetPrimAtPath(self.config['data']['sim_path'])
         self.rest=self.points().copy();self.tets=np.asarray(self.mesh.GetAttribute('tetVertexIndices').Get(),int)
         self.pin=np.asarray(self.config['data']['pin'],int)
-        self.sim=SimulationContext(stage_units_in_meters=1.,physics_dt=1/480,rendering_dt=1/30)
+        pipeline=dict(backend='warp',device='cuda:0') if self.gpu_tissue_observation else {}
+        self.sim=SimulationContext(stage_units_in_meters=1.,physics_dt=1/480,rendering_dt=1/30,**pipeline)
         for prim in self.stage.Traverse():
             if prim.IsA(UsdPhysics.Scene):
                 scene=UsdPhysics.Scene(prim);scene.CreateGravityDirectionAttr(Gf.Vec3f(0,-1,0));scene.CreateGravityMagnitudeAttr(0. if self.diagnostic_zero_gravity else 9.81)
@@ -167,6 +173,9 @@ class RosotaCTEnv(gym.Env):
             exact_geometry_and_topology=True,nodes=len(permutation),
             changed_indices=int(np.sum(permutation!=np.arange(len(permutation))))),indent=2),encoding='utf-8')
         self.sim.initialize_physics()
+        if self.gpu_tissue_observation:
+            from tissue_observer import TissueTensorObserver
+            self._tissue_observer=TissueTensorObserver.bind(self.stage,'/World/Atlas/appendix',self.config['data']['sim_path'],omni.usd.get_context().get_stage_id())
         self._audit_tissue('after_initialize')
         if not np.isclose(self.sim.get_physics_dt(),1/480):raise RuntimeError('Wrong physics interval')
         if not np.array_equal(self.mesh.GetAttribute('omniphysics:restShapePoints').Get(),self.rest):
@@ -187,6 +196,11 @@ class RosotaCTEnv(gym.Env):
             robot.apply_action(ArticulationAction(joint_positions=np.deg2rad([s['open_deg']/2,-s['open_deg']/2]),
                 joint_velocities=np.zeros(2),joint_indices=self.jaw_indices[hand]))
         from isaacsim.core.utils.types import ArticulationAction
+        if self.gpu_tissue_observation:
+            from isaacsim.core.prims import SingleRigidPrim
+            for hand,s in self.specs.items():
+                body=SingleRigidPrim(s['root']+'/shaft',name=hand+'_live_shaft',reset_xform_properties=False)
+                body.initialize();self.shaft_bodies[hand]=body
         self._audit_tissue('before_warmup')
         for warmup_tick in range(480):
             for hand,s in self.specs.items():
@@ -282,15 +296,18 @@ class RosotaCTEnv(gym.Env):
         self.done=False
         return self.observe(),info
 
-    def q(self,h):return self.robots[h].get_joint_positions(joint_indices=self.indices[h]).astype(float)
+    @staticmethod
+    def _array(value):return np.asarray(value.numpy() if hasattr(value,'numpy') else value,float)
+
+    def q(self,h):return self._array(self.robots[h].get_joint_positions(joint_indices=self.indices[h]))
     def update_guard(self,h):
         gravity=self.jaw_gravity_model.predict(h) if self.jaw_gravity_model else None
         return self.guards[h].update(*self.sensor(h),jaw_gravity=gravity)
 
     def sensor(self,h):
         robot=self.robots[h]
-        wrench=np.asarray(robot.get_measured_joint_forces(),float)[self.force_rows[h]]
-        efforts=np.asarray(robot.get_measured_joint_efforts(joint_indices=self.jaw_indices[h]),float)
+        wrench=self._array(robot.get_measured_joint_forces())[self.force_rows[h]]
+        efforts=self._array(robot.get_measured_joint_efforts(joint_indices=self.jaw_indices[h]))
         if not np.isfinite(wrench).all() or not np.isfinite(efforts).all():raise RuntimeError('Invalid contact sensor')
         return wrench,efforts
     def _audit_tissue(self,label):
@@ -318,7 +335,20 @@ class RosotaCTEnv(gym.Env):
             shutil.copyfile(self.out/('tissue_'+label+suffix),
                 self.out/(f'reset_{self.reset_sequence}_tissue_'+label+suffix))
 
-    def points(self):return np.asarray(self.mesh.GetAttribute('points').Get(),float)
+    def points(self):
+        if self._tissue_observer:
+            import omni.usd
+            return self._tissue_observer.snapshot(omni.usd.get_context().get_stage_id())['position_m']
+        return np.asarray(self.mesh.GetAttribute('points').Get(),float)
+
+    def shaft_transform(self,h):
+        if self.gpu_tissue_observation:
+            from scipy.spatial.transform import Rotation
+            p,q=self.shaft_bodies[h].get_world_pose();q=self._array(q)
+            M=np.eye(4);M[:3,3]=self._array(p);M[:3,:3]=Rotation.from_quat(q[[1,2,3,0]]).as_matrix()
+            return M
+        from pxr import UsdGeom
+        return np.asarray(UsdGeom.Xformable(self.stage.GetPrimAtPath(self.specs[h]['root']+'/shaft')).ComputeLocalToWorldTransform(0)).T
     def observe(self):
         poses=[];qs=[]
         for h in self.specs:
@@ -326,7 +356,7 @@ class RosotaCTEnv(gym.Env):
             poses.append(T);qs.append(q)
         return {'joint_position':np.asarray(qs,np.float32),'tool_pose':np.asarray(poses,np.float32),
                 'contact_residual':np.asarray([g.filtered for g in self.guards.values()],np.float32),
-                'jaw_position':np.asarray([self.robots[h].get_joint_positions(joint_indices=self.jaw_indices[h]) for h in self.specs],np.float32),
+                'jaw_position':np.asarray([self._array(self.robots[h].get_joint_positions(joint_indices=self.jaw_indices[h])) for h in self.specs],np.float32),
                 'jaw_effort':np.asarray([g.last['jaw_effort_nm'] for g in self.guards.values()],np.float32),
                 'jaw_contact_hold':np.asarray([g.pinch_latched for g in self.guards.values()],np.int8),
                 'contact_stop':np.asarray([g.latched for g in self.guards.values()],np.int8),
@@ -339,7 +369,7 @@ class RosotaCTEnv(gym.Env):
         ports={};mismatch=[];tool_frames={}
         for h,s in self.specs.items():
             # Compare actual rigid-body USD readback against FK of measured q.
-            M=np.asarray(UsdGeom.Xformable(self.stage.GetPrimAtPath(s['root']+'/shaft')).ComputeLocalToWorldTransform(0)).T
+            M=self.shaft_transform(h)
             tip=M[:3,3]+M[:3,:3]@s['mount_to_tip'];axis=M[:3,2]
             tool_frames[h]=(tip,M[:3,:3])
             ports[h]=aperture_metrics(s['port'],s['normal'],tip,axis)
@@ -362,7 +392,7 @@ class RosotaCTEnv(gym.Env):
         return dict(failure=failure,trocar=ports,scope_trocar=scope,body_fk_error_m=mismatch,
             grasp_geometry=grasp_geometry,
             contact={h:g.last.copy() for h,g in self.guards.items()},
-            jaw_position_rad={h:self.robots[h].get_joint_positions(joint_indices=self.jaw_indices[h]).tolist() for h in self.specs},
+            jaw_position_rad={h:self._array(self.robots[h].get_joint_positions(joint_indices=self.jaw_indices[h])).tolist() for h in self.specs},
             tissue_health=health,pin_drift_m=drift,controller='original Rosota TipController strict aperture',
             plant='PhysX dynamic articulations with measured joint feedback',
             calibrated_ports=False,right_tool=self.specs['right']['tool_kind'],cutting_implemented=False,scope_shaft_collision=False,
@@ -372,7 +402,7 @@ class RosotaCTEnv(gym.Env):
             settlement_verified=self.settlement['measured_equilibrium'],
             diagnostic_no_tool_collision=self.diagnostic_no_tool_collision,
             disabled_robot_collider_count=len(self.disabled_robot_colliders),
-            tissue_generation=self.tissue_generation,
+            tissue_generation=self.tissue_generation,tissue_observation='physx_tensor' if self._tissue_observer else 'usd',
             jaw_gravity_compensation=self.jaw_gravity_compensation,
             rosota_full_contract=False)
 
@@ -404,12 +434,12 @@ class RosotaCTEnv(gym.Env):
                     rejected[h]+=result['rot_rejected']
                     self.robots[h].apply_action(ArticulationAction(joint_positions=result['joint_target'],
                         joint_velocities=result['joint_velocity_ff'],joint_indices=self.indices[h]))
-                    jaws=self.robots[h].get_joint_positions(joint_indices=self.jaw_indices[h])
+                    jaws=self._array(self.robots[h].get_joint_positions(joint_indices=self.jaw_indices[h]))
                     measured=float(np.rad2deg(jaws[0]-jaws[1]))
                     if self.grasp_mode!='none':
                         from pxr import UsdGeom
                         s=self.specs[h]
-                        M=np.asarray(UsdGeom.Xformable(self.stage.GetPrimAtPath(s['root']+'/shaft')).ComputeLocalToWorldTransform(0)).T
+                        M=self.shaft_transform(h)
                         tip=M[:3,3]+M[:3,:3]@s['mount_to_tip']
                         hit=self.grasp.probe(h,grasp_points,tip,M[:3,:3])
                         if hit and self.controllers[h].row[6]<=0:result['gripper_target_deg']=max(result['gripper_target_deg'],hit[1])
@@ -439,6 +469,7 @@ class RosotaCTEnv(gym.Env):
     render=BimanualEnv.render
     _destroy_render=BimanualEnv._destroy_render
     def close(self):
+        if self._tissue_observer:self._tissue_observer.close();self._tissue_observer=None
         if hasattr(self,'grasp'):
             for hand in list(self.grasp.held):self.grasp.release(hand)
         self._destroy_render()

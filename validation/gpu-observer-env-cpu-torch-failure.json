@@ -1,0 +1,22 @@
+{
+  "status": "failed",
+  "learned_policy": false,
+  "enhanced_determinism": false,
+  "fine_settlement": false,
+  "external_every_iteration": false,
+  "policy": "geometric two-tip target tracking",
+  "implementation_sha256": {
+    "rosota_ct_env.py": "5e8bd3475ff66ddf2dd67e3a1503bb77b2c9e6846af87a6ec3a2707e3d38bd0c",
+    "solver_grasp.py": "38e072dc68e042db0deaedda5036edb99d4731f223c1aa406fc618b96837b217",
+    "tissue_grasp.py": "247ea6e3fc31db1dbfd997e31600351de43daaaa0e60b18fdb1aa329cfaad753",
+    "coupling_probe.py": "fb21da4a1a5a9b96a305fbdb3190a090d4ff8b95c7c3c841046b3dfd1c4d4710",
+    "settlement.py": "4081a8302e679915f16fd8276651f957f6cfc85c716052ebbeda3927810f27c0",
+    "mount_sensor_probe.py": "a22a7e021191f3ae8154c3754e3ea52dc2a47ee5f5b84741340870dc9ba95f52",
+    "node_correspondence.py": "71ad885eb417087c10da1757cd4149055c6496b835af0dc21e3c4bbadfadb99d",
+    "readback_probe.py": "1920e46ca5845a8e5f166b0860324a16097613c38623c1a65ff797f47d6d064e",
+    "bimanual_coupling_probe.py": "60deb46c5a50c8df3621f620c0bb1128ad80deeae00565e4e521fca07beafc9d",
+    "reset_comparison.py": "5ed599c822123a9e932a059961e0e77fc8d85275f4a3375839ca34ab11df7653",
+    "reset_checkpoint.py": "db728385d5a84e269f61b12c5f56c53ed4e00239ac84c94190d3c95f045308fb"
+  },
+  "error": "Torch not compiled with CUDA enabled"
+}

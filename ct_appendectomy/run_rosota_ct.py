@@ -21,6 +21,7 @@ def main():
     p.add_argument('--enhanced-determinism',action='store_true',help='Experimental PhysX enhanced determinism setting')
     p.add_argument('--jaw-gravity-compensation',action='store_true',help='Experimental pose-dependent jaw gravity subtraction; raw effort retained')
     p.add_argument('--jaw-load-probe',action='store_true',help='Known external torque response; requires collision-disabled jaw diagnostic and gravity compensation')
+    p.add_argument('--gpu-tissue-observation',action='store_true',help='Experimental Warp tensor observations; grasp validation pending')
     p.add_argument('--headless',action='store_true')
     p.add_argument('--contact-probe',action='store_true',help='Slow axial approach, torque-limited close, reopen; not RL')
     p.add_argument('--diagnostic-jaw-no-collision',action='store_true',help='Isolate jaw sensor/drive response with all robot collisions disabled; never task validation')
@@ -39,6 +40,10 @@ def main():
     p.add_argument('--mount-sensor-probe',action='store_true',help='Known 0.1 N external force sensor calibration without tissue attachment')
     p.add_argument('--diagnostic-zero-gravity',action='store_true',help='Only for isolating the mount sensor failure, never a task configuration')
     a=p.parse_args()
+    if a.gpu_tissue_observation:
+        import torch
+        if torch.version.cuda is None:
+            raise RuntimeError('GPU articulation observations require a CUDA-enabled PyTorch build matching Isaac dependencies')
     if a.jaw_load_probe and (not a.diagnostic_jaw_no_collision or not a.jaw_gravity_compensation or any((a.baseline_task,a.coupling_probe,a.readback_probe,a.mount_sensor_probe,a.attachment_probe,a.solver_grasp))):
         p.error('Jaw load probe requires isolated collision-disabled jaw diagnostic and gravity compensation')
     if a.diagnostic_jaw_no_collision and (not a.contact_probe or a.approach_samples!=0 or a.surface_approach):
@@ -83,7 +88,7 @@ def main():
             grasp_mode='solver_attachment' if a.solver_grasp or a.coupling_probe else ('rosota_attachment' if a.baseline_task else 'none'),
             workspace='appendix_patches' if a.baseline_task or a.coupling_probe else 'legacy',
             settle_policy='adaptive' if a.coupling_probe else 'fixed',
-            diagnostic_no_tool_collision=a.mount_sensor_probe or a.readback_probe or a.diagnostic_jaw_no_collision,diagnostic_zero_gravity=a.diagnostic_zero_gravity,enhanced_determinism=a.enhanced_determinism,reset_checkpoint=a.reset_checkpoint,fine_settlement=a.fine_settlement,external_every_iteration=a.external_forces_every_iteration,cutter_cad=a.cutter_cad,jaw_gravity_compensation=a.jaw_gravity_compensation)
+            diagnostic_no_tool_collision=a.mount_sensor_probe or a.readback_probe or a.diagnostic_jaw_no_collision,diagnostic_zero_gravity=a.diagnostic_zero_gravity,enhanced_determinism=a.enhanced_determinism,reset_checkpoint=a.reset_checkpoint,fine_settlement=a.fine_settlement,external_every_iteration=a.external_forces_every_iteration,cutter_cad=a.cutter_cad,jaw_gravity_compensation=a.jaw_gravity_compensation,gpu_tissue_observation=a.gpu_tissue_observation)
         obs,info=env.reset(seed=42);report.update(status='running',**info);save()
         if a.jaw_load_probe:
             from jaw_load_probe import run
