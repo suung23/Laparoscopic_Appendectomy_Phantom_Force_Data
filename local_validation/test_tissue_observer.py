@@ -1,5 +1,6 @@
 import sys
 import unittest
+from types import SimpleNamespace
 from pathlib import Path
 import numpy as np
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'ct_appendectomy'))
@@ -59,6 +60,22 @@ class ObserverTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):self.observer.collision_snapshot(42)
         self.observer.close()
         with self.assertRaises(RuntimeError):self.observer.collision_snapshot(42)
+
+    def test_material_reads_solver_values_and_rejects_nonfinite(self):
+        value=np.array([12000.],dtype=np.float32)
+        material=SimpleNamespace(count=1,get_youngs_modulus=lambda:value,
+            get_poissons_ratio=lambda:np.array([.45]),get_dynamic_friction=lambda:np.array([.5]))
+        self.observer._owner=SimpleNamespace(create_deformable_material_view=lambda path:material)
+        self.assertEqual(self.observer.material_snapshot(42,'/material')['youngs_modulus'],12000.)
+        value[0]=np.nan
+        with self.assertRaises(RuntimeError):self.observer.material_snapshot(42,'/material')
+
+    def test_material_requires_single_match_and_current_stage(self):
+        self.observer._owner=SimpleNamespace(create_deformable_material_view=lambda path:SimpleNamespace(count=0))
+        with self.assertRaises(RuntimeError):self.observer.material_snapshot(42,'/missing')
+        with self.assertRaises(RuntimeError):self.observer.material_snapshot(43,'/missing')
+        self.observer.close()
+        with self.assertRaises(RuntimeError):self.observer.material_snapshot(42,'/missing')
 
 
 if __name__=='__main__':unittest.main()
