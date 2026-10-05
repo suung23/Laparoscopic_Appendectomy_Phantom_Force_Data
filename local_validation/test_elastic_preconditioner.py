@@ -29,9 +29,20 @@ class HessianTests(unittest.TestCase):
         model = ElasticReference(x,[[0,1,2,3]],12000,.3)
         fixed = np.ones_like(x,bool); fixed[3,2] = False
         loads = x*0; loads[3,2] = -.03
-        for method in ('rest_preconditioned','lbfgs_preconditioned'):
+        for method in ('rest_preconditioned','lbfgs_preconditioned','lbfgs_rotated'):
             result = model.solve(x,loads,fixed,method=method)
             self.assertEqual(result['status'],'converged')
             np.testing.assert_array_equal(result['positions'][fixed],x[fixed])
+
+    def test_rotated_metric_matches_rigidly_rotated_energy_hessian(self):
+        x = .01*np.array([[0.,0,0],[1,0,0],[0,1,0],[0,0,1]])
+        model = ElasticReference(x,[[0,1,2,3]],12000,.3)
+        rotation = np.array([[0.,-1,0],[1,0,0],[0,0,1]])
+        current = x @ rotation.T
+        direction = np.random.default_rng(5).normal(size=x.shape)
+        h = 1e-8
+        difference = (model.energy_gradient(current+h*direction,x*0)[1]-model.energy_gradient(current-h*direction,x*0)[1])/(2*h)
+        computed = (rest_stiffness(model,current) @ direction.ravel()).reshape(x.shape)
+        np.testing.assert_allclose(computed,difference,rtol=1e-7,atol=1e-7)
 
 if __name__ == '__main__': unittest.main()
