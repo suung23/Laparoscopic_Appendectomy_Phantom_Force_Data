@@ -1,0 +1,62 @@
+{
+  "status": "material_variant_asset_preflight_passed_runtime_pending",
+  "source_scene": {
+    "directory": "out/ct_appendectomy/suite/forceps",
+    "stage_sha256": "3da87b6c3f60d7218e31b8336e0145956cd9fe56546bc5aee30d19a40e51b7e5",
+    "config_sha256": "d2375dcd59f97979b963da75fa47f862487570c267387a1bd629af0dc1d37d58",
+    "youngs_modulus_pa": 12000,
+    "poissons_ratio": 0.44999998807907104
+  },
+  "mapping": {
+    "formula": "E = 2 * (1 + nu) * G_prime",
+    "source_title": "Mechanical Properties of Inflamed Appendix Tissues",
+    "doi": "10.3390/biomedicines12112588",
+    "measurement": "ex-vivo storage modulus at 1 Hz and 1% shear",
+    "interpretation": "small-strain isotropic equivalent only; not measured Young's modulus or fitted FEM material"
+  },
+  "asset_checks": {
+    "usd_material_value_readback": true,
+    "forceps_config_matches_variant_stage_sha256": true,
+    "all_mesh_points_unchanged": true,
+    "all_mesh_face_indices_unchanged": true,
+    "all_mesh_normals_unchanged": true,
+    "other_material_properties_unchanged": true,
+    "forceps_config_other_fields_unchanged": true,
+    "mesh_count": 15,
+    "geometry_edited": false,
+    "production_assets_edited": false
+  },
+  "variants": [
+    {
+      "group": "control",
+      "youngs_modulus_pa": 3294.4,
+      "stage_sha256": "3fb2ab1a81983c045adcf5b60d3b5a4d73579e74ca07c39b221db05390587449",
+      "config_sha256": "838bdc67b1d6c3d42b7cd406867bc7b58bb86ee266854180db75d6c3325e8895"
+    },
+    {
+      "group": "purulent",
+      "youngs_modulus_pa": 1931.4,
+      "stage_sha256": "12834a156a5c072fbd9d91c671998aa13177f73617aaeb0b857ba1286022afa2",
+      "config_sha256": "b3e2d285d533bcef2e7a76afec64b1907fe96178d1681573f31a96f52ab89449"
+    },
+    {
+      "group": "gangrenous",
+      "youngs_modulus_pa": 1861.8,
+      "stage_sha256": "0dadff1b030e8d0465c16b26fc403810747ff08a03f9ccf3c7e49411bfe3a42b",
+      "config_sha256": "a72c040119f7e1877e6e191fe6a482148b05e5ce805a924dd6e3a1a386aa418f"
+    }
+  ],
+  "rl_evaluation": {
+    "asset_switch_in_agent_runner": "implemented; Python CLI help and PowerShell launcher syntax checks passed",
+    "isaac_rollouts": "not run because installed Isaac Python execution is blocked by Windows Application Control",
+    "checkpoint_success_on_baseline": "previous result 0/3; held-out success not measured",
+    "patient_level_holdout_verified": false,
+    "clinical_validation": false
+  },
+  "limitations": [
+    "Sample counts are three fragments from one control appendix and three separate appendices per inflamed group",
+    "Conversion omits loss modulus, frequency dependence, anisotropy, freeze-thaw effects and compression stiffening",
+    "These are material sensitivity shifts on one scene, not patient-level held-out anatomy",
+    "USD preflight does not prove the Isaac runtime consumes the override or that RL remains stable"
+  ]
+}

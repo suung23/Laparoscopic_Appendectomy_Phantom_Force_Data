@@ -23,6 +23,13 @@ Use the repository PowerShell launchers with the existing Isaac Python 3.11 inst
 # Deterministic evaluation of the saved learned network, with the Isaac window.
 ./run-agent.ps1 -Policy checkpoint -Checkpoint out/ct_appendectomy/agent/policy.pt -Episodes 0
 
+# Evaluate that checkpoint after validating it against its training scene,
+# then switch Kit to a separate material-sensitivity asset for evaluation.
+./run-agent.ps1 -Headless -Policy checkpoint `
+  -Checkpoint out/ct_appendectomy/agent/policy.pt -Episodes 10 `
+  -EvaluationAssets out/ct_appendectomy/material_sensitivity_control `
+  -EvaluationDomain control_mean_shear_equivalent
+
 # Resume network + Adam optimizer for additional PPO interactions.
 ./run-agent.ps1 -Headless -Checkpoint out/ct_appendectomy/agent/policy.pt -TrainSteps 4096
 
@@ -80,6 +87,24 @@ Outputs stay under ignored `out/ct_appendectomy/agent/`: `report.json`, episode/
 A successful runner status means execution and contracts passed. It does **not** mean the policy succeeded: inspect evaluation successes and per-episode outcomes. Evaluation uses separate seeds, but anatomy is fixed and those seeds do not create distinct patients; PhysX may also have small numerical nondeterminism. Do not report a few episodes here as generalization, clinical skill or full-surgery competence.
 
 One SimulationApp owns one global USD stage. Multiple Gym instances in the same process are unsupported. Actual multi-environment throughput, image-policy learning, articulated robot control and anatomical domain randomization remain later work.
+
+## Asset-held-out evaluation
+
+`ct_appendectomy/build_material_holdout.py` authors local material sensitivity assets from the forceps training scene. It maps the published human appendix storage-modulus group mean to an isotropic small-strain equivalent Young's modulus using the scene's Poisson ratio. These conditions are literature-scaled probes, not measured Young's moduli, fitted FEM parameters, patient variants or validated tissue states. Generate the available conditions with:
+
+```powershell
+./../../work/venv/Scripts/python.exe ct_appendectomy/build_material_holdout.py `
+  --source-assets out/ct_appendectomy/suite/forceps `
+  --out out/ct_appendectomy/material_sensitivity_control --group control
+./../../work/venv/Scripts/python.exe ct_appendectomy/build_material_holdout.py `
+  --source-assets out/ct_appendectomy/suite/forceps `
+  --out out/ct_appendectomy/material_sensitivity_purulent --group purulent
+./../../work/venv/Scripts/python.exe ct_appendectomy/build_material_holdout.py `
+  --source-assets out/ct_appendectomy/suite/forceps `
+  --out out/ct_appendectomy/material_sensitivity_gangrenous --group gangrenous
+```
+
+With `-EvaluationAssets`, the runner first loads a checkpoint only if its saved scene/config hashes match `-Assets` (the training asset directory), then closes that environment and opens the evaluation asset directory. The episode report records both asset hashes, whether they differ, and the human-readable condition label. It explicitly sets `patient_level_holdout_verified=false`; changing one material parameter is not anatomical generalization. Each directory is evaluated in a separate run and output directory. The installed Isaac Python runtime remains subject to the recorded Windows Application Control launch restriction, so authored assets and CLI wiring are preflighted but no new RL result is claimed until the actual episodes run.
 
 ## Recorded local results
 

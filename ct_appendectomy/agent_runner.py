@@ -13,6 +13,10 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--assets',type=Path,default=ROOT/'out/ct_appendectomy/suite/forceps')
+    parser.add_argument('--eval-assets',type=Path,
+                        help='Optional held-out asset directory used only after checkpoint validation/training')
+    parser.add_argument('--eval-domain-label',default='unspecified',
+                        help='Human-readable evaluation condition; label is recorded, not scientifically verified')
     parser.add_argument('--out',type=Path,default=ROOT/'out/ct_appendectomy/agent')
     parser.add_argument('--headless',action='store_true')
     parser.add_argument('--policy',choices=('scripted','random','checkpoint'),default='scripted')
@@ -33,6 +37,11 @@ def main():
     if args.demo_warm_start and (not args.train_steps or args.checkpoint):parser.error('Warm start requires new training without a checkpoint')
     stage=args.assets/'attached.usda';config=args.assets/'forceps_config.json'
     if not stage.is_file() or not config.is_file():parser.error('Prepare forceps assets with run-agent.ps1 -Prepare')
+    if args.eval_assets:
+        eval_stage=args.eval_assets/'attached.usda';eval_config=args.eval_assets/'forceps_config.json'
+        if not eval_stage.is_file() or not eval_config.is_file():parser.error('Evaluation asset directory must contain attached.usda and forceps_config.json')
+    else:
+        eval_stage,eval_config=stage,config
     args.out.mkdir(parents=True,exist_ok=True)
     report={'status':'starting','run_id':uuid.uuid4().hex,'appendectomy_completed':False,'policy':args.policy,
             'seed':args.seed,'training_steps_requested':args.train_steps,'episodes':[]}
@@ -84,6 +93,7 @@ def main():
                       checkpoint_loaded=bool(args.checkpoint),demo_warm_start=args.demo_warm_start,
                       engine='Isaac Sim 5.1 / PhysX GPU',control_dt_s=1/30,
                       torch_version=str(torch.__version__),policy_device='cpu')
+        report['training_asset_directory']=args.assets.name
         panel=None;paused=False;requested_policy=None
         if not args.headless:
             import omni.ui as ui
@@ -214,6 +224,27 @@ def main():
             report['checkpoint_roundtrip_passed']=True
             report['checkpoint_sha256']=hashlib.sha256((args.out/'policy.pt').read_bytes()).hexdigest()
         evaluation_policy='checkpoint' if args.train_steps else args.policy
+        eval_stage_sha=hashlib.sha256(eval_stage.read_bytes()).hexdigest()
+        eval_config_sha=hashlib.sha256(eval_config.read_bytes()).hexdigest()
+        asset_hashes_differ=(eval_stage_sha!=contract['stage_sha256'] or
+                             eval_config_sha!=contract['config_sha256'])
+        report['evaluation_assets']={
+            'directory':args.eval_assets.name if args.eval_assets else args.assets.name,
+            'stage_sha256':eval_stage_sha,'config_sha256':eval_config_sha,
+            'asset_hashes_differ_from_training':asset_hashes_differ,
+            'held_out_asset_evaluation':asset_hashes_differ and bool(args.checkpoint or args.train_steps),
+            'domain_label':args.eval_domain_label if args.eval_assets else 'same_as_training',
+            'checkpoint_contract_validated_against_training_assets':bool(args.checkpoint or args.train_steps),
+            'patient_level_holdout_verified':False,
+            'anatomical_randomization':False,
+        }
+        if args.eval_assets:
+            # The checkpoint remains checked against the exact training scene
+            # contract above. Only then switch the single Kit stage for eval.
+            env.close()
+            env=gym.make(ENV_ID,stage_path=eval_stage,config_path=eval_config,
+                         observation_mode='rgb_state' if args.rgb_observation else 'state')
+            report['evaluation_observation_mode']=env.get_wrapper_attr('observation_mode')
         report['evaluation_policy']=evaluation_policy
         report['status']='running'
         write_report()
@@ -226,6 +257,8 @@ def main():
                     report['evaluation_policy']=evaluation_policy
                 seed=args.seed+10000+episode
                 obs=reset(seed);episode_return=0.;trajectory=[]
+                if not env.observation_space.contains(obs):
+                    raise RuntimeError('Evaluation reset observation violates the environment contract')
                 recorded=[]
                 frame_directory=args.out/('frames_'+report['run_id']+'_'+str(episode))
                 def record_frame(action_step,frame_info):

@@ -4,6 +4,8 @@ param(
     [int]$TrainSteps=0,
     [int]$Seed=42,
     [string]$OutputDirectory='out/ct_appendectomy/agent',
+    [string]$EvaluationAssets,
+    [string]$EvaluationDomain='unspecified',
     [string]$Checkpoint,
     [switch]$Headless,
     [switch]$Prepare,
@@ -28,6 +30,11 @@ try {
     $arguments=@('ct_appendectomy/agent_runner.py','--policy',$Policy,'--episodes',"$Episodes",'--train-steps',"$TrainSteps",'--seed',"$Seed",'--out',$OutputDirectory)
     if ($Headless) { $arguments+='--headless' }
     if ($Checkpoint) { $arguments+='--checkpoint';$arguments+=$Checkpoint }
+    if ($EvaluationAssets) {
+        if (-not (Test-Path "$EvaluationAssets/attached.usda") -or -not (Test-Path "$EvaluationAssets/forceps_config.json")) { throw 'Evaluation asset directory must contain attached.usda and forceps_config.json' }
+        $arguments+='--eval-assets';$arguments+=$EvaluationAssets
+        $arguments+='--eval-domain-label';$arguments+=$EvaluationDomain
+    }
     if ($DemoWarmStart) { $arguments+='--demo-warm-start' }
     if ($RgbObservation) { $arguments+='--rgb-observation' }
     $start=[DateTime]::UtcNow
