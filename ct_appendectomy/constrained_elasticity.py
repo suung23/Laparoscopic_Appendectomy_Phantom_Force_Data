@@ -72,12 +72,14 @@ class ElasticReference:
         np.add.at(result,self.tets[:,0],-h.sum(axis=2))
         return result
 
-    def solve(self, initial, loads, fixed, max_iterations=2000, tolerance=1e-7, floor=.01, method='gradient', contact=None):
+    def solve(self, initial, loads, fixed, max_iterations=2000, tolerance=1e-7, floor=.01, method='gradient', contact=None, refinement_threshold=None):
         x = np.asarray(initial, float).copy()
         fixed = np.asarray(fixed, bool)
         if fixed.shape != x.shape or max_iterations < 1 or not np.isfinite(tolerance) or tolerance <= 0:
             raise ValueError('Invalid solve constraints')
         history = []
+        if refinement_threshold is not None and (not np.isfinite(refinement_threshold) or refinement_threshold <= tolerance):
+            raise ValueError('Refinement threshold must exceed final tolerance')
         if method not in ('gradient', 'lbfgs', 'rest_preconditioned', 'lbfgs_preconditioned', 'lbfgs_rotated'):
             raise ValueError('Unknown search method')
         pairs = []
@@ -103,6 +105,8 @@ class ElasticReference:
             history.append(dict(energy_j=energy, residual_n=residual))
             if residual <= tolerance:
                 status = 'converged'; break
+            if refinement_threshold is not None and residual <= refinement_threshold:
+                status = 'refinement_requested'; break
             if method == 'lbfgs_rotated' and iteration % 10 == 0:
                 from .elastic_preconditioner import make_preconditioner
                 precondition = make_preconditioner(self, x, fixed, contact, rotate=True)

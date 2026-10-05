@@ -54,7 +54,8 @@ def implicit_step(elastic, positions, velocity, mass, loads, dt, contact=None,
     # Start from previous feasible position, not a predictor inside obstacles.
     result = elastic.solve(positions, loads, np.zeros_like(positions,bool),
         method='lbfgs_rotated', contact=potential,
-        max_iterations=max_iterations, tolerance=tolerance)
+        max_iterations=max_iterations, tolerance=tolerance,
+        refinement_threshold=1e-8 if tolerance < 1e-8 else None)
     if result['status'] != 'converged':
         # Local refinement only; the 1e-8 eligibility threshold is NOT an
         # acceptance tolerance. Final force tolerance remains caller-specified.

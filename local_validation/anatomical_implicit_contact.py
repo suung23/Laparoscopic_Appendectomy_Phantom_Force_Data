@@ -37,7 +37,7 @@ report=dict(status='running',scope='Frictionless implicit Euler plane-contact di
     mesh_sha256=hashlib.sha256(mesh.read_bytes()).hexdigest(),dt_s=dt,requested_steps=a.steps,
     parameters=dict(young_pa=12000.,poisson=.45,density_kg_m3=1050.,activation_m=.0008,barrier_stiffness_n_m3=1e8,tolerance_n=1e-11),
     source_sha256={name:hashlib.sha256((root/'ct_appendectomy'/name).read_bytes()).hexdigest()
-        for name in ('implicit_reference.py','constrained_elasticity.py','elastic_preconditioner.py','determinant_step.py','plane_barrier.py')},rows=rows)
+        for name in ('implicit_reference.py','constrained_elasticity.py','elastic_preconditioner.py','determinant_step.py','plane_barrier.py','newton_direction.py')},rows=rows)
 def save():
     report['elapsed_s']=time.perf_counter()-started
     (a.out/'report.json').write_text(json.dumps(report,indent=2)+'\n')
