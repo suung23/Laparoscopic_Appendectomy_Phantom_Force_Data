@@ -44,6 +44,16 @@ class ElasticTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.model.energy_gradient(x, x*0)
 
+    def test_lbfgs_agrees_with_gradient_equilibrium(self):
+        fixed = np.ones_like(self.x, dtype=bool); fixed[3,2] = False
+        loads = self.x*0; loads[3,2] = -.03
+        reference = self.model.solve(self.x, loads, fixed)
+        result = self.model.solve(self.x, loads, fixed, method='lbfgs')
+        self.assertEqual(reference['status'], 'converged')
+        self.assertEqual(result['status'], 'converged')
+        np.testing.assert_allclose(result['positions'], reference['positions'], atol=1e-8)
+        self.assertTrue(np.all(np.diff([v['energy_j'] for v in result['history']]) <= 1e-15))
+
     def test_multicell_affine_patch_interior_equilibrium(self):
         from local_validation.regular_tet_control import build
         rest, tets = build(n=3)

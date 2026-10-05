@@ -11,7 +11,7 @@ sys.path.insert(0, str(root))
 from ct_appendectomy.constrained_elasticity import ElasticReference
 
 
-def audit(mesh, relaxation_iterations=0):
+def audit(mesh, relaxation_iterations=0, method='gradient'):
     z = np.load(mesh)
     rest, tets = z['points'].astype(float), z['tets']
     rest -= rest.mean(axis=0)
@@ -58,9 +58,9 @@ def audit(mesh, relaxation_iterations=0):
         # Perturb all interior nodes smoothly; fixed surface retains affine data.
         initial[~boundary] += 2e-6*np.array([1.,-.5,.25])
         relaxed = model.solve(initial, zero, np.repeat(boundary[:,None],3,axis=1),
-                              max_iterations=relaxation_iterations)
+                              max_iterations=relaxation_iterations, method=method)
         report['interior_relaxation'] = dict(status=relaxed['status'],
-            requested_iterations=relaxation_iterations,
+            requested_iterations=relaxation_iterations, method=method,
             initial_residual_n=relaxed['history'][0]['residual_n'],
             final_residual_n=relaxed['residual_n'],
             maximum_position_error_m=float(np.linalg.norm(relaxed['positions']-x,axis=1).max()),
@@ -75,10 +75,11 @@ if __name__ == '__main__':
     parser.add_argument('--mesh', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--relaxation-iterations', type=int, default=0)
+    parser.add_argument('--method', choices=['gradient','lbfgs'], default='gradient')
     args = parser.parse_args()
     if args.relaxation_iterations < 0:
         parser.error('Nonnegative iteration budget required')
-    report = audit(args.mesh, args.relaxation_iterations)
+    report = audit(args.mesh, args.relaxation_iterations, args.method)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(report, indent=2)+'\n', encoding='utf-8')
     print(json.dumps(report, indent=2))

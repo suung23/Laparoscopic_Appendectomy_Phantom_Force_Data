@@ -42,12 +42,16 @@ class ElasticReference:
         np.add.at(gradient, self.tets[:, 0], -h.sum(axis=2))
         return float(self.volume @ density - np.sum(loads*(x-self.rest))), gradient
 
-    def solve(self, initial, loads, fixed, max_iterations=2000, tolerance=1e-7, floor=.01):
+    def solve(self, initial, loads, fixed, max_iterations=2000, tolerance=1e-7, floor=.01, method='gradient'):
         x = np.asarray(initial, float).copy()
         fixed = np.asarray(fixed, bool)
         if fixed.shape != x.shape or max_iterations < 1 or not np.isfinite(tolerance) or tolerance <= 0:
             raise ValueError('Invalid solve constraints')
         history = []
+        if method not in ('gradient', 'lbfgs'):
+            raise ValueError('Unknown search method')
+        pairs = []
+        previous_x = previous_free = None
         # Diagonal length scale approximation; Armijo decides accepted steps.
         length = np.cbrt(self.volume.sum())
         stiffness = max(self.mu * length, 1e-12)
@@ -60,6 +64,29 @@ class ElasticReference:
             if residual <= tolerance:
                 status = 'converged'; break
             direction = -free / stiffness
+            if method == 'lbfgs':
+                if previous_x is not None:
+                    s, y = x-previous_x, free-previous_free
+                    sy = float(np.sum(s*y))
+                    if sy > 1e-12*np.linalg.norm(s)*np.linalg.norm(y) and sy > 0:
+                        pairs.append((s, y, 1/sy))
+                        pairs = pairs[-10:]
+                q = free.copy(); coefficients = []
+                for s, y, rho in reversed(pairs):
+                    coefficient = rho*float(np.sum(s*q))
+                    coefficients.append(coefficient); q -= coefficient*y
+                scale = 1/stiffness
+                if pairs:
+                    s, y, rho = pairs[-1]
+                    scale = float(np.sum(s*y)/np.sum(y*y))
+                r = scale*q
+                for (s,y,rho), coefficient in zip(pairs, reversed(coefficients)):
+                    r += s*(coefficient-rho*float(np.sum(y*r)))
+                direction = -r
+                direction[fixed] = 0
+                if np.sum(free*direction) >= 0:
+                    pairs.clear(); direction = -free/stiffness
+                previous_x, previous_free = x.copy(), free.copy()
             alpha = positive_volume_step(self.rest, x, direction, self.tets, floor=floor)['alpha']
             slope = float(np.sum(gradient*direction))
             for _ in range(60):
