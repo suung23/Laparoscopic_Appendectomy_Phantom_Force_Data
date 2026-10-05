@@ -18,8 +18,67 @@ os.environ.setdefault('WARP_CACHE_PATH',str(ROOT/'.cache/warp'))
 import warp as wp
 import newton
 from newton.solvers import SolverVBD
+from newton._src.solvers.vbd.rigid_vbd_kernels import _eval_soft_ef_contact
 from tetra_cut import signed_volumes,boundary_faces
 from tissue_metrics import tetra_health
+
+
+@wp.kernel
+def _sum_tool_contact_wrenches(
+    dt: float,
+    contact_count: wp.array[int],
+    contact_indices: wp.array[wp.vec3i],
+    contact_barycentric: wp.array[wp.vec3],
+    particle_q: wp.array[wp.vec3],
+    particle_q_prev: wp.array[wp.vec3],
+    particle_radius: wp.array[float],
+    contact_ke: wp.array[float],
+    contact_kd: wp.array[float],
+    contact_mu: wp.array[float],
+    friction_epsilon: float,
+    shape_body: wp.array[int],
+    body_q: wp.array[wp.transform],
+    body_q_prev: wp.array[wp.transform],
+    body_qd: wp.array[wp.spatial_vector],
+    body_com: wp.array[wp.vec3],
+    contact_shape: wp.array[int],
+    contact_body_pos: wp.array[wp.vec3],
+    contact_body_vel: wp.array[wp.vec3],
+    contact_normal: wp.array[wp.vec3],
+    shape_margin: wp.array[float],
+    tool_shape_ids: wp.array[int],
+    force_out: wp.array[wp.vec3],
+    torque_out: wp.array[wp.vec3],
+):
+    """Sum Newton VBD's own contact penalty reactions for two designated tools."""
+    idx = wp.tid()
+    if idx >= contact_count[0]:
+        return
+    shape_idx = contact_shape[idx]
+    arm = -1
+    if shape_idx == tool_shape_ids[0]:
+        arm = 0
+    elif shape_idx == tool_shape_ids[1]:
+        arm = 1
+    if arm < 0:
+        return
+
+    soft_force, soft_hessian, contact_point_world = _eval_soft_ef_contact(
+        idx, contact_indices[idx], contact_barycentric[idx], particle_q,
+        particle_q_prev, particle_radius, contact_ke[idx], contact_kd[idx],
+        contact_mu[idx], friction_epsilon, shape_body, body_q, body_q_prev,
+        body_qd, body_com, contact_shape, contact_body_pos, contact_body_vel,
+        contact_normal, shape_margin, dt,
+    )
+    body_idx = shape_body[shape_idx]
+    if body_idx < 0:
+        return
+    force_on_tool = -soft_force
+    point_world = wp.transform_point(body_q[body_idx], contact_body_pos[idx])
+    com_world = wp.transform_point(body_q[body_idx], body_com[body_idx])
+    torque_on_tool = wp.cross(point_world - com_world, force_on_tool)
+    wp.atomic_add(force_out, arm, force_on_tool)
+    wp.atomic_add(torque_out, arm, torque_on_tool)
 
 
 def isotropic_lame_parameters(youngs_modulus_pa, poissons_ratio):
@@ -138,6 +197,9 @@ def simulate(points,cells,base,contact,substeps=4,iterations=12,use_graph=False,
     poses=s0.body_q.numpy();start_positions=None
     kinematic_targets=wp.array(poses,dtype=wp.transform,device='cuda:0')
     worst=0;minimum=1.;trace=[];reference=None;pressed=None
+    tool_shape_array=wp.array(tool_shape_ids,dtype=int,device='cuda:0')
+    contact_force_array=wp.zeros(2,dtype=wp.vec3,device='cuda:0')
+    contact_torque_array=wp.zeros(2,dtype=wp.vec3,device='cuda:0')
     first_inversion_frame=None;peak_inversion_frame=None
     peak_inversion_ids=np.empty(0,dtype=np.int64);peak_inversion_state=None
     graph=None
@@ -182,9 +244,27 @@ def simulate(points,cells,base,contact,substeps=4,iterations=12,use_graph=False,
         soft_count=int(contacts.soft_contact_count.numpy()[0])
         active_shape_ids=contacts.soft_contact_shape.numpy()[:soft_count]
         tool_contact_counts=[int(np.count_nonzero(active_shape_ids==shape_id)) for shape_id in tool_shape_ids]
+        contact_force_array.zero_();contact_torque_array.zero_()
+        if soft_count:
+            wp.launch(_sum_tool_contact_wrenches,dim=contacts.soft_contact_max,
+                inputs=[1/(60*substeps),contacts.soft_contact_count,
+                    contacts.soft_contact_indices,contacts.soft_contact_barycentric,
+                    s0.particle_q,solver.particle_q_prev,model.particle_radius,
+                    solver.body_particle_contact_penalty_k,
+                    solver.body_particle_contact_material_kd,
+                    solver.body_particle_contact_material_mu,float(solver.friction_epsilon),
+                    model.shape_body,s0.body_q,solver.body_q_prev,s0.body_qd,
+                    model.body_com,contacts.soft_contact_shape,
+                    contacts.soft_contact_body_pos,contacts.soft_contact_body_vel,
+                    contacts.soft_contact_normal,model.shape_margin,tool_shape_array],
+                outputs=[contact_force_array,contact_torque_array],device='cuda:0')
+        tool_contact_forces=contact_force_array.numpy().tolist()
+        tool_contact_torques=contact_torque_array.numpy().tolist()
         trace.append({'frame':frame,'inverted_tetrahedra':health['inverted_tetrahedra'],
                       'min_volume_ratio':health['minimum_signed_volume_ratio'],
-                      'tool_soft_contact_points':tool_contact_counts})
+                      'tool_soft_contact_points':tool_contact_counts,
+                      'tool_contact_law_force_n':tool_contact_forces,
+                      'tool_contact_law_torque_nm':tool_contact_torques})
     wp.synchronize();elapsed=time.perf_counter()-started
     return {'contact_enabled':contact,'youngs_modulus_pa':float(youngs_modulus_pa),
         'poissons_ratio':float(poissons_ratio),'worst_inverted_tetrahedra':worst,'minimum_volume_ratio':minimum,
@@ -194,6 +274,9 @@ def simulate(points,cells,base,contact,substeps=4,iterations=12,use_graph=False,
         'tool_initial_positions_m':start_positions.tolist(),
         'tool_approach_directions':approach_directions.tolist(),
         'tool_surface_clearance_before_tool_radius_m':surface_clearances.tolist(),
+        'tool_contact_wrench_semantics':'Newton VBD per-contact penalty-law reactions re-evaluated from final solver contact state; kinematic tool feedback, not an independent sensor measurement or calibrated tissue force',
+        'tool_peak_contact_law_force_n':[float(max(np.linalg.norm(x['tool_contact_law_force_n'][i]) for x in trace)) for i in range(2)],
+        'tool_peak_contact_law_torque_nm':[float(max(np.linalg.norm(x['tool_contact_law_torque_nm'][i]) for x in trace)) for i in range(2)],
         'tool_contact_frames':[int(x['frame']) for x in trace if any(x['tool_soft_contact_points'])],
         'pin_drift_m':float(np.linalg.norm(q[pin]-points[pin],axis=1).max()),
         'wall_seconds_including_kernel_load':elapsed,'simulated_seconds':3.5},reference,pressed,q,trace,peak_inversion_state,peak_inversion_ids

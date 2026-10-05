@@ -1,0 +1,54 @@
+{
+  "status": "coupon_solver_health_passed_contact_force_estimate_unvalidated",
+  "engine": "Newton 1.4.0 / Warp 1.15.0 / RTX 4090",
+  "source_surface_sha256": "1706f6459b47735bd3f32f0f7597f0d50b5650e3e136b1bf46efff055cea7803",
+  "instrumentation": {
+    "implementation": "ct_appendectomy/newton_contact_probe.py::_sum_tool_contact_wrenches",
+    "implementation_sha256": "2b33ff86d65b609c74b0d579909961a378a419d102ec36d144b32500602aab3b",
+    "force_law": "Re-evaluates Newton VBD _eval_soft_ef_contact on the solver's contact arrays and per-contact AVBD penalty/material parameters; sums the opposite body-side force and moment per diagnostic tool.",
+    "is_independent_sensor": false,
+    "is_actuator_feedback": false,
+    "is_calibrated_tissue_force": false,
+    "scope": "Offline two-sphere appendix coupon; not integrated into Isaac scene or robot controller."
+  },
+  "trial": {
+    "youngs_modulus_parameter_pa": 3294.4,
+    "poissons_ratio": 0.45,
+    "solver_substeps_per_control_frame": 16,
+    "solver_iterations": 32,
+    "substep_rate_hz": 960,
+    "control_frames": 210,
+    "simulated_seconds": 3.5,
+    "paired_contact_disabled_and_enabled": true,
+    "inverted_tetrahedra_contact_disabled": 0,
+    "inverted_tetrahedra_contact_enabled": 0,
+    "contact_effect_max_displacement_m": 0.002368316985666752,
+    "contact_effect_p95_displacement_m": 0.0019650710746645927,
+    "contact_disabled_peak_force_n": [0.0, 0.0],
+    "contact_enabled_tool_contact_frames": [50, 71],
+    "contact_enabled_peak_force_n": [0.00025075841429291943, 0.0059569700386121836],
+    "contact_enabled_peak_torque_nm": [4.6524417244993604e-08, 3.5577297297218635e-06],
+    "trace_samples": 210
+  },
+  "retained_failures": [
+    {
+      "attempt": "initial Warp kernel compile",
+      "result": "failed",
+      "cause": "Warp rejected assigning differently typed return values to repeated underscore temporaries; fixed with distinct local names."
+    },
+    {
+      "attempt": "240 Hz / 12 iterations paired coupon",
+      "result": "failed",
+      "inverted_tetrahedra_contact_disabled": 10,
+      "inverted_tetrahedra_contact_enabled": 9,
+      "interpretation": "The early 13.9 N contact-law peak from this inverted, unstable run is invalid and excluded from the reported force estimates. Raw trial output remains local under the ignored experiment folder."
+    }
+  ],
+  "interpretation_limits": [
+    "One paired coupon trial is not a validated force-displacement experiment.",
+    "The contact force is derived from the solver's own penalty law and state, not independently sensed or calibrated against tissue.",
+    "The mesh is a reduced single-organ tetrahedral coupon with spherical tools; no CAD jaws, trocar constraints, bimanual grasp control, or Isaac integration were exercised.",
+    "A stable integration and a nonzero contact-law estimate do not establish tissue realism or safe-force thresholds."
+  ],
+  "privacy": "No source video, patient data, credentials, or user personal information is included. Detailed trial arrays remain local and git-ignored."
+}

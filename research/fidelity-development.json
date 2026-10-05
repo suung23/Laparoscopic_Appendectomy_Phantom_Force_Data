@@ -73,7 +73,8 @@
     "Located NVIDIA staff confirmation of a related engine bug and announced Isaac Sim 6.0 fix; isolated 6.1.0.0 installation started for comparison",
     "Reran 1440-tick full-scene 5.1.0.0 baseline with implementation/helper hashes and load protocol; prior force error reproduced",
     "Added strict runtime comparator rejecting changed scenes/helpers, incomplete traces, and green statuses contradicted by measured errors",
-    "Implemented calibrated multi-view surface-to-UV observation baking with fail-closed depth, mask, occlusion, and surface-facing checks; synthetic projection suite passed"
+    "Implemented calibrated multi-view surface-to-UV observation baking with fail-closed depth, mask, occlusion, and surface-facing checks; synthetic projection suite passed",
+    "Added per-tool Newton VBD contact-law wrench logging and ran one stable 960 Hz paired coupon; preserved the low-rate inverted-mesh failure and invalid force spike"
   ],
   "next_actions": [
     "Keep TGS external integration disabled: 6.1 failed pin gate before force testing. Investigate independent-process reset controls while preserving paired tolerance.",
@@ -82,6 +83,7 @@
     "Inspect bounded D4D sample inventory and select a complete calibrated stereo/structured-light clip",
     "Validate coordinate units and calibration against reference projection before reconstructing",
     "Apply registered_surface_bake.py only after a target-specific mask, metric depth, camera poses, and tracked-surface registration are verified; current Appendix300 RGB clips lack these inputs",
+    "Validate the Newton contact-law force estimator against an independent known-load deformable fixture and measured tissue force-displacement data before using it for control or safety claims",
     "Recover persistent surface appearance from multiple views with tool/HUD/specular masks; reject single-patch tiling as final solution",
     "Link reconstructed surface to FEM rest coordinates and measure deformation correspondence error",
     "Obtain task-matched force-displacement references and fit material parameters with held-out loading conditions",
