@@ -35,6 +35,7 @@
       "status": "One assisted engineering sequence passed; material interpretation limited by unverified fixed-wait settlement; exact solver-tick health sampling is now instrumented in the bimanual runner but has not been exercised in Isaac; repeated matched controls pending",
       "evidence": [
         "ct_appendectomy/physics_substep_audit.py",
+        "ct_appendectomy/bimanual_coupling_probe.py",
         "tests/test_physics_substep_audit.py"
       ],
       "requires": [
@@ -121,6 +122,7 @@
       "evidence": [
         "ct_appendectomy/rosota_ct_env.py",
         "ct_appendectomy/run_rosota_rl.py",
+        "ct_appendectomy/bimanual_coupling_probe.py",
         "ct_appendectomy/physics_substep_audit.py",
         "tests/test_physics_substep_audit.py"
       ],
@@ -151,7 +153,7 @@
     },
     {
       "id": "solver-reaction-transfer",
-      "status": "Known-load sensor passes; prior single-arm effect is exploratory, and matched bimanual causal comparison is rejected by reset mismatch",
+      "status": "Known-load sensor passes; prior single-arm effect is exploratory, and matched bimanual causal comparison is rejected by reset mismatch; the comparison probe now rejects missing or incomplete solver-substep health data but has not been rerun in Isaac",
       "requires": [
         "known-load sensor verification",
         "same robot trajectory and settled initial tissue",
@@ -159,7 +161,11 @@
         "force or generalized-torque balance",
         "full bimanual traction and release"
       ],
-      "evidence": "validation/precooked-coupling.json"
+      "evidence": [
+        "validation/precooked-coupling.json",
+        "ct_appendectomy/bimanual_coupling_probe.py",
+        "tests/test_physics_substep_audit.py"
+      ]
     }
   ],
   "claims_not_supported": [

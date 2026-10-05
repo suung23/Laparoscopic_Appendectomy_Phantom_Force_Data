@@ -122,6 +122,8 @@ Outputs stay under ignored `out/ct_appendectomy/agent/`: `report.json`, episode/
 
 The bimanual `run_rosota_rl.py` path now reads FEM health after every underlying `sim.step()` during each 1/480 s controller interval. A 30 Hz action therefore records 16 solver ticks at `physics_substeps=1`, 32 at 2, or 64 at 4. Any sampled inversion stops the remaining substeps in that interval and marks the episode failed. PPO training/evaluation episode records aggregate sample counts, inversion counts, minimum signed volume ratio, and maximum p99 volume change; missing interval samples fail the sampling-complete flag. CPU/mock tests cover aggregation and early stop, but no Isaac runtime execution has verified this instrumentation yet.
 
+The paired bimanual reaction-transfer probe now slices only the trace rows produced by its current action, then requires complete solver-substep sampling and the expected tick count before using a trial in its paired comparison. It no longer falls back to the last 16 global rows when an action terminates early.
+
 The separate 2-actuator `agent_runner.py` contact-lift fixture still records tissue metrics once per action rather than every underlying physics tick. It has no force sensor/readback; reports explicitly mark `force_readback_available=false`. Do not infer force from deformation, jaw command or reward.
 
 A successful runner status means execution and contracts passed. It does **not** mean the policy succeeded: inspect evaluation successes and per-episode outcomes. Evaluation uses separate seeds, but anatomy is fixed and those seeds do not create distinct patients; PhysX may also have small numerical nondeterminism. Do not report a few episodes here as generalization, clinical skill or full-surgery competence.

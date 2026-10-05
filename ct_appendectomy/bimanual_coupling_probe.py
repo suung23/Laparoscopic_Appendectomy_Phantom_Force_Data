@@ -2,6 +2,40 @@
 import hashlib
 import json
 import numpy as np
+if __package__:
+    from .physics_substep_audit import EpisodeSubstepHealth
+else:
+    from physics_substep_audit import EpisodeSubstepHealth
+
+
+def summarize_solver_ticks(control_trace,solver_substeps,expected_control_ticks=16):
+    """Aggregate the exact FEM-health intervals created inside one RL action."""
+    if isinstance(solver_substeps,bool) or not isinstance(solver_substeps,(int,np.integer)) or solver_substeps not in (1,2,4):
+        raise ValueError('solver_substeps must be 1, 2, or 4')
+    if isinstance(expected_control_ticks,bool) or not isinstance(expected_control_ticks,(int,np.integer)) or expected_control_ticks<1:
+        raise ValueError('expected_control_ticks must be a positive integer')
+    intervals=[row.get('physics_substep_health') for row in control_trace]
+    episode=EpisodeSubstepHealth()
+    for interval in intervals:episode.update(interval)
+    aggregate=episode.as_dict()
+    valid_counts=aggregate['sampling_complete'] and all(
+        1<=item['physics_ticks']<=solver_substeps for item in intervals)
+    sampled_ticks=aggregate['physics_ticks']
+    expected_ticks=int(expected_control_ticks)*int(solver_substeps)
+    sampling_complete=bool(valid_counts)
+    return dict(physics_substep_sampling_complete=sampling_complete,
+        controller_ticks_observed=len(control_trace),controller_ticks_expected=int(expected_control_ticks),
+        controller_interval_execution_complete=len(control_trace)==expected_control_ticks,
+        physics_substep_execution_complete=bool(sampling_complete and
+            len(control_trace)==expected_control_ticks and sampled_ticks==expected_ticks),
+        physics_substeps_per_control_tick=int(solver_substeps),
+        physics_ticks=sampled_ticks,expected_physics_ticks=expected_ticks,
+        ticks_with_inversion=aggregate['ticks_with_inversion'],
+        max_inverted_tetrahedra_in_one_tick=aggregate['max_inverted_tetrahedra_in_one_tick'],
+        inverted_tetrahedra_max=aggregate['max_inverted_tetrahedra_in_one_tick'],
+        minimum_signed_volume_ratio=aggregate['minimum_signed_volume_ratio'],
+        max_p99_absolute_volume_change=aggregate['max_p99_absolute_volume_change'],
+        all_sampled_ticks_inversion_free=bool(sampling_complete and aggregate['ticks_with_inversion']==0))
 
 
 def run(env):
@@ -40,7 +74,10 @@ def run(env):
                 action[i,0,:3]=obs['tool_pose'][i,:3,:3].T@(goals[i]-obs['tool_pose'][i,:3,3])
                 if step==34:env.grasp.release(h)
                 if step>=34:action[i,0,6]=100
+            trace_start=len(env.trace)
             obs,_,terminated,truncated,info=env.step({'tools':action,'scope':np.zeros(4)})
+            control_trace=env.trace[trace_start:]
+            substep_audit=summarize_solver_ticks(control_trace,env.physics_substeps)
             current=env.points()
             if step<4:activation=max(activation,float(np.linalg.norm(current-initial,axis=1).max()))
             forces=[];residual=[]
@@ -51,8 +88,7 @@ def run(env):
                 local=np.asarray(attachment.GetAttribute('omniphysics:localPositionsSrc1').Get(),float)
                 residual.append(float(np.sqrt(np.mean(np.sum((current[cluster['indices']]-(local@R.T+p))**2,axis=1)))))
             rows.append(dict(step=step,force_world_n=forces,constraint_rms_m=residual,
-                inverted_tetrahedra_max=max(x['tissue_health']['inverted_tetrahedra'] for x in env.trace[-16:]),
-                tip_positions_m=obs['tool_pose'][:,:3,3].tolist()))
+                **substep_audit,tip_positions_m=obs['tool_pose'][:,:3,3].tolist()))
             if terminated or truncated:failure=info['failure'] or 'episode limit';break
         for h in hands:env.grasp.release(h)
         result=dict(failure=failure,reset_error=reset_error,initial_sha256=hashlib.sha256(initial.tobytes()+joints.tobytes()).hexdigest(),
@@ -62,7 +98,8 @@ def run(env):
         (env.out/('bimanual_coupling_'+label+'.json')).write_text(json.dumps(result,indent=2),encoding='utf-8')
         print('Bimanual coupling '+label+' completed',flush=True)
     valid=all(t['failure'] is None and len(t['trace'])==50 and max(t['tracking_error_m'])<.0002
-        and all(r['inverted_tetrahedra_max']==0 for r in t['trace']) for t in trials.values())
+        and all(r['physics_substep_sampling_complete'] and r['physics_substep_execution_complete']
+            and r['inverted_tetrahedra_max']==0 for r in t['trace']) for t in trials.values())
     effect=noise=None
     if valid:
         f={k:np.asarray([r['force_world_n'] for r in t['trace']]) for k,t in trials.items()}

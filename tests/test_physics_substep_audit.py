@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 from ct_appendectomy.physics_substep_audit import EpisodeSubstepHealth, summarize_interval
+from ct_appendectomy.bimanual_coupling_probe import summarize_solver_ticks
 from ct_appendectomy.run_rosota_rl import evaluate_policy, summarize
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "ct_appendectomy"))
@@ -110,6 +111,35 @@ class PhysicsSubstepAuditTests(unittest.TestCase):
         env._physics_step(sample)
         self.assertEqual(samples, [1, 2])
         self.assertEqual(env.sim.steps, 2)
+
+    def test_bimanual_probe_uses_all_solver_ticks_not_only_control_endpoints(self):
+        trace = []
+        for control_tick in range(16):
+            samples = [health(0, .92, .06)] * 4
+            if control_tick == 7:
+                samples[2] = health(2, -.03, .4)
+                samples[3] = health(0, .9, .08)
+            trace.append({"physics_substep_health": summarize_interval(samples, 1 / 1920)})
+        result = summarize_solver_ticks(trace, 4)
+        self.assertTrue(result["physics_substep_sampling_complete"])
+        self.assertTrue(result["physics_substep_execution_complete"])
+        self.assertEqual(result["physics_ticks"], 64)
+        self.assertEqual(result["ticks_with_inversion"], 1)
+        self.assertEqual(result["inverted_tetrahedra_max"], 2)
+        self.assertFalse(result["all_sampled_ticks_inversion_free"])
+
+    def test_bimanual_probe_fails_closed_when_control_trace_is_missing_samples(self):
+        result = summarize_solver_ticks([{"tissue_health": health(0, 1, 0)}], 4)
+        self.assertFalse(result["physics_substep_sampling_complete"])
+        self.assertFalse(result["physics_substep_execution_complete"])
+        self.assertFalse(result["all_sampled_ticks_inversion_free"])
+
+    def test_bimanual_probe_rejects_early_control_interval_exit(self):
+        interval = summarize_interval([health(0, .9, .1)] * 4, 1 / 1920)
+        result = summarize_solver_ticks([{"physics_substep_health": interval}] * 15, 4)
+        self.assertTrue(result["physics_substep_sampling_complete"])
+        self.assertFalse(result["controller_interval_execution_complete"])
+        self.assertFalse(result["physics_substep_execution_complete"])
 
 
 if __name__ == "__main__":
