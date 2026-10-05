@@ -48,6 +48,8 @@ try:
         mesh.CreateTetVertexIndicesAttr(Vt.Vec4iArray.FromNumpy(tets.astype(np.int32)))
         if not du.set_physics_volume_deformable_body(stage,Sdf.Path('/World/Tissue')):raise RuntimeError('Deformable authoring failed')
         prim=mesh.GetPrim()
+        if not prim.ApplyAPI('PhysxBaseDeformableBodyAPI'):
+            raise RuntimeError('Cannot apply PhysX deformable parameter schema')
         prim.CreateAttribute('physxDeformableBody:solverPositionIterationCount',Sdf.ValueTypeNames.UInt).Set(64)
         prim.CreateAttribute('physxDeformableBody:linearDamping',Sdf.ValueTypeNames.Float).Set(0.)
         prim.CreateAttribute('physxDeformableBody:selfCollision',Sdf.ValueTypeNames.Bool).Set(False)

@@ -73,6 +73,8 @@ try:
         collision_api=PhysxSchema.PhysxCollisionAPI.Apply(mesh)
         collision_api.CreateContactOffsetAttr(.0005);collision_api.CreateRestOffsetAttr(0.)
         body=stage.GetPrimAtPath(root)
+        if not body.ApplyAPI('PhysxBaseDeformableBodyAPI'):
+            raise RuntimeError('Cannot apply PhysX deformable parameter schema')
         body.CreateAttribute('physxDeformableBody:solverPositionIterationCount',Sdf.ValueTypeNames.UInt).Set(64)
         body.CreateAttribute('physxDeformableBody:linearDamping',Sdf.ValueTypeNames.Float).Set(.1)
         import bimanual_tools
