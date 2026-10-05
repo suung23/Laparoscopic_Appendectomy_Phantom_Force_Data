@@ -1,0 +1,59 @@
+{
+  "source_sha256": "e601a3601ad3d6ce4414bf4ded7e5389678ac9e2b96931aca7ba31a784ced944",
+  "trace": [
+    {
+      "sweep": 1,
+      "accepted": 901,
+      "minimum": 0.036150736734418265,
+      "below_0_1": 238
+    },
+    {
+      "sweep": 2,
+      "accepted": 710,
+      "minimum": 0.036150736734418265,
+      "below_0_1": 238
+    },
+    {
+      "sweep": 3,
+      "accepted": 584,
+      "minimum": 0.036150736734418265,
+      "below_0_1": 239
+    },
+    {
+      "sweep": 4,
+      "accepted": 495,
+      "minimum": 0.036150736734418265,
+      "below_0_1": 238
+    },
+    {
+      "sweep": 5,
+      "accepted": 464,
+      "minimum": 0.036150736734418265,
+      "below_0_1": 238
+    },
+    {
+      "sweep": 6,
+      "accepted": 414,
+      "minimum": 0.036150736734418265,
+      "below_0_1": 238
+    },
+    {
+      "sweep": 7,
+      "accepted": 355,
+      "minimum": 0.036150736734418265,
+      "below_0_1": 238
+    },
+    {
+      "sweep": 8,
+      "accepted": 310,
+      "minimum": 0.036150736734418265,
+      "below_0_1": 238
+    }
+  ],
+  "boundary_exactly_preserved": true,
+  "connectivity_unchanged": true,
+  "scope": "Geometric candidate only; no force or deformation validation.",
+  "low_quality_cells_with_all_nodes_on_fixed_surface": 235,
+  "low_quality_cells": 238,
+  "minimum_quality_element_all_boundary": true
+}
