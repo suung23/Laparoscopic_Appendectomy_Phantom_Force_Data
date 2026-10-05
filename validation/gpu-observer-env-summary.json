@@ -1,0 +1,22 @@
+{
+  "failure": "tet_inversion",
+  "tissue_health": {
+    "tetrahedra": 22312,
+    "degenerate_rest_tetrahedra": 0,
+    "inverted_tetrahedra": 7,
+    "minimum_signed_volume_ratio": -1.4822215858960786,
+    "median_volume_ratio": 1.0036191670580994,
+    "total_absolute_volume_ratio": 1.0052935687911904,
+    "p99_absolute_volume_change": 0.3254517684141923
+  },
+  "pin_drift_m": 1.3463974273578227e-07,
+  "body_fk_error_m": [
+    5.487677031057546e-07,
+    9.10562619053681e-07
+  ],
+  "tissue_observation": "physx_tensor",
+  "diagnostic_no_tool_collision": true,
+  "tissue_generation": "explicit",
+  "status": "failed",
+  "scope": "Live GPU bimanual reset diagnostic; no successful contact task, no learned policy, no material validation."
+}

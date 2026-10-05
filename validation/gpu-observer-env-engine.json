@@ -1,0 +1,9 @@
+{
+  "status": "failed",
+  "counts": {
+    "small_degenerate_or_inverted_tetrahedron": 15309,
+    "other_physx_error": 1
+  },
+  "log_sha256": "561b038e7077f7c42233fed05ab9d70e86b436414ac2c87b4d8676fa3734ee48",
+  "scope": "Log-only gate, never a mechanics pass. Small-element messages do not distinguish positive tiny cells from inverted cells; inspect stored geometry separately."
+}
