@@ -7,6 +7,13 @@ import numpy as np
 from scipy.sparse import diags
 
 
+class ImplicitConvergenceError(RuntimeError):
+    """Carries an unaccepted iterate for diagnosis, never an advanced state."""
+    def __init__(self, result):
+        super().__init__('Implicit step failed: '+result['status'])
+        self.result = result
+
+
 class InertialPotential:
     def __init__(self, prediction, mass, dt, contact=None):
         self.prediction = np.asarray(prediction, float)
@@ -49,6 +56,6 @@ def implicit_step(elastic, positions, velocity, mass, loads, dt, contact=None,
         method='lbfgs_rotated', contact=potential,
         max_iterations=max_iterations, tolerance=tolerance)
     if result['status'] != 'converged':
-        raise RuntimeError('Implicit step failed: '+result['status'])
+        raise ImplicitConvergenceError(result)
     result['velocity'] = (result['positions']-positions)/dt
     return result

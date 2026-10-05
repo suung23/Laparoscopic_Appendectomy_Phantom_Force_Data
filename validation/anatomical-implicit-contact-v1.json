@@ -1,0 +1,26 @@
+{
+  "status": "failed",
+  "scope": "Frictionless implicit Euler plane-contact diagnostic; uncalibrated material and contact, numerical damping, no self contact or surgical acceptance",
+  "mesh_sha256": "e601a3601ad3d6ce4414bf4ded7e5389678ac9e2b96931aca7ba31a784ced944",
+  "dt_s": 0.0020833333333333333,
+  "requested_steps": 30,
+  "parameters": {
+    "young_pa": 12000.0,
+    "poisson": 0.45,
+    "density_kg_m3": 1050.0,
+    "activation_m": 0.0008,
+    "barrier_stiffness_n_m3": 100000000.0,
+    "tolerance_n": 1e-11
+  },
+  "source_sha256": {
+    "implicit_reference.py": "0dbd29633f0203d9c44d0103e51e5fe0ddb70dc20d3f09bf2bdaec2fe145f585",
+    "constrained_elasticity.py": "6fbfc4d53779068f723e6e23ef3fcec4fc6273cd169d68c2806b4881ce35a066",
+    "elastic_preconditioner.py": "2f58b26d43e37cd91f1529971283f148e93b8e8de0fd8b583b14569ca4e34ae4",
+    "determinant_step.py": "54454fbc93278d161a9e7918978733699492358103a6167a599636b32ca1ef86",
+    "plane_barrier.py": "898a50ea9926a514434b2b7d226439ce17b409b20f96984752fe2e6553041e27"
+  },
+  "rows": [],
+  "elapsed_s": 46.20857689998229,
+  "error": "Implicit step failed: iteration_limit",
+  "failed_tick": 1
+}
