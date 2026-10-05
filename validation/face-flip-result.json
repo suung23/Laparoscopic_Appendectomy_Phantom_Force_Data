@@ -1,0 +1,18 @@
+{
+  "flips": 2,
+  "minimum_quality": 0.036150736734418265,
+  "below_0_1": 237,
+  "boundary_exact": true,
+  "positive": true,
+  "scope": "Geometric diagnostic only, no mechanical acceptance",
+  "records": [
+    {
+      "old_min": 0.08562012409664561,
+      "new_min": 0.14685362338372604
+    },
+    {
+      "old_min": 0.03658636930779201,
+      "new_min": 0.05122219419234665
+    }
+  ]
+}
