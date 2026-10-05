@@ -14,6 +14,7 @@ p.add_argument('--tensor-readback',action='store_true',help='Compare independent
 p.add_argument('--solver-iterations',type=int,default=64)
 p.add_argument('--support-gap',type=float,help='Diagnostic horizontal plane gap in meters; disables free-fall acceptance')
 p.add_argument('--steps',type=int,default=180,help='Physics steps, a multiple of 60 and at least 180')
+p.add_argument('--physics-hz',type=int,choices=[480,960,1920],default=480)
 a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True)
 if any(v<=0 for v in a.units):p.error('Units must be positive')
 if not 1<=a.solver_iterations<=255:p.error('Solver iterations must be within [1,255]')
@@ -32,7 +33,7 @@ app=SimulationApp({'headless':True,'extra_args':['--/app/vulkan=false','--/app/d
     [f'--/app/tokens/{k}={v.as_posix()}' for k,v in tokens.items()]})
 report=dict(status='running',mesh_sha256=hashlib.sha256(a.mesh.read_bytes()).hexdigest(),cases=[],
     solver_iterations=a.solver_iterations,
-    physics_steps=a.steps,physics_dt_s=1/480,
+    physics_steps=a.steps,physics_dt_s=1/a.physics_hz,sample_interval_s=60/a.physics_hz,
     tensor_pipeline='warp_cuda' if a.tensor_readback else 'default_cpu',
     scope='Isolated free fall with zero damping, no attachments, robot, contact or rendering. Not loaded tissue validation.',
     material_si=dict(density_kg_m3=1050,youngs_modulus_pa=12000,poissons_ratio=.45),
@@ -79,7 +80,7 @@ try:
                 api=PhysxSchema.PhysxCollisionAPI.Apply(collider)
                 api.CreateContactOffsetAttr(offset/mpu);api.CreateRestOffsetAttr(0.)
         pipeline=dict(backend='warp',device='cuda:0') if a.tensor_readback else {}
-        sim=SimulationContext(stage_units_in_meters=mpu,physics_dt=1/480,rendering_dt=1/30,**pipeline)
+        sim=SimulationContext(stage_units_in_meters=mpu,physics_dt=1/a.physics_hz,rendering_dt=1/30,**pipeline)
         scene=UsdPhysics.Scene.Get(stage,sim.get_physics_context().prim_path)
         scene.CreateGravityDirectionAttr(Gf.Vec3f(0,-1,0));scene.CreateGravityMagnitudeAttr(9.81/mpu)
         ps=PhysxSchema.PhysxSceneAPI.Apply(scene.GetPrim());ps.CreateEnableGPUDynamicsAttr(True);ps.CreateBroadphaseTypeAttr('GPU')
@@ -114,7 +115,7 @@ try:
                 centers.append(points.mean(0))
                 np.savez_compressed(a.out/f'state_{mpu}_{tick}.npz',points=points,rest=rest,tets=tets)
             if tick<a.steps:sim.step(render=False)
-        acceleration=np.diff(np.asarray(centers),n=2,axis=0)/(.125**2)
+        acceleration=np.diff(np.asarray(centers),n=2,axis=0)/((60/a.physics_hz)**2)
         error=np.linalg.norm(acceleration-np.array([0,-9.81,0]),axis=1)
         passed=all(r['health']['inverted_tetrahedra']==0 and r['health']['minimum_signed_volume_ratio']>=.99 and r['translation_removed_rms_m']<=1e-5 for r in rows) and bool(np.max(error)<=.1)
         if a.support_gap is not None:passed=False  # Contact snapshots cannot establish the free-fall gate.
