@@ -1,0 +1,55 @@
+{
+  "snapshot_verified": true,
+  "tick": 10,
+  "elements": [
+    {
+      "index": 8940,
+      "rest_quality": 0.6871440655887301,
+      "ratio": -0.21983574686262575,
+      "nodes": [
+        3268,
+        3660,
+        3270,
+        2992
+      ],
+      "maximum_nodal_speed_m_s": 0.18392470479011536
+    },
+    {
+      "index": 11725,
+      "rest_quality": 0.6939293561937768,
+      "ratio": -0.08403249140955384,
+      "nodes": [
+        3270,
+        752,
+        2992,
+        3660
+      ],
+      "maximum_nodal_speed_m_s": 0.18392470479011536
+    },
+    {
+      "index": 15167,
+      "rest_quality": 0.7216344124946928,
+      "ratio": -0.12521951131188674,
+      "nodes": [
+        3268,
+        181,
+        3660,
+        2992
+      ],
+      "maximum_nodal_speed_m_s": 0.18392470479011536
+    },
+    {
+      "index": 19795,
+      "rest_quality": 0.8238310640898456,
+      "ratio": -0.07967465475595485,
+      "nodes": [
+        181,
+        3660,
+        2992,
+        3140
+      ],
+      "maximum_nodal_speed_m_s": 0.18392470479011536
+    }
+  ],
+  "scope": "First observed inversion in unchanged Newton candidate. No causal or mechanics acceptance claim."
+}
