@@ -1,0 +1,74 @@
+{
+  "status": "unreviewed visual correction",
+  "edge_length_ratio_min_max": [
+    0.9304238910216218,
+    1.2736683132336664
+  ],
+  "fixed_error_m": 0.0,
+  "max_target_deviation_mm": 0.48023925641750115,
+  "tracking": 0.1,
+  "iterations": 30,
+  "physical_vessel_model": false,
+  "contact_checked": false,
+  "coupled_run": {
+    "status": "completed reference run",
+    "error": null,
+    "steps": [
+      {
+        "optimizer_success": true,
+        "iterations": 274,
+        "residual_N": 7.819781896229336e-07,
+        "tolerance_N": 1e-06,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "status": "converged",
+        "artery_max_motion_mm": 0.2509911638396414,
+        "step": 0,
+        "load_torque_error_Nm": 3.594462122630743e-21,
+        "layer_max_motion_mm": 0.4067704215530664
+      },
+      {
+        "optimizer_success": true,
+        "iterations": 313,
+        "residual_N": 8.337376866882129e-07,
+        "tolerance_N": 1e-06,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "status": "converged",
+        "artery_max_motion_mm": 0.5116371983108273,
+        "step": 1,
+        "load_torque_error_Nm": 3.4926320009779975e-21,
+        "layer_max_motion_mm": 0.7280104157320739
+      },
+      {
+        "optimizer_success": true,
+        "iterations": 363,
+        "residual_N": 4.132967169759542e-07,
+        "tolerance_N": 1e-06,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "status": "converged",
+        "artery_max_motion_mm": 0.7048288849501911,
+        "step": 2,
+        "load_torque_error_Nm": 8.578273740810689e-22,
+        "layer_max_motion_mm": 0.9341821652756854
+      }
+    ],
+    "dt": 0.004166666666666667,
+    "simulated_seconds": 0.0125,
+    "wall_seconds": 7.285077500011539,
+    "fixed_error_m": 0.0,
+    "synthetic_force_N": [
+      0.0,
+      0.0,
+      0.00019999999999999963
+    ],
+    "scope": "CPU reference dynamics and USD display coupled; layer force lagged at step start",
+    "tool_contact": false,
+    "RL": false,
+    "Isaac_physics": false,
+    "material_calibrated": false,
+    "artery_visual_following": true,
+    "vessel_mechanics": false,
+    "artery_shape_regularization": true
+  },
+  "rigid_motion_test": "passed at 1e-10 m absolute tolerance",
+  "render": "not yet reviewed"
+}

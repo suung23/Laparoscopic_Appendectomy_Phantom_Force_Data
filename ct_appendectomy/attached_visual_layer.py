@@ -17,6 +17,7 @@ class AttachedVisualLayer:
             if not mesh:raise ValueError('Mesh prim missing')
             if not np.array_equal(np.asarray(mesh.GetFaceVertexIndicesAttr().Get()),faces.ravel()):raise ValueError('Topology mismatch')
             if not np.allclose(mesh.GetPointsAttr().Get(),points,rtol=0,atol=1e-8):raise ValueError('Rest shape mismatch')
+        self.shape_regularization=False
         self.check_frames()
     def check_frames(self):
         a=UsdGeom.Xformable(self.parent).ComputeLocalToWorldTransform(0)
@@ -29,6 +30,10 @@ class AttachedVisualLayer:
         if not np.array_equal(self.parent.GetFaceVertexIndicesAttr().Get(),self.parent_faces.ravel()):raise ValueError('Parent topology changed')
         positions=evaluate(points,self.nodes,self.weights,self.offset)
         positions=self.layer_rest+self.follow[:,None]*(positions-self.layer_rest)
+        if self.shape_regularization:
+            from visual_shape_regularization import regularize
+            edges=trimesh.Trimesh(self.layer_rest,self.faces,process=False).edges_unique
+            positions=regularize(self.layer_rest,edges,positions,np.flatnonzero(self.follow==0))
         if not np.isfinite(positions).all():raise ValueError('Degenerate parent frame')
         mesh=trimesh.Trimesh(positions,self.faces,process=False)
         self.layer.GetPointsAttr().Set(Vt.Vec3fArray.FromNumpy(positions.astype(np.float32)))
@@ -38,7 +43,7 @@ class AttachedVisualLayer:
 
     def parent_loads(self,layer_forces):
         """Return mapped loads for a solver caller; does not apply them."""
-        if not np.all(self.follow==1):raise ValueError("Partial visual following has no integrated support-force accounting")
+        if self.shape_regularization or not np.all(self.follow==1):raise ValueError("Partial visual following has no integrated support-force accounting")
         from layer_force_mapping import pullback_forces
         self.check_frames()
         if not np.array_equal(self.parent.GetFaceVertexIndicesAttr().Get(),self.parent_faces.ravel()):raise ValueError('Parent topology changed')
