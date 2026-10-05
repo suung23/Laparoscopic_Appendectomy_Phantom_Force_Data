@@ -1,0 +1,22 @@
+{
+  "status": "unit_tests_only",
+  "method": "frictionless finite-activation logarithmic plane barrier with feasible line search",
+  "tests_passed": 3,
+  "elastic_regression_tests_passed": 6,
+  "checks": [
+    "contact force matches finite difference of energy",
+    "zero force beyond activation distance",
+    "step bound excludes crossing the plane",
+    "infeasible initial contact is rejected",
+    "loaded single tetrahedron converges with positive plane gap",
+    "external load plus contact and constraint reactions balance"
+  ],
+  "limitations": [
+    "not yet run on full anatomical contact scenario",
+    "no friction, tool mesh collision, dynamics or self contact",
+    "contact stiffness and activation distance are uncalibrated",
+    "per-node weights must be assigned with mesh dependence considered",
+    "finite activation gap differs from exact zero-gap contact",
+    "no Isaac integration or surgical validation"
+  ]
+}

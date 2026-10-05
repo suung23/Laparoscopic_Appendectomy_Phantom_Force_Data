@@ -42,7 +42,7 @@ class ElasticReference:
         np.add.at(gradient, self.tets[:, 0], -h.sum(axis=2))
         return float(self.volume @ density - np.sum(loads*(x-self.rest))), gradient
 
-    def solve(self, initial, loads, fixed, max_iterations=2000, tolerance=1e-7, floor=.01, method='gradient'):
+    def solve(self, initial, loads, fixed, max_iterations=2000, tolerance=1e-7, floor=.01, method='gradient', contact=None):
         x = np.asarray(initial, float).copy()
         fixed = np.asarray(fixed, bool)
         if fixed.shape != x.shape or max_iterations < 1 or not np.isfinite(tolerance) or tolerance <= 0:
@@ -56,8 +56,14 @@ class ElasticReference:
         length = np.cbrt(self.volume.sum())
         stiffness = max(self.mu * length, 1e-12)
         status = 'iteration_limit'
+        def objective(positions):
+            energy, gradient = self.energy_gradient(positions, loads)
+            if contact is not None:
+                contact_energy, contact_gradient = contact.energy_gradient(positions)
+                energy += contact_energy; gradient += contact_gradient
+            return energy, gradient
         for iteration in range(max_iterations):
-            energy, gradient = self.energy_gradient(x, loads)
+            energy, gradient = objective(x)
             free = gradient.copy(); free[fixed] = 0
             residual = float(np.max(np.abs(free)))
             history.append(dict(energy_j=energy, residual_n=residual))
@@ -88,16 +94,18 @@ class ElasticReference:
                     pairs.clear(); direction = -free/stiffness
                 previous_x, previous_free = x.copy(), free.copy()
             alpha = positive_volume_step(self.rest, x, direction, self.tets, floor=floor)['alpha']
+            if contact is not None:
+                alpha = min(alpha, contact.feasible_step(x, direction))
             slope = float(np.sum(gradient*direction))
             for _ in range(60):
                 candidate = x + alpha*direction
-                trial, _ = self.energy_gradient(candidate, loads)
+                trial, _ = objective(candidate)
                 if trial <= energy + 1e-4*alpha*slope:
                     x = candidate; break
                 alpha *= .5
             else:
                 status = 'line_search_failed'; break
-        energy, gradient = self.energy_gradient(x, loads)
+        energy, gradient = objective(x)
         residual_gradient = gradient.copy(); residual_gradient[fixed] = 0
         residual = float(np.max(np.abs(residual_gradient)))
         if residual <= tolerance:
