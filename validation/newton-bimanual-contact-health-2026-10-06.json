@@ -1,0 +1,68 @@
+{
+  "status": "failed_physics_gate_retain_as_negative_result",
+  "date": "2026-10-06",
+  "backend": "Newton 1.4 / Warp 1.15",
+  "device": "NVIDIA GeForce RTX 4090",
+  "source_revision": "working tree based on fb9c3d8",
+  "policy": "scripted DemoPolicy; not learned RL",
+  "command": "newton_cell/eval.py --physics-only --preset metrics --policy demo --episodes 1 --seconds 13.5 --seed 20261006 --no-images",
+  "simulation": {
+    "physics_hz": 480,
+    "control_hz": 30,
+    "action_chunk": 8,
+    "particles": 11962,
+    "tetrahedra": 43956,
+    "simulated_duration_s": 13.6000004,
+    "wall_duration_s": 131.9,
+    "real_time_factor": 0.103
+  },
+  "task_result": {
+    "success": false,
+    "stages_completed": 2,
+    "stages_total": 5,
+    "failed_stage": "at_site",
+    "grasp_location_fraction": 0.4166667,
+    "grasp_lift_success": true,
+    "maximum_lift_mm": 15.1752,
+    "minimum_right_tip_to_resection_mm": 25.7158,
+    "right_jaw_tissue_contact_fraction": 0.0,
+    "appendix_severed": false
+  },
+  "deformation_gate": {
+    "finite_state_through_duration": true,
+    "minimum_signed_tetrahedron_volume_ratio": -62.9572,
+    "maximum_inverted_tetrahedra": 87,
+    "maximum_nonfinite_tetrahedra": 0,
+    "peak_nodal_speed_m_s": 3.6944,
+    "result": "failed: severe element inversion and excessive nodal speed"
+  },
+  "force_gate": {
+    "reported_peak_contact_wrench_n": 37.7868,
+    "status": "uncalibrated reconstructed solver-contact estimate; not ground-truth force",
+    "known_measurement_defects_fixed": [
+      "Newton edge and face records use -1 in the legacy particle-only contact index; the prior reader treated this sentinel as the last tissue vertex.",
+      "Torque was shifted from world origin to the tool tip with the wrong cross-product sign.",
+      "A post-step dual-updated contact penalty was incorrectly read as the coefficient for the completed step."
+    ],
+    "remaining_validation": "Compare reconstructed contact wrench against Newton's applied contact response and an independently measured tool/tissue force trace before exposing it as calibrated haptics."
+  },
+  "long_episode_failure": {
+    "duration_s": 20,
+    "seed": 20261006,
+    "run": "out/goal-newton-tick-grasp-20261006-v2",
+    "observation": "appendix/task metrics became non-finite late in the episode; the run did not complete a valid five-stage task",
+    "force_value": "3.32 MN peak from the superseded post-step-penalty estimator; invalid and excluded from force conclusions"
+  },
+  "regression_tests": {
+    "command": "python -m unittest discover -s tests -v",
+    "passed": 68,
+    "covers": [
+      "barycentric edge contact instead of -1 sentinel indexing",
+      "force and torque reference-frame reconstruction",
+      "post-step dual penalty exclusion from estimated contact force",
+      "mid-body grasp and resection geometry",
+      "finite-state and signed-volume deformation health"
+    ]
+  },
+  "privacy": "No Appendix300 frame, patient metadata, user personal information, or raw particle trace is included in this tracked report. Raw evaluation NPZ files remain local and git-ignored."
+}

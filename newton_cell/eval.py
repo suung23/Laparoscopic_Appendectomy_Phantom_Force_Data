@@ -51,6 +51,9 @@ def main(argv=None) -> int:
     ap.add_argument("--front", dest="front", action="store_true", default=None)
     ap.add_argument("--no-front", dest="front", action="store_false")
     ap.add_argument("--list-presets", action="store_true")
+    ap.add_argument("--physics-only", action="store_true",
+                    help="skip path tracing and return physics/task state only; "
+                         "not valid for RGB policy evaluation")
     mine, rest = ap.parse_known_args(argv)
 
     if mine.list_presets:
@@ -70,6 +73,10 @@ def main(argv=None) -> int:
 
     import vla_env
     vla_env.OVERRIDES.update(over)
+    vla_env.PHYSICS_ONLY = mine.physics_only
+    if mine.physics_only:
+        print("physics-only observations: RGB/depth rendering disabled; "
+              "do not treat this as a visual-policy rollout", flush=True)
     print(f"preset {mine.preset}: "
           + ", ".join(f"{k}={v}" for k, v in sorted(over.items())), flush=True)
 

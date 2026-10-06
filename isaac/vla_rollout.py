@@ -84,6 +84,14 @@ class Episode:
         "right_tip_to_resect": ("task", "right_tip_to_resect_m"),
         "right_jaw_tissue": ("task", "right_jaw_tissue_m"),
         "cut_frac": ("task", "cut_frac"),
+        # Newton-only numerical health channels; absent on the Isaac backend
+        # until equivalent FEM telemetry is plumbed through there.
+        "physics_state_finite": ("task", "physics_state_finite"),
+        "tissue_min_signed_volume_ratio":
+            ("task", "tissue_min_signed_volume_ratio"),
+        "tissue_inverted_tets": ("task", "tissue_inverted_tets"),
+        "tissue_nonfinite_tets": ("task", "tissue_nonfinite_tets"),
+        "tissue_max_speed_m_s": ("task", "tissue_max_speed_m_s"),
     }
     VECTORS = {
         "left_tip_pose_rig": ("left", "tip_pose_rig"),
@@ -262,6 +270,15 @@ class Episode:
         resecting = at_base & (right_jaw <= self.RESECTION_JAW_CLOSED_PCT)
         stage_i, sd = self._stages(a)
         stage_done = {s: stage_i[s] >= 0 for s in self.STAGES}
+        health_finite = a.get("physics_state_finite", np.full(n, np.nan))
+        health_available = bool(np.isfinite(health_finite).any())
+        physics_state_finite = (
+            bool(np.all(health_finite[np.isfinite(health_finite)] > 0.5))
+            if health_available else None)
+        volume_ratio = a.get("tissue_min_signed_volume_ratio", np.full(n, np.nan))
+        inverted_tets = a.get("tissue_inverted_tets", np.full(n, np.nan))
+        nonfinite_tets = a.get("tissue_nonfinite_tets", np.full(n, np.nan))
+        tissue_speed = a.get("tissue_max_speed_m_s", np.full(n, np.nan))
         rcm = np.concatenate([a["left_rcm_err"], a["right_rcm_err"]])
         bite = np.concatenate([a["left_bite"], a["right_bite"]])
         f = np.stack([a["f_bend_x"], a["f_bend_y"], a["f_axial"]], 1)
@@ -285,6 +302,20 @@ class Episode:
             # appendix has not done it (user), so all five stages have to land,
             # in order, on a rig that stayed in its trocars.
             success=bool(stage_done["cut"] and not self.violated),
+            physics_health_available=health_available,
+            physics_state_finite=physics_state_finite,
+            minimum_signed_volume_ratio=(
+                float(np.nanmin(volume_ratio)) if np.isfinite(volume_ratio).any()
+                else float("nan")),
+            maximum_inverted_tetrahedra=(
+                int(np.nanmax(inverted_tets)) if np.isfinite(inverted_tets).any()
+                else None),
+            maximum_nonfinite_tetrahedra=(
+                int(np.nanmax(nonfinite_tets)) if np.isfinite(nonfinite_tets).any()
+                else None),
+            peak_tissue_speed_m_s=(
+                float(np.nanmax(tissue_speed)) if np.isfinite(tissue_speed).any()
+                else float("nan")),
             # the old definition, kept because it is what earlier runs were
             # scored on and the two are worth comparing
             grasp_lift_success=bool(held.any()

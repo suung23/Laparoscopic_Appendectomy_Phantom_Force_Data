@@ -109,7 +109,7 @@ class Cell:
         self.state_0, self.state_1 = s1, s0
         self.t += self.physics_dt
 
-    def control_substep(self, cmd: dict):
+    def control_substep(self, cmd: dict, after_tick=None):
         """One action sub-step = 1/control_hz of simulated time.
 
         The control law runs at EVERY physics tick (480 Hz), not at control_hz
@@ -134,6 +134,8 @@ class Cell:
                 self._advance_arm(arm, np.asarray(d_xyz, np.float64) / n,
                                   float(droll) / n, grip, dt, frames[nm])
             self.physics_tick()
+            if after_tick is not None:
+                after_tick()
 
     def _advance_arm(self, arm, d_xyz_tool, droll, grip_frac, dt, R_tool):
         """Integrate the tool-frame delta onto the tip command and step the

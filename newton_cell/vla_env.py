@@ -43,6 +43,7 @@ from forces import ContactForces                               # noqa: E402
 from grasp import GraspAssist                                  # noqa: E402
 from scene import add_args                                     # noqa: E402
 import sim as simmod                                           # noqa: E402
+from task_metrics import deformation_health, resection_observations, tissue_probe  # noqa: E402
 from view import CellRenderer                                  # noqa: E402
 
 # Isaac's vla_env.Action, verbatim in behaviour
@@ -59,6 +60,7 @@ DEFAULTS = dict(
     rcm_abort_steps=5, manip_hz=60.0,
     roll_follow="absolute", gripper_rate_dps=250.0, grasp_force=0.03,
     jaw_length=0.015, grasp_radius=0.012, grasp_assist=True, stereo=False,
+    grasp_band=(0.30, 0.70), resect_offset_m=0.010,
     endo_depth=False, d405_baseline=0.018, max_episode_steps=0, seed=0,
     # renderer
     samples=16, bounces=1, exposure=3.0, decimate_to=60000,
@@ -75,6 +77,7 @@ DEFAULTS = dict(
 # edited. Module state is the seam that keeps `isaac/` untouched.
 FRONT_OUT = None
 FRONT_EVERY = 1
+PHYSICS_ONLY = False
 
 # Render-quality overrides, set by `eval.py` from its --preset before the env is
 # built. Same seam and same reason as FRONT_OUT: `isaac/vla_rollout.py`
@@ -152,7 +155,9 @@ class LaparoVLAEnv:
         self.cell = simmod.Cell(self.cfg)
         self.arms = self.cell.arms
         self.L = self.cell.L
-        self.forces = ContactForces(self.cell.model, self.arms)
+        self.forces = ContactForces(self.cell.model, self.arms,
+                                    solver=self.cell.solver,
+                                    dt=self.cell.physics_dt)
         self.grasp = GraspAssist(self.cell.scene, self.arms,
                                  grasp_radius=self.cfg.grasp_radius) \
             if self.cfg.grasp_assist else None
@@ -162,6 +167,7 @@ class LaparoVLAEnv:
                                      decimate_to=self.cfg.decimate_to,
                                      quiet=True)
         self._q_rest = self.cell.state_0.particle_q.numpy().copy()
+        self._tet_indices = self.cell.model.tet_indices.numpy().reshape(-1, 4).copy()
         self._appendix_rest = self._appendix_centroid()
         self.n_steps = 0
         self._front_n = 0
@@ -212,10 +218,12 @@ class LaparoVLAEnv:
                 row = a[i, k]
                 cmd[nm] = (row[0:3].astype(np.float64), float(row[5]),
                            float(row[6]))
-            self.cell.control_substep(cmd)
-            if self.grasp:
-                self.grasp.update(self.cell.state_0)
-                self.grasp.apply(self.cell.state_0)
+            def maintain_grasp():
+                if self.grasp:
+                    self.grasp.update(self.cell.state_0)
+                    self.grasp.apply(self.cell.state_0)
+
+            self.cell.control_substep(cmd, after_tick=maintain_grasp)
         self.n_steps += 1
 
         info = self._info(a, K)
@@ -259,6 +267,19 @@ class LaparoVLAEnv:
 
     # ---- observation -----------------------------------------------------
     def observe(self):
+        if PHYSICS_ONLY:
+            # Keep the same physics-derived task, arm, trocar, and contact
+            # channels while skipping the expensive path tracer. This mode is
+            # for dynamics/contact evaluation only; it is not an image-policy
+            # observation and must never be reported as a visual rollout.
+            return {
+                "t": float(self.cell.t),
+                "T_world_rig": self.L.T_world_rig.astype(np.float32),
+                "left": self._arm_obs("left"),
+                "right": self._arm_obs("right"),
+                "left_force": self._force_obs("left"),
+                "task": self._task_obs(),
+            }
         self.renderer.sync()
         obs = {"t": float(self.cell.t), "T_world_rig": self.L.T_world_rig.astype(np.float32)}
 
@@ -350,7 +371,10 @@ class LaparoVLAEnv:
         )
 
     def _force_obs(self, nm):
-        w = self.forces.tool_wrench(self.cell.state_0, self.cell.contacts, nm)
+        # `collide()` populated this contact set from the input state immediately
+        # before the just-finished solver step. After the ping-pong swap that is
+        # state_1; state_0 is already the post-solve configuration.
+        w = self.forces.tool_wrench(self.cell.state_1, self.cell.contacts, nm)
         ch = ContactForces.channels(w)
         held = self.grasp.grasped(nm) if self.grasp else False
         gm = float(np.linalg.norm(w[:3]))
@@ -370,13 +394,36 @@ class LaparoVLAEnv:
 
     def _task_obs(self):
         q = self.cell.state_0.particle_q.numpy()
+        qd = self.cell.state_0.particle_qd.numpy()
+        health = deformation_health(q, qd, self._q_rest, self._tet_indices)
         i, j = self.cell.scene.organ_span["appendix"]
         cen = q[i:j].mean(axis=0)
         handles = self.grasp.handle_positions(q) if self.grasp else np.zeros((0, 3))
         pin = getattr(self.cell.scene, "appendix_pin_world", cen)
-        left_tip = self.arms["left"].link_frames()["tool_tip"][:3, 3]
-        right_tip = self.arms["right"].link_frames()["tool_tip"][:3, 3]
-        return dict(
+        left_frames = self.arms["left"].link_frames()
+        right_frames = self.arms["right"].link_frames()
+        left_tip = left_frames["tool_tip"][:3, 3]
+        right_tip = right_frames["tool_tip"][:3, 3]
+        held = (self.grasp.latched.get("left", {}).get("handle", -1)
+                if self.grasp else -1)
+        metrics = resection_observations(
+            q[i:j], handles, held, pin, right_tip,
+            grasp_band=self.cfg.grasp_band,
+            resect_offset_m=self.cfg.resect_offset_m)
+        from laparo_ik import JAW_PIN_AXIS_F
+        shaft_axis = -right_frames["tool_tip"][:3, 2]
+        right_tissue, jaw_thickness, _ = tissue_probe(
+            q[i:j], right_tip, shaft_axis,
+            right_frames["tool_flange"][:3, :3],
+            float(np.mean(np.abs(self.arms["right"].jaw_q))),
+            JAW_PIN_AXIS_F)
+        metrics["right_tissue_in_jaw"] = bool(right_tissue)
+        metrics["right_jaw_tissue_m"] = float(jaw_thickness)
+        metrics["resect_target_rig"] = (
+            self._to_rig(metrics["resect_target_world"]).astype(np.float32)
+            if np.isfinite(metrics["resect_target_world"]).all()
+            else np.full(3, np.nan, dtype=np.float32))
+        base = dict(
             appendix_centroid_rig=self._to_rig(cen).astype(np.float32),
             appendix_lift_m=float(cen[2] - self._appendix_rest[2]),
             appendix_moved_m=float(np.linalg.norm(cen - self._appendix_rest)),
@@ -392,6 +439,9 @@ class LaparoVLAEnv:
                                                          axis=1).min()),
             grasped_any=bool(self.grasp.latched) if self.grasp else False,
         )
+        base.update(health)
+        base.update(metrics)
+        return base
 
     def summary(self):
         return dict(backend="newton", particles=int(self.cell.model.particle_count),
@@ -466,9 +516,18 @@ class DemoPolicy:
         if len(handles):
             far = np.asarray(task["handle_to_pin_m"], np.float64) > 0.025
             free = np.asarray(task["handle_free"], bool)
-            ok = far & free
+            n = len(handles)
+            fractions = (np.arange(n, dtype=np.float64) + 0.5) / n
+            cfg = getattr(self.env, "cfg", None)
+            lo, hi = getattr(cfg, "grasp_band", (0.30, 0.70))
+            in_band = (fractions >= lo) & (fractions <= hi)
+            ok = far & free & in_band
             if not ok.any():
-                ok = free if free.any() else np.ones(len(handles), bool)
+                ok = free & in_band
+            if not ok.any():
+                # Never turn a missing mid-body grasp target into a false
+                # procedural success by silently picking an end handle.
+                return Action.zeros(chunk, gripper=(100.0, 100.0))
             cand = handles[ok]
             tgt = cand[int(np.argmin(np.linalg.norm(cand - tip, axis=1)))]
         else:
