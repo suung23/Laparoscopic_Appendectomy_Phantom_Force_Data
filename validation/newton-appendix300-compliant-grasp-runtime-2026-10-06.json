@@ -1,0 +1,49 @@
+{
+  "status": "failed_numerical_integrity_gate",
+  "date": "2026-10-06",
+  "purpose": "RTX 4090 runtime check of Appendix300 appearance integration and the new compliant grasp-force path.",
+  "backend": "Newton 1.4 / Warp 1.15",
+  "device": "NVIDIA GeForce RTX 4090",
+  "policy": "scripted DemoPolicy; not learned RL",
+  "requested_duration_s": 20.0,
+  "observed_duration_s": 6.1333332,
+  "recorded_control_steps": 24,
+  "wall_duration_s": 53.6,
+  "real_time_factor": 0.114,
+  "appearance": {
+    "dataset": "Appendix300",
+    "texture_status": "provisional_prompt_mask_texture_candidate_not_promoted",
+    "mapped_to": "appendix FEM rest nodes by deterministic cylindrical projection",
+    "deforms_with_fem": true,
+    "video_to_3d_registration": false,
+    "source_roi_anatomy_verified": false,
+    "clinical_visual_validation": false,
+    "image_output": "out/appendix300_fem_endoscope_candidate/endoscope.png"
+  },
+  "first_invalid_sample": {
+    "reason": "2 inverted tetrahedra",
+    "minimum_signed_volume_ratio": -0.60567945,
+    "nonfinite_tetrahedra": 0,
+    "state_finite": true,
+    "peak_tissue_speed_m_s": 0.0117364
+  },
+  "task_and_contact": {
+    "physics_health_pass": false,
+    "task_success": false,
+    "stages_completed": 0,
+    "grasp_events": 0,
+    "minimum_tip_to_appendix_mm": 5.69156,
+    "peak_tip_force_n": 0.516447,
+    "peak_grip_force_mn": 75.0,
+    "rcm_error_p95_mm": 0.112981,
+    "tissue_disturbance_mm": 0.158499
+  },
+  "interpretation": "Runtime reaches tool-tissue contact and records force, but the FEM health gate stops the episode before grasp. This is a mechanics failure, not a successful RL episode or manuscript-ready validation.",
+  "calibration": {
+    "grasp_spring_stiffness_n_m": 30.0,
+    "damping_ratio": 0.8,
+    "force_cap_n": 0.03,
+    "parameters_measured_on_physical_tissue": false
+  },
+  "privacy": "Raw video, rendered images, credentials, and personal information remain local and are not included in this report."
+}

@@ -1,0 +1,38 @@
+{
+  "status": "geometric_sampling_and_batching_verified; contact_stability_gate_failed_again",
+  "date": "2026-10-06",
+  "purpose": "Check whether a denser cecum display-surface clearance heuristic changes the scripted contact failure, and bound its workstation runtime.",
+  "backend": "Newton 1.4 / Warp 1.15.0",
+  "device": "NVIDIA GeForce RTX 4090",
+  "changes_under_test": {
+    "cecum_surface_samples": "display vertices, unique edge midpoints, and triangle centroids, correctly interpolated through live FEM render stencils",
+    "route_spacing_mm": 2.0,
+    "tool_collision_samples_per_link_cap": 4096,
+    "nearest_surface_queries": "batched in groups of eight path poses",
+    "physics_or_contact_parameters_changed": false
+  },
+  "verification": {
+    "focused_tests": "13 passed; 4 subtests passed",
+    "python_compile": "passed",
+    "git_diff_check": "passed",
+    "rollout_command": "newton_cell.eval --physics-only --preset metrics --policy demo --episodes 1 --seconds 6.5 --seed 20261006 --demo-swept-clearance --no-images",
+    "wall_seconds": 70.0,
+    "simulated_seconds_requested": 6.5,
+    "stop": "step 22 at 6.133 s: invalid physics, 2 inverted cecum tetrahedra",
+    "task_stages": "0 of 5",
+    "peak_estimated_tool_wrench_n": 0.52,
+    "rcm_error_p95_mm": 0.11
+  },
+  "comparison": {
+    "left_tip_pose_trajectory_matches_prior_clearance_trial": true,
+    "right_tip_pose_trajectory_matches_prior_clearance_trial": true,
+    "action_trajectory_matches_prior_clearance_trial": true,
+    "interpretation": "The refined sampling and batching did not alter this seed's selected route or resolve contact-induced cecum inversion. A sampled clearance score is not a collision guarantee."
+  },
+  "limits": [
+    "Only one seed was run in this iteration; no improvement is claimed.",
+    "The estimated wrench is not calibrated contact force.",
+    "The preview texture is an appearance-only cylindrical projection and does not establish video-to-3D registration or intrinsic tissue reflectance."
+  ],
+  "privacy": "Raw video, candidate texture pixels, and rendered frames remain local and git-ignored; this report stores aggregate results only."
+}

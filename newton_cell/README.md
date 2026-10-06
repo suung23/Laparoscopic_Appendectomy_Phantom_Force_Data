@@ -46,7 +46,7 @@ action interface, not a dynamics simulation whose solver has to match.
 | `cameras.py` | endoscope (calibrated pinhole, 30° oblique) + D405 + tip light |
 | `view.py` | binds the live sim to the tracer and renders frames |
 | `forces.py` | contact-force channels on the `tool_tip` axes |
-| `grasp.py` | latch a grip cluster to the jaws, in place |
+| `grasp.py` | force-limited compliant grasp assistance on FEM nodes |
 | `vla_env.py` | `LaparoVLAEnv` / `Action` / `DemoPolicy` |
 | `rollout.py` | shim that runs `isaac/vla_rollout.py` against this backend |
 | `eval.py` | entry point with render presets (`--preset fast` for training loops) |
@@ -104,6 +104,17 @@ model: 11962 particles, 43956 tets
 the arms and rendering are added. At-rest speed settles to ~0.4–1.0 mm/s, which
 is at or below the "1–2 mm/s at rest" buzz `build_surgical_cell.py` documents
 for `bowel2` under PhysX.
+
+`LaparoVLAEnv` now performs the same 2 s passive settling at construction and
+uses that finite, non-inverted state for later resets. Tissue health is checked
+at each control interval during settling; episode time starts at zero after the
+settle, so warm-up is not counted as policy performance. This closes a reset
+bug where the policy previously began moving while the appendix was still
+falling. The Newton demo now moves to a 25 mm overhead waypoint at 12 mm/s,
+then descends toward the mid-body handle with the most cecum clearance. This
+matches the Isaac baseline's standoff sequence and adds a clearance rule for
+Newton's anatomy. These changes address a measured source of numerical failure;
+they do not establish calibrated tissue mechanics or a completed appendectomy.
 
 ### Three things that had to be right, and were not at first
 
@@ -224,6 +235,50 @@ first — turns the whole specimen a uniform pink and loses the olive/tan/blue
 that makes the reference view readable. The blue is the specimen plate
 (`PLATE_COLOR`, the surgical drape), which is authored rather than captured.
 
+#### Optional Appendix300 appearance candidate
+
+The Newton endoscope can optionally render a provenance-checked Appendix300
+surface-color candidate on the simulated appendix:
+
+```bash
+.venv-newton/bin/python newton_cell/eval.py --preset balanced \
+  --appendix300-texture out/ct_appendectomy/appendix300_sam2_texture_v21/appendix_appendix300_temporal_rgb.png \
+  --out out/appendix300_fem_texture_preview
+```
+
+The candidate's sibling `appearance.json` is mandatory; the Appendix300 DOI,
+CC BY 4.0 license, and image hash are checked before rendering. This candidate
+uses a local SAM2 visible-object track (mean adjacent-mask IoU 0.72 over 0.5 s),
+but the mask has not been verified by an expert as appendix tissue. A
+deterministic cylindrical UV parameterisation is bound to appendix FEM rest
+nodes. The path tracer samples the full-resolution RGB image at each ray hit,
+so appearance detail is no longer limited to the sparse vertex colours and
+travels with the deforming mesh. This remains a visual appearance experiment,
+not camera-to-mesh registration,
+patient-specific reconstruction, or measured albedo/BRDF. The video crop can
+carry illumination and specular glare, so the scope light will not be
+physically correct where those remain baked into the texture. The option is
+off by default; ordinary runs retain captured CT colors. Render outputs and
+source imagery remain in the ignored local `out/` tree. Validation evidence is
+recorded in `validation/appendix300-uv-texture-2026-10-06.json`; the FEM surface
+is still visibly coarse and this does not pass the visual realism gate.
+
+The Newton renderer now uses the captured organ PLY surface topology and binds
+its vertices directly to unique FEM rest nodes, with a 10 µm maximum match
+guard and a FEM-boundary fallback. All six current assets pass the guard; their
+measured maximum rest-position mismatch is below 0.011 µm. This is a clean
+render/simulation correspondence, not a higher-resolution reconstruction: a
+paired endoscope render showed no meaningful detail gain, and the surfaces
+remain visibly faceted. A render-only Loop subdivision candidate now smooths
+the display surface with sparse stencils over those mapped FEM nodes; the
+simulation and contact meshes stay unchanged. One level multiplies triangle
+count by four, while its measured rest-surface smoothing offset is p95
+0.78–0.82 mm and maximum 0.99–1.09 mm across these assets. This intentionally
+changes the visible outline slightly and needs same-camera RTX comparison and
+held-out visual review before promotion. Use
+`--surface-subdivision-levels 0` to render the unsmoothed control. See
+`validation/newton-captured-render-surface-binding-2026-10-06.json`.
+
 ### Three cameras
 
 | output | what it is |
@@ -254,8 +309,41 @@ observation, so a policy sees the same projection on both machines.
 
 ## Status
 
+### Current blocking evidence
 
-### Working and verified
+- The 2026-10-06 physics fail-fast smoke test stopped after 1.07 simulated
+  seconds with 16 inverted tetrahedra. The guard worked, but tissue mechanics
+  failed; see `validation/newton-physics-failfast-2026-10-06.json`.
+- A longer 13.6 s scripted attempt completed only 2/5 stages and failed at
+  `at_site`, with up to 87 inverted elements and 3.69 m/s nodal speed; see
+  `validation/newton-bimanual-contact-health-2026-10-06.json`.
+- The force-capped compliant grasp has synthetic unit coverage and was
+  exercised in a local RTX 4090 Newton rollout. The cecum inversion gate stopped
+  that scripted episode before a grasp latch; its stiffness and force cap remain
+  uncalibrated. The newer high-resolution Appendix300 UV render is a provisional
+  appearance transfer, and the coarse FEM surface plus unregistered source ROI
+  do not satisfy the endoscope realism gate.
+- A swept-URDF clearance ranking was tested against the cecum contact failure.
+  Dynamic target reselection worsened the failure; locking the target produced
+  exactly the baseline actions and outcome for the tested seed. It remains an
+  opt-in diagnostic (`--demo-swept-clearance`), not a validated safety feature;
+  see `validation/newton-swept-approach-clearance-2026-10-06.json`.
+- A reset now clears restored rigid-body velocities and refreshes Newton's
+  contact manifold before the first observation. Paired seed 1–3 contact
+  ablations reproduce cecum inversion only with instrument/tissue contact;
+  all runs still fail before grasp. A scripted 3/6/12 mm/s approach probe
+  changes failure severity but none prevents inversion. `--demo-approach-mm-s`
+  is diagnostic only; see
+  `validation/newton-tool-tissue-collision-ablation-2026-10-06.json` and
+  `validation/newton-demo-approach-speed-probe-2026-10-06.json`.
+
+The H100 validation process is still live but has produced no new output; the
+Windows runtime does not have Newton/Warp, and the SSH configuration remains
+inaccessible to the current sandbox. Do not treat older episode scores below
+as evidence that the current branch passes mechanics or task gates.
+
+
+### Historical commissioning checks
 
 | | evidence |
 |---|---|
@@ -269,7 +357,7 @@ observation, so a policy sees the same projection on both machines.
 | D405 camera | depth 96–218 mm after the phantom view hole is cut |
 | Exposure calibration | dome at luma p50 157 / p90 206, vs the 143–164 the Isaac cell documents |
 
-### A scored 20 s episode, end to end (H100, headless)
+### Historical 20 s scripted episode (pre-force-capped grasp revision)
 
 ```
 $ .venv-newton/bin/python newton_cell/rollout.py --episodes 1 --seconds 20 --video
@@ -294,6 +382,12 @@ reimplementation:
 | `trocar_bite_p95_mm` | **0.0** | 0.0002 |
 | `grasp_events` / held | 1 / **92 %** of steps | 1 |
 | `tissue_disturbance_mm` | 12.9 | 9.3 |
+
+That archived run predates the compliant-grasp change. Current Newton rollout
+NPZ files record `left/right_grasp_assist_model_force_n` and
+`left/right_grasp_assist_deflection_m` separately from the tool-contact wrench;
+the Isaac runner's metric schema remains unchanged. These model-force channels
+must not be interpreted as measured grasper or tissue forces.
 
 The rig-health numbers are the ones that matter, and the handoff is blunt about
 why: *"a success obtained by tearing the trocar is not a success."* The shaft
@@ -373,9 +467,11 @@ in order of value:
 - One process per GPU. This host has 8; `CUDA_VISIBLE_DEVICES=<n>` picks one,
   and episodes parallelise across them with no shared state.
 
-### Complete
+### Implemented components (validation is uneven)
 
-Every piece of the pipeline is built and runs headless end to end:
+These components are wired in the backend; this table does not imply that
+physics, contact, appearance, or task-performance gates have passed. See the
+timestamped `validation/` reports for failures and the scope of each check.
 
 | stage | file |
 |---|---|
@@ -383,8 +479,8 @@ Every piece of the pipeline is built and runs headless end to end:
 | cell layout + tissue spec, from source | `cell_spec.py`, `layout.py` |
 | tissue FEM, pins, appendix shelf | `scene.py` |
 | instruments driven by the shipped IK + controller | `arms.py`, `sim.py` |
-| grasp assist (latch a grip cluster in place) | `grasp.py` |
-| contact force sensing on the tool_tip axes | `forces.py` |
+| compliant grasp assist (bounded spring-damper loads on FEM nodes) | `grasp.py` |
+| post-step model-based contact-load estimates on the tool_tip axes | `forces.py` |
 | path-traced endoscope + D405 (+ stereo, + depth) | `render.py`, `cameras.py`, `view.py` |
 | `LaparoVLAEnv` / `Action` / `DemoPolicy` | `vla_env.py` |
 | scored rollout → npz + mp4, via the shipped runner | `rollout.py` |
@@ -399,16 +495,34 @@ Every piece of the pipeline is built and runs headless end to end:
   contract: *"Robot-arm movement must be identical… Organ deformation is
   allowed to differ."*
 - **The force channels come from tissue contact, not a joint reaction sensor.**
-  A kinematically driven link reports no reaction, so `forces.py` sums the
-  soft-body contacts the tissue makes with the instrument, using the same
-  penalty model Newton integrates. That deletes a whole subsystem the Isaac
-  path needs: there is no 4.7 N instrument weight to cancel, so no 54-pose
-  wrench identification, no `out/vla_force_calib.json`, and no 311 mN
-  identification residual. It also means that while a grasp is **latched** the
-  tissue is carried kinematically and generates no contact, so `grip` reads ~0
-  during a hold — use `latched` for that state, exactly as the Isaac path tells
-  you to use `grip_raw` for contact detection only.
+  A kinematically driven link reports no reaction, so `forces.py` estimates
+  load from the post-step soft-contact manifold. It follows Newton's penalty,
+  damping and friction law form, but uses static mixed material stiffness
+  rather than the per-contact AVBD penalty that changes during solver
+  iterations. It is not a readback of the exact force used in a solver
+  iteration or a calibrated tissue-force measurement. The kinematic model has
+  no robot payload weight to compensate, but that does not calibrate tissue
+  load. The grasp assist adds a damped, force-capped
+  spring to selected FEM nodes instead of overwriting their positions. Its
+  reported spring load is a model input, not a measured tissue-contact force;
+  neither the 30 N/m stiffness nor the 0.03 N cap is physically calibrated.
+  The force-feedback and tissue-deformation response still require runtime
+  tests and calibration against measured tissue data.
 - **The field, phantom and endoscope carry no collider.** With a kinematic arm
   nothing responds to them, the trocar constraint is enforced analytically by
   `trocar.py`, and the field in particular must not touch the organs.
 - **No GUI.** `--gui` is refused with a message rather than silently ignored.
+
+### Contact-material diagnostics
+
+Newton VBD's FEM-particle to rigid-instrument contact averages the particle
+`soft_contact_mu` and instrument shape `mu` values. Its body-particle path does
+not consume `ShapeConfig.kf`; setting `--contact-kf 0` is therefore not a valid
+friction ablation for this contact pair. `--contact-mu X` is an explicit
+diagnostic override applied to both sides. It is not a calibrated material
+setting and is not a training default. In the 2026-10-06 one-scene, three-seed
+probe, `mu=0` removed cecum element inversion but produced 85–136 mm/s peak
+tissue-node speed and completed no appendectomy stages. The authored setting
+remains unchanged pending measured contact/deformation validation; see
+`validation/newton-tool-friction-ablation-2026-10-06.json` and
+`validation/newton-tool-mu-ablation-2026-10-06.json`.

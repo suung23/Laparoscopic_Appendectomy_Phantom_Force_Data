@@ -1,0 +1,53 @@
+{
+  "status": "sam2_candidate_provenance_and_node_color_transfer_verified_render_pending",
+  "date": "2026-10-06",
+  "dataset": "Appendix300",
+  "attribution": "Appendix300, DOI 10.25532/OPARA-1173, CC BY 4.0",
+  "candidate_texture": "out/ct_appendectomy/appendix300_sam2_texture_v21/appendix_appendix300_temporal_rgb.png",
+  "candidate_texture_sha256": "d172c39195de99e63ddafb779c0409363af912f040299c35e3d697bae0e50df6",
+  "source_provenance_report_sha256": "e7548755a93523ccb85fa20b3acffa72fffc69731e39cdd668cfaa482c4c9ef2",
+  "source_video": "Video_Snippets/Center2/Center2_2.mp4",
+  "source_video_sha256": "a38b416c45928266e333c46d40c278eff0386a0ca695d268c35ccf807fab04d5",
+  "source_frame_sha256": "3dcefc1dbfdb28efbcbe79ceeca3217e03e800a23a32a3864550052c7d155a1c",
+  "source_mask_sha256": "a6822f1b941a6ad2aef7b78849573d9401a5a6de58355dbcd81666152d46f41f",
+  "source_candidate_status": "provisional_prompt_mask_texture_candidate_not_promoted",
+  "mask_model": "facebook/sam2-hiera-small",
+  "mask_model_revision": "e080ada8afd19df5e165abe71b006edc7f4c3d4e",
+  "mask_model_weights_sha256": "293ad59be7669df6aa41ba79efcdeb7490f43cdc4c06cee4bf66bd89dafad293",
+  "mask_track_interval_seconds": [10.0, 10.5],
+  "visible_mask_mean_adjacent_iou": 0.7232741797,
+  "appendix_identity_expert_verified": false,
+  "offline_rest_surface_preview": "out/ct_appendectomy/appendix300_texture_fem_rest_preview.png",
+  "offline_preview_scope": "Captured tet boundary and transferred vertex colors with a simple orthographic raster and synthetic directional shading; not the Newton path tracer or endoscopic camera.",
+  "mapping": {
+    "implementation": "newton_cell/appearance.py::appendix_texture_vertex_colors",
+    "surface": "appendix tet FEM rest nodes",
+    "rest_node_count": 2263,
+    "parameterization": "deterministic cylindrical coordinates from principal axis",
+    "sampling": "bilinear, wrap around circumference, clamp at ends, sRGB decoded before interpolation",
+    "deformation_binding": "sampled linear RGB is stored per FEM node and therefore moves with the deformed tet surface",
+    "source_roi_anatomy_verified": false,
+    "default_enabled": false
+  },
+  "checks": {
+    "appendix300_license_checked": true,
+    "texture_sha256_matches_adjacent_appearance_json": true,
+    "texture_node_color_map_finite": true,
+    "texture_node_color_range_linear_rgb": [
+      [0.1623, 0.0191, 0.0262],
+      [0.5729, 0.4301, 0.3675]
+    ],
+    "texture_node_color_std_linear_rgb": [0.0453, 0.0369, 0.036],
+    "focused_unit_tests": "4 passed",
+    "python_syntax_check": "passed",
+    "git_diff_check": "passed",
+    "newton_endoscope_render": "not run: Windows environment lacks Newton/Warp runtime; attempted rollout remains live but silent",
+    "offline_surface_preview": "generated and visually inspected; shows colors transferred to the curved appendix mesh but not endoscopic realism"
+  },
+  "limitations": [
+    "The principal-axis cylindrical mapping is synthetic and is not camera-to-mesh or patient-space registration.",
+    "The source RGB candidate may contain illumination, highlights, and tissue outside the appendix; no intrinsic albedo or BRDF was recovered.",
+    "No endoscopic render, human visual review, or clinical appearance validation has been performed for this mapping."
+  ],
+  "privacy": "Source videos, generated texture pixels, and local rendered frames remain in the git-ignored out/ directory; this tracked report stores hashes and aggregate color statistics only."
+}

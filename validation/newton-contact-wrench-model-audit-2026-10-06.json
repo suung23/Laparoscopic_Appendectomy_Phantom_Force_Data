@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-06",
+  "status": "post-step contact wrench is a model estimate, not solver-force readback or calibrated force",
+  "runtime": {
+    "newton_version": "1.4.0",
+    "backend": "Newton VBD / Warp",
+    "device_available": "NVIDIA GeForce RTX 4090"
+  },
+  "source_audit": {
+    "newton_kernel": "work/venv/Lib/site-packages/newton/_src/solvers/vbd/rigid_vbd_kernels.py",
+    "force_law": "_compute_body_particle_contact_force: normal penalty ke*penetration, approach damping from relative displacement divided by dt, and projected isotropic friction",
+    "contact_material_initialization": "init_body_particle_contacts stores averaged material ke/kd/mu and seeds per-contact AVBD penalty k",
+    "within_step_penalty_update": "update_duals_body_particle_contacts changes the per-contact penalty as solver iterations proceed",
+    "force_evaluation": "particle_vbd_kernels.py and rigid_vbd_kernels.py evaluate using body_particle_contact_penalty_k and cached damping/friction"
+  },
+  "repository_estimator": {
+    "file": "newton_cell/forces.py",
+    "stiffness_used": "static average of model soft_contact_ke and rigid shape_material_ke",
+    "damping_and_friction": "Newton VBD cached per-contact material values when available",
+    "position_and_velocity": "post-step unified contact manifold plus current/previous state geometry",
+    "classification": "kinematic instrument load estimate; not independent sensor data",
+    "force_readback_available": false,
+    "force_displacement_calibration_performed": false
+  },
+  "consequence": "The estimate follows Newton's contact-law form but differs from the exact within-iteration solver force because its stiffness coefficient omits the per-contact AVBD penalty updates. Do not interpret the channel as calibrated tactile force.",
+  "privacy": "No source video, image, credential, absolute user path, or personal metadata is recorded."
+}

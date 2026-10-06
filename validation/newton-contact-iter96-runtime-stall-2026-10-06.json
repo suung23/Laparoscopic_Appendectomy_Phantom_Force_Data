@@ -1,0 +1,28 @@
+{
+  "status": "runtime_stall_observed_no_physics_result",
+  "date": "2026-10-06",
+  "purpose": "Follow up the short 96-iteration VBD contact probe with a longer same-seed scripted contact trajectory.",
+  "command": "newton_cell/eval.py --physics-only --preset metrics --policy demo --episodes 1 --seconds 6.5 --seed 20261006 --iterations 96 --no-images --out out/appendix300_contact_iter96_seed20261006",
+  "backend": "Newton 1.4 / Warp 1.15.0",
+  "device": "NVIDIA GeForce RTX 4090",
+  "configuration": {
+    "physics_hz": 480,
+    "control_hz": 30,
+    "iterations_per_tick": 96,
+    "particles": 11962,
+    "tetrahedra": 43956,
+    "initialization_completed": true
+  },
+  "observation": {
+    "episode_summary_written": false,
+    "physics_state_result": null,
+    "no_progress_window_seconds_at_least": 120,
+    "process_cpu_seconds_at_last_checks": 75.03,
+    "gpu_utilization_at_last_checks_percent": 0,
+    "gpu_memory_used_mib": 3530,
+    "main_worker_wait_state": "LpcReply",
+    "action": "Interrupted after repeated checks showed unchanged process CPU time and idle GPU; output lock retained for normal stale-lock recovery."
+  },
+  "interpretation": "The task-level solver-iteration effect remains unknown. This record documents a local execution stall only; it is not a tissue-physics pass or failure measurement.",
+  "privacy": "Only aggregate runtime facts and relative local output names are recorded; no video, raw state trace, credentials, or personal information is included."
+}

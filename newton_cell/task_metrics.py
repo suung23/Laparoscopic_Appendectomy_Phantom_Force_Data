@@ -42,11 +42,13 @@ def deformation_health(points, velocities, rest_points, tet_indices):
         "tissue_inverted_tets": -1,
         "tissue_nonfinite_tets": -1,
         "tissue_max_speed_m_s": float("nan"),
+        "tissue_worst_tet_index": -1,
     }
     if not shape_ok or not len(p) or not len(tets):
         return empty
     finite_nodes = np.isfinite(p).all(axis=1) & np.isfinite(v).all(axis=1)
     valid_indices = (tets >= 0).all(axis=1) & (tets < len(p)).all(axis=1)
+    valid_tet_ids = np.flatnonzero(valid_indices)
     safe_tets = tets[valid_indices]
     rest_vol = signed_tet_volumes(rest, safe_tets)
     finite_tets = finite_nodes[safe_tets].all(axis=1)
@@ -57,6 +59,7 @@ def deformation_health(points, velocities, rest_points, tet_indices):
     usable = np.isfinite(rest_vol) & (np.abs(rest_vol) > 1e-15)
     ratio = current_vol[usable] / rest_vol[usable]
     finite_ratio = np.isfinite(ratio)
+    tet_ids = valid_tet_ids[usable][finite_ratio]
     inverted = int(np.sum(ratio[finite_ratio] <= 0.0))
     nonfinite = int(len(tets) - finite_ratio.sum())
     speeds = np.linalg.norm(v[finite_nodes], axis=1)
@@ -67,8 +70,47 @@ def deformation_health(points, velocities, rest_points, tet_indices):
         "tissue_inverted_tets": inverted,
         "tissue_nonfinite_tets": nonfinite,
         "tissue_max_speed_m_s": float(speeds.max()) if len(speeds) else float("nan"),
+        "tissue_worst_tet_index": (
+            int(tet_ids[int(np.argmin(ratio[finite_ratio]))])
+            if finite_ratio.any() else -1),
     }
     return result
+
+
+def partition_tets_by_spans(tet_indices, organ_spans):
+    """Return local tet indices grouped by contiguous tissue particle spans.
+
+    Newton's scene builder appends each organ's particles and tets in order.
+    Keeping a per-organ health view lets a failed global integrity gate identify
+    which reconstructed mesh caused it, instead of merely reporting a total.
+    Cross-organ cells are returned under ``__unassigned__`` and remain covered
+    by the global integrity check.
+    """
+    tets = np.asarray(tet_indices, dtype=np.int64).reshape(-1, 4)
+    owner = np.full(len(tets), -1, np.int32)
+    result = {}
+    for organ_i, (name, span) in enumerate(organ_spans.items()):
+        start, end = map(int, span)
+        mask = ((tets >= start) & (tets < end)).all(axis=1)
+        result[name] = (start, end, tets[mask] - start)
+        owner[mask] = organ_i
+    other = owner < 0
+    if other.any():
+        result["__unassigned__"] = (0, max((int(s[1]) for s in
+                                               organ_spans.values()), default=0),
+                                    tets[other])
+    return result
+
+
+def deformation_health_by_organ(points, velocities, rest_points, groups):
+    """Signed-volume health for each organ using prepartitioned local tets."""
+    p = np.asarray(points, dtype=np.float64)
+    v = np.asarray(velocities, dtype=np.float64)
+    rest = np.asarray(rest_points, dtype=np.float64)
+    return {
+        name: deformation_health(p[start:end], v[start:end], rest[start:end], local_tets)
+        for name, (start, end, local_tets) in groups.items()
+    }
 
 
 def tissue_probe(points, p_tip, shaft_axis, flange_rotation, grip_half,

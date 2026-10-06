@@ -1,0 +1,108 @@
+{
+  "date": "2026-10-06",
+  "status": "contact_stability_failure_reproduced_and_localized",
+  "purpose": "Identify which FEM organ and contact settings precede the first invalid state on the RTX 4090.",
+  "hardware_and_backend": {
+    "device": "NVIDIA GeForce RTX 4090",
+    "backend": "Newton 1.4 / Warp 1.15",
+    "physics_hz_default": 480,
+    "control_hz": 30,
+    "action_chunk": 8
+  },
+  "baseline_observation": {
+    "policy": "scripted DemoPolicy; not learned RL",
+    "requested_seconds": 8,
+    "stopped_at_seconds": 6.133333,
+    "first_inversion_observation_seconds": 6.133333,
+    "reason": "2 inverted tetrahedra (cecum:2)",
+    "minimum_signed_volume_ratio": -0.6057,
+    "first_contact_observation_seconds": 5.866667,
+    "tip_force_peak_n": 0.5164,
+    "gripper_open_percent": 100,
+    "grasp_latched": false,
+    "grasp_assist_force_n": 0,
+    "appendix_tip_distance_at_failure_mm": 5.69,
+    "tissue_disturbance_mm": 0.1585,
+    "stages_completed": 0
+  },
+  "localized_element": {
+    "organ": "cecum",
+    "local_tet_index_with_minimum_volume_ratio": 7280,
+    "rest_volume_mm3": 0.2373,
+    "rest_volume_percentile_within_cecum": 23.9,
+    "none_of_four_nodes_are_pinned": true,
+    "rest_centroid_world_mm": [3.44, -26.14, 74.17],
+    "distance_from_failure_time_tool_tip_to_rest_centroid_mm": 13.65,
+    "interpretation": "The inverted cell is not among the smallest-volume cecum tets and none of its nodes is pinned. Its rest centroid is within the jaw/tool reach at the failure pose."
+  },
+  "localized_element_mesh_quality_audit": {
+    "source": "tet/cecum.npz",
+    "tet_index": 7280,
+    "method": "Circumsphere radius divided by shortest edge, computed from the rest tetrahedron; ranks compared across all 14,914 cecum tets.",
+    "shortest_edge_mm": 1.2215388269,
+    "longest_edge_mm": 2.2210660495,
+    "circumradius_to_shortest_edge_ratio": 1.0006118512,
+    "circumradius_edge_ratio_percentile": 68.03,
+    "population_median_ratio": 0.91923505,
+    "population_99th_percentile_ratio": 1.42715155,
+    "interpretation": "This scalar quality measure does not flag the inverted cell as an extreme sliver. It cannot exclude other discretization or mesh-to-tool collision deficiencies and is not a general mesh-quality certification."
+  },
+  "failure_tick_contact_trace": {
+    "rerun_output": "out/appendix300_contact_forensics_v2/summary.json",
+    "physics_only": true,
+    "stop_time_seconds": 6.133333,
+    "min_signed_volume_ratio": -0.605679,
+    "inverted_cecum_tets": 2,
+    "worst_cecum_tet_local_index": 7280,
+    "worst_tet_local_particle_ids": [2283, 3449, 3076, 2399],
+    "total_soft_contact_records_in_tick": 2148,
+    "tool_links_with_soft_contact_records": ["left/jaw_left"],
+    "left_jaw_contact_records": 553,
+    "left_jaw_unique_contact_particles_by_organ": {
+      "cecum": 354,
+      "appendix": 199
+    },
+    "left_jaw_records_touching_worst_tet": 4,
+    "worst_tet_nodes_seen_in_left_jaw_contacts": [2283, 2399, 3076, 3449],
+    "right_tool_records_touching_worst_tet": 0,
+    "interpretation": "The complete four-node vertex set of the most inverted cecum tet is present in same-tick left/jaw_left soft-contact records. This is direct contact/inversion co-occurrence and localizes the interaction surface; it does not by itself prove that contact force caused inversion or validate the contact law. The scripted run had no grasp latch and completed zero task stages."
+  },
+  "controlled_checks": [
+    {
+      "change": "VBD iterations 10 -> 20",
+      "result": "still 2 inverted cecum tets at 6.133 s; minimum signed-volume ratio -0.5581",
+      "conclusion": "More local solver iterations alone do not restore positive volume."
+    },
+    {
+      "change": "physics rate 480 -> 960 Hz, same 8 s scripted action horizon",
+      "result": "3 inverted cecum tets at 6.133 s; minimum signed-volume ratio -0.8408",
+      "conclusion": "Smaller nominal time step did not improve this trajectory."
+    },
+    {
+      "change": "Validated tool/shelf ShapeConfig ke 100000 -> 10000",
+      "result": "still 2 inverted cecum tets at 6.133 s; minimum signed-volume ratio -0.6141; peak tool force 0.5104 N"
+    },
+    {
+      "change": "Validated tool/shelf ShapeConfig ke 100000 -> 1000",
+      "result": "still 2 inverted cecum tets at 6.133 s; minimum signed-volume ratio -0.5567; peak tool force 0.5066 N",
+      "conclusion": "Lowering shape stiffness by 100x gives a small change but does not prevent inversion. These uncalibrated settings are diagnostic and are not promoted as replacements."
+    }
+  ],
+  "instrumentation_changes": {
+    "per_organ_health": "Rollouts now record per-organ inverted-tet counts, minimum signed-volume ratio, and worst local tet index.",
+    "failure_contact_trace": "Only on invalid FEM steps, record tool-link contact counts, contacted tissue particle IDs by organ, and exact contacts with the worst inverted element's nodes; propagated into the episode scorecard.",
+    "shape_contact_configuration": "Tool and appendix-shelf ShapeConfig values are now routed from explicit evaluation settings; actual model shape material values were inspected at runtime.",
+    "effective_config_sidecar": "Each Newton rollout writes newton-backend-config.json with settings and no absolute user paths."
+  },
+  "visual_change": {
+    "renderer": "Path tracer now recomputes area-weighted vertex normals from the current deformed surface and interpolates shading normals per hit.",
+    "validation": "2 geometry-normal unit tests pass; RTX 4090 endoscope render compiled and completed.",
+    "limitation": "The captured CT/FEM surface remains visibly coarse; smooth shading does not add anatomical detail or alter collision geometry."
+  },
+  "rejected_or_unverified": [
+    "A prior soft_contact_kf=0 run changed only the global material, while the instrument ShapeConfig remained fixed; do not interpret it as a tool-friction ablation.",
+    "No physical contact stiffness, damping, friction, force sensor, or tissue deformation calibration has been performed.",
+    "No episode reached grasp; no learned policy or held-out physical condition was evaluated."
+  ],
+  "privacy": "Raw videos, rendered images, credentials, and personal information are not included here and remain local."
+}

@@ -89,7 +89,12 @@ class Cell:
         builder.particle_max_velocity = 20.0
         scene._prepare(builder)
         for name in ARMS:
-            self.arms[name].register_bodies(builder, scene.tissue["friction"])
+            self.arms[name].register_bodies(
+                builder, scene.contact_mu,
+                contact_ke=scene.contact_material[0],
+                contact_kd=scene.contact_material[1],
+                contact_kf=scene.contact_material[2],
+                tool_tissue_collision=getattr(a, "tool_tissue_collision", True))
         return scene._finalize(builder)
 
     def _write_bodies(self, state):
@@ -99,17 +104,30 @@ class Cell:
             arm.fill_body_q(self._body_q)
         state.body_q.assign(self._body_q)
 
+    def refresh_contacts(self, state=None):
+        """Rebuild the contact manifold for an explicitly restored state.
+
+        Newton keeps contact buffers between solver ticks. Environment resets
+        must not expose the previous episode's contacts to observations.
+        """
+        self.model.collide(self.state_0 if state is None else state,
+                           self.contacts)
+
     # ------------------------------------------------------------------
-    def physics_tick(self):
+    def physics_tick(self, before_solve=None):
         s0, s1 = self.state_0, self.state_1
         self._write_bodies(s0)
         s0.clear_forces()
+        # External FEM forces are added after Newton clears the prior tick's
+        # loads and before the solver consumes state.particle_f.
+        if before_solve is not None:
+            before_solve(s0)
         self.model.collide(s0, self.contacts)
         self.solver.step(s0, s1, self.control, self.contacts, self.physics_dt)
         self.state_0, self.state_1 = s1, s0
         self.t += self.physics_dt
 
-    def control_substep(self, cmd: dict, after_tick=None):
+    def control_substep(self, cmd: dict, before_tick=None, after_tick=None):
         """One action sub-step = 1/control_hz of simulated time.
 
         The control law runs at EVERY physics tick (480 Hz), not at control_hz
@@ -133,7 +151,7 @@ class Cell:
                 d_xyz, droll, grip = cmd[nm]
                 self._advance_arm(arm, np.asarray(d_xyz, np.float64) / n,
                                   float(droll) / n, grip, dt, frames[nm])
-            self.physics_tick()
+            self.physics_tick(before_solve=before_tick)
             if after_tick is not None:
                 after_tick()
 

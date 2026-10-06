@@ -1,0 +1,39 @@
+{
+  "status": "compliant_grasp_force_path_exercised_on_rtx4090_but_grasp_unreached_and_force_uncalibrated",
+  "date": "2026-10-06",
+  "implementation": {
+    "file": "newton_cell/grasp.py",
+    "model": "per-node damped spring toward jaw-frame offsets captured at grasp time",
+    "force_application": "state.particle_f after clear_forces and before Newton collision/solver step",
+    "position_teleportation": false,
+    "velocity_zeroing": false,
+    "release": "opening the jaws removes the spring and returns particles to FEM dynamics",
+    "two_arm_handles": "distinct grip clusters are reserved for each arm"
+  },
+  "engineering_parameters_not_calibrated": {
+    "stiffness_n_m": 30.0,
+    "damping_ratio": 0.8,
+    "maximum_sum_of_nodal_force_magnitudes_n": 0.03,
+    "force_limit_source": "existing grasp_force configuration; not measured tissue or grasper data"
+  },
+  "checks": {
+    "unit_tests": "5 passed",
+    "spring_sign_and_force_cap": "verified with synthetic states",
+    "damping_sign": "verified with synthetic states",
+    "no_particle_position_or_velocity_overwrite": "verified with fake Newton state arrays",
+    "distinct_bimanual_handle_selection": "verified with synthetic state",
+    "episode_npz_model_force_and_deflection_channels": "verified separate from contact-wrench metrics",
+    "python_syntax": "passed",
+    "git_diff_check": "passed",
+    "Newton_H100_runtime": "not run; SSH configuration access remains unavailable in this environment",
+    "Newton_RTX4090_runtime": "force path initialized in an 8 s scripted run; FEM gate stopped at 6.13 s before any grasp latch",
+    "tissue_inversion_during_contact": "not evaluated",
+    "physical_force_calibration": "not performed"
+  },
+  "limitations": [
+    "The grasp assist is a one-way external-force model because instrument arms are kinematic; it does not apply an equal and opposite load to a dynamic robot.",
+    "The spring is not a substitute for validated jaw contact friction or measured force feedback.",
+    "Stiffness, damping, and force cap require parameter sweeps and calibration before interpreting tissue loads physically."
+  ],
+  "privacy": "No source video, user data, credentials, or personal information is included in this report."
+}

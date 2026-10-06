@@ -101,6 +101,11 @@ class RosotaCTEnv(gym.Env):
             from runtime_appearance import apply_appearance
             appearance_report=apply_appearance(self.stage,self.appearance)
             (self.out/'appearance.json').write_text(json.dumps(appearance_report,indent=2),encoding='utf-8')
+        from isaacsim.core.utils.semantics import add_labels
+        appendix_render=self.stage.GetPrimAtPath('/World/Atlas/appendix/render')
+        if not appendix_render or not appendix_render.IsA(UsdGeom.Mesh):
+            raise RuntimeError('Missing appendix render mesh for semantic visibility ground truth')
+        add_labels(appendix_render, ['appendix'])
         from deformable_parameters import validate_deformable_parameters
         validate_deformable_parameters(self.stage.GetPrimAtPath('/World/Atlas/appendix'))
         # Older authored stages used a bare Xform; modern PhysX attachments
@@ -543,6 +548,8 @@ class RosotaCTEnv(gym.Env):
         return obs,reward,terminated,truncated,info
 
     render=BimanualEnv.render
+    render_class_fraction=BimanualEnv.render_class_fraction
+    render_with_class_fraction=BimanualEnv.render_with_class_fraction
     _destroy_render=BimanualEnv._destroy_render
     def close(self):
         if self._tissue_observer:self._tissue_observer.close();self._tissue_observer=None

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Instrument contact force, read off the tissue instead of a joint sensor.
+"""Post-step model-based contact-load estimates for kinematic instruments.
 
 The Isaac backend reads a PhysX articulation reaction sensor at the tool mount
 and then has to work very hard to make it usable: the instrument's own 4.7 N
@@ -8,17 +8,16 @@ analytically from the USD mass/COM left a 4.2 N residual that DRIFTED 0.8 N over
 a 19-degree roll. VLA_HANDOFF.md section 4.2 describes the fix -- identify a
 wrench model over 54 static poses, cache it, and tare at reset.
 
-None of that applies here. The instrument is kinematically driven, so it has no
-joint reaction to read at all; instead the force is taken directly from the
-soft-body contacts the tissue makes with the instrument. That measures the thing
-the channel is actually for, and it removes the gravity term entirely rather
-than identifying and subtracting it -- there is no 4.7 N to cancel, so there is
-no 311 mN identification residual either.
-
-The force uses the same penalty model Newton integrates
-(`f = ke * penetration` along the contact normal, plus the velocity damping
-term), so it is the force the solver actually applied, not an approximation of
-a different model.
+The instrument is kinematically driven, so it has no joint reaction to read.
+This module estimates load from Newton's post-step soft-contact manifold. It
+uses the same family of penalty, damping and friction equations as the solver,
+but uses static mixed material stiffness rather than the solver's per-contact
+AVBD penalty coefficient. The solver updates that coefficient during its
+iterations, so this estimate is not an exact readback of the force applied
+inside a solver iteration, and it is not a physical sensor. No independent
+force-displacement calibration has been performed. The absence of robot weight
+in this kinematic model removes payload compensation; it does not make the
+tissue-load estimate calibrated.
 
 Reported on the URDF `tool_tip` axes, exactly as the handoff defines them:
 
@@ -35,13 +34,62 @@ from __future__ import annotations
 import numpy as np
 
 
-class ContactForces:
-    """Reconstructed per-arm wrench from Newton's unified soft contacts.
+def contact_node_diagnostics(shape_ids, contact_indices, shape_to_link,
+                             organ_spans=None, worst_tet_nodes=None):
+    """Attribute soft-contact records to tool links and tissue node groups."""
+    shapes = np.asarray(shape_ids, dtype=np.int64).reshape(-1)
+    nodes = np.asarray(contact_indices, dtype=np.int64)
+    spans = dict(organ_spans or {})
+    worst = dict(worst_tet_nodes or {})
+    groups = {}
+    for i, shape in enumerate(shapes[:len(nodes)]):
+        key = shape_to_link.get(int(shape))
+        if key is None:
+            continue
+        row = groups.setdefault(key, {
+            "soft_contact_records": 0,
+            "particles_by_organ": {name: set() for name in spans},
+            "worst_tet_contacts_by_organ": {name: 0 for name in worst},
+            "worst_tet_contact_nodes_by_organ": {
+                name: set() for name in worst},
+        })
+        row["soft_contact_records"] += 1
+        particle_ids = set(int(n) for n in nodes[i].reshape(-1) if int(n) >= 0)
+        for name, (start, end) in spans.items():
+            row["particles_by_organ"][name].update(
+                n for n in particle_ids if int(start) <= n < int(end))
+        for name, tet_nodes in worst.items():
+            overlap = particle_ids.intersection(int(n) for n in tet_nodes)
+            if overlap:
+                row["worst_tet_contacts_by_organ"][name] += 1
+                row["worst_tet_contact_nodes_by_organ"][name].update(overlap)
+    result = {}
+    for link, row in groups.items():
+        result[link] = {
+            "soft_contact_records": row["soft_contact_records"],
+            "particle_counts_by_organ": {
+                name: len(ids) for name, ids in row["particles_by_organ"].items()},
+            "particle_ids_by_organ": {
+                name: sorted(ids)[:64]
+                for name, ids in row["particles_by_organ"].items() if ids},
+            "worst_tet_contacts_by_organ": row["worst_tet_contacts_by_organ"],
+            "worst_tet_contact_particle_ids_by_organ": {
+                name: sorted(ids)
+                for name, ids in row["worst_tet_contact_nodes_by_organ"].items()
+                if ids},
+        }
+    return {"soft_contact_records": int(len(shapes)), "by_link": result}
 
-    This is a kinematic-body reaction estimate, not a sensor readback. Newton's
-    unified stream contains vertex, edge, and face records; its legacy
-    ``soft_contact_particle`` entry is -1 for edge/face records. Never use that
-    sentinel as a Python index: it aliases the final tissue vertex.
+
+class ContactForces:
+    """Estimate per-arm wrench from Newton's unified post-step soft contacts.
+
+    This is neither a sensor readback nor the exact within-iteration solver
+    reaction: the estimator uses mixed material stiffness instead of the
+    solver's updated AVBD penalty coefficient. Newton's unified stream contains
+    vertex, edge, and face records; its legacy ``soft_contact_particle`` entry
+    is -1 for edge/face records. Never use that sentinel as a Python index: it
+    aliases the final tissue vertex.
     """
 
     def __init__(self, model, arms, solver=None, dt=1.0 / 480.0):
@@ -58,10 +106,19 @@ class ContactForces:
         # body -> arm is enough: soft_contact_shape gives a shape, and
         # model.shape_body maps it to the body we created per link.
         self.body_arm = {}
+        self.body_link = {}
         for name, arm in arms.items():
             for link, body in arm.bodies.items():
                 self.body_arm[int(body)] = name
+                self.body_link[int(body)] = link
         self._shape_body = model.shape_body.numpy() if model.shape_count else None
+        self.shape_to_link = {}
+        if self._shape_body is not None:
+            for shape, body in enumerate(self._shape_body):
+                arm = self.body_arm.get(int(body))
+                link = self.body_link.get(int(body))
+                if arm is not None and link is not None:
+                    self.shape_to_link[shape] = f"{arm}/{link}"
         self.radius = float(np.max(model.particle_radius.numpy())) \
             if model.particle_count else 0.0
 
@@ -74,8 +131,10 @@ class ContactForces:
 
         VBD's ``body_particle_contact_penalty_k`` is a dual-updated solve
         variable. Reading it after ``solver.step`` does not recover the
-        coefficient used for the contact forces inside that step; treating it
-        as a sensor gain generated multi-meganewton post-solve artifacts.
+        coefficient used for every contact-force evaluation inside that step.
+        Using static mixed stiffness avoids presenting that post-step dual
+        value as an exact sensor gain, but makes this a model estimate rather
+        than solver-force readback.
         """
         ke = (float(self.model.soft_contact_ke) +
               float(self._numpy(self.model.shape_material_ke)[shape])) * 0.5
@@ -182,6 +241,19 @@ class ContactForces:
             fo, to = out[arm]
             out[arm] = (fo + f_body, to + np.cross(cp, f_body))
         return out
+
+    def contact_diagnostics(self, contacts, organ_spans=None,
+                            worst_tet_nodes=None) -> dict:
+        """Small failure-only trace for the tool links that touched tissue."""
+        count = int(contacts.soft_contact_count.numpy()[0])
+        count = min(max(0, count), int(contacts.soft_contact_max))
+        if count == 0:
+            return {"soft_contact_records": 0, "by_link": {}}
+        return contact_node_diagnostics(
+            self._numpy(contacts.soft_contact_shape)[:count],
+            self._numpy(contacts.soft_contact_indices)[:count],
+            self.shape_to_link, organ_spans=organ_spans,
+            worst_tet_nodes=worst_tet_nodes)
 
     def tool_wrench(self, state, contacts, arm_name) -> np.ndarray:
         """The 6D wrench on `arm_name`, in that arm's tool_tip frame."""

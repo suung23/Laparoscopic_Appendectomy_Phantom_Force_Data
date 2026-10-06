@@ -1,0 +1,46 @@
+{
+  "status": "gpu_texture_transfer_confirmed_visual_realism_gate_failed",
+  "date": "2026-10-06",
+  "purpose": "Same-scene RTX 4090 render comparison with the local Appendix300 candidate disabled and enabled.",
+  "backend": "Newton 1.4 / Warp 1.15.0",
+  "device": "NVIDIA GeForce RTX 4090",
+  "render": {
+    "camera": "Newton endoscope camera, 1280x720; calibrated pinhole; 1 spp, 0 bounces",
+    "texture_mix": 1.0,
+    "source_texture_sha256": "d172c39195de99e63ddafb779c0409363af912f040299c35e3d697bae0e50df6",
+    "mapping": "Cylindrical UV projection on appendix FEM rest nodes; bilinear GPU sampling; UVs follow FEM nodes",
+    "control_render": "out/appendix300_texture_control_20261006/endoscope.png (git-ignored)",
+    "texture_render": "out/appendix300_texture_recheck_20261006/endoscope.png (git-ignored)",
+    "comparison_preview": "out/appendix300_texture_ab_comparison_20261006.png (git-ignored)",
+    "mean_absolute_rgb_difference_0_255": 0.4476,
+    "pixels_with_any_channel_difference_gt_2": 14452,
+    "changed_pixel_fraction": 0.015681,
+    "max_channel_difference": 89
+  },
+  "texture_variant_render_comparison": {
+    "variant_a": {
+      "candidate": "Appendix300 v21 48 px overlapping patch candidate",
+      "sha256": "d172c39195de99e63ddafb779c0409363af912f040299c35e3d697bae0e50df6",
+      "render": "out/appendix300_texture_recheck_20261006/endoscope.png (git-ignored)"
+    },
+    "variant_b": {
+      "candidate": "Appendix300 v22 exploratory 80 px overlapping patch candidate",
+      "sha256": "ddcb1a384b5c53b5e8da51f6d9f3d89444fab3cc6fc16af1f9b1e679a7ed0298",
+      "render": "out/appendix300_patch80_render_20261006/endoscope.png (git-ignored)"
+    },
+    "same_scene_mean_absolute_rgb_difference_0_255": 0.1098,
+    "pixels_with_any_channel_difference_gt_2": 13573,
+    "changed_pixel_fraction": 0.014727,
+    "visual_review": "The 80 px variant is nearly indistinguishable from v21 at this camera scale; no evidence supports promoting either candidate."
+  },
+  "interpretation": "The GPU render uses the candidate texture on the appendix FEM boundary, and the texture-on render visibly changes the appendix appearance. This confirms the transfer/render path only. The candidate remains a prompt-mask-derived temporal RGB texture, not a camera-to-mesh registered surface reconstruction or calibrated albedo.",
+  "failed_or_pending_gates": [
+    "Appendix identity in the source ROI is not expert verified.",
+    "No video-to-3D surface registration or validated UV correspondence exists.",
+    "The current target FEM surface is coarse and visibly faceted.",
+    "The rendered frame remains visually broad and does not pass blinded laparoscopic appearance review.",
+    "Lighting/specular separation and observed RGB to albedo calibration are absent.",
+    "No held-out real-video visual evaluation has been run."
+  ],
+  "privacy": "Source video, texture pixels, and render images remain local in git-ignored output folders; this report contains aggregate metrics and public-source provenance hashes only."
+}

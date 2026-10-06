@@ -1,0 +1,36 @@
+{
+  "status": "live_fem_texture_binding_rendered; physics_health_and_visual_realism_unverified",
+  "date": "2026-10-06",
+  "purpose": "Verify that the provisional Appendix300 texture remains attached to the simulated appendix in a deformed-state endoscope render.",
+  "backend": "Newton 1.4 / Warp 1.15.0",
+  "device": "NVIDIA GeForce RTX 4090",
+  "protocol": {
+    "command": "newton_cell/view.py --device cuda:0 --seconds 6.0 --samples 2 --bounces 0 --appendix300-texture <local-candidate> --surface-subdivision-levels 1",
+    "policy": "Scripted demo dive; not RL",
+    "requested_simulated_seconds": 6.0,
+    "control_substeps": 180,
+    "render": "1280x720 endoscope, 2 samples per pixel, 0 bounces",
+    "image": "out/appendix300_texture_deform_review_20261006/endoscope.png (git-ignored)",
+    "binding_report": "out/appendix300_texture_deform_review_20261006/render-surface-bindings.json (git-ignored)",
+    "appearance_report": "out/appendix300_texture_deform_review_20261006/appendix-appearance.json (git-ignored)"
+  },
+  "observed": {
+    "appendix_render_vertex_displacement_from_rest_p95_mm": 5.02235,
+    "appendix_render_vertex_displacement_from_rest_max_mm": 5.37916,
+    "render_mesh_vertices_after_subdivision": 6706,
+    "source_mesh_faces": 3352,
+    "render_mesh_faces_after_subdivision": 13408,
+    "source_rest_binding_max_error_um": 0.00992,
+    "texture_sha256": "d172c39195de99e63ddafb779c0409363af912f040299c35e3d697bae0e50df6",
+    "simulation_geometry_changed": false,
+    "contact_geometry_changed": false,
+    "texture_uvs_follow_fem_deformation": true
+  },
+  "scope_limits": [
+    "This confirms the render surface and texture mapping followed a deformed FEM state; the view runner did not record a full per-tick inversion/health audit for this run.",
+    "The scripted camera/tool motion is not a learned policy or a validated bimanual grasp-and-traction episode.",
+    "The SAM2 source object remains unconfirmed by an expert as appendix tissue; UV projection is not video-to-3D registration or patient-specific reconstruction.",
+    "No force calibration, held-out anatomy evaluation, or blinded endoscopic realism review was performed.",
+    "Raw video and rendered pixels remain local and git-ignored; this report contains only provenance and aggregate measurements."
+  ]
+}

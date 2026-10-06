@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-06",
+  "status": "experimental_clearance_policy_not_promoted_no_measured_improvement",
+  "purpose": "Test whether ranking appendix grasp handles by swept URDF collision-mesh clearance avoids the observed left jaw/cecum inversion.",
+  "method": {
+    "geometry": "URDF collision meshes for the instrument links, represented by up to 2048 vertex/face-centroid samples per link",
+    "obstacle": "current deformed cecum FEM boundary vertices",
+    "trajectory": "tip-to-standoff-to-handle path sampled every 5 mm; sampled instrument orientation follows the trocar-to-tip axis",
+    "scope": "scripted DemoPolicy only; Newton contact solver remains authoritative; all material and tissue parameters unchanged",
+    "trocar_constraint": "low-level RCM controller unchanged"
+  },
+  "comparisons": [
+    {
+      "run": "out/appendix300_contact_forensics_v2/summary.json",
+      "mode": "existing endpoint-clearance selection, target recomputed each control step",
+      "duration_s": 6.133333,
+      "inverted_cecum_tets": 2,
+      "minimum_signed_volume_ratio": -0.605679,
+      "peak_tip_force_n": 0.516447,
+      "grasped": false,
+      "rcm_error_p95_mm": 0.112981
+    },
+    {
+      "run": "out/appendix300_swept_clearance_demo_v1/summary.json",
+      "mode": "swept-mesh clearance with target reselected each control step",
+      "duration_s": 5.866667,
+      "inverted_cecum_tets": 7,
+      "minimum_signed_volume_ratio": -0.836840,
+      "peak_tip_force_n": 1.825205,
+      "grasped": false,
+      "rcm_error_p95_mm": 0.100733,
+      "interpretation": "This version was worse; dynamic target reselection is rejected."
+    },
+    {
+      "run": "out/appendix300_swept_clearance_demo_v2/summary.json",
+      "mode": "swept-mesh clearance with target locked for the approach",
+      "duration_s": 6.133333,
+      "inverted_cecum_tets": 2,
+      "minimum_signed_volume_ratio": -0.605679,
+      "peak_tip_force_n": 0.516447,
+      "grasped": false,
+      "rcm_error_p95_mm": 0.112981,
+      "trajectory_comparison": "Tip poses and actions were exactly identical to the endpoint-clearance run for all 24 recorded steps.",
+      "interpretation": "The geometric ranking selected the same target and did not improve the outcome."
+    },
+    {
+      "run": "out/appendix300_default_policy_recheck/summary.json",
+      "mode": "final default with demo_swept_clearance=false",
+      "duration_s": 6.133333,
+      "inverted_cecum_tets": 2,
+      "minimum_signed_volume_ratio": -0.605679,
+      "peak_tip_force_n": 0.516447,
+      "grasped": false,
+      "trajectory_comparison": "Tip poses and actions were exactly identical to the baseline run."
+    }
+  ],
+  "decision": "Keep --demo-swept-clearance opt-in and disabled by default. The current proxy does not establish safe contact or help this held start condition; a better mesh-distance/trajectory model and held-out starts are needed before promotion.",
+  "focused_tests": "5 passed in tests/test_newton_demo_standoff.py",
+  "limitations": [
+    "Vertex and face-centroid samples are only an approximation to continuous mesh-to-surface distance.",
+    "This one deterministic scripted seed is not an RL, held-out anatomy, or statistical evaluation.",
+    "Contact force remains uncalibrated against physical tissue or an instrumented phantom."
+  ],
+  "privacy": "All runs and geometry processing were local; no personal data or raw videos are included in this record."
+}

@@ -46,6 +46,7 @@ class BimanualEnv(gym.Env):
         self.observation_space = spaces.Box(-np.inf, np.inf, (31,), np.float32)
         self.sim = None
         self.rgb = self.product = None
+        self.semantic = None
         self.render_mode = 'rgb_array'
         self.done = True
 
@@ -184,16 +185,23 @@ class BimanualEnv(gym.Env):
 
     def _destroy_render(self):
         if self.rgb is not None: self.rgb.detach([self.product.path])
+        if getattr(self, 'semantic', None) is not None:
+            self.semantic.detach([self.product.path])
+            self.semantic = None
         if self.product is not None: self.product.destroy()
         self.rgb = self.product = None
 
-    def render(self):
+    def _ensure_render_product(self):
         if not hasattr(self, 'control'): raise RuntimeError('Reset before rendering')
         import omni.replicator.core as rep
         if self.product is None:
             self.product = rep.create.render_product('/World/Endoscope', (640, 360))
             self.rgb = rep.AnnotatorRegistry.get_annotator('rgb')
             self.rgb.attach(self.product)
+        return rep
+
+    def render(self):
+        rep = self._ensure_render_product()
         playing = self.sim.is_playing()
         self.sim.pause()
         try:
@@ -201,5 +209,52 @@ class BimanualEnv(gym.Env):
             pixels = np.asarray(self.rgb.get_data())[:, :, :3].copy()
             if pixels.shape != (360, 640, 3): raise RuntimeError('Missing endoscope RGB')
             return pixels
+        finally:
+            if playing: self.sim.play()
+
+    def render_class_fraction(self, class_name):
+        """Measure a class from the same endoscope product as the RGB frame."""
+        rep = self._ensure_render_product()
+        if self.semantic is None:
+            self.semantic = rep.AnnotatorRegistry.get_annotator(
+                'semantic_segmentation', init_params={'colorize': False})
+            self.semantic.attach([self.product])
+        from semantic_visibility import class_pixel_fraction
+        playing = self.sim.is_playing()
+        self.sim.pause()
+        try:
+            rep.orchestrator.step(rt_subframes=4, delta_time=0.)
+            packet = self.semantic.get_data()
+            if not isinstance(packet, dict) or not isinstance(packet.get('info'), dict):
+                raise RuntimeError('Missing semantic segmentation metadata')
+            return class_pixel_fraction(packet.get('data'),
+                                       packet['info'].get('idToLabels'), class_name)
+        finally:
+            if playing: self.sim.play()
+
+    def render_with_class_fraction(self, class_name):
+        """Capture synchronized RGB and semantic visibility at one render tick."""
+        rep = self._ensure_render_product()
+        if self.semantic is None:
+            self.semantic = rep.AnnotatorRegistry.get_annotator(
+                'semantic_segmentation', init_params={'colorize': False})
+            self.semantic.attach([self.product])
+        playing = self.sim.is_playing()
+        self.sim.pause()
+        try:
+            rep.orchestrator.step(rt_subframes=4, delta_time=0.)
+            pixels = np.asarray(self.rgb.get_data())[:, :, :3].copy()
+            packet = self.semantic.get_data()
+            if pixels.shape != (360, 640, 3):
+                raise RuntimeError('Missing endoscope RGB for semantic visibility capture')
+            if not isinstance(packet, dict) or not isinstance(packet.get('info'), dict):
+                raise RuntimeError('Missing semantic segmentation metadata')
+            from semantic_visibility import class_pixel_fraction
+            fraction = class_pixel_fraction(packet.get('data'),
+                packet['info'].get('idToLabels'), class_name)
+            semantic_shape = np.asarray(packet['data']).shape[:2]
+            if semantic_shape != pixels.shape[:2]:
+                raise RuntimeError('RGB and semantic image dimensions are not synchronized')
+            return pixels, fraction
         finally:
             if playing: self.sim.play()

@@ -1,0 +1,52 @@
+{
+  "status": "rest_binding_verified_render_quality_improvement_not_demonstrated",
+  "date": "2026-10-06",
+  "purpose": "Audit and exercise the captured organ surface meshes as render-only surfaces directly bound to FEM rest nodes.",
+  "backend": "Newton 1.4 / Warp 1.15.0",
+  "device": "NVIDIA GeForce RTX 4090",
+  "method": {
+    "source": "Repository CT-derived mesh/organ_*.ply meshes",
+    "simulation_geometry": "Unchanged tetrahedral FEM assets in tet/*.npz",
+    "binding": "Nearest rest-node correspondence with unique-node and 10 micrometre maximum-error guards; live render vertices index the same FEM particle positions",
+    "mesh_rejection": "Non-watertight, inconsistent-winding, ambiguous, or out-of-tolerance meshes fall back to the FEM boundary surface",
+    "physics_changed": false
+  },
+  "rest_surface_audit": {
+    "cecum": {"render_vertices": 2634, "render_faces": 5264, "fem_nodes": 3893, "tet_boundary_faces": 5418, "max_rest_error_um": 0.0101, "unique_node_binding": true, "watertight": true, "winding_consistent": true, "render_faces_matching_tet_facets_fraction": 0.97131},
+    "bowel1": {"render_vertices": 1594, "render_faces": 3184, "fem_nodes": 2242, "tet_boundary_faces": 3294, "max_rest_error_um": 0.0101, "unique_node_binding": true, "watertight": true, "winding_consistent": true, "render_faces_matching_tet_facets_fraction": 0.96514},
+    "bowel2": {"render_vertices": 636, "render_faces": 1268, "fem_nodes": 853, "tet_boundary_faces": 1296, "max_rest_error_um": 0.0100, "unique_node_binding": true, "watertight": true, "winding_consistent": true, "render_faces_matching_tet_facets_fraction": 0.97792},
+    "bowel3": {"render_vertices": 1268, "render_faces": 2532, "fem_nodes": 1744, "tet_boundary_faces": 2582, "max_rest_error_um": 0.0100, "unique_node_binding": true, "watertight": true, "winding_consistent": true, "render_faces_matching_tet_facets_fraction": 0.98065},
+    "stomach": {"render_vertices": 720, "render_faces": 1436, "fem_nodes": 967, "tet_boundary_faces": 1460, "max_rest_error_um": 0.0067, "unique_node_binding": true, "watertight": true, "winding_consistent": true, "render_faces_matching_tet_facets_fraction": 0.98329},
+    "appendix": {"render_vertices": 1678, "render_faces": 3352, "fem_nodes": 2263, "tet_boundary_faces": 3440, "max_rest_error_um": 0.0099, "unique_node_binding": true, "watertight": true, "winding_consistent": true, "render_faces_matching_tet_facets_fraction": 0.97345}
+  },
+  "runtime_comparison": {
+    "candidate_texture_sha256": "ddcb1a384b5c53b5e8da51f6d9f3d89444fab3cc6fc16af1f9b1e679a7ed0298",
+    "camera": "Newton endoscope, 1280x720",
+    "samples_per_pixel": 1,
+    "bounces": 0,
+    "previous_fem_boundary_render": "out/appendix300_patch80_render_20261006/endoscope.png (git-ignored)",
+    "captured_surface_bound_render": "out/appendix300_surface_mesh_render_20261006/endoscope.png (git-ignored)",
+    "comparison_preview": "out/appendix300_fem_vs_captured_surface_20261006.png (git-ignored)",
+    "mean_absolute_rgb_difference_0_255": 0.0152,
+    "pixels_with_any_channel_difference_gt_2": 1610,
+    "changed_pixel_fraction": 0.001747,
+    "visual_review": "The outputs are nearly indistinguishable at this camera scale. This confirms successful runtime use of the bound surfaces but does not show a meaningful visual-detail gain; the source meshes are not high-resolution assets."
+  },
+  "deformation_runtime": {
+    "simulation_duration_s": 0.2,
+    "control_substeps": 6,
+    "endoscope_render": "out/appendix300_surface_mesh_deform_20261006/endoscope.png (git-ignored)",
+    "aggregate_binding_and_live_displacement": "out/appendix300_surface_mesh_deform_20261006/render-surface-bindings.json (git-ignored)",
+    "appendix_render_vertex_displacement_p95_mm": 3.663866,
+    "appendix_render_vertex_displacement_max_mm": 3.977856,
+    "fallback_organs": [],
+    "scope": "Confirms the source render vertices follow live FEM nodes during a short scripted episode. This run did not evaluate element inversion, calibrated contact, task success, or realism."
+  },
+  "limitations": [
+    "Captured PLY surfaces have slightly fewer triangles than the corresponding FEM boundaries and do not add higher-resolution geometry.",
+    "About 1.7-3.5% of captured triangles are not identical to FEM boundary facets, even though the captured meshes are closed and their vertices bind uniquely to FEM nodes.",
+    "No sub-surface rendering, calibrated albedo, camera-to-surface video registration, or expert visual validation is established.",
+    "The broad endoscope composition and faceted surrounding anatomy still fail the visual realism gate."
+  ],
+  "privacy": "No source video, rendered image, absolute user path, or personal metadata is included in this report; runtime images remain in ignored local output folders."
+}

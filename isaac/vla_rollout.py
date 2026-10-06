@@ -111,6 +111,23 @@ class Episode:
         "tissue_inverted_tets": ("task", "tissue_inverted_tets"),
         "tissue_nonfinite_tets": ("task", "tissue_nonfinite_tets"),
         "tissue_max_speed_m_s": ("task", "tissue_max_speed_m_s"),
+        # Per-organ FEM telemetry identifies which captured mesh first fails
+        # the global signed-volume gate. Backends without these observations
+        # leave the channels unavailable (NaN), never implicitly healthy.
+        **{f"{organ}_inverted_tets": (
+            "task", "tissue_health_by_organ", organ, "tissue_inverted_tets")
+           for organ in ("cecum", "bowel1", "bowel2", "bowel3",
+                         "stomach", "appendix")},
+        **{f"{organ}_min_volume_ratio": (
+            "task", "tissue_health_by_organ", organ,
+            "tissue_min_signed_volume_ratio")
+           for organ in ("cecum", "bowel1", "bowel2", "bowel3",
+                         "stomach", "appendix")},
+        **{f"{organ}_worst_tet_index": (
+            "task", "tissue_health_by_organ", organ,
+            "tissue_worst_tet_index")
+           for organ in ("cecum", "bowel1", "bowel2", "bowel3",
+                         "stomach", "appendix")},
     }
     VECTORS = {
         "left_tip_pose_rig": ("left", "tip_pose_rig"),
@@ -165,6 +182,7 @@ class Episode:
         self.n = 0
         self.violated = ""
         self.physics_failure = ""
+        self.physics_failure_details = None
         self.rcm_excursions = 0
 
     def add(self, obs, action=None):
@@ -330,6 +348,7 @@ class Episode:
             physics_state_finite=physics_state_finite,
             physics_health_pass=physics_health_pass,
             physics_failure=self.physics_failure,
+            physics_failure_details=self.physics_failure_details,
             minimum_signed_volume_ratio=(
                 float(np.nanmin(volume_ratio)) if np.isfinite(volume_ratio).any()
                 else float("nan")),
@@ -603,6 +622,8 @@ def main(argv=None):
             rec.add(obs, act)
             if info.get("physics_invalid"):
                 rec.physics_failure = str(info["physics_invalid"])
+                rec.physics_failure_details = info.get(
+                    "physics_contact_diagnostics")
                 print(f"    episode {ep} STOPPED at step {k}: invalid physics: "
                       f"{rec.physics_failure}", flush=True)
                 if not args.continue_invalid_physics:

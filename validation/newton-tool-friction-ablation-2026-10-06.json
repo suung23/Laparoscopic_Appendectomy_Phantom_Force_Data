@@ -1,0 +1,73 @@
+{
+  "date": "2026-10-06",
+  "status": "rejected_noop_parameter_probe; ShapeConfig_kf_is_not_used_by_VBD_soft_rigid_contact",
+  "purpose": "Audit why setting the rigid-tool ShapeConfig kf to zero left the matched scripted episode unchanged.",
+  "hardware_backend": {
+    "device": "NVIDIA GeForce RTX 4090",
+    "backend": "Newton 1.4 / Warp 1.15",
+    "physics_hz": 480,
+    "control_hz": 30,
+    "action_chunk": 8
+  },
+  "protocol": {
+    "policy": "scripted DemoPolicy; not learned RL",
+    "seed": 1,
+    "tool_tissue_collision": true,
+    "grasp_assist": true,
+    "settle_seconds": 2.0,
+    "simulated_duration_s": 6.133333,
+    "paired_baseline": "out/appendix300_contact_seed1to3_resetfix_v1/episode_000.npz (seed 1)",
+    "ablation": "out/appendix300_contact_no_friction_seed1_v1",
+    "only_effective_config_difference": {
+      "rigid_tool_and_appendix_shelf_contact_kf": {
+        "baseline": 1000.0,
+        "ablation": 0.0
+      }
+    },
+    "unchanged_contact_configuration": {
+      "contact_ke": 100000.0,
+      "contact_kd": 1.0,
+      "model_soft_contact_kf": 1000.0,
+      "model_soft_contact_mu": "unchanged tissue default"
+    },
+    "paired_action_arrays_identical": true,
+    "paired_joint_trajectories_identical": true,
+    "all_shared_episode_npz_arrays_identical_including_nan_positions": true,
+    "shared_episode_npz_arrays_identical": "70/70"
+  },
+  "result": {
+    "baseline": {
+      "physics_health_pass": false,
+      "failure": "2 inverted tetrahedra (cecum:2)",
+      "minimum_signed_volume_ratio": -0.6056794524,
+      "peak_tip_force_channel_n": 0.5164467096,
+      "soft_contact_records_at_failure": 2148,
+      "task_stages_completed": 0
+    },
+    "zero_rigid_tool_shape_kf": {
+      "physics_health_pass": false,
+      "failure": "2 inverted tetrahedra (cecum:2)",
+      "minimum_signed_volume_ratio": -0.6056794524,
+      "peak_tip_force_channel_n": 0.5164467096,
+      "soft_contact_records_at_failure": 2148,
+      "task_stages_completed": 0
+    }
+  },
+  "solver_source_audit": {
+    "package": "Newton 1.4 installed locally",
+    "body_particle_material_initializer": "newton/_src/solvers/vbd/rigid_vbd_kernels.py::init_body_particle_contacts",
+    "initializer_inputs": ["soft_contact_ke", "soft_contact_kd", "soft_contact_mu", "shape_material_ke", "shape_material_kd", "shape_material_mu"],
+    "initializer_outputs": ["body_particle_contact_material_ke", "body_particle_contact_material_kd", "body_particle_contact_material_mu"],
+    "contact_force_inputs": "body_particle VBD contact consumes averaged mu; ShapeConfig.kf and model.soft_contact_kf are not passed to this formulation",
+    "conclusion": "The kf=0 run did not ablate FEM-tool friction; the active friction coefficient mu stayed at the authored value. Identical output is expected for this parameter path."
+  },
+  "interpretation": "All 70 episode arrays were identical, but this is a no-op parameter probe rather than evidence about friction: local Newton VBD source shows body-particle FEM-rigid contact uses the averaged material mu and does not consume ShapeConfig.kf or model.soft_contact_kf. The active friction coefficient did not change. Do not infer that friction is physically irrelevant or calibrated.",
+  "limits": [
+    "One seed, one scene, one scripted approach and one contact material implementation.",
+    "DemoPolicy completed zero appendectomy task stages.",
+    "The force channel and tissue material remain uncalibrated.",
+    "This is not a valid friction ablation; it does not demonstrate equivalence under tangential sliding or grasp traction.",
+    "This is a diagnostic parameter ablation, not a safe or physically validated setting."
+  ],
+  "privacy": "Tracked record contains aggregate metrics and local ignored-run references only. Source data, frames, credentials, and personal information remain local."
+}

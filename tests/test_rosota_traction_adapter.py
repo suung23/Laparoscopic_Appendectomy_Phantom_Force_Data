@@ -92,6 +92,11 @@ class RosotaTractionAdapterTests(unittest.TestCase):
             self.assertEqual(vision["rgb_observation_shape"], [90, 160, 3])
             self.assertTrue(vision["policy_observes_rgb"])
             self.assertEqual(vision["policy_architecture"], "cnn_endoscope_rgb_proprio_v1")
+            visibility_ablation = asset_contract(assets, urdf, "vision-traction", appearance,
+                                                 visibility_shaping_weight=0.)
+            self.assertEqual(vision["visibility_shaping_weight"], .1)
+            self.assertEqual(visibility_ablation["visibility_shaping_weight"], 0.)
+            self.assertNotEqual(vision, visibility_ablation)
             changed_texture=Image.new("RGB",(4,4),(10,20,30))
             changed_texture.save(texture)
             changed_appearance_contract=asset_contract(assets,urdf,"vision-traction",appearance)
@@ -191,6 +196,37 @@ class RosotaTractionAdapterTests(unittest.TestCase):
         next_obs,_,_,_,step_info=env.step(np.zeros(14,np.float32))
         self.assertTrue(env.observation_space.contains(next_obs))
         self.assertTrue(step_info["vision_policy"])
+
+    def test_semantic_visibility_shapes_reward_but_never_enters_policy_observation(self):
+        class VisibleDummy(DummyTractionEnv):
+            def __init__(self):
+                super().__init__()
+                self.visible = .1
+
+            def render_class_fraction(self, class_name):
+                if class_name != "appendix":
+                    raise ValueError("Unexpected semantic target")
+                return self.visible
+
+            def step(self, action):
+                result = super().step(action)
+                self.visible = .3
+                return result
+
+        baseline=RosotaTractionRLAdapter(DummyTractionEnv())
+        baseline.reset(seed=7)
+        _,base_reward,_,_,_=baseline.step(np.zeros(14,np.float32))
+        env=RosotaVisionTractionRLAdapter(VisibleDummy())
+        obs,reset_info=env.reset(seed=7)
+        self.assertEqual(reset_info["appendix_visible_fraction"],.1)
+        self.assertEqual(set(obs),{"rgb","proprio"})
+        _,reward,_,_,info=env.step(np.zeros(14,np.float32))
+        expected=.1*(.99*.3-.1)
+        self.assertAlmostEqual(info["appendix_visibility_reward"],expected)
+        self.assertAlmostEqual(reward,base_reward+expected)
+        self.assertEqual(set(env.observation_space.spaces),{"rgb","proprio"})
+        with self.assertRaises(ValueError):
+            RosotaVisionTractionRLAdapter(DummyTractionEnv(), visibility_shaping_weight=-1.)
 
     def test_proprioception_encoder_does_not_include_privileged_goal_geometry(self):
         obs=observation()

@@ -48,12 +48,37 @@ def main(argv=None) -> int:
     ap.add_argument("--samples", type=int)
     ap.add_argument("--bounces", type=int)
     ap.add_argument("--front-samples", type=int)
+    ap.add_argument("--iterations", type=int,
+                    help="Newton VBD solver iterations per physics tick")
+    ap.add_argument("--settle-seconds", type=float,
+                    help="override passive tissue settling time at environment initialization")
+    ap.add_argument("--demo-approach-mm-s", type=float,
+                    help="scripted DemoPolicy approach speed; default 12 mm/s, diagnostic only")
+    ap.add_argument("--contact-ke", type=float,
+                    help="rigid-tool/tissue contact stiffness; uncalibrated")
+    ap.add_argument("--contact-kd", type=float,
+                    help="rigid-tool/tissue contact damping; uncalibrated")
+    ap.add_argument("--contact-kf", type=float,
+                    help="Newton ShapeConfig friction gain; SolverVBD soft-rigid contact uses mu instead")
+    ap.add_argument("--contact-mu", type=float,
+                    help="override both particle-side and instrument ShapeConfig friction coefficient")
     ap.add_argument("--front", dest="front", action="store_true", default=None)
     ap.add_argument("--no-front", dest="front", action="store_false")
     ap.add_argument("--list-presets", action="store_true")
     ap.add_argument("--physics-only", action="store_true",
                     help="skip path tracing and return physics/task state only; "
                          "not valid for RGB policy evaluation")
+    ap.add_argument("--appendix300-texture", default=None,
+                    help="optional local Appendix300 RGB candidate to map onto "
+                         "the deforming appendix FEM surface")
+    ap.add_argument("--appendix300-texture-mix", type=float, default=1.0,
+                    help="blend ray-sampled Appendix300 RGB with CT colours (0..1)")
+    ap.add_argument("--demo-swept-clearance", action="store_true",
+                    help="experimental: rank grasp handles by sampled URDF swept-mesh clearance; disabled by default")
+    ap.add_argument("--disable-tool-tissue-collision", action="store_true",
+                    help="diagnostic ablation: disable instrument/soft-tissue contacts only")
+    ap.add_argument("--disable-grasp-assist", action="store_true",
+                    help="diagnostic ablation: disable the uncalibrated grasp spring")
     mine, rest = ap.parse_known_args(argv)
 
     if mine.list_presets:
@@ -66,13 +91,29 @@ def main(argv=None) -> int:
 
     over = {k: v for k, v in PRESETS[mine.preset].items()
             if not k.startswith("_")}
-    for k in ("samples", "bounces", "front_samples", "front"):
+    for k in ("samples", "bounces", "front_samples", "front", "iterations",
+              "settle_seconds", "demo_approach_mm_s",
+              "contact_ke", "contact_kd", "contact_kf"):
         v = getattr(mine, k)
         if v is not None:
             over[k] = v
+    if mine.contact_mu is not None:
+        over["contact_mu"] = mine.contact_mu
 
     import vla_env
     vla_env.OVERRIDES.update(over)
+    if mine.demo_swept_clearance:
+        vla_env.OVERRIDES["demo_swept_clearance"] = True
+    if mine.disable_tool_tissue_collision:
+        vla_env.OVERRIDES["tool_tissue_collision"] = False
+    if mine.disable_grasp_assist:
+        vla_env.OVERRIDES["grasp_assist"] = False
+    if mine.appendix300_texture is not None:
+        vla_env.OVERRIDES["appendix_texture"] = mine.appendix300_texture
+    if mine.appendix300_texture_mix is not None:
+        if not 0.0 <= mine.appendix300_texture_mix <= 1.0:
+            ap.error("--appendix300-texture-mix must be in [0, 1]")
+        vla_env.OVERRIDES["appendix_texture_mix"] = mine.appendix300_texture_mix
     vla_env.PHYSICS_ONLY = mine.physics_only
     if mine.physics_only:
         print("physics-only observations: RGB/depth rendering disabled; "

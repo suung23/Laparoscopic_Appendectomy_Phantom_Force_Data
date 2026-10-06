@@ -67,6 +67,40 @@ MATERIALS = np.array([
 VISIBLE = np.array([1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1], dtype=np.int32)
 
 
+def vertex_normals(vertices, faces):
+    """Area-weighted smooth normals, recomputed from the current surface mesh."""
+    v = np.asarray(vertices, np.float64)
+    f = np.asarray(faces, np.int64).reshape(-1, 3)
+    n = np.zeros_like(v)
+    if len(f):
+        tri = v[f]
+        face_n = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])
+        for corner in range(3):
+            np.add.at(n, f[:, corner], face_n)
+    length = np.linalg.norm(n, axis=1)
+    valid = length > 1e-12
+    n[valid] /= length[valid, None]
+    n[~valid] = (0.0, 0.0, 1.0)
+    return n.astype(np.float32)
+
+
+@wp.func
+def _triangle_uv_wrapped(uv0: wp.vec2, uv1: wp.vec2, uv2: wp.vec2,
+                         bu: float, bv: float):
+    """Barycentrically interpolate U across a periodic seam without stretching."""
+    umax = wp.max(uv0[0], wp.max(uv1[0], uv2[0]))
+    umin = wp.min(uv0[0], wp.min(uv1[0], uv2[0]))
+    if umax - umin > 0.5:
+        if uv0[0] < 0.5:
+            uv0 = wp.vec2(uv0[0] + 1.0, uv0[1])
+        if uv1[0] < 0.5:
+            uv1 = wp.vec2(uv1[0] + 1.0, uv1[1])
+        if uv2[0] < 0.5:
+            uv2 = wp.vec2(uv2[0] + 1.0, uv2[1])
+    uv = uv0 * (1.0 - bu - bv) + uv1 * bu + uv2 * bv
+    return wp.vec2(uv[0] - wp.floor(uv[0]), uv[1])
+
+
 @wp.func
 def _srgb(x: float) -> float:
     if x <= 0.0031308:
@@ -102,9 +136,14 @@ def _cos_hemi(n: wp.vec3, r1: float, r2: float) -> wp.vec3:
 def _trace(
     mesh: wp.uint64,
     tri_mat: wp.array(dtype=wp.int32),
+    tri_textured: wp.array(dtype=wp.int32),
+    tri_tex_mix: wp.array(dtype=wp.float32),
     materials: wp.array2d(dtype=wp.float32),
     visible: wp.array(dtype=wp.int32),
     vcol: wp.array(dtype=wp.vec3),
+    vuv: wp.array(dtype=wp.vec2),
+    texture: wp.Texture2D,
+    vnormal: wp.array(dtype=wp.vec3),
     indices: wp.array(dtype=wp.int32),
     # camera
     cam_pos: wp.vec3, cam_r: wp.vec3, cam_u: wp.vec3, cam_f: wp.vec3,
@@ -192,7 +231,19 @@ def _trace(
             i2 = indices[face * 3 + 2]
             bu = hit_u
             bv = hit_v
+            smooth_n = wp.normalize(vnormal[i0] * (1.0 - bu - bv)
+                                   + vnormal[i1] * bu
+                                   + vnormal[i2] * bv)
+            if wp.dot(smooth_n, n) < 0.0:
+                smooth_n = -smooth_n
+            n = smooth_n
             alb = (vcol[i0] * (1.0 - bu - bv) + vcol[i1] * bu + vcol[i2] * bv)
+            if tri_textured[face] != 0:
+                uv = _triangle_uv_wrapped(vuv[i0], vuv[i1], vuv[i2], bu, bv)
+                rgba = wp.texture_sample(texture, uv, dtype=wp.vec4)
+                texel = wp.vec3(rgba[0], rgba[1], rgba[2])
+                mix = tri_tex_mix[face]
+                alb = alb * (1.0 - mix) + texel * mix
             rough = materials[m, 3]
             spec = materials[m, 4]
             wrap = materials[m, 5]
@@ -313,15 +364,20 @@ class PathTracer:
         # effectively infinite max_t only makes the BVH walk further for rays
         # that hit nothing.
         self.max_t = float(max_t)
-        self._parts = []          # (name, n_verts, slice, material)
+        self._parts = []          # mesh, material, colour, UV and texture bindings
+        self._texture_data = None
         self.points = None
         self.mesh = None
         self._frame = 0
 
     # ---- construction ----------------------------------------------------
-    def add(self, name, verts, faces, material, colors=None):
-        """`colors` is per-vertex LINEAR rgb. Without it the material's own
-        albedo is replicated onto every vertex, so the kernel has one path."""
+    def add(self, name, verts, faces, material, colors=None, texcoords=None,
+            texture_data=None, texture_mix=1.0):
+        """Add a mesh with optional per-vertex linear RGB and UV appearance.
+
+        A single shared high-resolution texture is sampled at ray hits. UVs
+        remain attached to the FEM rest nodes while geometry deforms.
+        """
         v = np.asarray(verts, np.float32)
         if colors is None:
             c = np.tile(MATERIALS[int(material), :3], (len(v), 1))
@@ -329,20 +385,41 @@ class PathTracer:
             c = np.asarray(colors, np.float32).reshape(-1, 3)
             if len(c) != len(v):
                 raise ValueError(f"{name}: {len(c)} colours for {len(v)} verts")
-        self._parts.append([name, v, np.asarray(faces, np.int32),
-                            int(material), None, c.astype(np.float32)])
+        f = np.asarray(faces, np.int32)
+        uv = (np.zeros((len(v), 2), np.float32) if texcoords is None else
+              np.asarray(texcoords, np.float32).reshape(-1, 2))
+        if len(uv) != len(v) or not np.isfinite(uv).all():
+            raise ValueError(f"{name}: texture coordinates must match vertices")
+        if not np.isfinite(texture_mix) or not 0.0 <= float(texture_mix) <= 1.0:
+            raise ValueError("texture_mix must be finite and in [0, 1]")
+        textured = texture_data is not None
+        if textured:
+            data = np.asarray(texture_data, np.float32)
+            if data.ndim != 3 or data.shape[2] != 3 or not np.isfinite(data).all():
+                raise ValueError("texture_data must be a finite HxWx3 linear RGB array")
+            if self._texture_data is not None and not np.array_equal(self._texture_data, data):
+                raise ValueError("PathTracer currently supports one shared appearance texture")
+            self._texture_data = data
+        self._parts.append([name, v, f,
+                            int(material), None, c.astype(np.float32), uv,
+                            textured, float(texture_mix)])
 
     def build(self):
-        vs, fs, mats, cols, n = [], [], [], [], 0
+        vs, fs, mats, cols, norms, uvs, textured, mixes, n = [], [], [], [], [], [], [], [], 0
         for part in self._parts:
-            name, v, f, m, _, c = part
+            name, v, f, m, _, c, uv, has_texture, texture_mix = part
             part[4] = slice(n, n + len(v))
             vs.append(v)
             fs.append(f + n)
             mats.append(np.full(len(f), m, np.int32))
             cols.append(c)
+            uvs.append(uv)
+            textured.append(np.full(len(f), int(has_texture), np.int32))
+            mixes.append(np.full(len(f), texture_mix, np.float32))
+            norms.append(vertex_normals(v, f))
             n += len(v)
         self._pts_np = np.vstack(vs).astype(np.float32)
+        self._normals_np = np.vstack(norms).astype(np.float32)
         idx = np.vstack(fs).astype(np.int32).flatten()
         self.tri_mat = wp.array(np.concatenate(mats), dtype=wp.int32,
                                 device=self.device)
@@ -352,6 +429,23 @@ class PathTracer:
                             support_winding_number=False)
         self.vcol = wp.array(np.vstack(cols).astype(np.float32), dtype=wp.vec3,
                              device=self.device)
+        self.vuv = wp.array(np.vstack(uvs).astype(np.float32), dtype=wp.vec2,
+                            device=self.device)
+        self.tri_textured = wp.array(np.concatenate(textured), dtype=wp.int32,
+                                     device=self.device)
+        self.tri_tex_mix = wp.array(np.concatenate(mixes), dtype=wp.float32,
+                                    device=self.device)
+        texture = self._texture_data
+        if texture is None:
+            texture = np.zeros((2, 2, 3), np.float32)
+        texture = np.concatenate(
+            [texture, np.ones((*texture.shape[:2], 1), np.float32)], axis=2)
+        self.texture = wp.Texture2D(
+            texture, filter_mode=wp.TextureFilterMode.LINEAR,
+            address_mode=(wp.TextureAddressMode.WRAP,
+                          wp.TextureAddressMode.CLAMP), device=self.device)
+        self.vnormal = wp.array(self._normals_np, dtype=wp.vec3,
+                                device=self.device)
         self.materials = wp.array(MATERIALS, dtype=wp.float32, device=self.device)
         self.visible = wp.array(VISIBLE, dtype=wp.int32, device=self.device)
         self._out = {}
@@ -366,12 +460,16 @@ class PathTracer:
 
     def update(self, name, verts):
         """Move one part's vertices (deforming tissue, or a moving instrument)."""
-        sl = self.slice_of(name)
-        self._pts_np[sl] = np.asarray(verts, np.float32)
+        part = next(p for p in self._parts if p[0] == name)
+        sl = part[4]
+        moved = np.asarray(verts, np.float32)
+        self._pts_np[sl] = moved
+        self._normals_np[sl] = vertex_normals(moved, part[2])
 
     def commit(self):
         """Upload the moved vertices and re-fit the BVH."""
         self.points.assign(self._pts_np)
+        self.vnormal.assign(self._normals_np)
         self.mesh.refit()
 
     # ---- rendering -------------------------------------------------------
@@ -411,8 +509,9 @@ class PathTracer:
         wp.launch(
             _trace, dim=(cam.width, cam.height),
             inputs=[
-                self.mesh.id, self.tri_mat, self.materials, vis,
-                self.vcol, self.indices,
+                self.mesh.id, self.tri_mat, self.tri_textured,
+                self.tri_tex_mix, self.materials, vis,
+                self.vcol, self.vuv, self.texture, self.vnormal, self.indices,
                 wp.vec3(*pos), wp.vec3(*r), wp.vec3(*u), wp.vec3(*f),
                 cam.fx, cam.fy, cam.cx, cam.cy, cam.width, cam.height,
                 wp.vec3(*light["pos"]), wp.vec3(*light["dir"]),

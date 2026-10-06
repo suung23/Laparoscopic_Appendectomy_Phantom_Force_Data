@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+import json
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -28,6 +29,22 @@ import vla_rollout                                   # noqa: E402
 # vla_rollout put isaac/ at sys.path[0] on import; go in front of it so the
 # late `from vla_env import ...` resolves here.
 sys.path.insert(0, str(HERE))
+
+GRASP_ASSIST_METRICS = {
+    "left_grasp_assist_model_force_n":
+        ("grasp_assist", "left_model_force_n"),
+    "right_grasp_assist_model_force_n":
+        ("grasp_assist", "right_model_force_n"),
+    "left_grasp_assist_deflection_m":
+        ("grasp_assist", "left_deflection_m"),
+    "right_grasp_assist_deflection_m":
+        ("grasp_assist", "right_deflection_m"),
+}
+
+
+def install_newton_rollout_metrics():
+    """Add Newton-specific model-force telemetry without changing Isaac logs."""
+    vla_rollout.Episode.SCALARS.update(GRASP_ASSIST_METRICS)
 
 
 def main(argv=None) -> int:
@@ -43,17 +60,53 @@ def main(argv=None) -> int:
     print(f"backend: newton ({vla_env.__file__})", flush=True)
 
     out = _out_dir(argv)
+    texture = vla_env.OVERRIDES.get("appendix_texture")
+    record = None
+    if texture:
+        from appearance import appendix300_texture_provenance
+        record = appendix300_texture_provenance(texture)
     lock = _claim(out)
-    want_video = "--video" in argv
-    front_dir = out / "frames" / "front"
-    if want_video:
-        import shutil
-        if front_dir.exists():
-            shutil.rmtree(front_dir)
-        vla_env.FRONT_OUT = front_dir
-        vla_env.FRONT_EVERY = _int_opt(argv, "--image-every", 1)
-
     try:
+        # Record the effective backend parameters with every rollout so a
+        # contact or FEM result can be reproduced. Keep local asset paths out
+        # of metadata; only the optional texture's basename is retained.
+        settings = dict(vla_env.DEFAULTS)
+        settings.update(vla_env.OVERRIDES)
+        if settings.get("appendix_texture"):
+            settings["appendix_texture"] = Path(
+                settings["appendix_texture"]).name
+        (out / "newton-backend-config.json").write_text(json.dumps({
+            "backend": "Newton",
+            "settings": settings,
+            "privacy": "Generated locally; no absolute user paths or source pixels are stored.",
+        }, indent=2, default=lambda x: list(x) if isinstance(x, tuple) else str(x))
+            + "\n", encoding="utf-8")
+        if record is not None:
+            (out / "appendix-appearance.json").write_text(json.dumps({
+                **record,
+                "source_texture": Path(texture).name,
+                "mapping": "cylindrical UVs bound to FEM rest nodes; full-resolution texture sampled per ray hit",
+                "texture_mix_with_captured_vertex_colours": float(
+                    vla_env.OVERRIDES.get("appendix_texture_mix", 1.0)),
+                "deforms_with_fem_nodes": True,
+                "source_roi_anatomy_verified": False,
+                "rgb_render_enabled": not bool(vla_env.PHYSICS_ONLY),
+                "video_to_3d_registration": False,
+                "measured_albedo_or_brdf": False,
+                "clinical_visual_validation": False,
+                "privacy": "Local texture and rollout frames remain in the ignored output directory.",
+            }, indent=2) + "\n", encoding="utf-8")
+        want_video = "--video" in argv
+        front_dir = out / "frames" / "front"
+        if want_video:
+            import shutil
+            if front_dir.exists():
+                shutil.rmtree(front_dir)
+            vla_env.FRONT_OUT = front_dir
+            vla_env.FRONT_EVERY = _int_opt(argv, "--image-every", 1)
+        # Extend the shared recorder only for this backend; keep the Isaac
+        # runner and its baseline metric schema unchanged.
+        install_newton_rollout_metrics()
         rc = vla_rollout.main(argv)
         if want_video:
             _encode_front(front_dir, out, _int_opt(argv, "--control-hz", 30))

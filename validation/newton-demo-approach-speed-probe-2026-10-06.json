@@ -1,0 +1,75 @@
+{
+  "date": "2026-10-06",
+  "status": "diagnostic_approach_speed_sweep_did_not_prevent_contact_induced_inversion",
+  "purpose": "Measure whether slower scripted approach changes the tool-contact cecum instability after the reset-contact fix.",
+  "hardware_backend": {
+    "device": "NVIDIA GeForce RTX 4090",
+    "backend": "Newton 1.4 / Warp 1.15",
+    "physics_hz": 480,
+    "control_hz": 30,
+    "action_chunk": 8
+  },
+  "protocol": {
+    "policy": "scripted DemoPolicy; not learned RL",
+    "seed": 1,
+    "tool_tissue_collision": true,
+    "grasp_assist": true,
+    "reset_contact_refresh": true,
+    "physics_only": true,
+    "runs": [
+      {
+        "approach_speed_mm_s": 12.0,
+        "run": "out/appendix300_contact_assist_repro_v1/summary.json",
+        "simulated_duration_s": 6.133333,
+        "steps": 24,
+        "first_contact_observation_index": 22,
+        "first_inversion_observation_index": 23,
+        "physics_health_pass": false,
+        "minimum_signed_volume_ratio": -0.605679,
+        "maximum_inverted_tetrahedra": 2,
+        "peak_tip_force_n": 0.516447,
+        "soft_contact_records_at_failure": 2148,
+        "task_stages_completed": 0,
+        "rcm_excursion_steps": 0
+      },
+      {
+        "approach_speed_mm_s": 6.0,
+        "run": "out/appendix300_demo_half_speed_seed1_v1/summary.json",
+        "simulated_duration_s": 11.733334,
+        "steps": 45,
+        "first_contact_observation_index": 42,
+        "first_inversion_observation_index": 44,
+        "physics_health_pass": false,
+        "minimum_signed_volume_ratio": -0.222608,
+        "maximum_inverted_tetrahedra": 4,
+        "peak_tip_force_n": 0.422060,
+        "soft_contact_records_at_failure": 2149,
+        "task_stages_completed": 0,
+        "rcm_excursion_steps": 0
+      },
+      {
+        "approach_speed_mm_s": 3.0,
+        "run": "out/appendix300_demo_quarter_speed_seed1_v1/summary.json",
+        "simulated_duration_s": 22.933332,
+        "steps": 87,
+        "first_contact_observation_index": 82,
+        "first_inversion_observation_index": 86,
+        "physics_health_pass": false,
+        "minimum_signed_volume_ratio": -0.271167,
+        "maximum_inverted_tetrahedra": 2,
+        "peak_tip_force_n": 0.578490,
+        "soft_contact_records_at_failure": 2107,
+        "task_stages_completed": 0,
+        "rcm_excursion_steps": 0
+      }
+    ]
+  },
+  "interpretation": "Reducing approach speed delays contact and changes inversion severity, but neither 6 nor 3 mm/s prevents inversion. The response is non-monotonic: the half-speed run has four inverted elements but a less negative minimum volume ratio and lower peak force, while the quarter-speed run has two inverted elements but a higher uncalibrated peak force than the 12 mm/s reference. No speed is promoted as safe or physically realistic. The default remains 12 mm/s; this parameter is exposed only to make the scripted diagnostic reproducible.",
+  "limits": [
+    "One scene, one seed and one privileged scripted policy; no statistical or held-out-anatomy claim.",
+    "Force channels and tissue material parameters are not calibrated against physical instruments or specimens.",
+    "Every run completed zero appendectomy stages and failed the tissue-volume health gate.",
+    "The probe diagnoses approach-rate sensitivity; it does not establish a force-controlled policy or RL result."
+  ],
+  "privacy": "Tracked report contains aggregate metrics and local ignored-run references only; source video, rendered frames, credentials and personal information remain local."
+}

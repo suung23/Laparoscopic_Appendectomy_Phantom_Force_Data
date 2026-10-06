@@ -1,0 +1,40 @@
+{
+  "status": "local_appendix300_texture_render_confirmed; appearance_registration_gate_not_achieved",
+  "date": "2026-10-06",
+  "purpose": "Re-render the provisional Appendix300 appearance candidate on the current FEM-bound appendix display surface with render-only subdivision enabled.",
+  "dataset": "Appendix300",
+  "attribution": "Appendix300, DOI 10.25532/OPARA-1173, CC BY 4.0",
+  "backend": "Newton 1.4 / Warp 1.15.0",
+  "device": "NVIDIA GeForce RTX 4090",
+  "render": {
+    "camera": "Newton endoscope, 1280x720, 2 samples per pixel, 0 bounces",
+    "texture_sha256": "d172c39195de99e63ddafb779c0409363af912f040299c35e3d697bae0e50df6",
+    "mapping": "Full-resolution Appendix300 RGB sampled at ray-hit UVs from cylindrical coordinates on appendix FEM rest nodes; UV binding follows FEM deformation",
+    "render_surface": "Captured appendix PLY bound to FEM nodes, one Loop subdivision level for display only",
+    "texture_mix": 1.0,
+    "texture_render": "out/appendix300_texture_loop1_review_20261006/endoscope.png (git-ignored)",
+    "same_camera_control": "out/appendix300_texture_loop1_control_20261006/endoscope.png (git-ignored)",
+    "whole_frame_difference": {
+      "mean_absolute_rgb_difference_0_255": 0.434,
+      "pixels_with_any_channel_difference_gt_2": 14526,
+      "changed_pixel_fraction": 0.015762,
+      "maximum_channel_difference": 87,
+      "changed_region_xyxy_px": [618, 288, 703, 594]
+    },
+    "interpretation": "The change is localized to the displayed appendix region and verifies that the video-derived RGB reaches the subdivided Newton endoscope render. Independent path-tracer renders are not a same-random-seed pixel-exact ablation; the difference statistics are descriptive, not a calibrated quality score."
+  },
+  "geometry_and_dynamics": {
+    "simulation_geometry_changed": false,
+    "contact_geometry_changed": false,
+    "uvs_follow_fem_deformation": true,
+    "camera_to_surface_registration": false,
+    "source_roi_anatomy_expert_verified": false
+  },
+  "limitations": [
+    "The texture is a provisional SAM2 prompt-mask candidate; the visible source object has not been expert-confirmed as appendix tissue.",
+    "Cylindrical projection is an appearance mapping, not a reconstruction of camera-to-mesh correspondence or patient-specific 3-D anatomy.",
+    "Observed RGB retains some illumination and specular appearance; intrinsic albedo and BRDF are not measured.",
+    "The wide endoscope composition, anatomy, tissue material, and contact deformation still fail the realism gate; no blinded expert review or held-out video evaluation has been completed.",
+    "The source texture and rendered images remain local in the git-ignored output tree; this tracked report contains provenance hashes and aggregate image statistics only."
+  ]
+}

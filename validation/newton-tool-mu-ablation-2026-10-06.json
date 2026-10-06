@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-06",
+  "status": "true_zero_mu_prevents_inversion_on_three_scripted_seeds_but_causes_extreme_tissue_velocity_and_completes_no_task_stages",
+  "purpose": "Run the friction ablation using the actual material coefficient consumed by Newton VBD FEM-rigid contact, after identifying ShapeConfig.kf as a no-op for that formulation.",
+  "hardware_backend": {
+    "device": "NVIDIA GeForce RTX 4090",
+    "backend": "Newton 1.4 / Warp 1.15",
+    "physics_hz": 480,
+    "control_hz": 30,
+    "action_chunk": 8
+  },
+  "protocol": {
+    "policy": "scripted DemoPolicy; not learned RL",
+    "seed_range": [1, 3],
+    "simulated_duration_s": 6.133333,
+    "tool_tissue_collision": true,
+    "grasp_assist": true,
+    "baseline": "out/appendix300_contact_seed1to3_resetfix_v1/episode_000.npz through episode_002.npz",
+    "zero_mu": "out/appendix300_contact_mu0_seed1to3_v1/episode_000.npz through episode_002.npz",
+    "baseline_material": {
+      "effective_soft_contact_mu": 0.6,
+      "instrument_shape_mu": 0.6
+    },
+    "zero_mu_material": {
+      "effective_soft_contact_mu": 0.0,
+      "instrument_shape_mu": 0.0
+    },
+    "normal_contact_ke_kd_unchanged": true,
+    "actions_exactly_identical": false,
+    "maximum_absolute_action_difference_by_seed": [0.0000031263, 0.0000028698, 0.0000028698],
+    "first_contact_observation_index": [22, 22, 22],
+    "all_three_runs_had_contact": true
+  },
+  "results": {
+    "authored_mu_0_6": {
+      "seeds": [1, 2, 3],
+      "physics_health_pass": [false, false, false],
+      "failures": ["2 inverted tetrahedra (cecum:2)", "4 inverted tetrahedra (cecum:4)", "4 inverted tetrahedra (cecum:4)"],
+      "cecum_minimum_signed_volume_ratio": [-0.6056794271, -0.6573944092, -0.6569594741],
+      "maximum_inverted_tetrahedra": [2, 4, 4],
+      "maximum_nodal_speed_m_s": [0.0117363995, 0.0114596051, 0.0114646263],
+      "peak_tool_wrench_channel_n": [0.5164467096, 0.5178270340, 0.5181133747],
+      "appendectomy_stages_completed": [0, 0, 0]
+    },
+    "zero_mu": {
+      "seeds": [1, 2, 3],
+      "physics_health_pass": [true, true, true],
+      "cecum_minimum_signed_volume_ratio": [0.7149963379, 0.6163614392, 0.6163395643],
+      "maximum_inverted_tetrahedra": [0, 0, 0],
+      "maximum_nodal_speed_m_s": [0.1363337189, 0.0848329961, 0.0847639069],
+      "peak_tool_wrench_channel_n": [0.0603083968, 0.0813890621, 0.0809967890],
+      "appendectomy_stages_completed": [0, 0, 0]
+    }
+  },
+  "intermediate_mu_probe": {
+    "run": "out/appendix300_contact_mu03_seed1_v1/summary.json",
+    "seed": 1,
+    "mu_both_sides": 0.3,
+    "physics_health_pass": false,
+    "failure": "2 inverted tetrahedra (cecum:2)",
+    "cecum_minimum_signed_volume_ratio": -0.1730398387,
+    "peak_tool_wrench_channel_n": 0.5431215763,
+    "maximum_nodal_speed_m_s": 0.0120011540,
+    "appendectomy_stages_completed": 0,
+    "interpretation": "One diagnostic sample at mu=0.3 still inverts the cecum. It reduces inversion severity relative to the mu=0.6 baseline in this seed but does not pass. No monotonic or calibrated material conclusion follows from a single midpoint sample."
+  },
+  "interpretation": "With mu set to zero on both the particle and instrument-shape sides, all three seeds remain positive-volume through the 24-step horizon; the authored-mu baselines invert cecum on all three. Action arrays differ by at most 3.13e-6, so these are close matched runs but not bitwise identical-action ablations. Peak tissue speed rises from about 12 mm/s to 85-136 mm/s, and the contact wrench channel falls sharply. This exposes strong sensitivity to VBD's friction coefficient and force/deformation coupling, not a validated fix: frictionless organ contact is not realistic, the tissue-speed spike is concerning, no grasp occurs, and all task stages remain incomplete.",
+  "decision": "Keep the authored material unchanged. Use this only as a diagnostic cause-separation result; calibrate mu against instrumented tissue or phantom data and repeat across seeds and tangential trajectories before changing material settings.",
+  "limits": [
+    "One scene and one scripted DemoPolicy approach; three seeds are not held-out anatomy, policy, or task validation.",
+    "No force-displacement calibration, sensor validation, or tissue-speed acceptance threshold is available.",
+    "The zero-mu override changes the global soft-contact particle-side coefficient and both instrument-shape coefficients; it is a broad friction ablation.",
+    "The reported wrench is a solver-derived proxy, not a calibrated force measurement.",
+    "No appendectomy stage completed under either condition."
+  ],
+  "privacy": "Tracked report contains aggregate metrics and local ignored-run references only. Source data, frames, credentials, and personal information remain local."
+}

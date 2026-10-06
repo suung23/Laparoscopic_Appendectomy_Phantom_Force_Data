@@ -7,13 +7,17 @@ Owns the mapping from simulation state to render geometry: which mesh belongs
 to which material, where the deforming organ surfaces come from, and how the
 instruments' moving links get their vertices refreshed each frame.
 
-Organ surfaces are the BOUNDARY of the tet mesh, not the captured .ply render
-mesh. The Isaac cell keeps a separate render mesh bound to the sim mesh; here
-the boundary triangles of the simulated tets ARE the surface, so what is drawn
-is exactly what is simulated -- no binding to drift.
+Organ surfaces use captured CT-derived PLY topology with a render-only Loop
+subdivision. Every smoothed vertex is a sparse interpolation stencil over
+source render vertices, which bind to FEM nodes within a strict rest tolerance;
+the same stencil follows live simulated positions. This adds no FEM degrees of
+freedom and does not change contact geometry. If source correspondence fails,
+the renderer falls back to the FEM boundary mesh. Smoothing is a geometric
+approximation and must be assessed against held-out endoscopic views.
 """
 from __future__ import annotations
 
+import json
 import math
 
 from pathlib import Path
@@ -24,6 +28,10 @@ from cameras import CellCameras
 from render import (MAT_APPENDIX, MAT_FIELD, MAT_FLOOR, MAT_ORGAN, MAT_PHANTOM,
                     MAT_PLATE, MAT_ROBOT, MAT_SCOPE, MAT_SHELF, MAT_TABLE,
                     MAT_TOOL_DARK, MAT_TOOL_STEEL, PathTracer)
+from appearance import (appendix300_texture_provenance,
+                        appendix_texture_uv,
+                        bind_surface_vertices_to_fem_nodes,
+                        loop_subdivide_surface)
 from cell_spec import ROOT
 from urdf_meshes import link_geometry, merged
 
@@ -52,13 +60,7 @@ def ply_vertex_colors(path):
 
 
 def transfer_colors(src_pts, src_col, dst_pts):
-    """Nearest-neighbour colour transfer between two samplings of one surface.
-
-    The organs are SIMULATED as tet meshes but were CAPTURED as coloured
-    surface meshes, and the two have different vertex sets. The Isaac cell binds
-    a render mesh to the sim mesh; here the tet boundary is what gets drawn, so
-    each of its vertices takes the colour of the nearest captured vertex.
-    """
+    """Nearest-neighbour colour transfer fallback between surface samplings."""
     from scipy.spatial import cKDTree
     tree = cKDTree(np.asarray(src_pts, np.float64))
     _, idx = tree.query(np.asarray(dst_pts, np.float64), k=1)
@@ -101,7 +103,8 @@ class CellRenderer:
 
     def __init__(self, cell, samples=48, bounces=1, exposure=1.0, device=None,
                  decimate_to=60000, robot_faces=6000, hole_radius=0.035,
-                 hole_z=0.12, quiet=False):
+                 hole_z=0.12, quiet=False, appendix_texture=None,
+                 appendix_texture_mix=1.0, surface_subdivision_levels=1):
         self.cell = cell
         self.scene = cell.scene
         self.decimate_to = int(decimate_to)
@@ -119,6 +122,22 @@ class CellRenderer:
         self.hole_radius = float(hole_radius)
         self.hole_z = float(hole_z)
         self._quiet = quiet
+        self.appendix_texture = (Path(appendix_texture).expanduser()
+                                 if appendix_texture else None)
+        self.appendix_texture_mix = float(appendix_texture_mix)
+        if not 0.0 <= self.appendix_texture_mix <= 1.0:
+            raise ValueError("appendix_texture_mix must be in [0, 1]")
+        if self.appendix_texture is not None and not self.appendix_texture.is_file():
+            raise FileNotFoundError(f"Appendix texture not found: {self.appendix_texture}")
+        if (isinstance(surface_subdivision_levels, bool) or
+                not np.isfinite(surface_subdivision_levels) or
+                int(surface_subdivision_levels) != surface_subdivision_levels or
+                not 0 <= surface_subdivision_levels <= 3):
+            raise ValueError("surface_subdivision_levels must be an integer in [0, 3]")
+        self.surface_subdivision_levels = int(surface_subdivision_levels)
+        self.appendix_texture_source = (
+            appendix300_texture_provenance(self.appendix_texture)
+            if self.appendix_texture is not None else None)
         self.tracer = PathTracer(device=device, samples=samples,
                                  bounces=bounces, exposure=exposure)
         # TWO scenes, because the two clinical cameras sit INSIDE the phantom
@@ -131,6 +150,9 @@ class CellRenderer:
         self.tracer_room = PathTracer(device=device, samples=samples,
                                       bounces=bounces, exposure=exposure)
         self._organ_faces = {}
+        self._organ_render_nodes = {}
+        self._organ_render_stencils = {}
+        self._organ_binding_reports = {}
         self._arm_parts = self._build(self.tracer, room=False)
         self._room_parts = self._build(self.tracer_room, room=True)
         q = cell.state_0.particle_q.numpy()
@@ -207,21 +229,99 @@ class CellRenderer:
                 self._log(f"  phantom view hole: dropped {n} face(s) over the D405")
             t.add(name, v, f, mat, colors=col)
 
-        # organs: the tet boundary, so drawn == simulated
+        # Draw each captured surface mesh while binding its vertices directly
+        # to the matching FEM rest nodes. This preserves the source render
+        # topology and colours without adding a second deforming-body model.
+        # If a source mesh cannot be bound uniquely within tolerance, fall back
+        # to the tet boundary rather than letting appearance geometry drift.
         from scene import load_tet
         q = self.cell.state_0.particle_q.numpy()
         for name, (i, j) in self.scene.organ_span.items():
             _, idx = load_tet(ROOT / "tet" / f"{name}.npz")
             faces = tet_surface(idx)
-            self._organ_faces[name] = faces
-            got = ply_vertex_colors(ROOT / "mesh" / f"organ_{name}.ply")
+            render_nodes = np.arange(j - i, dtype=np.int32)
+            render_vertices = q[i:j]
             col = None
-            if got is not None:
-                cap_col, cap_pts = got
-                col = transfer_colors(self.cell.L.organs_to_world(cap_pts * 0.001),
-                                      cap_col, q[i:j])
-            t.add(f"organ_{name}", q[i:j], faces,
-                  ORGAN_MATERIAL.get(name, MAT_ORGAN), colors=col)
+            import trimesh
+            mesh_path = ROOT / "mesh" / f"organ_{name}.ply"
+            if mesh_path.is_file():
+                captured = trimesh.load(mesh_path, process=False)
+                cap_pts = np.asarray(captured.vertices, np.float64)
+                cap_faces = np.asarray(captured.faces, np.int32)
+                if (captured.is_watertight and captured.is_winding_consistent and
+                        cap_faces.ndim == 2 and cap_faces.shape[1] == 3):
+                    cap_world = self.cell.L.organs_to_world(cap_pts * 0.001)
+                    try:
+                        render_nodes, bind_report = bind_surface_vertices_to_fem_nodes(
+                            cap_world, self.cell.q_rest[i:j])
+                    except ValueError as exc:
+                        self._log(f"  {name} captured surface binding rejected: {exc}; "
+                                  "using FEM boundary render")
+                        got = ply_vertex_colors(mesh_path)
+                        if got is not None:
+                            col = transfer_colors(cap_world, got[0], q[i:j])
+                    else:
+                        faces = cap_faces
+                        render_vertices = q[i:j][render_nodes]
+                        self._organ_binding_reports[name] = bind_report
+                        self._log(f"  {name} render surface: "
+                                  f"{bind_report['render_vertices']} captured vertices "
+                                  f"bound to FEM nodes; max rest error "
+                                  f"{bind_report['max_rest_error_m']*1e6:.3f} um")
+                        colors = getattr(captured.visual, "vertex_colors", None)
+                        if colors is not None and len(colors) == len(cap_pts):
+                            col = srgb_to_linear(np.asarray(colors))
+                else:
+                    self._log(f"  {name} captured surface rejected: mesh is not a "
+                              "closed, consistently wound triangle surface")
+                    got = ply_vertex_colors(mesh_path)
+                    if got is not None:
+                        cap_col, cap_pts = got
+                        cap_world = self.cell.L.organs_to_world(cap_pts * 0.001)
+                        col = transfer_colors(cap_world, cap_col, q[i:j])
+            self._organ_render_nodes[name] = render_nodes
+            rest_vertices = self.cell.q_rest[i:j][render_nodes]
+            base_colors = col
+            if self.surface_subdivision_levels:
+                (rest_vertices, faces, stencil_indices, stencil_weights,
+                 subdivision_report) = loop_subdivide_surface(
+                    rest_vertices, faces, self.surface_subdivision_levels)
+                if base_colors is not None:
+                    base_colors = np.einsum(
+                        "nk,nkj->nj", stencil_weights,
+                        np.asarray(base_colors, np.float32)[stencil_indices],
+                        optimize=True).astype(np.float32)
+                if name in self._organ_binding_reports:
+                    self._organ_binding_reports[name]["surface_subdivision"] = subdivision_report
+            else:
+                stencil_indices = render_nodes[:, None].astype(np.int32)
+                stencil_weights = np.ones((len(render_nodes), 1), np.float32)
+            particle_stencil_indices = render_nodes[stencil_indices]
+            self._organ_render_stencils[name] = (particle_stencil_indices,
+                                                  stencil_weights)
+            self._organ_faces[name] = faces
+            live_base = q[i:j]
+            render_vertices = np.einsum(
+                "nk,nkj->nj", stencil_weights,
+                live_base[particle_stencil_indices],
+                optimize=True).astype(np.float32)
+            col = base_colors
+            if name == "appendix" and self.appendix_texture is not None:
+                from PIL import Image
+                image = np.asarray(Image.open(self.appendix_texture).convert("RGB"),
+                                   np.float32) / 255.0
+                image = np.where(image <= 0.04045, image / 12.92,
+                                 ((image + 0.055) / 1.055) ** 2.4).astype(np.float32)
+                uv = appendix_texture_uv(rest_vertices)
+                self._log("  appendix appearance: Appendix300 RGB candidate "
+                          f"({self.appendix_texture.name}), high-resolution wrapped UV sampling "
+                          "from rest coordinates; not video-to-3D registration")
+            else:
+                image, uv = None, None
+            t.add(f"organ_{name}", render_vertices, faces,
+                  ORGAN_MATERIAL.get(name, MAT_ORGAN), colors=col,
+                  texcoords=uv, texture_data=image,
+                  texture_mix=self.appendix_texture_mix if image is not None else 0.0)
 
         self._add_furniture(t, room)
 
@@ -342,7 +442,10 @@ class CellRenderer:
         for tracer, parts in ((self.tracer, self._arm_parts),
                               (self.tracer_room, self._room_parts)):
             for name, (i, j) in self.scene.organ_span.items():
-                tracer.update(f"organ_{name}", q[i:j])
+                stencil_indices, stencil_weights = self._organ_render_stencils[name]
+                live = np.einsum("nk,nkj->nj", stencil_weights,
+                                 q[i:j][stencil_indices], optimize=True)
+                tracer.update(f"organ_{name}", live)
             for key, aname, link, v0 in parts:
                 T = frames[aname][link]
                 tracer.update(key, v0 @ T[:3, :3].T + T[:3, 3])
@@ -429,6 +532,13 @@ def main(argv=None) -> int:
                          "documents for the same view (field 161-164, dome "
                          "143-164). Calibrated AFTER the scope barrel and the "
                          "stray support plane stopped dominating the frame")
+    ap.add_argument("--appendix300-texture", default=None,
+                    help="optional local Appendix300 RGB candidate; visual-only "
+                         "cylindrical UV projection onto appendix FEM rest nodes")
+    ap.add_argument("--appendix300-texture-mix", type=float, default=1.0,
+                    help="blend ray-sampled video RGB with CT colours: 0=CT, 1=video")
+    ap.add_argument("--surface-subdivision-levels", type=int, default=1,
+                    help="render-only Loop smoothing levels (0 disables; FEM/contact mesh is unchanged)")
     a = ap.parse_args(argv)
 
     wp.init()
@@ -441,12 +551,45 @@ def main(argv=None) -> int:
         log(f"stepped {n} sub-steps ({a.seconds:.2f} s)")
 
     r = CellRenderer(cell, samples=a.samples, bounces=a.bounces,
-                     exposure=a.exposure, decimate_to=a.decimate_to)
+                     exposure=a.exposure, decimate_to=a.decimate_to,
+                     appendix_texture=a.appendix300_texture,
+                     appendix_texture_mix=a.appendix300_texture_mix,
+                     surface_subdivision_levels=a.surface_subdivision_levels)
     log(r.cams.describe())
     r.sync()
 
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
+    q_live = cell.state_0.particle_q.numpy()
+    live_bindings = {}
+    for name, (i, j) in cell.scene.organ_span.items():
+        stencil_indices, stencil_weights = r._organ_render_stencils[name]
+        live_surface = np.einsum("nk,nkj->nj", stencil_weights,
+                                 q_live[i:j][stencil_indices], optimize=True)
+        rest_surface = np.einsum("nk,nkj->nj", stencil_weights,
+                                 cell.q_rest[i:j][stencil_indices], optimize=True)
+        displacement = np.linalg.norm(live_surface - rest_surface, axis=1) * 1000.0
+        record = dict(r._organ_binding_reports.get(name, {
+            "render_vertices": int(len(live_surface)), "unique_binding": False,
+            "binding": "FEM boundary fallback",
+        }))
+        record.update({
+            "live_render_vertex_displacement_p95_mm": float(
+                np.quantile(displacement, 0.95)),
+            "live_render_vertex_displacement_max_mm": float(displacement.max()),
+        })
+        live_bindings[name] = record
+    (out / "render-surface-bindings.json").write_text(json.dumps({
+        "status": "runtime_render_surface_binding",
+        "simulation_geometry_unchanged": True,
+        "binding": "render vertices use fixed Loop stencils over source vertices mapped to live FEM particles",
+        "surface_subdivision_levels": r.surface_subdivision_levels,
+        "contact_geometry_changed": False,
+        "organs": live_bindings,
+        "fallback_organs": sorted(set(r.scene.organ_span) -
+                                   set(r._organ_binding_reports)),
+        "privacy": "Local aggregate binding metadata only; no raw images or absolute paths.",
+    }, indent=2) + "\n", encoding="utf-8")
     t0 = time.time()
     endo = r.render_endoscope()
     t1 = time.time()
@@ -458,6 +601,25 @@ def main(argv=None) -> int:
     iio.imwrite(out / "d405.png", d405)
     iio.imwrite(out / "front.png", front)
     np.save(out / "d405_depth.npy", depth)
+    if r.appendix_texture is not None:
+        (out / "appendix-appearance.json").write_text(json.dumps({
+            **r.appendix_texture_source,
+            "source_texture": r.appendix_texture.name,
+            "mapping": "cylindrical UVs on FEM rest nodes; full-resolution RGB sampled per ray hit",
+            "texture_mix_with_captured_vertex_colours": r.appendix_texture_mix,
+            "deforms_with_fem_nodes": True,
+            "source_roi_anatomy_verified": False,
+            "video_to_3d_registration": False,
+            "measured_albedo_or_brdf": False,
+            "render_surface_binding": {
+                "source_node_binding": r._organ_binding_reports.get("appendix"),
+                "surface_subdivision_levels": r.surface_subdivision_levels,
+                "simulation_geometry_changed": False,
+                "contact_geometry_changed": False,
+            },
+            "clinical_visual_validation": False,
+            "privacy": "Local texture and rendered frames remain in the local ignored output directory.",
+        }, indent=2) + "\n", encoding="utf-8")
     log(f"front     {front.shape} in {t3-t2:.2f} s (mean luma {front.mean():.1f})")
     log(f"\nendoscope {endo.shape} in {t1-t0:.2f} s  "
         f"(mean luma {endo.mean():.1f})")

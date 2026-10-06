@@ -6,7 +6,7 @@ from types import SimpleNamespace
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "newton_cell"))
-from forces import ContactForces
+from forces import ContactForces, contact_node_diagnostics
 
 
 class Array:
@@ -19,6 +19,25 @@ class Array:
 
 
 class NewtonContactForceTests(unittest.TestCase):
+    def test_failure_contact_diagnostics_attribute_link_and_worst_tet_nodes(self):
+        result = contact_node_diagnostics(
+            shape_ids=[2, 7, 99],
+            contact_indices=[[10, 11, -1], [12, 13, 14], [15, 16, -1]],
+            shape_to_link={2: "left/jaw", 7: "right/shaft"},
+            organ_spans={"cecum": (10, 20), "appendix": (30, 40)},
+            worst_tet_nodes={"cecum": [10, 11, 12, 13],
+                             "appendix": [30, 31, 32, 33]})
+
+        self.assertEqual(result["soft_contact_records"], 3)
+        self.assertEqual(result["by_link"]["left/jaw"]["soft_contact_records"], 1)
+        self.assertEqual(result["by_link"]["left/jaw"]["particle_counts_by_organ"]["cecum"], 2)
+        self.assertEqual(result["by_link"]["left/jaw"]["worst_tet_contacts_by_organ"]["cecum"], 1)
+        self.assertEqual(result["by_link"]["left/jaw"][
+            "worst_tet_contact_particle_ids_by_organ"]["cecum"], [10, 11])
+        self.assertEqual(result["by_link"]["right/shaft"]["particle_ids_by_organ"]["cecum"],
+                         [12, 13, 14])
+        self.assertEqual(set(result["by_link"]), {"left/jaw", "right/shaft"})
+
     def test_edge_contact_uses_barycentric_nodes_not_minus_one_particle_sentinel(self):
         model = SimpleNamespace(
             shape_count=1, body_count=1, particle_count=3,

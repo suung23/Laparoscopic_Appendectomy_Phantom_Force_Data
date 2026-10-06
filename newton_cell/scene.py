@@ -83,6 +83,17 @@ class CellScene:
         self.C = constants()
         self.D = cli_defaults()
         self.tissue = tissue()
+        self.contact_mu = effective_contact_mu(
+            getattr(args, "contact_mu", None), self.tissue["friction"])
+        self.contact_material = np.asarray([
+            getattr(args, "contact_ke", 1.0e5),
+            getattr(args, "contact_kd", 1.0),
+            getattr(args, "contact_kf", 1.0e3),
+        ], dtype=np.float64)
+        if (not np.isfinite(self.contact_material).all() or
+                self.contact_material[0] <= 0.0 or
+                (self.contact_material[1:] < 0.0).any()):
+            raise ValueError("contact requires ke>0 and kd/kf>=0, all finite")
         self.organ_span = {}      # name -> (first_particle, end_particle)
         self.pinned = {}          # name -> index array of pinned particles
         self.static_shapes = {}   # label -> shape index
@@ -309,7 +320,10 @@ class CellScene:
                 faces += [[a, c, b], [b, c, d]]
         self._add_static_mesh(builder, pts.reshape(-1, 3), np.array(faces, np.int32),
                               "appendix_shelf",
-                              ke=1.0e5, kd=1.0, kf=1.0e3, mu=0.5, is_solid=False)
+                              ke=float(self.contact_material[0]),
+                              kd=float(self.contact_material[1]),
+                              kf=float(self.contact_material[2]),
+                              mu=0.5, is_solid=False)
         log(f"  shelf    {len(faces):6d} faces under the appendix "
             f"({len(xs)}x{len(ys)} grid, {drop*1000:.1f} mm below its underside)")
 
@@ -436,10 +450,13 @@ class CellScene:
             log(f"  mass floor {a.mass_floor:.2f}x median ({floor:.2e} kg): "
                 f"raised {raised}/{len(mass)} ({100*raised/len(mass):.1f}%)")
 
+        # Keep Newton's global soft-contact defaults for particle contacts;
+        # instrument and shelf ShapeConfig values are set explicitly from the
+        # measured-evaluation knobs above.
         model.soft_contact_ke = 1.0e4
         model.soft_contact_kd = 1.0
         model.soft_contact_kf = 1.0e3
-        model.soft_contact_mu = self.tissue["friction"]
+        model.soft_contact_mu = self.contact_mu
         self.model = model
         log(f"  model: {model.particle_count} particles, {model.tet_count} tets, "
             f"{model.shape_count} shapes")
@@ -452,6 +469,8 @@ def add_args(ap):
     ap.add_argument("--fps", type=float, default=60.0)
     ap.add_argument("--substeps", type=int, default=8)
     ap.add_argument("--iterations", type=int, default=10)
+    ap.add_argument("--contact-mu", type=float, default=None,
+                    help="diagnostic override applied to Newton soft-contact and instrument ShapeConfig mu")
     ap.add_argument("--radius-ratio", type=float, default=0.1)
     ap.add_argument("--mass-floor", type=float, default=0.25)
     ap.add_argument("--no-phantom", action="store_true")
@@ -471,6 +490,20 @@ def add_args(ap):
                          "default: they sit well clear of its walls and the "
                          "instruments are kinematic, so it has nothing to push")
     return ap
+
+
+def effective_contact_mu(override, tissue_mu):
+    """Resolve one coefficient for both sides of Newton VBD tool/FEM contact.
+
+    SolverVBD's body-particle contact formulation uses the particle-side and
+    shape-side ``mu`` values; ShapeConfig.kf is not consumed by that path.
+    Setting both sides through this override is therefore necessary for a
+    true zero-friction tool/FEM diagnostic.
+    """
+    value = float(tissue_mu if override is None else override)
+    if not np.isfinite(value) or value < 0.0:
+        raise ValueError("contact mu must be finite and nonnegative")
+    return value
 
 
 def main(argv=None) -> int:

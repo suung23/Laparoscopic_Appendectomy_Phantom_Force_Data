@@ -1,0 +1,35 @@
+{
+  "status": "high_resolution_uv_texture_path_verified_on_rtx4090; appearance_and_registration_gates_pending",
+  "date": "2026-10-06",
+  "dataset": "Appendix300",
+  "attribution": "Appendix300, DOI 10.25532/OPARA-1173, CC BY 4.0",
+  "source_texture": "out/ct_appendectomy/appendix300_sam2_texture_v21/appendix_appendix300_temporal_rgb.png",
+  "source_texture_sha256": "d172c39195de99e63ddafb779c0409363af912f040299c35e3d697bae0e50df6",
+  "source_candidate_status": "provisional_prompt_mask_texture_candidate_not_promoted",
+  "implementation": {
+    "uv": "deterministic cylindrical parameterisation from appendix FEM rest coordinates",
+    "deformation_binding": "UV coordinates are stored per FEM rest node and remain attached during deformation",
+    "sampling": "Warp Texture2D bilinear sample at the path-traced hit barycentric UV; U wraps at the seam and V clamps at the ends",
+    "color_space": "source sRGB converted to linear RGB before GPU texture sampling",
+    "blend": "sampled RGB can be blended with transferred captured vertex colors",
+    "default_enabled": false
+  },
+  "runtime_validation": {
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "warp": "1.15.0",
+    "camera": "calibrated 1280x720 endoscope plus D405 and overview renders",
+    "texture_mix": 1.0,
+    "samples_per_pixel": 12,
+    "bounces": 1,
+    "result": "all three camera images rendered; Warp texture kernel compiled and executed",
+    "endoscope_image": "out/appendix300_highres_uv_review/endoscope.png",
+    "focused_tests": "8 passed: texture mapping/provenance and render normals"
+  },
+  "limitations": [
+    "This is cylindrical appearance projection, not calibrated camera-to-mesh registration or intrinsic albedo recovery.",
+    "The SAM2 candidate region has not been expert-verified as appendix tissue; its source video contains lighting and temporal averaging.",
+    "The current FEM surface is coarse and visibly faceted; high-resolution texture sampling does not increase geometry resolution.",
+    "The low-sample preview is a functional render check, not a visual realism or clinical validation pass."
+  ],
+  "privacy": "Input video, texture pixels, and rendered frames remain in the ignored local out/ directory; this tracked record stores provenance hashes and aggregate run details only."
+}

@@ -313,32 +313,64 @@ class RosotaTractionRLAdapter(RosotaRLAdapter):
 
 class RosotaVisionTractionRLAdapter(RosotaTractionRLAdapter):
     """Appendix-patch traction with the rendered endoscope RGB and proprioception."""
-    def __init__(self,env,*,proximity_m=.005,target_lift_m=.005):
+    def __init__(self,env,*,proximity_m=.005,target_lift_m=.005,
+                 visibility_shaping_weight=.1):
         super().__init__(env,proximity_m=proximity_m,target_lift_m=target_lift_m)
+        if not np.isfinite(visibility_shaping_weight) or visibility_shaping_weight < 0.:
+            raise ValueError("Visibility shaping weight must be finite and nonnegative")
         self.observation_space=spaces.Dict({
             "rgb":spaces.Box(0,255,VISION_IMAGE_SHAPE,dtype=np.uint8),
             "proprio":spaces.Box(-10.,10.,(VISION_PROPRIOCEPTION_DIM,),dtype=np.float32)})
+        self.visibility_shaping_weight = float(visibility_shaping_weight)
+        self.previous_visible_fraction = None
+        self.visible_fraction = None
 
     def _encode(self,observation,info):
         from PIL import Image
-        frame=np.asarray(self.env.render())
+        capture = getattr(self.env, "render_with_class_fraction", None)
+        if capture is None:
+            frame=np.asarray(self.env.render())
+            measure_visibility = getattr(self.env, "render_class_fraction", None)
+            self.visible_fraction = (float(measure_visibility("appendix"))
+                                     if measure_visibility is not None else None)
+        else:
+            frame, self.visible_fraction = capture("appendix")
+            frame = np.asarray(frame)
+            self.visible_fraction = float(self.visible_fraction)
         if frame.shape!=(360,640,3) or frame.dtype!=np.uint8:
             raise RuntimeError("The endoscope renderer did not return uint8 640x360 RGB")
         resized=np.asarray(Image.fromarray(frame,"RGB").resize(
             (VISION_IMAGE_SHAPE[1],VISION_IMAGE_SHAPE[0]),Image.Resampling.BILINEAR)).copy()
         proprio=encode_rosota_proprioception(observation,self.initial_scope_pose,
             self.steps/max(self.max_steps,1))
+        if self.visible_fraction is not None and not 0. <= self.visible_fraction <= 1.:
+            raise RuntimeError("Appendix semantic pixel fraction is outside [0, 1]")
         return {"rgb":resized,"proprio":proprio}
 
     def reset(self,*,seed=None,options=None):
+        self.previous_visible_fraction = None
         observation,info=super().reset(seed=seed,options=options)
+        self.previous_visible_fraction = self.visible_fraction
         info=dict(info,vision_policy=True,
                   rl_observation="endoscope_rgb_proprioception_v1",
-                  task_scope="endoscope RGB plus robot/jaw/contact proprioception; privileged patch geometry used only for reward")
+                  appendix_visible_fraction=self.visible_fraction,
+                  visibility_measurement="Isaac semantic pixel fraction; simulator-only; excluded from policy input",
+                  task_scope="endoscope RGB plus robot/jaw/contact proprioception; privileged patch geometry and appendix visibility used only for reward")
         return observation,info
 
     def step(self,action):
         observation,reward,terminated,truncated,info=super().step(action)
+        visibility_reward = 0.
+        if self.visible_fraction is not None and self.previous_visible_fraction is not None:
+            # Potential-based shaping rewards better framing while keeping
+            # segmentation ground truth out of the agent observation.
+            visibility_reward = self.visibility_shaping_weight * (
+                .99 * self.visible_fraction - self.previous_visible_fraction)
+            reward = float(reward) + visibility_reward
+            self.previous_visible_fraction = self.visible_fraction
         info=dict(info,vision_policy=True,rl_observation="endoscope_rgb_proprioception_v1",
-                  task_scope="endoscope RGB plus robot/jaw/contact proprioception; privileged patch geometry used only for reward")
+                  appendix_visible_fraction=self.visible_fraction,
+                  appendix_visibility_reward=float(visibility_reward),
+                  visibility_measurement="Isaac semantic pixel fraction; simulator-only; excluded from policy input",
+                  task_scope="endoscope RGB plus robot/jaw/contact proprioception; privileged patch geometry and appendix visibility used only for reward")
         return observation,reward,terminated,truncated,info

@@ -1,0 +1,129 @@
+{
+  "date": "2026-10-06",
+  "status": "three_seed_matched_action_ablation_reproduces_tool_contact_triggered_cecum_inversion; reset_contact_buffer_bug_fixed_and_rechecked",
+  "purpose": "Test whether instrument/soft-tissue collision is required for the previously reproduced cecum inversion on the exact same scripted action sequence.",
+  "hardware_backend": {
+    "device": "NVIDIA GeForce RTX 4090",
+    "backend": "Newton 1.4 / Warp 1.15",
+    "physics_hz": 480,
+    "control_hz": 30,
+    "action_chunk": 8
+  },
+  "paired_control": {
+    "policy": "scripted DemoPolicy; not learned RL",
+    "seed": 0,
+    "steps": 24,
+    "simulated_duration_s": 6.133333,
+    "same_action_array_elementwise": true,
+    "maximum_action_absolute_difference": 0.0,
+    "left_and_right_joint_trajectories_identical": true,
+    "grasp_assist_enabled_in_both": true,
+    "grasp_latched_in_either": false,
+    "assist_force_in_baseline_n": 0.0,
+    "conditions": [
+      {
+        "name": "contact_enabled_reference",
+        "tool_tissue_collision": true,
+        "grasp_assist": true,
+        "run": "out/appendix300_contact_assist_repro_v1/summary.json",
+        "physics_health_pass": false,
+        "failure": "2 inverted tetrahedra (cecum:2)",
+        "minimum_signed_volume_ratio": -0.605679,
+        "maximum_inverted_tetrahedra": 2,
+        "peak_tip_force_n": 0.516447,
+        "soft_contact_records_at_failure": 2148,
+        "left_jaw_soft_contact_records": 553,
+        "left_jaw_records_touching_worst_cecum_tet": 4,
+        "task_stages_completed": 0,
+        "rcm_excursion_steps": 0
+      },
+      {
+        "name": "tool_tissue_collision_disabled",
+        "tool_tissue_collision": false,
+        "grasp_assist": true,
+        "run": "out/appendix300_no_tool_contact_grasp_on_v1/summary.json",
+        "physics_health_pass": true,
+        "failure": null,
+        "minimum_signed_volume_ratio": 0.958106,
+        "maximum_inverted_tetrahedra": 0,
+        "peak_tip_force_n": 0.0,
+        "task_stages_completed": 0,
+        "rcm_excursion_steps": 0
+      }
+    ],
+    "interpretation": "Under this matched seed and identical action/arm trajectory, disabling only tool-to-tissue particle collision prevented the cecum inversion. Same-tick contact with all four nodes of the worst inverted tet localizes the failure to the tool/tissue interaction. This is evidence that contact triggers the failure in this tested trajectory; it does not establish calibrated contact forces or generalize to other trajectories."
+  },
+  "multi_seed_followup": {
+    "policy": "scripted DemoPolicy; not learned RL",
+    "seed_range": [1, 3],
+    "episodes_per_condition": 3,
+    "simulated_duration_s_per_episode": 6.133333,
+    "grasp_assist_enabled_in_both_conditions": true,
+    "paired_action_arrays_identical_for_each_seed": true,
+    "paired_left_and_right_joint_paths_identical_for_each_seed": true,
+    "contact_enabled": {
+      "tool_tissue_collision": true,
+      "run": "out/appendix300_contact_seed1to3_resetfix_v1/summary.json",
+      "episodes": [
+        {"seed": 1, "physics_health_pass": false, "failure": "2 inverted tetrahedra (cecum:2)", "minimum_signed_volume_ratio": -0.605679, "maximum_inverted_tetrahedra": 2, "peak_tip_force_n": 0.516447, "soft_contact_records_at_failure": 2148, "task_stages_completed": 0},
+        {"seed": 2, "physics_health_pass": false, "failure": "4 inverted tetrahedra (cecum:4)", "minimum_signed_volume_ratio": -0.657394, "maximum_inverted_tetrahedra": 4, "peak_tip_force_n": 0.517827, "soft_contact_records_at_failure": 2158, "task_stages_completed": 0},
+        {"seed": 3, "physics_health_pass": false, "failure": "4 inverted tetrahedra (cecum:4)", "minimum_signed_volume_ratio": -0.656959, "maximum_inverted_tetrahedra": 4, "peak_tip_force_n": 0.518113, "soft_contact_records_at_failure": 2158, "task_stages_completed": 0}
+      ]
+    },
+    "tool_tissue_collision_disabled": {
+      "tool_tissue_collision": false,
+      "run": "out/appendix300_no_contact_seed1to3_resetfix_v1/summary.json",
+      "episodes": [
+        {"seed": 1, "physics_health_pass": true, "failure": null, "minimum_signed_volume_ratio": 0.958106, "maximum_inverted_tetrahedra": 0, "peak_tip_force_n": 0.0, "task_stages_completed": 0},
+        {"seed": 2, "physics_health_pass": true, "failure": null, "minimum_signed_volume_ratio": 0.958106, "maximum_inverted_tetrahedra": 0, "peak_tip_force_n": 0.0, "task_stages_completed": 0},
+        {"seed": 3, "physics_health_pass": true, "failure": null, "minimum_signed_volume_ratio": 0.958106, "maximum_inverted_tetrahedra": 0, "peak_tip_force_n": 0.0, "task_stages_completed": 0}
+      ]
+    },
+    "interpretation": "All three paired contact-enabled trajectories failed with cecum inversion while all three exact-action contact-disabled counterparts remained above zero volume. The contact treatment is the only effective-config difference. This repeated result localizes a contact-triggered instability in these scripted paths, not a generally valid estimate of tissue contact mechanics."
+  },
+  "reset_observation_integrity": {
+    "bug": "Environment reset restored tissue and tool poses but retained the previous episode's Newton contact manifold; initial force observations could therefore report stale contact.",
+    "pre_fix_evidence": {
+      "run": "out/appendix300_contact_seed1to3_v1/summary.json",
+      "episodes_2_and_3_initial_contact_flag": true,
+      "spurious_initial_peak_wrench_n": [297888.21875, 299088.03125],
+      "interpretation": "Stale prior-episode contacts at reset; these values are rejected as force measurements and are not part of the corrected contact comparison."
+    },
+    "fix": "Zero restored rigid-body velocities and recompute Newton contacts from the reset particle and tool poses before returning the initial observation.",
+    "post_fix_evidence": {
+      "run": "out/appendix300_contact_seed1to3_resetfix_v1/summary.json",
+      "all_three_initial_contact_flags": false,
+      "all_three_initial_wrenches_n": 0.0,
+      "maximum_peak_force_n": 0.518113
+    },
+    "unit_test": "tests/test_newton_reset_contacts.py"
+  },
+  "factorial_sanity_checks": [
+    {
+      "tool_tissue_collision": false,
+      "grasp_assist": false,
+      "run": "out/appendix300_no_tool_contact_ablation_v1/summary.json",
+      "physics_health_pass": true,
+      "minimum_signed_volume_ratio": 0.958106,
+      "maximum_inverted_tetrahedra": 0
+    },
+    {
+      "tool_tissue_collision": true,
+      "grasp_assist": false,
+      "run": "out/appendix300_contact_no_assist_v1/summary.json",
+      "physics_health_pass": true,
+      "minimum_signed_volume_ratio": 0.049980,
+      "maximum_inverted_tetrahedra": 0,
+      "peak_tip_force_n": 0.255236,
+      "interpretation": "No inversion occurred, but a tet approached zero volume. This exploratory condition does not share the exact same action array as the paired control and indicates severe local compression rather than acceptable mechanics."
+    }
+  ],
+  "limits": [
+    "Only three scripted trajectories and one fixed scene/anatomy; not a distributional or held-out-anatomy result.",
+    "DemoPolicy completed zero appendectomy stages in every run.",
+    "The contact parameters and tool force channel remain uncalibrated against physical instruments or tissue.",
+    "A healthy signed-volume gate is a numerical invariant, not validation of realistic deformation.",
+    "This diagnostic used physics-only observations and provides no visual-policy or held-out RL evidence."
+  ],
+  "privacy": "Tracked report contains only aggregate metrics, settings and local run references. Raw tissue states, frames, source video, credentials and personal information remain local in ignored output directories."
+}

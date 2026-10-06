@@ -5,7 +5,9 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "newton_cell"))
-from task_metrics import deformation_health, resection_observations, tissue_probe
+from task_metrics import (deformation_health, deformation_health_by_organ,
+                          partition_tets_by_spans, resection_observations,
+                          tissue_probe)
 
 
 class NewtonTaskMetricTests(unittest.TestCase):
@@ -63,6 +65,26 @@ class NewtonTaskMetricTests(unittest.TestCase):
         result = deformation_health(broken, velocity, rest, tets)
         self.assertFalse(result["physics_state_finite"])
         self.assertEqual(result["tissue_nonfinite_tets"], 1)
+
+    def test_per_organ_health_localizes_inverted_tet(self):
+        rest = np.array([
+            [0., 0., 0.], [1., 0., 0.], [0., 1., 0.], [0., 0., 1.],
+            [3., 0., 0.], [4., 0., 0.], [3., 1., 0.], [3., 0., 1.],
+        ])
+        tets = np.array([[0, 1, 2, 3], [4, 5, 6, 7]])
+        spans = {"cecum": (0, 4), "appendix": (4, 8)}
+        groups = partition_tets_by_spans(tets, spans)
+        current = rest.copy()
+        current[7, 2] = -1.
+        qd = np.zeros_like(rest)
+
+        result = deformation_health_by_organ(current, qd, rest, groups)
+
+        self.assertEqual(result["cecum"]["tissue_inverted_tets"], 0)
+        self.assertEqual(result["appendix"]["tissue_inverted_tets"], 1)
+        self.assertAlmostEqual(
+            result["appendix"]["tissue_min_signed_volume_ratio"], -1.)
+        self.assertEqual(result["appendix"]["tissue_worst_tet_index"], 0)
 
 
 if __name__ == "__main__":

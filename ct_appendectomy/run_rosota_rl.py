@@ -49,15 +49,18 @@ def usd_dependency_hashes(path):
     return sorted(hashes)
 
 
-def asset_contract(assets, fr3_urdf, task="waypoint", appearance=None):
+def asset_contract(assets, fr3_urdf, task="waypoint", appearance=None,
+                   visibility_shaping_weight=.1):
     task_dimensions={"waypoint":("RosotaCTEnv/waypoint-reach-v1","privileged_state_v1",53,
                                   "mlp_privileged_v1"),
                      "unassisted-traction":("RosotaCTEnv/unassisted-bimanual-traction-v1",
                                               "privileged_traction_state_v1",65,"mlp_privileged_v1"),
-                     "vision-traction":("RosotaCTEnv/endoscope-rgb-traction-v1",
+                     "vision-traction":("RosotaCTEnv/endoscope-rgb-traction-visibility-v2",
                                          "endoscope_rgb_proprioception_v1",45,
                                          "cnn_endoscope_rgb_proprio_v1")}
     if task not in task_dimensions:raise ValueError("Unknown RL task contract: "+str(task))
+    if not np.isfinite(visibility_shaping_weight) or visibility_shaping_weight < 0.:
+        raise ValueError("Visibility shaping weight must be finite and nonnegative")
     environment,observation_contract,observation_dim,policy_architecture=task_dimensions[task]
     assets = Path(assets).resolve()
     scene, config = assets / "attached.usda", assets / "bimanual_config.json"
@@ -71,6 +74,8 @@ def asset_contract(assets, fr3_urdf, task="waypoint", appearance=None):
         "observation_dim": observation_dim,
         "action_dim": 14,
         "policy_architecture": policy_architecture,
+        "visibility_shaping_weight": (float(visibility_shaping_weight)
+                                       if task=="vision-traction" else None),
         "rgb_observation_shape": [90,160,3] if task=="vision-traction" else None,
         "appearance_sha256": file_sha256(appearance) if appearance else None,
         "appearance_dependency_sha256": usd_dependency_hashes(appearance) if appearance else [],
@@ -78,6 +83,7 @@ def asset_contract(assets, fr3_urdf, task="waypoint", appearance=None):
         "config_sha256": file_sha256(config),
         "fr3_urdf_sha256": file_sha256(fr3_urdf),
         "adapter_sha256": file_sha256(Path(__file__).with_name("rosota_rl_adapter.py")),
+        "semantic_visibility_sha256": file_sha256(Path(__file__).with_name("semantic_visibility.py")),
         "controller_sha256": file_sha256(Path(__file__).with_name("rosota_controller.py")),
         "ppo_sha256": file_sha256(Path(__file__).with_name("ppo_agent.py")),
         "runner_sha256": file_sha256(__file__),
@@ -262,7 +268,7 @@ def summarize(rows):
 
 
 def make_env(app, assets, fr3_urdf, out, *, max_steps=300, appearance=None,
-             task="waypoint"):
+             task="waypoint", visibility_shaping_weight=.1):
     from rosota_ct_env import RosotaCTEnv
     from rosota_rl_adapter import (RosotaRLAdapter, RosotaTractionRLAdapter,
                                   RosotaVisionTractionRLAdapter)
@@ -271,7 +277,8 @@ def make_env(app, assets, fr3_urdf, out, *, max_steps=300, appearance=None,
     core = RosotaCTEnv(app, assets, fr3_urdf, out, max_steps=max_steps,
                        grasp_mode="none", workspace="appendix_patches",
                        settle_policy="adaptive", appearance=appearance)
-    if task=="vision-traction":return RosotaVisionTractionRLAdapter(core)
+    if task=="vision-traction":return RosotaVisionTractionRLAdapter(
+        core,visibility_shaping_weight=visibility_shaping_weight)
     return RosotaTractionRLAdapter(core) if task == "unassisted-traction" else RosotaRLAdapter(core)
 
 
@@ -286,6 +293,8 @@ def main():
     parser.add_argument("--appearance", type=Path, help="Optional appearance layer for the CT environment")
     parser.add_argument("--task", choices=("waypoint", "unassisted-traction", "vision-traction"), default="waypoint",
                         help="Vision task uses endoscope RGB and proprioception; reward still reads target geometry")
+    parser.add_argument("--visibility-shaping-weight", type=float, default=.1,
+                        help="Potential reward weight for appendix image fraction on vision-traction; use 0 for ablation")
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--train-steps", type=int, default=0)
     parser.add_argument("--rollout-steps", type=int, default=256)
@@ -296,13 +305,17 @@ def main():
     args = parser.parse_args()
     if args.train_steps < 0 or args.rollout_steps < 64 or args.eval_episodes < 1:
         parser.error("train-steps must be nonnegative, rollout-steps at least 64, eval-episodes positive")
+    if not np.isfinite(args.visibility_shaping_weight) or args.visibility_shaping_weight < 0.:
+        parser.error("visibility-shaping-weight must be finite and nonnegative")
     if args.train_steps == 0 and args.checkpoint is None:
         parser.error("Evaluation-only mode requires --checkpoint")
     if not args.fr3_urdf.is_file():
         parser.error("FR3 URDF is missing: " + str(args.fr3_urdf))
-    training_contract = asset_contract(args.assets, args.fr3_urdf, args.task,args.appearance)
+    training_contract = asset_contract(args.assets, args.fr3_urdf, args.task,args.appearance,
+                                       args.visibility_shaping_weight)
     evaluation_assets = args.eval_assets or args.assets
-    evaluation_contract = asset_contract(evaluation_assets, args.fr3_urdf, args.task,args.appearance)
+    evaluation_contract = asset_contract(evaluation_assets, args.fr3_urdf, args.task,args.appearance,
+                                         args.visibility_shaping_weight)
     if args.checkpoint and not args.checkpoint.is_file():
         parser.error("Checkpoint not found: " + str(args.checkpoint))
 
@@ -324,7 +337,9 @@ def main():
         "status": "starting",
         "task": ("two-arm trocar-constrained waypoint reach; scope RCM actions exposed but not rewarded"
                  if args.task == "waypoint" else
-                 "unassisted bimanual appendix-patch contact and upward traction; engineering benchmark only"),
+                 ("endoscope RGB appendix-patch traction with simulator-only appendix visibility reward shaping; engineering benchmark only"
+                  if args.task == "vision-traction" else
+                  "unassisted bimanual appendix-patch contact and upward traction; engineering benchmark only")),
         "policy_input": ("endoscope RGB and robot/jaw/contact proprioception; target patch geometry is reward-only"
                          if args.task=="vision-traction" else "privileged proprioceptive state"),
         "task_is_appendectomy": False,
@@ -380,7 +395,8 @@ def main():
     env = None
     try:
         env = make_env(app, args.assets, args.fr3_urdf, args.out / "training",
-                       max_steps=300, appearance=args.appearance, task=args.task)
+                       max_steps=300, appearance=args.appearance, task=args.task,
+                       visibility_shaping_weight=args.visibility_shaping_weight)
         training = None
         if args.train_steps:
             training = train_ppo(env, model, optimizer, total_steps=args.train_steps,
@@ -393,7 +409,8 @@ def main():
             save_checkpoint(args.out / "policy.pt", model, optimizer, metadata)
         env.close()
         env = make_env(app, evaluation_assets, args.fr3_urdf, args.out / "evaluation",
-                       max_steps=300, appearance=args.appearance, task=args.task)
+                       max_steps=300, appearance=args.appearance, task=args.task,
+                       visibility_shaping_weight=args.visibility_shaping_weight)
         seeds = [args.seed + 100_000 + i for i in range(args.eval_episodes)]
         policies = ["scripted", "random"]
         if args.train_steps or args.checkpoint:

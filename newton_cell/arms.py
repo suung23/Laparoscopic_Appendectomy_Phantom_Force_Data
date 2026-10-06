@@ -19,9 +19,9 @@ links are then placed at those angles rather than servoed toward them. What the
 two engines can still disagree about is the tissue, which is allowed.
 
 The one thing this loses relative to PhysX is joint-reaction force sensing: a
-kinematically placed link reports no reaction. It is replaced by reading the
-soft-body contact forces the tissue puts on the instrument, which is a more
-direct measurement of the same quantity -- see `forces.py`.
+kinematically placed link reports no reaction. `forces.py` supplies a
+post-step, model-based estimate from soft-contact state; it is not a sensor
+readback, exact within-iteration solver reaction, or calibrated tissue force.
 """
 from __future__ import annotations
 
@@ -229,7 +229,10 @@ class NewtonArm:
         self._geom_cache = keep
         return keep
 
-    def register_bodies(self, builder, tissue_mu: float) -> None:
+    def register_bodies(self, builder, tissue_mu: float, *,
+                        contact_ke=1.0e5, contact_kd=1.0,
+                        contact_kf=1.0e3,
+                        tool_tissue_collision=True) -> None:
         """Add the instrument's colliding links as KINEMATIC Newton bodies.
 
         Kinematic, not dynamic: their transforms are written every substep from
@@ -249,10 +252,13 @@ class NewtonArm:
                 mesh=newton.Mesh(np.ascontiguousarray(v, np.float32),
                                  np.ascontiguousarray(f, np.int32).flatten(),
                                  is_solid=True),
-                cfg=builder.ShapeConfig(ke=1.0e5, kd=1.0, kf=1.0e3,
+                cfg=builder.ShapeConfig(ke=float(contact_ke),
+                                        kd=float(contact_kd),
+                                        kf=float(contact_kf),
                                         mu=tissue_mu, is_solid=True,
                                         has_shape_collision=False,
-                                        has_particle_collision=True),
+                                        has_particle_collision=bool(
+                                            tool_tissue_collision)),
                 label=f"{self.name}_{link}")
             self.bodies[link] = b
 

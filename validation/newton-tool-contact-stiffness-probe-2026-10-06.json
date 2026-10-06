@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-06",
+  "status": "same_seed_contact_ke_10k_did_not_prevent_cecum_inversion; no parameter promoted",
+  "purpose": "Check whether reducing instrument/shelf contact stiffness changes the matched scripted cecum inversion after the reset-contact fix.",
+  "hardware_backend": {
+    "device": "NVIDIA GeForce RTX 4090",
+    "backend": "Newton 1.4 / Warp 1.15",
+    "physics_hz": 480,
+    "control_hz": 30,
+    "action_chunk": 8
+  },
+  "protocol": {
+    "policy": "scripted DemoPolicy; not learned RL",
+    "seed": 1,
+    "tool_tissue_collision": true,
+    "grasp_assist": true,
+    "settle_seconds": 2.0,
+    "simulated_duration_s": 6.133333,
+    "baseline": "out/appendix300_contact_seed1to3_resetfix_v1/episode_000.npz",
+    "probe": "out/appendix300_contact_ke10000_seed1_v1/episode_000.npz",
+    "only_effective_config_difference": {
+      "rigid_tool_and_appendix_shelf_contact_ke": {
+        "baseline": 100000.0,
+        "probe": 10000.0
+      }
+    },
+    "unchanged": {
+      "contact_kd": 1.0,
+      "contact_kf": 1000.0,
+      "model_soft_contact_ke": 10000.0,
+      "model_soft_contact_kd": 1.0,
+      "model_soft_contact_kf": 1000.0
+    },
+    "action_arrays_identical": false,
+    "shared_episode_npz_arrays_identical": "50/70"
+  },
+  "result": {
+    "baseline": {
+      "physics_health_pass": false,
+      "failure": "2 inverted tetrahedra (cecum:2)",
+      "minimum_signed_volume_ratio": -0.6056794524,
+      "peak_tip_force_channel_n": 0.5164467096,
+      "task_stages_completed": 0
+    },
+    "contact_ke_10000": {
+      "physics_health_pass": false,
+      "failure": "2 inverted tetrahedra (cecum:2)",
+      "minimum_signed_volume_ratio": -0.6140815020,
+      "peak_tip_force_channel_n": 0.5103707314,
+      "task_stages_completed": 0
+    }
+  },
+  "interpretation": "Reducing the configured rigid tool/shelf ShapeConfig contact ke by 10x did not prevent failure and slightly worsened the most negative signed-volume ratio while slightly reducing the uncalibrated force channel. Because the solver trajectory changed, this is a matched-seed parameter probe, not a paired identical-action causal ablation. A previous seed-0 1000 N/m probe also inverted cecum. Do not tune stiffness to obtain a healthy metric without independent force-displacement calibration.",
+  "limits": [
+    "One seed, one scene, one scripted approach; no statistical or held-out claim.",
+    "DemoPolicy completed zero appendectomy stages.",
+    "The contact force channel and tissue mechanics are uncalibrated.",
+    "Changing contact stiffness changes the closed-loop trajectory, so output differences combine contact law and path differences.",
+    "A positive volume-only outcome would still not validate realistic contact or deformation."
+  ],
+  "privacy": "Tracked record contains aggregate metrics and local ignored-run references only. Source data, frames, credentials, and personal information remain local."
+}

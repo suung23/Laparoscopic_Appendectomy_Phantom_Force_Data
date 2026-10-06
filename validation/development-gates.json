@@ -68,6 +68,42 @@
       ]
     },
     {
+      "id": "newton-contact-force-readback",
+      "status": "not achieved; source audit confirms the current tool wrench is a post-step model estimate using static mixed stiffness, while Newton VBD evaluates contact with a per-contact AVBD penalty that changes during solver iterations; no physical force-displacement calibration exists",
+      "evidence": [
+        "validation/newton-contact-wrench-model-audit-2026-10-06.json",
+        "newton_cell/forces.py",
+        "tests/test_newton_contact_wrench_kernel.py"
+      ],
+      "requires": [
+        "per-iteration reaction capture or independently justified reconstruction of the exact solver force",
+        "known-load instrument/contact fixture with force balance residual bounds",
+        "measured tissue force-displacement and friction calibration",
+        "held-out material/contact validation"
+      ]
+    },
+    {
+      "id": "newton-tool-contact-stability",
+      "status": "three paired seeds reproduce cecum inversion in all contact-enabled DemoPolicy paths while exact-action contact-disabled controls all pass; reset-contact telemetry was fixed and rechecked. A 3/6/12 mm/s probe changes severity but does not prevent inversion. A kf=0 trial was a no-op for VBD tool/FEM contact: Newton source shows that formulation consumes averaged mu, ke and kd, not ShapeConfig.kf. The app now overrides mu on both soft and instrument sides. A same-seed-range zero-mu probe avoids inversion for all three scripted seeds, but raises peak nodal speed to 85–136 mm/s, sharply reduces the uncalibrated wrench channel, and completes zero stages; it is not promoted. A same-seed 10x contact-ke reduction also fails with two inverted cecum tets and a slightly more negative minimum signed-volume ratio; its action path changes. A same-seed 96-iteration 6.5 s follow-up yielded no physics result: the process stopped making CPU/GPU progress while the main worker waited on Windows IPC and had to be interrupted. A finer live-FEM cecum surface clearance heuristic with batched queries passed focused tests but repeated the same action path and two-cecum-tet inversion at 6.133 s on seed 20261006; contact mechanics remain uncalibrated.",
+      "evidence": [
+        "validation/newton-tool-tissue-collision-ablation-2026-10-06.json",
+        "validation/newton-cecum-contact-inversion-diagnostics-2026-10-06.json",
+        "validation/newton-demo-approach-speed-probe-2026-10-06.json",
+        "validation/newton-tool-friction-ablation-2026-10-06.json",
+        "validation/newton-tool-contact-stiffness-probe-2026-10-06.json",
+        "validation/newton-tool-mu-ablation-2026-10-06.json",
+        "validation/newton-contact-iter96-runtime-stall-2026-10-06.json",
+        "validation/newton-surface-clearance-fine-sampling-runtime-2026-10-06.json"
+      ],
+      "requires": [
+        "repeat across seeds and contact approaches",
+        "no inverted or near-zero-volume tets under task-relevant contact",
+        "measured force-displacement and friction calibration",
+        "bimanual grasp, traction, and release with trocar constraints",
+        "held-out anatomy and tissue parameters"
+      ]
+    },
+    {
       "id": "surgical-topology",
       "status": "not achieved",
       "requires": [
@@ -89,7 +125,7 @@
     },
     {
       "id": "real-video-appearance",
-      "status": "not achieved; a local RTX 4090 SAM2 prompt proposal now drives a mask-aware texture into the same USD UV layer, and USD validation confirms 54 mesh geometries/normals/UVs are unchanged. A local patch-size sweep found an 80 px synthesized candidate with lower short-period grayscale autocorrelation than the 48 px version, but periodic markings remain and the result is only a texture-synthesis heuristic. It remains unpromoted: the sampled object is not expert-confirmed as appendix, mask IoU against its 10.0s anchor falls to 0.156 by 10.5s, camera-to-mesh registration and Isaac moving-endoscope review are absent, the texture is observed RGB rather than calibrated albedo, and the copied mesoappendix map remains rejected. The earlier v19 ROI candidate also remains rejected; held-out review and the 2026-10-06 Windows Application Control startup blocker remain unresolved",
+      "status": "not achieved; RTX 4090 confirms the provisional Appendix300 RGB candidate reaches the Newton endoscope render on the captured appendix display surface, including a one-level render-only subdivision pass. A 6.0 s scripted render records 5.02 mm p95 appendix display-surface motion with the UV texture still bound to the live FEM nodes; this render did not record per-tick physics health. The same-camera rest control comparison localizes observed RGB changes to the appendix area (1.58% of image pixels; independent path-tracer samples, so descriptive only). FEM/contact geometry are unchanged. Captured surfaces bind uniquely to FEM rest nodes with <0.011 micrometre rest error, but the video object is not expert-confirmed as appendix, mask IoU against its 10.0s anchor falls to 0.156 by 10.5s, and cylindrical UV projection is not camera-to-mesh registration. Observed RGB is not calibrated albedo, the copied mesoappendix map remains rejected, and the wide endoscope composition, coarse surrounding anatomy, and material/contact realism still fail review. Appearance remains unpromoted",
       "evidence": [
         "validation/appendix300-texture-v7-preflight.json",
         "validation/appendix300-temporal-texture-v1.json",
@@ -99,6 +135,10 @@
         "validation/appendix300-surface-texture-audit-v20.json",
         "validation/appendix300-sam2-appearance-v20.json",
         "validation/appendix300-texture-quilting-sweep-v22.json",
+        "validation/appendix300-newton-texture-render-ab-2026-10-06.json",
+        "validation/appendix300-smoothed-texture-render-2026-10-06.json",
+        "validation/appendix300-texture-deformation-render-2026-10-06.json",
+        "validation/newton-captured-render-surface-binding-2026-10-06.json",
         "ct_appendectomy/appendix300_video_texture.py",
         "tests/test_appendix300_texture.py"
       ],
@@ -132,6 +172,23 @@
         "wall-clock throughput and reproducible resets",
         "comparison with original Rosota and LapGym",
         "no reward improvement via invalid tissue physics"
+      ]
+    },
+    {
+      "id": "endoscope-appendix-visibility-shaping",
+      "status": "implemented and CPU/mock tested; live Replicator label attachment, per-step rendering synchronization, reward scale and learned benefit remain unverified",
+      "evidence": [
+        "ct_appendectomy/semantic_visibility.py",
+        "ct_appendectomy/rosota_ct_env.py",
+        "ct_appendectomy/rosota_rl_adapter.py",
+        "tests/test_semantic_visibility.py",
+        "tests/test_rosota_traction_adapter.py"
+      ],
+      "requires": [
+        "live Isaac semantic mask matches the appendix render prim",
+        "live paired RGB and semantic frames have matching dimensions and the same render tick",
+        "multiple paired seeds show visibility reward improves appendix framing without degrading contact or tissue health",
+        "visibility reward weight is justified by ablation"
       ]
     },
     {
