@@ -48,6 +48,25 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 
+def physics_health_gate(state_finite, volume_ratio, inverted_tets,
+                        nonfinite_tets):
+    """Return True/False when backend health telemetry exists, else None."""
+    arrays = [np.asarray(x, dtype=np.float64).reshape(-1) for x in
+              (state_finite, volume_ratio, inverted_tets, nonfinite_tets)]
+    if not any(np.isfinite(x).any() for x in arrays):
+        return None
+    finite_state, volumes, inverted, nonfinite = arrays
+    return bool(
+        finite_state.size and np.isfinite(finite_state).all()
+        and np.all(finite_state > 0.5)
+        and volumes.size and np.isfinite(volumes).all()
+        and np.all(volumes > 0.0)
+        and inverted.size and np.isfinite(inverted).all()
+        and np.all(inverted == 0.0)
+        and nonfinite.size and np.isfinite(nonfinite).all()
+        and np.all(nonfinite == 0.0))
+
+
 # --------------------------------------------------------------------------
 # metrics -- what a rollout is scored on
 # --------------------------------------------------------------------------
@@ -145,6 +164,7 @@ class Episode:
         self.meta = {}
         self.n = 0
         self.violated = ""
+        self.physics_failure = ""
         self.rcm_excursions = 0
 
     def add(self, obs, action=None):
@@ -279,6 +299,9 @@ class Episode:
         inverted_tets = a.get("tissue_inverted_tets", np.full(n, np.nan))
         nonfinite_tets = a.get("tissue_nonfinite_tets", np.full(n, np.nan))
         tissue_speed = a.get("tissue_max_speed_m_s", np.full(n, np.nan))
+        physics_health_pass = physics_health_gate(
+            health_finite, volume_ratio, inverted_tets, nonfinite_tets)
+        physics_health_failed = physics_health_pass is False
         rcm = np.concatenate([a["left_rcm_err"], a["right_rcm_err"]])
         bite = np.concatenate([a["left_bite"], a["right_bite"]])
         f = np.stack([a["f_bend_x"], a["f_bend_y"], a["f_axial"]], 1)
@@ -301,9 +324,12 @@ class Episode:
             # lifts but never brings the cutter to the right stretch of
             # appendix has not done it (user), so all five stages have to land,
             # in order, on a rig that stayed in its trocars.
-            success=bool(stage_done["cut"] and not self.violated),
+            success=bool(stage_done["cut"] and not self.violated
+                         and not physics_health_failed),
             physics_health_available=health_available,
             physics_state_finite=physics_state_finite,
+            physics_health_pass=physics_health_pass,
+            physics_failure=self.physics_failure,
             minimum_signed_volume_ratio=(
                 float(np.nanmin(volume_ratio)) if np.isfinite(volume_ratio).any()
                 else float("nan")),
@@ -320,7 +346,8 @@ class Episode:
             # scored on and the two are worth comparing
             grasp_lift_success=bool(held.any()
                                     and lift_held.max() >= self.LIFT_SUCCESS_M
-                                    and not self.violated),
+                                    and not self.violated
+                                    and not physics_health_failed),
             stages_completed=int(sum(stage_done.values())),
             stages_total=len(self.STAGES),
             task_progress=float(sum(stage_done.values()) / len(self.STAGES)),
@@ -512,6 +539,9 @@ def main(argv=None):
     ap.add_argument("--keep-frames", action="store_true")
     ap.add_argument("--no-images", action="store_true",
                     help="do not store images in the npz (videos still work)")
+    ap.add_argument("--continue-invalid-physics", action="store_true",
+                    help="diagnostic only: continue after invalid tissue physics; "
+                         "episode remains failed")
     ap.add_argument("--image-every", type=int, default=1)
     ap.add_argument("--stereo", action="store_true")
     ap.add_argument("--gui", action="store_true")
@@ -571,6 +601,12 @@ def main(argv=None):
             act = policy(obs)
             obs, info = env.step(act)
             rec.add(obs, act)
+            if info.get("physics_invalid"):
+                rec.physics_failure = str(info["physics_invalid"])
+                print(f"    episode {ep} STOPPED at step {k}: invalid physics: "
+                      f"{rec.physics_failure}", flush=True)
+                if not args.continue_invalid_physics:
+                    break
             if args.video and k % args.image_every == 0:
                 if "rgb" in obs["endoscope"]:
                     iio.imwrite(fdir / f"endoscope_{nvid:05d}.png",

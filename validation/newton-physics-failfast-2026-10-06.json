@@ -1,0 +1,37 @@
+{
+  "status": "failed_numerical_integrity_gate",
+  "date": "2026-10-06",
+  "purpose": "Verify default rollout termination and score invalidation after tissue element inversion.",
+  "backend": "Newton 1.4 / Warp 1.15",
+  "device": "NVIDIA GeForce RTX 4090",
+  "policy": "scripted DemoPolicy; not learned RL",
+  "command": "newton_cell/eval.py --physics-only --preset metrics --policy demo --episodes 1 --seconds 4 --seed 20261006 --no-images --out out/physics-gate-smoke-20261006",
+  "simulation": {
+    "requested_duration_s": 4.0,
+    "observed_duration_s": 1.0666667,
+    "recorded_observations": 5,
+    "wall_duration_s": 20.0,
+    "real_time_factor": 0.053
+  },
+  "first_invalid_sample": {
+    "reason": "16 inverted tetrahedra",
+    "minimum_signed_volume_ratio": -0.7656779,
+    "nonfinite_tetrahedra": 0,
+    "state_finite": true,
+    "maximum_nodal_speed_m_s": 0.3569856
+  },
+  "expected_guard_behavior": {
+    "terminated_at_first_invalid_control_step": true,
+    "physics_health_pass": false,
+    "task_success": false,
+    "grasp_lift_success": false,
+    "stages_completed": 0,
+    "failure_reason_recorded": true
+  },
+  "result": "guard works; mechanics fail the gate. The appendix task is not qualified for SCOPE v1 manuscript evaluation.",
+  "test_suite": {
+    "command": "python -m unittest discover -s tests -v",
+    "passed": 71
+  },
+  "privacy": "No raw video, personal information, patient metadata, or private dataset content is included."
+}

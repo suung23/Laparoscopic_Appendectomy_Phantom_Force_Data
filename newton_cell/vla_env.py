@@ -227,7 +227,21 @@ class LaparoVLAEnv:
         self.n_steps += 1
 
         info = self._info(a, K)
-        return self.observe(), info
+        obs = self.observe()
+        task = obs.get("task", {})
+        if task:
+            invalid_reasons = []
+            if not bool(task.get("physics_state_finite", True)):
+                invalid_reasons.append("non-finite FEM state")
+            inverted = int(task.get("tissue_inverted_tets", 0))
+            nonfinite = int(task.get("tissue_nonfinite_tets", 0))
+            if inverted > 0:
+                invalid_reasons.append(f"{inverted} inverted tetrahedra")
+            if nonfinite > 0:
+                invalid_reasons.append(f"{nonfinite} non-finite tetrahedra")
+            if invalid_reasons:
+                info["physics_invalid"] = "; ".join(invalid_reasons)
+        return obs, info
 
     def _info(self, a, K):
         info = {"sub_steps": int(K)}
