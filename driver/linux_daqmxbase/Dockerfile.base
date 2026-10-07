@@ -1,0 +1,19 @@
+FROM centos:7
+
+# CentOS 7 is EOL -> repoint yum to vault.centos.org
+RUN sed -i -e 's|^mirrorlist=|#mirrorlist=|g' \
+           -e 's|^#\?baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' \
+           /etc/yum.repos.d/CentOS-Base.repo
+
+# 32-bit runtime deps for liblvrt / NI-VISA / DAQmx Base + build tools.
+# protected_multilib=false avoids el7 vs el7_9 x86_64/i686 version conflicts.
+RUN yum -y --setopt=protected_multilib=false install \
+        glibc.i686 libstdc++.i686 libgcc.i686 \
+        libusb.i686 libusbx.i686 \
+        libX11.i686 libXext.i686 libXinerama.i686 mesa-libGL.i686 mesa-libGLU.i686 \
+        libICE.i686 libSM.i686 libXrender.i686 libXft.i686 libXt.i686 libXmu.i686 \
+        libXtst.i686 libXi.i686 libXcursor.i686 libXrandr.i686 libXfixes.i686 libXcomposite.i686 \
+        fontconfig.i686 freetype.i686 expat.i686 zlib.i686 ncurses-libs.i686 \
+        nss-softokn-freebl.i686 \
+        gcc glibc-devel.i686 make which file findutils \
+ && yum clean all && rm -rf /var/cache/yum

@@ -1,0 +1,15 @@
+--- /tmp/claude-1000/-home-rosota-SurgiTagV2/e763183e-7949-42b6-ade1-eb4a101c622c/scratchpad/nipalki_x/nikal_x/usr/local/natinst/nikal/src/nikal/nikal.h	2015-05-30 06:58:43.000000000 +0900
++++ /tmp/claude-1000/-home-rosota-SurgiTagV2/e763183e-7949-42b6-ade1-eb4a101c622c/scratchpad/nikal_build/nikal.h	2026-06-28 14:28:41.876196641 +0900
+@@ -10,9 +10,9 @@
+ #ifndef     ___nikal_h___
+ #define     ___nikal_h___
+ 
+-#include <stdbool.h>
+-#include <stdarg.h>
+-#include <stddef.h>
++#include <linux/types.h>
++#include <linux/stdarg.h>
++#include <linux/stddef.h>
+ 
+ /* ---------------------------------------------------------------------- */
+ /* KAL macros */

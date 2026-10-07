@@ -1,0 +1,4 @@
+# Host-side visualizer deps (run OUTSIDE Docker, e.g. conda env `surgitag`).
+# The visualizer only reads a Unix socket — it does NOT need nidaqmx.
+numpy>=1.24
+matplotlib>=3.7

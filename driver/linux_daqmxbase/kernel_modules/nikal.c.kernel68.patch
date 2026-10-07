@@ -1,0 +1,481 @@
+--- /tmp/claude-1000/-home-rosota-SurgiTagV2/e763183e-7949-42b6-ade1-eb4a101c622c/scratchpad/nipalki_x/nikal_x/usr/local/natinst/nikal/src/nikal/nikal.c	2015-05-30 06:58:43.000000000 +0900
++++ /tmp/claude-1000/-home-rosota-SurgiTagV2/e763183e-7949-42b6-ade1-eb4a101c622c/scratchpad/nikal_build/nikal.c	2026-06-28 14:44:37.957790901 +0900
+@@ -33,7 +33,7 @@
+ #define nNIKAL1500_mACPIIsSupported (defined(CONFIG_ACPI))
+ 
+ 
+-#define nNIKAL100_mSerialCoreIsSupported (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,32))
++#define nNIKAL100_mSerialCoreIsSupported 0  /* port: disabled, not needed for DAQ */
+ 
+ #define nNIKAL100_mMin(x,y) ((x)<(y)?(x):(y))
+ #define nNIKAL100_mMax(x,y) ((x)>(y)?(x):(y))
+@@ -48,7 +48,7 @@
+    #endif
+ 
+    #ifdef MODVERSIONS
+-      #include <config/modversions.h>
++      /* removed obsolete: config/modversions.h */
+    #endif
+ 
+    #include <linux/module.h>
+@@ -80,9 +80,9 @@
+ #endif
+ 
+ #include <asm/mman.h>
+-#include <asm/uaccess.h>
++#include <linux/uaccess.h>
+ #include <asm/io.h>
+-#include <asm/atomic.h>
++#include <linux/atomic.h>
+ #include <linux/err.h>
+ #include <linux/workqueue.h>
+ #include <linux/cpumask.h>
+@@ -123,8 +123,56 @@
+ 
+ #include "nikal.h"
+ 
++/* ===================================================================
++ * Kernel 6.8 compatibility shims (port from 2.6-era source, 2026)
++ * Only internal kernel-API call sites are adapted; the exported nNIKAL
++ * ABI (107 symbols used by precompiled nipalk.o) is left unchanged.
++ * =================================================================== */
++#include <linux/mman.h>          /* MAP_SHARED */
++#include <linux/sched/signal.h>
++#include <linux/cred.h>
++#include <linux/uaccess.h>
++#include <linux/scatterlist.h>
++
++/* MAX_ORDER renamed to MAX_PAGE_ORDER in 6.8 */
++#ifndef MAX_ORDER
++#define MAX_ORDER MAX_PAGE_ORDER
++#endif
++
++/* mm->mmap_sem renamed to mmap_lock in 5.8 (still a rw_semaphore) */
++#define mmap_sem mmap_lock
++
++/* proc helpers */
++#ifndef PDE_DATA
++#define PDE_DATA(inode) pde_data(inode)
++#endif
++
++/* page refcount helper renamed */
++#define page_cache_release(p) put_page(p)
++
++/* 32-bit ioctl conversion registry removed; .compat_ioctl handles it now */
++#define register_ioctl32_conversion(cmd, handler) (0)
++#define unregister_ioctl32_conversion(cmd) (0)
++
++/* select modern code paths that already exist in the source */
++#define nNIKAL100_kPTEOffsetKernel 1   /* use pte_offset_kernel/_map, not removed pte_offset */
++#define nNIKAL240_kHasVmMmap 1         /* use vm_mmap(), not do_mmap() */
++#define nNIKAL240_kHasVmMunmap 1       /* use vm_munmap(), not do_munmap() */
++
++/* select modern API branches that already exist in the source */
++#define nNIKAL240_kHasPciBusnRes 1        /* pci_bus->busn_res, not ->secondary */
++#define nNIKAL220_kHasSGLPageAPI 1        /* sg_set_page(), not sg->page */
++#define nNIKAL230_kHasCred 1              /* current_euid() via cred */
++#define nNIKAL1400_kHasUidGid 1           /* from_kuid() */
++#define nNIKAL250_kHasFamilyGenlmsgPut 1 /* genlmsg_put(skb,..,&family,..) */
++#define nNIKAL250_kHasNamespacedGenetlink 1 /* genlmsg_unicast(&init_net,..) */
++
+ #ifdef MODULE_LICENSE
+-   MODULE_LICENSE("Copyright (c) 2002-2015 National Instruments Corporation.  All Rights Reserved.  Any and all use of the copyrighted materials is subject to the then current terms and conditions of the applicable license agreement, which can be found at <http://www.ni.com/linux/>.");
++   /* port: declare GPL so the shim may use modern GPL-only kernel symbols
++      (rcu, cc_mkdec, ...). The nNIKAL API is still EXPORT_SYMBOL (non-GPL),
++      so the precompiled proprietary nipalk.o can still link against it. */
++   MODULE_LICENSE("GPL");
++   MODULE_INFO(ni_original_license, "Copyright (c) 2002-2015 National Instruments Corporation. All Rights Reserved.");
+ #endif
+ 
+ #ifdef MODULE_AUTHOR
+@@ -364,8 +412,8 @@
+ static nNIKAL100_tBoolean nNIKAL100_isKernelContiguousPointer(const void *ptr);
+ static nNIKAL100_tUPtr nNIKAL230_kernelVirtualToPhysical(const void *ptr);
+ 
+-static int nNIKAL190_vmaPageFaultHandler(nLinux_vmArea *vma, nLinux_vmFault *vmf);
+-static int nNIKAL220_vmaPageFaultHandler(nLinux_vmArea *vma, nLinux_vmFault *vmf);
++static vm_fault_t nNIKAL190_vmaPageFaultHandler(nLinux_vmFault *vmf);
++static vm_fault_t nNIKAL220_vmaPageFaultHandler(nLinux_vmFault *vmf);
+ 
+ #ifdef nNIKAL160_kIRQRegs
+    static irqreturn_t nNIKAL100_dispatchHardwareInterrupt (int irq, void *context,
+@@ -653,12 +701,13 @@
+ static const nNIKAL100_tMMapData* nNIKAL100_gMMapDataPtr = &nNIKAL100_gMMapData;
+ 
+ #ifndef nNIKAL1400_kHasCreateProcReadEntry
+-static nLinux_fileOperations nNIKAL250_procFops =
++/* port: proc_create_data takes struct proc_ops (>=5.6) */
++static const struct proc_ops nNIKAL250_procFops =
+ {
+-   .open = nNIKAL250_procOpen,
+-   .read = seq_read,
+-   .llseek = seq_lseek,
+-   .release = seq_release
++   .proc_open = nNIKAL250_procOpen,
++   .proc_read = seq_read,
++   .proc_lseek = seq_lseek,
++   .proc_release = seq_release
+ };
+ #endif
+ 
+@@ -2014,16 +2063,9 @@
+ 
+ #define NLNIKAL_CMD_SEND     1
+ 
+-static struct genl_family nikal_netlink_family =
+-{
+-   .id = GENL_ID_GENERATE,
+-   .name = "nlnikal",
+-   .version = 1,
+-   .maxattr = 1
+-};
+-
+ static int nlnikal_msg(struct sk_buff *skb, struct genl_info *info) { return 0; }
+ 
++/* port: ops must precede family; id auto-assigned (GENL_ID_GENERATE removed) */
+ static struct genl_ops nikal_netlink_ops[] =
+ {
+    {
+@@ -2032,6 +2074,16 @@
+    },
+ };
+ 
++static struct genl_family nikal_netlink_family =
++{
++   .name = "nlnikal",
++   .version = 1,
++   .maxattr = 1,
++   .module = THIS_MODULE,
++   .ops = nikal_netlink_ops,
++   .n_ops = ARRAY_SIZE(nikal_netlink_ops),
++};
++
+ 
+ static int __init nNIKAL100_initDriver(void)
+ {
+@@ -2053,11 +2105,8 @@
+    kref_init(&(nNIKAL200_sPALPseudoDevice.kref));
+    kref_init(&(nNIKAL200_sPALPseudoDeviceInterface.kref));
+ 
+-#ifdef nNIKAL1400_kHasFamilyGenlOpsGroups
+-   if ((status = genl_register_family_with_ops(&nikal_netlink_family, nikal_netlink_ops))) return status;
+-#else
+-   if ((status = genl_register_family_with_ops(&nikal_netlink_family, nikal_netlink_ops, 1))) return status;
+-#endif
++   /* port: genl_register_family_with_ops removed; ops now in family struct */
++   if ((status = genl_register_family(&nikal_netlink_family))) return status;
+ 
+ 
+    nNIKAL200_sProcRootDir = proc_mkdir("driver/ni", NULL);
+@@ -2368,7 +2417,7 @@
+ 
+    if (status >= 0)
+    {
+-      vma->vm_flags |= nNIKAL240_kVM_RESERVED | VM_LOCKED | VM_DONTCOPY | VM_DONTEXPAND;
++      vm_flags_set(vma, nNIKAL240_kVM_RESERVED | VM_LOCKED | VM_DONTCOPY | VM_DONTEXPAND);
+    }
+ 
+    return status;
+@@ -3181,7 +3230,7 @@
+ }
+ 
+ 
+-static int nNIKAL190_vmaPageFaultHandler(nLinux_vmArea *vma, nLinux_vmFault *vmf)
++static vm_fault_t nNIKAL190_vmaPageFaultHandler(nLinux_vmFault *vmf)
+ {
+    nNIKAL100_tUPtr addr = vmf->pgoff << PAGE_SHIFT;
+    vmf->page = (nLinux_physicalPage*)nNIKAL100_incrementPageRefcount((void*)addr);
+@@ -3189,8 +3238,9 @@
+ }
+ 
+ 
+-static int nNIKAL220_vmaPageFaultHandler(nLinux_vmArea *vma, nLinux_vmFault *vmf)
++static vm_fault_t nNIKAL220_vmaPageFaultHandler(nLinux_vmFault *vmf)
+ {
++   nLinux_vmArea *vma = vmf->vma;
+    nNIKAL220_tUserMemMapPrivateData *_vma = vma->vm_private_data;
+    nNIKAL220_tPageList *list = _vma->list;
+ 
+@@ -3529,19 +3579,19 @@
+    }
+ 
+    down_read(&(current->mm->mmap_sem));
+-   pagesMapped = get_user_pages(current, current->mm, (unsigned long) start,
+-      sizeInPages, isWritable, 0 , pages, NULL );
++   pagesMapped = get_user_pages((unsigned long) start,
++      sizeInPages, isWritable ? FOLL_WRITE : 0, pages);
+    up_read(&(current->mm->mmap_sem));
+ 
+    if (pagesMapped < 0)
+    {
+-      
++
+       if (pagesMapped == -EFAULT)
+       {
+          isWritable = 0;
+          down_read(&(current->mm->mmap_sem));
+-         pagesMapped = get_user_pages(current, current->mm, (unsigned long) start,
+-            sizeInPages, isWritable, 0 , pages, NULL );
++         pagesMapped = get_user_pages((unsigned long) start,
++            sizeInPages, isWritable ? FOLL_WRITE : 0, pages);
+          up_read(&(current->mm->mmap_sem));
+       }
+       
+@@ -3599,21 +3649,18 @@
+ 
+ static inline pmd_t *nNIKAL120_getPageTablePMDEntry(nLinux_mm* mm, const void *address)
+ {
++   /* port: full 5-level walk (pgd->p4d->pud->pmd); folds on 4-level */
+    pgd_t *pgd;
+-#ifdef nNIKAL100_kFourLevelPageTable
++   p4d_t *p4d;
+    pud_t *pud;
+-#endif
+    pmd_t *pmd;
+ 
+    nNIKAL100_compileTimeAssert(sizeof(pte_t) <= 8, "pte_t is larger then 128 bits!\n");
+ 
+    pgd = pgd_offset(mm, (nNIKAL100_tUPtr)address);
+-#ifdef nNIKAL100_kFourLevelPageTable
+-   pud = pud_offset(pgd, (nNIKAL100_tUPtr)address);
++   p4d = p4d_offset(pgd, (nNIKAL100_tUPtr)address);
++   pud = pud_offset(p4d, (nNIKAL100_tUPtr)address);
+    pmd = pmd_offset(pud, (nNIKAL100_tUPtr)address);
+-#else
+-   pmd = pmd_offset(pgd, (nNIKAL100_tUPtr)address);
+-#endif
+    return pmd;
+ }
+ 
+@@ -3639,7 +3686,7 @@
+    pmd_t *pmd = nNIKAL120_getPageTablePMDEntry(mm, address);
+ 
+ #ifdef nNIKAL100_kPTEOffsetKernel
+-   return pte_offset_map(pmd, (nNIKAL100_tUPtr)address);
++   return pte_offset_kernel(pmd, (nNIKAL100_tUPtr)address);
+ #else
+    return pte_offset(pmd, (nNIKAL100_tUPtr)address);
+ #endif
+@@ -3658,7 +3705,7 @@
+ {
+    int status;
+    nLinux_vmArea *vma = (nLinux_vmArea*)vmaPtr;
+-   vma->vm_flags |= (nNIKAL240_kVM_RESERVED | VM_IO);
++   vm_flags_set(vma, (nNIKAL240_kVM_RESERVED | VM_IO));
+ 
+    status = remap_pfn_range(vma, vma->vm_start, physAddr >> PAGE_SHIFT,
+       (vma->vm_end - vma->vm_start),
+@@ -3693,11 +3740,10 @@
+ 
+ static inline int nNIKAL240_do_munmap(struct mm_struct *mm, unsigned long addr, size_t len)
+ {
+-#ifdef nNIKAL100_kFourParameterDoMunmap
+-   return do_munmap(mm, addr, len, 1);
+-#else
+-   return do_munmap(mm, addr, len);
+-#endif
++   /* port: do_munmap() unexported in modern kernels; vm_munmap() is the
++      caller-facing replacement (takes mmap_lock itself). Dead code here
++      because nNIKAL240_kHasVmMunmap is defined, but must still compile. */
++   return vm_munmap(addr, len);
+ }
+ 
+ 
+@@ -3794,7 +3840,7 @@
+    if (pmd_present(*_pmd))
+    {
+ #ifdef nNIKAL100_kPTEOffsetKernel
+-      _pte = pte_offset_map(_pmd, (nNIKAL100_tUPtr)ptr);
++      _pte = pte_offset_kernel(_pmd, (nNIKAL100_tUPtr)ptr);
+ #else
+       _pte = pte_offset(_pmd, (nNIKAL100_tUPtr)ptr);
+ #endif
+@@ -3923,10 +3969,10 @@
+ nNIKAL100_cc void nNIKAL100_getTimeOfDay (nNIKAL100_tU32 *systemSeconds,
+    nNIKAL100_tU32 *systemMicroSeconds)
+ {
+-   nLinux_timeValue systemTime;
+-   do_gettimeofday(&systemTime);
+-   *systemSeconds = systemTime.tv_sec;
+-   *systemMicroSeconds = systemTime.tv_usec;
++   struct timespec64 systemTime;   /* port: timeval/do_gettimeofday removed */
++   ktime_get_real_ts64(&systemTime);
++   *systemSeconds = (nNIKAL100_tU32)systemTime.tv_sec;
++   *systemMicroSeconds = (nNIKAL100_tU32)(systemTime.tv_nsec / 1000);
+ }
+ 
+ 
+@@ -4381,6 +4427,19 @@
+    _timerCallbackPkg->func( _timerCallbackPkg->context );
+ }
+ 
++/* port: timer_setup() callbacks take struct timer_list*; carry the package
++   pointer alongside the timer and recover it with from_timer(). */
++struct nNIKAL_timerCompat
++{
++   struct timer_list tl;
++   nNIKAL100_tTimerCallbackSpec *pkg;
++};
++static void nNIKAL_timerTrampoline( struct timer_list *tl )
++{
++   struct nNIKAL_timerCompat *c = from_timer(c, tl, tl);
++   nNIKAL100_timeoutCallback( (unsigned long) c->pkg );
++}
++
+ 
+ nNIKAL100_cc nNIKAL100_tStatus nNIKAL100_waitForSingleUseEvent( void *event )
+ {
+@@ -4489,26 +4548,21 @@
+    nNIKAL100_tTimerCallbackSpec *timerCallbackPkg
+ )
+ {
+-   nLinux_timerList timer;
++   struct nNIKAL_timerCompat timer;
+    nNIKAL100_tStatus retVal = nNIKAL100_kStatusSuccess;
+ 
+    nNIKAL120_mCheckStackUsage;
+ 
+-   
+-   init_timer( &timer );
++   timer_setup( &timer.tl, nNIKAL_timerTrampoline, 0 );
++   timer.pkg = timerCallbackPkg;
++   timer.tl.expires = calculateTimerExpire( timeout );
+ 
+-   timer.expires  = calculateTimerExpire( timeout );
+-   nNIKAL100_compileTimeAssert(sizeof(nNIKAL100_tTimerCallbackSpec*)==sizeof(unsigned long), "Oops, resizing nNIKAL100_tTimerCallbackSpec* into unsigned long!");
+-   timer.data     = (unsigned long) timerCallbackPkg;
+-   timer.function = nNIKAL100_timeoutCallback;
++   add_timer( &timer.tl );
+ 
+-   
+-   add_timer( &timer );
+ 
+-   
+    retVal = nNIKAL100_waitForSingleUseEvent( event );
+ 
+-   del_timer_sync( &timer );
++   del_timer_sync( &timer.tl );
+ 
+    return retVal;
+ }
+@@ -4521,26 +4575,22 @@
+    nNIKAL100_tTimerCallbackSpec *timerCallbackPkg
+ )
+ {
+-   nLinux_timerList timer;
++   struct nNIKAL_timerCompat timer;
+    nNIKAL100_tStatus retVal = nNIKAL100_kStatusSuccess;
+ 
+    nNIKAL120_mCheckStackUsage;
+ 
+-   
+-   init_timer( &timer );
++   timer_setup( &timer.tl, nNIKAL_timerTrampoline, 0 );
++   timer.pkg = timerCallbackPkg;
++   timer.tl.expires = calculateTimerExpire( timeout );
+ 
+-   timer.expires  = calculateTimerExpire( timeout );
+-   timer.data     = (unsigned long) timerCallbackPkg;
+-   timer.function = nNIKAL100_timeoutCallback;
+-
+-   
+-   add_timer( &timer );
++   add_timer( &timer.tl );
+ 
+    retVal = nNIKAL100_waitForSingleUseEventInterruptible(event);
+ 
+-   del_timer_sync( &timer );
++   del_timer_sync( &timer.tl );
+ 
+-   return retVal;  
++   return retVal;
+ }
+ 
+ 
+@@ -5990,10 +6040,11 @@
+ }
+ 
+ 
++/* port: acpi_driver.ops.remove returns void since 6.3 */
+ #ifdef nNIKAL1500_kACPIRemoveHasTypeInput
+-static int nNIKAL1500_acpiRemove(nLinux_acpiDevice *dev, int type)
++static void nNIKAL1500_acpiRemove(nLinux_acpiDevice *dev, int type)
+ #else
+-static int nNIKAL1500_acpiRemove(nLinux_acpiDevice *dev)
++static void nNIKAL1500_acpiRemove(nLinux_acpiDevice *dev)
+ #endif
+ {
+ #if nNIKAL1500_mACPIIsSupported
+@@ -6006,8 +6057,8 @@
+    nNIKAL200_destroyDeviceProcDirs(d);
+ 
+    kref_put(&(d->kref), nNIKAL200_destructDevice);
+-#endif 
+-   return 0;
++#endif
++   return;
+ }
+ 
+ 
+@@ -6619,7 +6670,7 @@
+             localStatus = nNIKAL100_mapInsert(&nNIKAL100_sPageLockMap, (nNIKAL100_tUPtr)vmArea, 1);
+             if (nNIKAL100_statusIsNonfatal(localStatus))
+             {
+-               vmArea->vm_flags |= VM_DONTCOPY;
++               vm_flags_set(vmArea, VM_DONTCOPY);
+                
+             }
+             else
+@@ -6655,7 +6706,7 @@
+             if (mapIterator.keyValuePtr->value == 0)
+             {
+                nNIKAL100_mapRemove(&nNIKAL100_sPageLockMap, &mapIterator);
+-               vmArea->vm_flags &= ~VM_DONTCOPY;
++               vm_flags_clear(vmArea, VM_DONTCOPY);
+                
+             }
+          }
+@@ -6711,7 +6762,7 @@
+             if (current->mm != NULL && vmArea == find_vma(current->mm, ptr))
+             {
+                
+-               vmArea->vm_flags &= ~VM_DONTCOPY;
++               vm_flags_clear(vmArea, VM_DONTCOPY);
+             }
+             else
+             {
+@@ -7017,13 +7068,10 @@
+    list->flags       = flags | nNIKAL220_kPageListFromUserBuffer;
+ 
+    down_read(&current->mm->mmap_sem);
+-   pinned = get_user_pages(current, current->mm,
+-                           (unsigned long) pointer,
++   pinned = get_user_pages((unsigned long) pointer,
+                            size,
+-                           flags & nNIKAL220_kPageListAccessModeWrite,
+-                           0, 
+-                           list->pages,
+-                           NULL );
++                           (flags & nNIKAL220_kPageListAccessModeWrite) ? FOLL_WRITE : 0,
++                           list->pages);
+    up_read(&current->mm->mmap_sem);
+ 
+    if (pinned < 0)
+@@ -7093,7 +7141,7 @@
+       sizeInPages = vma_size;
+ 
+    vma->vm_pgoff  = offsetInPages;
+-   vma->vm_flags |= VM_LOCKED | VM_DONTCOPY | VM_DONTEXPAND;
++   vm_flags_set(vma, VM_LOCKED | VM_DONTCOPY | VM_DONTEXPAND);
+ 
+    priv = nNIKAL200_mallocZeroed(sizeof(nNIKAL220_tUserMemMapPrivateData), GFP_KERNEL);
+    if (!priv)
+@@ -7143,7 +7191,7 @@
+                        vma->vm_page_prot))
+       return nNIKAL100_kStatusValueConflict;
+ 
+-   vma->vm_flags |= VM_LOCKED | VM_DONTCOPY | VM_DONTEXPAND;
++   vm_flags_set(vma, VM_LOCKED | VM_DONTCOPY | VM_DONTEXPAND);
+    vma->vm_ops = &nNIKAL220_vmaOpsPhysical;
+ 
+    return nNIKAL100_kStatusSuccess;

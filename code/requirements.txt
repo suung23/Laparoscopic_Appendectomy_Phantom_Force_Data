@@ -1,0 +1,6 @@
+# Host-side visualizer dependencies (NI6009/visualizer.py).
+# The visualizer only reads a Unix socket; it does NOT need nidaqmx.
+numpy>=1.24
+matplotlib>=3.7
+# dataset_recorder.py 가 힘 데이터를 HDF5 에피소드로 저장할 때 필요.
+h5py>=3.0
