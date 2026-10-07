@@ -79,6 +79,9 @@ controlled variable, so treat the ratios, not the absolute values, as the result
 |---|---|---|---|
 | Anterior traction, 1 kHz | 5 | **2.33 ± 0.27 N** | 0.82 |
 
+n = 5 matches the per-stage target used in this session; every stage was collected to
+n = 5 (grasp has 10 because it was recorded before the target was standardised).
+
 ```
 slip threshold / anterior move resistance = 2.33 / 1.83 = 1.28
 ```
@@ -94,12 +97,17 @@ non-destructive. Slip peaks are therefore paired with `move_F`, the same directi
 ## Layout
 
 ```
-code/     acquisition and analysis (see code/phantom_experiment.py)
-driver/   NI USB-6009 driver for Linux (NI-DAQmx Base in Docker, kernel 6.8 port)
-docs/     measurement protocol and calibration report
-data/     force HDF5 + per-trial CSV + per-frame video timestamps
-data/video/   mp4 (not in git — see below)
+code/            acquisition and analysis (start at code/phantom_experiment.py)
+driver/          NI USB-6009 driver for Linux (NI-DAQmx Base in Docker, kernel 6.8 port)
+docs/            measurement protocol, calibration report
+data/            force HDF5 + per-trial CSV + per-frame video timestamps
+data/video_clips/  one representative trial per stage, 960 px — tracked
+data/video/      full-session mp4 — not tracked, see below
 ```
+
+Only material belonging to this phantom dataset is included. Other work that shared the
+same acquisition folder (ICRA 2027 force-logger drafts, CDE 2026 report and poster, the
+in-vivo sessions, the trocar decomposition analysis) was deliberately left out.
 
 ### Force HDF5 — one row per sample
 
@@ -130,8 +138,15 @@ Frames were written only inside trial windows, so **the mp4 is a concatenation o
 segments and playback time is not proportional to wall clock** — gaps appear as jumps in
 `timestamp`.
 
-The mp4 files are 126–745 MB each, over GitHub's 100 MB per-file limit, so `data/video/`
-is excluded from git and kept separately. The sidecar timestamps are tracked.
+Full-session mp4 files are 126–745 MB each, over GitHub's 100 MB per-file limit, so
+`data/video/` is excluded from git and kept separately.
+
+`data/video_clips/` holds what is tracked instead: **one representative trial per stage**
+— the trial whose peak `F_tip` is closest to that stage's median — cut from the session
+mp4 by frame index and re-encoded at 960 px (3.7 MB for all ten). File names carry the
+stage and the trial number, so each clip maps back to a row of the per-trial CSV and to
+a `trial` value in the force HDF5. Per-frame sidecar timestamps are tracked for every
+session, clipped or not.
 
 ## Reproducing
 
@@ -166,7 +181,7 @@ one process: the rate and decimation are fixed when the socket source is built.
    reproducibility as low, while they are what sets the lift and retraction reaction.
    These numbers describe specimen A01; at least three specimens are needed before they
    can be quoted as phantom specifications.
-6. **Slip n = 5, below the protocol's n ≥ 10.**
+6. **n = 5 per stage**, below the n ≥ 10 that the protocol asks for grasp and slip.
 7. **No MCU kinematics.** Grasp onset timing in §3.2 is defined on the hall-sensor
    `grip` stream, which was not connected; onset is approximated from the `gripping`
    trace instead.
