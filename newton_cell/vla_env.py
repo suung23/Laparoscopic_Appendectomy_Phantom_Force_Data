@@ -632,6 +632,13 @@ class DemoPolicy:
     STEP_M = 0.0004          # 12 mm/s, matching the Isaac demo approach rate
     STANDOFF_M = 0.025        # clearance above the target before descending
     STANDOFF_ENTER_M = 0.003
+    # Jaw opening (0..100) held during standoff and descent. Fully open jaws
+    # (74 deg, ~18 mm tip gap) swept down onto the cecum beside the appendix;
+    # at the tissue friction of 0.6 the cecum surface stuck to the jaw, was
+    # dragged 9.5 mm against its pinned band and inverted 23 tets (seed
+    # 20261006, step 23). 40 (~8 mm gap) still admits the appendix and moved
+    # the cecum 0.08 mm with no inversion. Open only as wide as the target.
+    APPROACH_GRIP = 40.0
     # The lift is an order of magnitude slower than the approach, and that is
     # the whole difference between a scored run and an aborted one. The
     # appendix's far end is pinned to the world (VLA_HANDOFF.md section 4.4), so
@@ -941,7 +948,7 @@ class DemoPolicy:
             d_rig = np.array([0.0, 0.0, rate])                 # lift, gently
             grip = 0.0
         else:
-            grip = 100.0
+            grip = self.APPROACH_GRIP
             if self.approach_phase == "standoff":
                 hover_z = max(float(tip[2]), float(tgt[2]) + self.STANDOFF_M)
                 waypoint = np.array([tgt[0], tgt[1], hover_z])

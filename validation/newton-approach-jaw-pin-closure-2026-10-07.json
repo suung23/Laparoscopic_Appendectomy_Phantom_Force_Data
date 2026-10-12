@@ -1,0 +1,68 @@
+{
+  "status": "scripted_demo_physics_gate_passed_task_incomplete",
+  "date": "2026-10-07",
+  "backend": "Newton 1.4.0 / Warp 1.15.0",
+  "device": "NVIDIA GeForce RTX 4090, Ubuntu 24.04",
+  "source_revision": "working tree based on 9b44661",
+  "policy": "scripted DemoPolicy; not learned RL",
+  "command": "newton_cell/eval.py --physics-only --preset metrics --policy demo --episodes 1 --seconds 20 --seed 20261006 --no-images",
+  "baseline_at_9b44661": {
+    "result": "stopped at step 22: 2-4 inverted cecum tetrahedra, 0/5 stages",
+    "contact": "left/jaw_left touching 360 cecum particles; all four corners of the worst tet in contact"
+  },
+  "diagnosis": {
+    "ruled_out": {
+      "vbd_iterations_20_40": "still inverted at step 22",
+      "physics_hz_960": "still inverted at step 22",
+      "contact_ke_1e4_3e3_1e3": "still inverted (2-16 tets)",
+      "grasp_assist_disabled": "still inverted",
+      "cecum_pin_band_0.35_0.5": "still inverted (8-11 tets)",
+      "rest_mesh_quality": "two of three inverting tets had rest quality 0.85 and 0.61"
+    },
+    "controls": {
+      "tool_tissue_collision_disabled": "no inversion over 13.5 s",
+      "demo_approach_6_mm_s": "failure delayed from step 22 to step 42",
+      "contact_mu": {"0.05": 0, "0.1": 0, "0.2": 2, "0.3": 2, "0.4": 5, "0.6": 23},
+      "friction_epsilon_0.2_at_mu_0.6": "no inversion, rejected: friction never reaches its coefficient at 12 mm/s"
+    },
+    "mechanism": "During descent the fully open left jaw (74 deg, ~18 mm tip gap) swept onto the cecum beside the appendix. At mu 0.6 the cecum surface stuck to the jaw and was carried 0.7 -> 3.6 -> 6.6 -> 9.5 mm over three steps against its pinned band, inverting up to 23 tets; it snapped back to 0.03 mm once the jaw stopped and closed. At mu 0.1 the same sweep moved it 1.4 mm.",
+    "secondary_failure": "With the approach fixed, one appendix tet (rest quality 0.308, three corners in the far-end pin) flattened monotonically with lift and inverted at 12.2 mm, with no tool within 31 mm."
+  },
+  "changes": {
+    "newton_cell/vla_env.py": "DemoPolicy.APPROACH_GRIP = 40 during standoff and descent instead of 100 (fully open)",
+    "newton_cell/scene.py": "close_pins_over_tets: one pass that pins the free corner of every tet hinged on three far-end appendix pin nodes (224 -> 260 nodes; 88 hinged tets remain). A fixed-point version percolated and pinned every organ node; rejected. Organ pin bands unchanged.",
+    "tests/test_newton_pin_closure.py": "3 unit tests"
+  },
+  "unchanged": "friction 0.6, contact ke 1e5, VBD iterations 10, 480 Hz, organ Young's moduli, organ pin bands, health gate thresholds",
+  "results": {
+    "approach_grip_40_probe_60_steps": {"cecum_inverted_max": 0, "cecum_min_volume_ratio": 0.966, "cecum_max_displacement_mm": 0.08},
+    "approach_grip_55_probe_60_steps": {"cecum_inverted_max": 0, "cecum_min_volume_ratio": 0.476, "cecum_max_displacement_mm": 1.37},
+    "grip_40_only_20s": "stopped at step 70: 1 inverted appendix tet (pin hinge), 2/5 stages",
+    "grip_40_plus_pin_closure_20s": {
+      "physics_health_pass": true,
+      "maximum_inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.181,
+      "peak_tissue_speed_m_s": 0.787,
+      "max_lift_mm": 12.0,
+      "stages_completed": 2,
+      "failed_stage": "at_site",
+      "real_time_factor": 0.151
+    },
+    "grip_40_plus_pin_closure_40s": {
+      "physics_health_pass": true,
+      "maximum_inverted_tetrahedra": 0,
+      "minimum_signed_volume_ratio": 0.102,
+      "max_lift_mm": 13.1,
+      "failed_stage": "at_site"
+    },
+    "unit_tests": "116 of 120 pass; 4 PPO/CNN tests need torch, which is not installed in .venv-newton"
+  },
+  "limitations": [
+    "Seeds 20261006, 0 and 1 produced identical scripted episodes; this is one trajectory, not a multi-seed result.",
+    "The physics gate passing for the scripted demo does not make arbitrary policies safe: an RL policy that sweeps open jaws through the cecum will still invert tets, which the gate correctly reports.",
+    "Minimum appendix volume ratio drifts downward while held lifted (0.18 at 20 s, 0.10 at 40 s).",
+    "The right cutter stops 31 mm from the resection segment; at_site, jaw_on_tissue and cut remain unreached.",
+    "Friction, stiffness and pin layout remain uncalibrated engineering values; no measured force data was used.",
+    "Newton uses Newton-built tool URDFs (manufacturer FR3 joint limits); the Isaac-built pair is kept in out/isaac_urdf_backup."
+  ]
+}

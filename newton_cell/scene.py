@@ -74,6 +74,31 @@ def median_edge(verts: np.ndarray, tets: np.ndarray) -> float:
     return float(np.median(d))
 
 
+def close_pins_over_tets(pinned: np.ndarray, tets: np.ndarray) -> np.ndarray:
+    """Pin the last free corner of every tet that has three pinned corners.
+
+    A tet hinged on a rigid pinned face by one free node collapses as soon as
+    the tissue pulls that node through the face plane: lifting the appendix
+    12 mm flattened such a tet at the far-end pin and inverted it with no tool
+    nearby. One pass only: repeating to a fixed point percolates through the
+    mesh (it pinned every node of every organ band). Returns sorted indices.
+    """
+    t = np.asarray(tets, np.int64).reshape(-1, 4)
+    mask = np.zeros(int(t.max()) + 1 if len(t) else 0, bool)
+    mask[np.asarray(pinned, np.int64)] = True
+    hinged = mask[t].sum(axis=1) == 3
+    mask[t[hinged]] = True
+    return np.flatnonzero(mask).astype(np.int32)
+
+
+def hinged_tet_count(pinned: np.ndarray, tets: np.ndarray) -> int:
+    """Tets with exactly three pinned corners."""
+    t = np.asarray(tets, np.int64).reshape(-1, 4)
+    mask = np.zeros(int(t.max()) + 1 if len(t) else 0, bool)
+    mask[np.asarray(pinned, np.int64)] = True
+    return int((mask[t].sum(axis=1) == 3).sum())
+
+
 class CellScene:
     """The Newton model plus the bookkeeping the environment needs on top."""
 
@@ -195,7 +220,7 @@ class CellScene:
         cut = z.min() + band * (z.max() - z.min())
         return np.nonzero(z < cut)[0].astype(np.int32)
 
-    def _appendix_setup(self, world: np.ndarray) -> np.ndarray:
+    def _appendix_setup(self, world: np.ndarray, tets: np.ndarray) -> np.ndarray:
         """Far-end world pin + the disjoint grip clusters, per author_pins.
 
         The appendectomy setup, verbatim in structure from the Isaac build:
@@ -224,6 +249,12 @@ class CellScene:
         df = np.linalg.norm(world - far_pt, axis=1)
         sel_far = np.nonzero(df < max(self.D["--pin-radius"],
                                       float(df.min()) + 0.004))[0]
+        # Before the grip clusters are cut, so no node is in both.
+        n_sphere = len(sel_far)
+        sel_far = close_pins_over_tets(sel_far, tets)
+        log(f"    appendix far-end pin closure: {n_sphere} -> {len(sel_far)} "
+            f"nodes (hinged tets left after one pass: "
+            f"{hinged_tet_count(sel_far, tets)})")
 
         far_set = set(int(i) for i in sel_far)
         body = np.array([i for i in range(len(world)) if i not in far_set])
@@ -365,7 +396,7 @@ class CellScene:
             )
             self.organ_span[name] = (first, builder.particle_count)
             if name == "appendix":
-                pin = self._appendix_setup(world)
+                pin = self._appendix_setup(world, idx)
                 for h in self.handles:       # handles index into the global array
                     h["idx"] = h["idx"] + first
             else:
