@@ -1,0 +1,1098 @@
+{
+  "status": "proximal_station_tip_force_chain_characterisation",
+  "dataset": "surgilog_261021 (no-load session)",
+  "model": "F_tip = c * M_gauge * (L - d) / d   (single proximal station, moment-free support)",
+  "constants_pending": {
+    "c_per_mm": null,
+    "length_support_to_tip_mm": null,
+    "how_to_obtain": "fit_geometry(): known lateral tip load at >=4 distinct insertion depths; F*d/M vs d is a straight line, slope -c and intercept c*L"
+  },
+  "decoupling_used": {
+    "source": "legacy trocar 2x2 block recovered from the synced files",
+    "matrix": [
+      [
+        -2.3237,
+        0.3471
+      ],
+      [
+        0.788,
+        2.951
+      ]
+    ],
+    "offset": [
+      0.083,
+      -0.16
+    ],
+    "note": "references only the two live channels btx/bty; no contribution from the four removed gauges. Cross-axis shape transfers, absolute scale does not and is absorbed into c."
+  },
+  "pooled_single_sample_sigma": {
+    "plane_x": 0.0022479269293763007,
+    "plane_y": 0.0026971795985699498
+  },
+  "episodes": [
+    {
+      "episode": "20261021_1710",
+      "noise": {
+        "n_samples": 1610,
+        "per_axis": {
+          "plane_x": {
+            "std_single_sample": 0.0024638962056754573,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0007160910737543526,
+                "ideal_white": 0.0007791523928181133,
+                "ratio_measured_over_white": 0.9190642040696629
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.00032421042661635727,
+                "ideal_white": 0.00034844754303458404,
+                "ratio_measured_over_white": 0.9304425676038669
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.0002419670580285622,
+                "ideal_white": 0.0002463896205675457,
+                "ratio_measured_over_white": 0.9820505322878603
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.0001584623654868455,
+                "ideal_white": 0.00017422377151729202,
+                "ratio_measured_over_white": 0.9095335504840556
+              }
+            ]
+          },
+          "plane_y": {
+            "std_single_sample": 0.0031079556493834887,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0007912769798605184,
+                "ideal_white": 0.0009828218718839514,
+                "ratio_measured_over_white": 0.8051072147425204
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.0003028938152118884,
+                "ideal_white": 0.0004395313030612209,
+                "ratio_measured_over_white": 0.6891291088992113
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.0002025047476069104,
+                "ideal_white": 0.00031079556493834886,
+                "ratio_measured_over_white": 0.6515689747602427
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00013570216757471582,
+                "ideal_white": 0.00021976565153061046,
+                "ratio_measured_over_white": 0.6174857928415365
+              }
+            ]
+          }
+        },
+        "magnitude_mean": 0.003592167273901552,
+        "magnitude_max": 0.01159172582865916
+      },
+      "depth_mm": {
+        "min": 187.5561981201172,
+        "max": 207.53146362304688,
+        "median": 199.46453857421875
+      }
+    },
+    {
+      "episode": "20261021_1710",
+      "noise": {
+        "n_samples": 2050,
+        "per_axis": {
+          "plane_x": {
+            "std_single_sample": 0.002444346569136697,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0006586802419522617,
+                "ideal_white": 0.0007729702549290199,
+                "ratio_measured_over_white": 0.8521417709828263
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.00026063556353753765,
+                "ideal_white": 0.0003456828069213261,
+                "ratio_measured_over_white": 0.7539731751740134
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.00017716148171194703,
+                "ideal_white": 0.0002444346569136697,
+                "ratio_measured_over_white": 0.7247805362335241
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00011623076809014126,
+                "ideal_white": 0.00017284140346066304,
+                "ratio_measured_over_white": 0.6724706335573942
+              }
+            ]
+          },
+          "plane_y": {
+            "std_single_sample": 0.003045991087107996,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0007451233608252626,
+                "ideal_white": 0.0009632269567833611,
+                "ratio_measured_over_white": 0.7735698794327326
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.00034080895942518015,
+                "ideal_white": 0.0004307681906255695,
+                "ratio_measured_over_white": 0.7911655661720312
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.00024930296978834893,
+                "ideal_white": 0.0003045991087107996,
+                "ratio_measured_over_white": 0.8184625714878524
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.0001497418986343407,
+                "ideal_white": 0.00021538409531278476,
+                "ratio_measured_over_white": 0.6952319223797966
+              }
+            ]
+          }
+        },
+        "magnitude_mean": 0.0035283478768183395,
+        "magnitude_max": 0.010635994042800396
+      },
+      "depth_mm": {
+        "min": 168.7333526611328,
+        "max": 206.76318359375,
+        "median": 200.4248809814453
+      }
+    },
+    {
+      "episode": "20261021_1756",
+      "noise": {
+        "n_samples": 1850,
+        "per_axis": {
+          "plane_x": {
+            "std_single_sample": 0.0021957113616792438,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0006459650761631854,
+                "ideal_white": 0.0006943448987216165,
+                "ratio_measured_over_white": 0.9303230676173975
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.00029712442829806087,
+                "ideal_white": 0.00031052047867434826,
+                "ratio_measured_over_white": 0.9568593658187156
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.00020232422421674652,
+                "ideal_white": 0.00021957113616792438,
+                "ratio_measured_over_white": 0.9214518253529111
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00012613501830074,
+                "ideal_white": 0.00015526023933717413,
+                "ratio_measured_over_white": 0.812410304397485
+              }
+            ]
+          },
+          "plane_y": {
+            "std_single_sample": 0.002649143353091673,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0006900917138746506,
+                "ideal_white": 0.000837732684406535,
+                "ratio_measured_over_white": 0.8237612387817052
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.00029775256637379756,
+                "ideal_white": 0.0003746454458612781,
+                "ratio_measured_over_white": 0.7947582698871187
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.00019642575494182234,
+                "ideal_white": 0.0002649143353091673,
+                "ratio_measured_over_white": 0.7414689533980273
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00013890505544842806,
+                "ideal_white": 0.00018732272293063904,
+                "ratio_measured_over_white": 0.7415280606392912
+              }
+            ]
+          }
+        },
+        "magnitude_mean": 0.0030878592133377265,
+        "magnitude_max": 0.009732421126531476
+      },
+      "depth_mm": {
+        "min": 176.41615295410156,
+        "max": 205.80284118652344,
+        "median": 198.50418090820312
+      }
+    },
+    {
+      "episode": "20261021_1756",
+      "noise": {
+        "n_samples": 1700,
+        "per_axis": {
+          "plane_x": {
+            "std_single_sample": 0.002184833355451927,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0006365952771924482,
+                "ideal_white": 0.0006909049711136349,
+                "ratio_measured_over_white": 0.9213933953411167
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.0002842342442441506,
+                "ideal_white": 0.00030898209628052323,
+                "ratio_measured_over_white": 0.9199052232013333
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.00022268244000235243,
+                "ideal_white": 0.0002184833355451927,
+                "ratio_measured_over_white": 1.0192193351803307
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00017637136549195843,
+                "ideal_white": 0.00015449104814026162,
+                "ratio_measured_over_white": 1.141628383101083
+              }
+            ]
+          },
+          "plane_y": {
+            "std_single_sample": 0.002608811552207024,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.000750545573063989,
+                "ideal_white": 0.0008249786491133465,
+                "ratio_measured_over_white": 0.9097757546460685
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.0003415970629069609,
+                "ideal_white": 0.00036894166788067786,
+                "ratio_measured_over_white": 0.9258836630440976
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.00022958435297761387,
+                "ideal_white": 0.0002608811552207024,
+                "ratio_measured_over_white": 0.8800342546144745
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00015472164472008447,
+                "ideal_white": 0.00018447083394033893,
+                "ratio_measured_over_white": 0.838732288542286
+              }
+            ]
+          }
+        },
+        "magnitude_mean": 0.003092212661044765,
+        "magnitude_max": 0.008692603867617556
+      },
+      "depth_mm": {
+        "min": 183.90687561035156,
+        "max": 204.8424835205078,
+        "median": 197.30958557128906
+      }
+    },
+    {
+      "episode": "20261021_1756",
+      "noise": {
+        "n_samples": 1930,
+        "per_axis": {
+          "plane_x": {
+            "std_single_sample": 0.00214037271369019,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0006591164855068067,
+                "ideal_white": 0.0006768452816936459,
+                "ratio_measured_over_white": 0.973806722649411
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.00028420400266701974,
+                "ideal_white": 0.0003026944120233972,
+                "ratio_measured_over_white": 0.9389139388706381
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.00021298507236595162,
+                "ideal_white": 0.000214037271369019,
+                "ratio_measured_over_white": 0.9950840384184617
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00018451206108705272,
+                "ideal_white": 0.0001513472060116986,
+                "ratio_measured_over_white": 1.2191309370639494
+              }
+            ]
+          },
+          "plane_y": {
+            "std_single_sample": 0.0025237660403745776,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0007304905464922016,
+                "ideal_white": 0.0007980848968968134,
+                "ratio_measured_over_white": 0.915304310772653
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.0003687450229232235,
+                "ideal_white": 0.0003569144162554372,
+                "ratio_measured_over_white": 1.03314690057047
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.0002786919086234604,
+                "ideal_white": 0.00025237660403745776,
+                "ratio_measured_over_white": 1.1042699844796109
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00018053755751222612,
+                "ideal_white": 0.0001784572081277186,
+                "ratio_measured_over_white": 1.0116574130366236
+              }
+            ]
+          }
+        },
+        "magnitude_mean": 0.002988462006602975,
+        "magnitude_max": 0.009206944180648368
+      },
+      "depth_mm": {
+        "min": 176.41615295410156,
+        "max": 205.99490356445312,
+        "median": 200.4248809814453
+      }
+    },
+    {
+      "episode": "20261021_1757",
+      "noise": {
+        "n_samples": 1720,
+        "per_axis": {
+          "plane_x": {
+            "std_single_sample": 0.0023050518634396243,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.00066121569308867,
+                "ideal_white": 0.0007289214013284618,
+                "ratio_measured_over_white": 0.9071152141830411
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.00033435684252879007,
+                "ideal_white": 0.0003259835607249692,
+                "ratio_measured_over_white": 1.025686208792858
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.0002660400065713711,
+                "ideal_white": 0.00023050518634396244,
+                "ratio_measured_over_white": 1.1541606104011177
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00019249520947347502,
+                "ideal_white": 0.0001629917803624846,
+                "ratio_measured_over_white": 1.1810117605033608
+              }
+            ]
+          },
+          "plane_y": {
+            "std_single_sample": 0.0026324129393146094,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0006871564221069988,
+                "ideal_white": 0.0008324420630332768,
+                "ratio_measured_over_white": 0.8254705674087613
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.0003288243140817782,
+                "ideal_white": 0.0003722794080545144,
+                "ratio_measured_over_white": 0.8832729046179936
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.00024410697037468358,
+                "ideal_white": 0.0002632412939314609,
+                "ratio_measured_over_white": 0.9273126063505854
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00016030920355421772,
+                "ideal_white": 0.0001861397040272572,
+                "ratio_measured_over_white": 0.8612305708337379
+              }
+            ]
+          }
+        },
+        "magnitude_mean": 0.003165758741825884,
+        "magnitude_max": 0.009732421126531476
+      },
+      "depth_mm": {
+        "min": 186.7879180908203,
+        "max": 207.33938598632812,
+        "median": 202.70895385742188
+      }
+    },
+    {
+      "episode": "20261021_1757",
+      "noise": {
+        "n_samples": 1820,
+        "per_axis": {
+          "plane_x": {
+            "std_single_sample": 0.0022014074472994825,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0006221955758391022,
+                "ideal_white": 0.0006961461591523452,
+                "ratio_measured_over_white": 0.8937714697682335
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.0002521155018162277,
+                "ideal_white": 0.00031132602682800624,
+                "ratio_measured_over_white": 0.8098118374006369
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.00017585936647304584,
+                "ideal_white": 0.00022014074472994825,
+                "ratio_measured_over_white": 0.7988496935847864
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00011740460739642077,
+                "ideal_white": 0.00015566301341400312,
+                "ratio_measured_over_white": 0.7542228871297136
+              }
+            ]
+          },
+          "plane_y": {
+            "std_single_sample": 0.0026630771607302575,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0007583739035457105,
+                "ideal_white": 0.0008421389412681929,
+                "ratio_measured_over_white": 0.9005329956641844
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.00033478179389728323,
+                "ideal_white": 0.00037661598383507646,
+                "ratio_measured_over_white": 0.8889208325366434
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.0002219434001190152,
+                "ideal_white": 0.00026630771607302577,
+                "ratio_measured_over_white": 0.8334095736758707
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00016299180402653288,
+                "ideal_white": 0.00018830799191753823,
+                "ratio_measured_over_white": 0.8655596736324843
+              }
+            ]
+          }
+        },
+        "magnitude_mean": 0.003118529885874922,
+        "magnitude_max": 0.009765565779668629
+      },
+      "depth_mm": {
+        "min": 187.3641357421875,
+        "max": 207.9156036376953,
+        "median": 202.15350341796875
+      }
+    },
+    {
+      "episode": "20261021_1757",
+      "noise": {
+        "n_samples": 1820,
+        "per_axis": {
+          "plane_x": {
+            "std_single_sample": 0.0021800395727857007,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0006551147698056276,
+                "ideal_white": 0.0006893890439303239,
+                "ratio_measured_over_white": 0.9502831174552865
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.0002756174624617674,
+                "ideal_white": 0.0003083041530343586,
+                "ratio_measured_over_white": 0.8939790779628309
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.00019508934458085334,
+                "ideal_white": 0.00021800395727857009,
+                "ratio_measured_over_white": 0.8948890057604048
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00011265818345962068,
+                "ideal_white": 0.0001541520765171793,
+                "ratio_measured_over_white": 0.7308249490045995
+              }
+            ]
+          },
+          "plane_y": {
+            "std_single_sample": 0.0025338409419657284,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0007051616453446781,
+                "ideal_white": 0.0008012708605198226,
+                "ratio_measured_over_white": 0.8800540242873754
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.00032553220076106826,
+                "ideal_white": 0.00035833922250241515,
+                "ratio_measured_over_white": 0.9084470253849318
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.0002443961473641329,
+                "ideal_white": 0.00025338409419657285,
+                "ratio_measured_over_white": 0.9645283700188885
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00017849054893298412,
+                "ideal_white": 0.00017916961125120757,
+                "ratio_measured_over_white": 0.9962099470246025
+              }
+            ]
+          }
+        },
+        "magnitude_mean": 0.003035298492708187,
+        "magnitude_max": 0.009141549370912851
+      },
+      "depth_mm": {
+        "min": 187.3641357421875,
+        "max": 205.80284118652344,
+        "median": 201.28919982910156
+      }
+    },
+    {
+      "episode": "20261021_1758",
+      "noise": {
+        "n_samples": 1750,
+        "per_axis": {
+          "plane_x": {
+            "std_single_sample": 0.0021457534233659775,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0006358123179080317,
+                "ideal_white": 0.0006785468114940053,
+                "ratio_measured_over_white": 0.9370205668023376
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.0002766829895029597,
+                "ideal_white": 0.0003034553592832663,
+                "ratio_measured_over_white": 0.9117749317608348
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.00017713580046856042,
+                "ideal_white": 0.00021457534233659776,
+                "ratio_measured_over_white": 0.8255179674405129
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.0001030677921627534,
+                "ideal_white": 0.00015172767964163314,
+                "ratio_measured_over_white": 0.67929459150888
+              }
+            ]
+          },
+          "plane_y": {
+            "std_single_sample": 0.002637452312851904,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.000796476738016475,
+                "ideal_white": 0.0008340356528690998,
+                "ratio_measured_over_white": 0.9549672550287013
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.0003463289029653726,
+                "ideal_white": 0.00037299208309474495,
+                "ratio_measured_over_white": 0.9285154260965921
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.0002377279385717684,
+                "ideal_white": 0.0002637452312851904,
+                "ratio_measured_over_white": 0.9013544526032047
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00016903157455314116,
+                "ideal_white": 0.00018649604154737247,
+                "ratio_measured_over_white": 0.9063547577239321
+              }
+            ]
+          }
+        },
+        "magnitude_mean": 0.0030728097574318643,
+        "magnitude_max": 0.009573197178644282
+      },
+      "depth_mm": {
+        "min": 187.38357543945312,
+        "max": 206.5711212158203,
+        "median": 202.17100524902344
+      }
+    },
+    {
+      "episode": "20261021_1758",
+      "noise": {
+        "n_samples": 1750,
+        "per_axis": {
+          "plane_x": {
+            "std_single_sample": 0.0022156367096334345,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0006751499103953684,
+                "ideal_white": 0.0007006458469922784,
+                "ratio_measured_over_white": 0.9636108075051631
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.0003305991782059121,
+                "ideal_white": 0.0003133383484055302,
+                "ratio_measured_over_white": 1.055086872986394
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.00024364637171699825,
+                "ideal_white": 0.00022156367096334346,
+                "ratio_measured_over_white": 1.0996675161484766
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00015126265488357032,
+                "ideal_white": 0.0001566691742027651,
+                "ratio_measured_over_white": 0.9654908545557435
+              }
+            ]
+          },
+          "plane_y": {
+            "std_single_sample": 0.002680579794017657,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0006972177941266052,
+                "ideal_white": 0.0008476737598920792,
+                "ratio_measured_over_white": 0.822507227562843
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.00028288846691255156,
+                "ideal_white": 0.0003790912299723048,
+                "ratio_measured_over_white": 0.7462279381488686
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.0001933146200570647,
+                "ideal_white": 0.0002680579794017657,
+                "ratio_measured_over_white": 0.7211671910998199
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00012900219923622512,
+                "ideal_white": 0.0001895456149861524,
+                "ratio_measured_over_white": 0.6805865661711542
+              }
+            ]
+          }
+        },
+        "magnitude_mean": 0.00313709685883231,
+        "magnitude_max": 0.009206089503077525
+      },
+      "depth_mm": {
+        "min": 188.19834899902344,
+        "max": 210.4125213623047,
+        "median": 200.08560180664062
+      }
+    },
+    {
+      "episode": "20261021_1758",
+      "noise": {
+        "n_samples": 1880,
+        "per_axis": {
+          "plane_x": {
+            "std_single_sample": 0.0022048906173206258,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0006750211844031695,
+                "ideal_white": 0.0006972476342267882,
+                "ratio_measured_over_white": 0.9681225883996485
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.00027322440290337394,
+                "ideal_white": 0.0003118186214564015,
+                "ratio_measured_over_white": 0.8762286281275738
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.0001987337105280887,
+                "ideal_white": 0.00022048906173206259,
+                "ratio_measured_over_white": 0.901331381098574
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00014650871009405956,
+                "ideal_white": 0.00015590931072820074,
+                "ratio_measured_over_white": 0.9397046873580924
+              }
+            ]
+          },
+          "plane_y": {
+            "std_single_sample": 0.0026105554965795428,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0007167971931660795,
+                "ideal_white": 0.0008255301327463258,
+                "ratio_measured_over_white": 0.8682871342097231
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.00030309035969454124,
+                "ideal_white": 0.0003691882988590419,
+                "ratio_measured_over_white": 0.8209641546907823
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.0001962956215511602,
+                "ideal_white": 0.0002610555496579543,
+                "ratio_measured_over_white": 0.7519304677044973
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00011438139753296578,
+                "ideal_white": 0.00018459414942952095,
+                "ratio_measured_over_white": 0.6196371764026964
+              }
+            ]
+          }
+        },
+        "magnitude_mean": 0.003112487396756388,
+        "magnitude_max": 0.010818786852153229
+      },
+      "depth_mm": {
+        "min": 172.5747528076172,
+        "max": 206.37904357910156,
+        "median": 197.54383850097656
+      }
+    },
+    {
+      "episode": "20261021_1759",
+      "noise": {
+        "n_samples": 1760,
+        "per_axis": {
+          "plane_x": {
+            "std_single_sample": 0.002257016177644045,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0006742229378411235,
+                "ideal_white": 0.0007137311837202389,
+                "ratio_measured_over_white": 0.9446454816879608
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.00027429705860945036,
+                "ideal_white": 0.0003191902888919691,
+                "ratio_measured_over_white": 0.8593527690383056
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.00018028447063325232,
+                "ideal_white": 0.0002257016177644045,
+                "ratio_measured_over_white": 0.7987734975893694
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00012421770991825966,
+                "ideal_white": 0.00015959514444598456,
+                "ratio_measured_over_white": 0.7783301324702989
+              }
+            ]
+          },
+          "plane_y": {
+            "std_single_sample": 0.0026349468980167525,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0006622453515417487,
+                "ideal_white": 0.0008332433711328345,
+                "ratio_measured_over_white": 0.7947802220633261
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.0002798558526119697,
+                "ideal_white": 0.00037263776393082077,
+                "ratio_measured_over_white": 0.751013127762124
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.0001768548904471638,
+                "ideal_white": 0.0002634946898016753,
+                "ratio_measured_over_white": 0.6711895810131023
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00010873802485708234,
+                "ideal_white": 0.00018631888196541039,
+                "ratio_measured_over_white": 0.5836124804423701
+              }
+            ]
+          }
+        },
+        "magnitude_mean": 0.0031316644605684095,
+        "magnitude_max": 0.009732421126531476
+      },
+      "depth_mm": {
+        "min": 185.82757568359375,
+        "max": 208.10768127441406,
+        "median": 199.65660095214844
+      }
+    },
+    {
+      "episode": "20261021_1759",
+      "noise": {
+        "n_samples": 1790,
+        "per_axis": {
+          "plane_x": {
+            "std_single_sample": 0.0022840940647695014,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.0006714026352183905,
+                "ideal_white": 0.0007222939634743781,
+                "ratio_measured_over_white": 0.929542082822913
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.0003239143722429105,
+                "ideal_white": 0.0003230196804132919,
+                "ratio_measured_over_white": 1.0027697749823599
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.00023370460564040385,
+                "ideal_white": 0.00022840940647695014,
+                "ratio_measured_over_white": 1.02318292948232
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00014191443936638516,
+                "ideal_white": 0.00016150984020664596,
+                "ratio_measured_over_white": 0.8786736410909132
+              }
+            ]
+          },
+          "plane_y": {
+            "std_single_sample": 0.002734801555768141,
+            "averaging": [
+              {
+                "window_s": 0.1,
+                "samples": 10,
+                "std": 0.000759660460623028,
+                "ideal_white": 0.000864820186479932,
+                "ratio_measured_over_white": 0.8784027853409222
+              },
+              {
+                "window_s": 0.5,
+                "samples": 50,
+                "std": 0.0002949584607555219,
+                "ideal_white": 0.0003867593450566345,
+                "ratio_measured_over_white": 0.7626408114646335
+              },
+              {
+                "window_s": 1.0,
+                "samples": 100,
+                "std": 0.00018449578574033306,
+                "ideal_white": 0.0002734801555768141,
+                "ratio_measured_over_white": 0.6746222055900233
+              },
+              {
+                "window_s": 2.0,
+                "samples": 200,
+                "std": 0.00010585485758157306,
+                "ideal_white": 0.00019337967252831725,
+                "ratio_measured_over_white": 0.5473939230405531
+              }
+            ]
+          }
+        },
+        "magnitude_mean": 0.003229176399764501,
+        "magnitude_max": 0.010467322541033433
+      },
+      "depth_mm": {
+        "min": 171.61441040039062,
+        "max": 207.06971740722656,
+        "median": 198.31210327148438
+      }
+    }
+  ],
+  "limitations": [
+    "No load was applied in this session, so this characterises the measurement floor only; it is not a force validation.",
+    "c and L are unknown until a calibration sweep is run, so the floor is in decoupled moment units, not newtons.",
+    "Axial (thrust) force is not measurable by this station at all: the half-bridges cancel common-mode axial strain by construction.",
+    "The model assumes the proximal support transmits no moment. The calibration linearity check is what verifies that; it has not been run.",
+    "Sensitivity rises with insertion depth, so a single fixed scale factor is wrong by -23%..+28% over the depths seen here."
+  ],
+  "source": {
+    "converter": "local_validation/tip_force_reconstruction.py",
+    "converter_sha256": "dcb9827cfc5c7c7d5c96d4f010b6c9b3173b9ea62ae48df0cdcebd617be96494"
+  }
+}

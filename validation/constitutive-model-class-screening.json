@@ -1,0 +1,947 @@
+{
+  "status": "analytical_constitutive_model_class_screening",
+  "question": "Can each model class reach the reported compression-stiffening factor for ANY admissible parameter choice? This is reachability, not identification.",
+  "method": {
+    "domain": "single material point; no mesh, solver, time integration or contact",
+    "compression": "prescribed axial stretch 1-c, free lateral stretch from P22 = 0",
+    "probe": "small simple shear in the transverse plane, central difference of Cauchy sigma23",
+    "reported_quantity": "shear tangent at c divided by shear tangent at c = 0",
+    "scale_invariance": "the stiffening ratio does not depend on overall stiffness, so every model is normalised to unit small-strain shear modulus and only dimensionless shape parameters are swept",
+    "admissibility_gate": "shear tangent must stay positive across 0-40 % compression and at axial stretches [1.2, 1.4]",
+    "shear_probe_amplitude": 1e-05
+  },
+  "harness_check": {
+    "published_corotated_factor_at_40pct": 1.9928432751493188,
+    "recomputed_here": 1.992843275138396,
+    "absolute_difference": 1.092281820547214e-11,
+    "reproduces_published_result": true,
+    "measured_uncompressed_tangent_over_input_mu": 1.000000000004551,
+    "note": "The audit divides by the input mu; this script measures tangent(0) instead. The ratio above confirms they agree, which is what makes the measured normalisation valid for models whose shear modulus is not an input."
+  },
+  "sweeps": [
+    {
+      "poisson_ratio": 0.45,
+      "target_factors": {
+        "control": 3.0,
+        "purulent": 4.5,
+        "gangrenous": 5.0
+      },
+      "models": {
+        "fixed_corotated": {
+          "energy": "mu*||F-R||_F^2 + lambda/2*(J-1)^2  (PhysX eCO_ROTATIONAL)",
+          "grid_points": 1,
+          "admissible_points": 1,
+          "rejections_by_reason": {},
+          "max_factor_at_40pct": 1.992843275138396,
+          "best_shape_parameters": {},
+          "best_compression_curve": [
+            {
+              "compression_fraction": 0.0,
+              "axial_stretch": 1.0,
+              "free_lateral_stretch": 1.0,
+              "volume_ratio": 1.0,
+              "shear_tangent_over_uncompressed": 1.0,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.1,
+              "axial_stretch": 0.9,
+              "free_lateral_stretch": 1.0481029615379824,
+              "volume_ratio": 0.9886678361862206,
+              "shear_tangent_over_uncompressed": 1.1621058482725128,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.2,
+              "axial_stretch": 0.8,
+              "free_lateral_stretch": 1.1033880112031533,
+              "volume_ratio": 0.9739720826134801,
+              "shear_tangent_over_uncompressed": 1.3671256282382886,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.3,
+              "axial_stretch": 0.7,
+              "free_lateral_stretch": 1.1676686363693267,
+              "volume_ratio": 0.9544150310524221,
+              "shear_tangent_over_uncompressed": 1.6337037888336188,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.4,
+              "axial_stretch": 0.6,
+              "free_lateral_stretch": 1.2433263913308237,
+              "volume_ratio": 0.9275163092278371,
+              "shear_tangent_over_uncompressed": 1.992843275138396,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            }
+          ],
+          "reaches": {
+            "control": false,
+            "purulent": false,
+            "gangrenous": false
+          }
+        },
+        "mooney_rivlin": {
+          "energy": "C10*(I1bar-3) + C01*(I2bar-3) + (1/D1)*(J-1)^2",
+          "grid_points": 50,
+          "admissible_points": 50,
+          "rejections_by_reason": {},
+          "max_factor_at_40pct": 1.71966992291523,
+          "best_shape_parameters": {
+            "beta = C01/(C10+C01)": 0.0
+          },
+          "best_compression_curve": [
+            {
+              "compression_fraction": 0.0,
+              "axial_stretch": 1.0,
+              "free_lateral_stretch": 1.0,
+              "volume_ratio": 1.0,
+              "shear_tangent_over_uncompressed": 1.0,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.1,
+              "axial_stretch": 0.9,
+              "free_lateral_stretch": 1.0487212824157726,
+              "volume_ratio": 0.9898346953726044,
+              "shear_tangent_over_uncompressed": 1.1187053342331086,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.2,
+              "axial_stretch": 0.8,
+              "free_lateral_stretch": 1.1063140349442857,
+              "volume_ratio": 0.979144595131765,
+              "shear_tangent_over_uncompressed": 1.26768725978163,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.3,
+              "axial_stretch": 0.7,
+              "free_lateral_stretch": 1.1756426109909237,
+              "volume_ratio": 0.9674948841442894,
+              "shear_tangent_over_uncompressed": 1.4603922126883888,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.4,
+              "axial_stretch": 0.6,
+              "free_lateral_stretch": 1.2610349268788579,
+              "volume_ratio": 0.9541254520850199,
+              "shear_tangent_over_uncompressed": 1.71966992291523,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            }
+          ],
+          "reaches": {
+            "control": false,
+            "purulent": false,
+            "gangrenous": false
+          }
+        },
+        "yeoh": {
+          "energy": "C10*x + C20*x^2 + C30*x^3 + (1/D1)*(J-1)^2, x = I1bar-3",
+          "grid_points": 1209,
+          "admissible_points": 343,
+          "rejections_by_reason": {
+            "auxetic_lateral_response_under_compression": 795,
+            "non_positive_shear_tangent_under_compression": 71
+          },
+          "max_factor_at_40pct": 18.00221700176875,
+          "best_shape_parameters": {
+            "c2 = C20/C10": 10.0,
+            "c3 = C30/C10": 1.0162145061683954
+          },
+          "best_compression_curve": [
+            {
+              "compression_fraction": 0.0,
+              "axial_stretch": 1.0,
+              "free_lateral_stretch": 1.0,
+              "volume_ratio": 1.0,
+              "shear_tangent_over_uncompressed": 1.0,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.1,
+              "axial_stretch": 0.9,
+              "free_lateral_stretch": 1.0456772392491789,
+              "volume_ratio": 0.9840967998154061,
+              "shear_tangent_over_uncompressed": 1.7791613376001285,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.2,
+              "axial_stretch": 0.8,
+              "free_lateral_stretch": 1.079803518112582,
+              "volume_ratio": 0.9327805101826474,
+              "shear_tangent_over_uncompressed": 4.321326259010097,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.3,
+              "axial_stretch": 0.7,
+              "free_lateral_stretch": 1.077353653217103,
+              "volume_ratio": 0.8124836258701665,
+              "shear_tangent_over_uncompressed": 9.410904392030028,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.4,
+              "axial_stretch": 0.6,
+              "free_lateral_stretch": 1.0016453912925074,
+              "volume_ratio": 0.6019760939385121,
+              "shear_tangent_over_uncompressed": 18.00221700176875,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            }
+          ],
+          "reaches": {
+            "control": true,
+            "purulent": true,
+            "gangrenous": true
+          }
+        },
+        "ogden": {
+          "energy": "(mu/alpha)*sum_i(lambdabar_i^alpha - 3) + (1/D1)*(J-1)^2",
+          "grid_points": 120,
+          "admissible_points": 67,
+          "rejections_by_reason": {
+            "auxetic_lateral_response_under_compression": 46,
+            "auxetic_lateral_response_at_axial_stretch_1.4": 7
+          },
+          "max_factor_at_40pct": 111.84079819779785,
+          "best_shape_parameters": {
+            "alpha": 23.0
+          },
+          "best_compression_curve": [
+            {
+              "compression_fraction": 0.0,
+              "axial_stretch": 1.0,
+              "free_lateral_stretch": 1.0,
+              "volume_ratio": 1.0,
+              "shear_tangent_over_uncompressed": 1.0,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.1,
+              "axial_stretch": 0.9,
+              "free_lateral_stretch": 1.0490661809218225,
+              "volume_ratio": 0.9904858667585081,
+              "shear_tangent_over_uncompressed": 3.269248575708109,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.2,
+              "axial_stretch": 0.8,
+              "free_lateral_stretch": 1.0981621327212308,
+              "volume_ratio": 0.9647680557942737,
+              "shear_tangent_over_uncompressed": 11.757908495949062,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.3,
+              "axial_stretch": 0.7,
+              "free_lateral_stretch": 1.1184198279323765,
+              "volume_ratio": 0.8756040380586007,
+              "shear_tangent_over_uncompressed": 41.48691878218074,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.4,
+              "axial_stretch": 0.6,
+              "free_lateral_stretch": 1.052493942358569,
+              "volume_ratio": 0.6646460992208897,
+              "shear_tangent_over_uncompressed": 111.84079819779785,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            }
+          ],
+          "reaches": {
+            "control": true,
+            "purulent": true,
+            "gangrenous": true
+          }
+        }
+      },
+      "target_crossings": {
+        "mooney_rivlin": {
+          "axis": "beta = C01/(C10+C01)",
+          "searched": [
+            0.0,
+            0.98
+          ],
+          "crossings": {
+            "control": {
+              "reached": false,
+              "factor_at_path_endpoints": [
+                1.71966992291523,
+                0.6873027062742056
+              ],
+              "reason": "target not bracketed anywhere on this path"
+            },
+            "purulent": {
+              "reached": false,
+              "factor_at_path_endpoints": [
+                1.71966992291523,
+                0.6873027062742056
+              ],
+              "reason": "target not bracketed anywhere on this path"
+            },
+            "gangrenous": {
+              "reached": false,
+              "factor_at_path_endpoints": [
+                1.71966992291523,
+                0.6873027062742056
+              ],
+              "reason": "target not bracketed anywhere on this path"
+            }
+          }
+        },
+        "yeoh": {
+          "axis": "c2 = C20/C10 (c3 = 0)",
+          "searched": [
+            0.001,
+            10.0
+          ],
+          "crossings": {
+            "control": {
+              "reached": true,
+              "parameter_value": 0.5645020976484219,
+              "factor_there": 3.0000000000000013,
+              "admissible_there": true,
+              "inadmissibility": null,
+              "compression_curve": [
+                {
+                  "compression_fraction": 0.0,
+                  "axial_stretch": 1.0,
+                  "free_lateral_stretch": 1.0,
+                  "volume_ratio": 1.0,
+                  "shear_tangent_over_uncompressed": 1.0,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                },
+                {
+                  "compression_fraction": 0.1,
+                  "axial_stretch": 0.9,
+                  "free_lateral_stretch": 1.048542097851525,
+                  "volume_ratio": 0.9894964778701892,
+                  "shear_tangent_over_uncompressed": 1.1570319448966322,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                },
+                {
+                  "compression_fraction": 0.2,
+                  "axial_stretch": 0.8,
+                  "free_lateral_stretch": 1.1045972127575148,
+                  "volume_ratio": 0.9761080019453364,
+                  "shear_tangent_over_uncompressed": 1.4572339653622517,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                },
+                {
+                  "compression_fraction": 0.3,
+                  "axial_stretch": 0.7,
+                  "free_lateral_stretch": 1.1684632327270974,
+                  "volume_ratio": 0.9557144283645412,
+                  "shear_tangent_over_uncompressed": 2.0032275670597963,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                },
+                {
+                  "compression_fraction": 0.4,
+                  "axial_stretch": 0.6,
+                  "free_lateral_stretch": 1.2388287507495823,
+                  "volume_ratio": 0.9208180042102624,
+                  "shear_tangent_over_uncompressed": 3.0000000000000013,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                }
+              ]
+            },
+            "purulent": {
+              "reached": true,
+              "parameter_value": 1.2606482671961905,
+              "factor_there": 4.50000000000021,
+              "admissible_there": true,
+              "inadmissibility": null,
+              "compression_curve": null
+            },
+            "gangrenous": {
+              "reached": true,
+              "parameter_value": 1.501987868111617,
+              "factor_there": 5.000000000000996,
+              "admissible_there": true,
+              "inadmissibility": null,
+              "compression_curve": null
+            }
+          }
+        },
+        "ogden": {
+          "axis": "alpha",
+          "searched": [
+            2.05,
+            20.0
+          ],
+          "crossings": {
+            "control": {
+              "reached": true,
+              "parameter_value": 4.246677766207336,
+              "factor_there": 3.000000000063001,
+              "admissible_there": true,
+              "inadmissibility": null,
+              "compression_curve": [
+                {
+                  "compression_fraction": 0.0,
+                  "axial_stretch": 1.0,
+                  "free_lateral_stretch": 1.0,
+                  "volume_ratio": 1.0,
+                  "shear_tangent_over_uncompressed": 1.0,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                },
+                {
+                  "compression_fraction": 0.1,
+                  "axial_stretch": 0.9,
+                  "free_lateral_stretch": 1.0489467456749801,
+                  "volume_ratio": 0.9902603477359183,
+                  "shear_tangent_over_uncompressed": 1.2542981275646268,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                },
+                {
+                  "compression_fraction": 0.2,
+                  "axial_stretch": 0.8,
+                  "free_lateral_stretch": 1.1070060992805386,
+                  "volume_ratio": 0.980370003075451,
+                  "shear_tangent_over_uncompressed": 1.6154324851363644,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                },
+                {
+                  "compression_fraction": 0.3,
+                  "axial_stretch": 0.7,
+                  "free_lateral_stretch": 1.176495756599646,
+                  "volume_ratio": 0.9688995857078813,
+                  "shear_tangent_over_uncompressed": 2.1523801470622823,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                },
+                {
+                  "compression_fraction": 0.4,
+                  "axial_stretch": 0.6,
+                  "free_lateral_stretch": 1.2605308280737617,
+                  "volume_ratio": 0.953362781114594,
+                  "shear_tangent_over_uncompressed": 3.000000000063001,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                }
+              ]
+            },
+            "purulent": {
+              "reached": true,
+              "parameter_value": 5.884790363977744,
+              "factor_there": 4.5000000000476685,
+              "admissible_there": true,
+              "inadmissibility": null,
+              "compression_curve": null
+            },
+            "gangrenous": {
+              "reached": true,
+              "parameter_value": 6.312669774158648,
+              "factor_there": 5.000000000038886,
+              "admissible_there": true,
+              "inadmissibility": null,
+              "compression_curve": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "poisson_ratio": 0.49,
+      "target_factors": {
+        "control": 3.0,
+        "purulent": 4.5,
+        "gangrenous": 5.0
+      },
+      "models": {
+        "fixed_corotated": {
+          "energy": "mu*||F-R||_F^2 + lambda/2*(J-1)^2  (PhysX eCO_ROTATIONAL)",
+          "grid_points": 1,
+          "admissible_points": 1,
+          "rejections_by_reason": {},
+          "max_factor_at_40pct": 2.03258864592064,
+          "best_shape_parameters": {},
+          "best_compression_curve": [
+            {
+              "compression_fraction": 0.0,
+              "axial_stretch": 1.0,
+              "free_lateral_stretch": 1.0,
+              "volume_ratio": 1.0,
+              "shear_tangent_over_uncompressed": 1.0,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.1,
+              "axial_stretch": 0.9,
+              "free_lateral_stretch": 1.052891154329752,
+              "volume_ratio": 0.9977218045792542,
+              "shear_tangent_over_uncompressed": 1.1669268989188792,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.2,
+              "axial_stretch": 0.8,
+              "free_lateral_stretch": 1.1150864637695157,
+              "volume_ratio": 0.9947342573456027,
+              "shear_tangent_over_uncompressed": 1.3790106950310181,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.3,
+              "axial_stretch": 0.7,
+              "free_lateral_stretch": 1.189660302604686,
+              "volume_ratio": 0.990704144915431,
+              "shear_tangent_over_uncompressed": 1.6563198781410968,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.4,
+              "axial_stretch": 0.6,
+              "free_lateral_stretch": 1.2813172967756608,
+              "volume_ratio": 0.985064409009892,
+              "shear_tangent_over_uncompressed": 2.03258864592064,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            }
+          ],
+          "reaches": {
+            "control": false,
+            "purulent": false,
+            "gangrenous": false
+          }
+        },
+        "mooney_rivlin": {
+          "energy": "C10*(I1bar-3) + C01*(I2bar-3) + (1/D1)*(J-1)^2",
+          "grid_points": 50,
+          "admissible_points": 50,
+          "rejections_by_reason": {},
+          "max_factor_at_40pct": 1.676516516820655,
+          "best_shape_parameters": {
+            "beta = C01/(C10+C01)": 0.0
+          },
+          "best_compression_curve": [
+            {
+              "compression_fraction": 0.0,
+              "axial_stretch": 1.0,
+              "free_lateral_stretch": 1.0,
+              "volume_ratio": 1.0,
+              "shear_tangent_over_uncompressed": 1.0,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.1,
+              "axial_stretch": 0.9,
+              "free_lateral_stretch": 1.0530312762448646,
+              "volume_ratio": 0.9979873818748994,
+              "shear_tangent_over_uncompressed": 1.1126044442233258,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.2,
+              "axial_stretch": 0.8,
+              "free_lateral_stretch": 1.1157466801212514,
+              "volume_ratio": 0.9959125233612754,
+              "shear_tangent_over_uncompressed": 1.2534178752524325,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.3,
+              "axial_stretch": 0.7,
+              "free_lateral_stretch": 1.1914548130597684,
+              "volume_ratio": 0.9936952000943012,
+              "shear_tangent_over_uncompressed": 1.4346077257588974,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.4,
+              "axial_stretch": 0.6,
+              "free_lateral_stretch": 1.2853016341860601,
+              "volume_ratio": 0.991200174504814,
+              "shear_tangent_over_uncompressed": 1.676516516820655,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            }
+          ],
+          "reaches": {
+            "control": false,
+            "purulent": false,
+            "gangrenous": false
+          }
+        },
+        "yeoh": {
+          "energy": "C10*x + C20*x^2 + C30*x^3 + (1/D1)*(J-1)^2, x = I1bar-3",
+          "grid_points": 1209,
+          "admissible_points": 998,
+          "rejections_by_reason": {
+            "auxetic_lateral_response_under_compression": 140,
+            "non_positive_shear_tangent_under_compression": 71
+          },
+          "max_factor_at_40pct": 92.72855856219078,
+          "best_shape_parameters": {
+            "c2 = C20/C10": 26.0,
+            "c3 = C30/C10": 72.37478532496519
+          },
+          "best_compression_curve": [
+            {
+              "compression_fraction": 0.0,
+              "axial_stretch": 1.0,
+              "free_lateral_stretch": 1.0,
+              "volume_ratio": 1.0,
+              "shear_tangent_over_uncompressed": 1.0,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.1,
+              "axial_stretch": 0.9,
+              "free_lateral_stretch": 1.0511122084080604,
+              "volume_ratio": 0.9943531871980228,
+              "shear_tangent_over_uncompressed": 3.1528696768293796,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.2,
+              "axial_stretch": 0.8,
+              "free_lateral_stretch": 1.0938448224187989,
+              "volume_ratio": 0.957197196425931,
+              "shear_tangent_over_uncompressed": 13.71221076448147,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.3,
+              "axial_stretch": 0.7,
+              "free_lateral_stretch": 1.0907381042947986,
+              "volume_ratio": 0.8327967285124276,
+              "shear_tangent_over_uncompressed": 42.35982599969864,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.4,
+              "axial_stretch": 0.6,
+              "free_lateral_stretch": 1.0010332662652297,
+              "volume_ratio": 0.6012405601017806,
+              "shear_tangent_over_uncompressed": 92.72855856219078,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            }
+          ],
+          "reaches": {
+            "control": true,
+            "purulent": true,
+            "gangrenous": true
+          }
+        },
+        "ogden": {
+          "energy": "(mu/alpha)*sum_i(lambdabar_i^alpha - 3) + (1/D1)*(J-1)^2",
+          "grid_points": 120,
+          "admissible_points": 93,
+          "rejections_by_reason": {
+            "auxetic_lateral_response_under_compression": 27
+          },
+          "max_factor_at_40pct": 603.6637453558617,
+          "best_shape_parameters": {
+            "alpha": 30.0
+          },
+          "best_compression_curve": [
+            {
+              "compression_fraction": 0.0,
+              "axial_stretch": 1.0,
+              "free_lateral_stretch": 1.0,
+              "volume_ratio": 1.0,
+              "shear_tangent_over_uncompressed": 1.0,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.1,
+              "axial_stretch": 0.9,
+              "free_lateral_stretch": 1.0529665994047592,
+              "volume_ratio": 0.9978647935158205,
+              "shear_tangent_over_uncompressed": 4.815586177611426,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.2,
+              "axial_stretch": 0.8,
+              "free_lateral_stretch": 1.1112430720621578,
+              "volume_ratio": 0.9878889321649137,
+              "shear_tangent_over_uncompressed": 27.069652112585704,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.3,
+              "axial_stretch": 0.7,
+              "free_lateral_stretch": 1.1523993458743635,
+              "volume_ratio": 0.9296169766601626,
+              "shear_tangent_over_uncompressed": 157.30610746662535,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            },
+            {
+              "compression_fraction": 0.4,
+              "axial_stretch": 0.6,
+              "free_lateral_stretch": 1.1029538881645389,
+              "volume_ratio": 0.7299043676503645,
+              "shear_tangent_over_uncompressed": 603.6637453558617,
+              "shear_tangent_positive": true,
+              "lateral_bulges": true
+            }
+          ],
+          "reaches": {
+            "control": true,
+            "purulent": true,
+            "gangrenous": true
+          }
+        }
+      },
+      "target_crossings": {
+        "mooney_rivlin": {
+          "axis": "beta = C01/(C10+C01)",
+          "searched": [
+            0.0,
+            0.98
+          ],
+          "crossings": {
+            "control": {
+              "reached": false,
+              "factor_at_path_endpoints": [
+                1.676516516820655,
+                0.6332326299058058
+              ],
+              "reason": "target not bracketed anywhere on this path"
+            },
+            "purulent": {
+              "reached": false,
+              "factor_at_path_endpoints": [
+                1.676516516820655,
+                0.6332326299058058
+              ],
+              "reason": "target not bracketed anywhere on this path"
+            },
+            "gangrenous": {
+              "reached": false,
+              "factor_at_path_endpoints": [
+                1.676516516820655,
+                0.6332326299058058
+              ],
+              "reason": "target not bracketed anywhere on this path"
+            }
+          }
+        },
+        "yeoh": {
+          "axis": "c2 = C20/C10 (c3 = 0)",
+          "searched": [
+            0.001,
+            10.0
+          ],
+          "crossings": {
+            "control": {
+              "reached": true,
+              "parameter_value": 0.5746690818136818,
+              "factor_there": 3.0000000001138587,
+              "admissible_there": true,
+              "inadmissibility": null,
+              "compression_curve": [
+                {
+                  "compression_fraction": 0.0,
+                  "axial_stretch": 1.0,
+                  "free_lateral_stretch": 1.0,
+                  "volume_ratio": 1.0,
+                  "shear_tangent_over_uncompressed": 1.0,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                },
+                {
+                  "compression_fraction": 0.1,
+                  "axial_stretch": 0.9,
+                  "free_lateral_stretch": 1.0529926271832895,
+                  "volume_ratio": 0.9979141256121294,
+                  "shear_tangent_over_uncompressed": 1.1533310240466765,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                },
+                {
+                  "compression_fraction": 0.2,
+                  "axial_stretch": 0.8,
+                  "free_lateral_stretch": 1.1153839381312254,
+                  "volume_ratio": 0.995265063552897,
+                  "shear_tangent_over_uncompressed": 1.4529604139137344,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                },
+                {
+                  "compression_fraction": 0.3,
+                  "axial_stretch": 0.7,
+                  "free_lateral_stretch": 1.1899678834864094,
+                  "volume_ratio": 0.9912164946103873,
+                  "shear_tangent_over_uncompressed": 2.001255705103755,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                },
+                {
+                  "compression_fraction": 0.4,
+                  "axial_stretch": 0.6,
+                  "free_lateral_stretch": 1.280809772684219,
+                  "volume_ratio": 0.9842842042820402,
+                  "shear_tangent_over_uncompressed": 3.0000000001138587,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                }
+              ]
+            },
+            "purulent": {
+              "reached": true,
+              "parameter_value": 1.2318811237157392,
+              "factor_there": 4.500000000000103,
+              "admissible_there": true,
+              "inadmissibility": null,
+              "compression_curve": null
+            },
+            "gangrenous": {
+              "reached": true,
+              "parameter_value": 1.4523741921110738,
+              "factor_there": 5.000000000000257,
+              "admissible_there": true,
+              "inadmissibility": null,
+              "compression_curve": null
+            }
+          }
+        },
+        "ogden": {
+          "axis": "alpha",
+          "searched": [
+            2.05,
+            20.0
+          ],
+          "crossings": {
+            "control": {
+              "reached": true,
+              "parameter_value": 4.2912091494431985,
+              "factor_there": 3.0000000000152154,
+              "admissible_there": true,
+              "inadmissibility": null,
+              "compression_curve": [
+                {
+                  "compression_fraction": 0.0,
+                  "axial_stretch": 1.0,
+                  "free_lateral_stretch": 1.0,
+                  "volume_ratio": 1.0,
+                  "shear_tangent_over_uncompressed": 1.0,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                },
+                {
+                  "compression_fraction": 0.1,
+                  "axial_stretch": 0.9,
+                  "free_lateral_stretch": 1.0530780487494125,
+                  "volume_ratio": 0.998076039082083,
+                  "shear_tangent_over_uncompressed": 1.2543411733927343,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                },
+                {
+                  "compression_fraction": 0.2,
+                  "axial_stretch": 0.8,
+                  "free_lateral_stretch": 1.115883890412273,
+                  "volume_ratio": 0.9961574855053038,
+                  "shear_tangent_over_uncompressed": 1.6158712335516596,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                },
+                {
+                  "compression_fraction": 0.3,
+                  "axial_stretch": 0.7,
+                  "free_lateral_stretch": 1.1916084239168543,
+                  "volume_ratio": 0.9939514451647266,
+                  "shear_tangent_over_uncompressed": 2.153320870414201,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                },
+                {
+                  "compression_fraction": 0.4,
+                  "axial_stretch": 0.6,
+                  "free_lateral_stretch": 1.285154462907672,
+                  "volume_ratio": 0.9909731961189042,
+                  "shear_tangent_over_uncompressed": 3.0000000000152154,
+                  "shear_tangent_positive": true,
+                  "lateral_bulges": true
+                }
+              ]
+            },
+            "purulent": {
+              "reached": true,
+              "parameter_value": 5.8880649098331705,
+              "factor_there": 4.500000000061044,
+              "admissible_there": true,
+              "inadmissibility": null,
+              "compression_curve": null
+            },
+            "gangrenous": {
+              "reached": true,
+              "parameter_value": 6.303422008764205,
+              "factor_there": 5.000000000100881,
+              "admissible_there": true,
+              "inadmissibility": null,
+              "compression_curve": null
+            }
+          }
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Reachability only. A reachable class is a candidate; no parameter is identified, promoted or validated.",
+    "Single material point: says nothing about mesh quality, volumetric locking, element inversion or solver convergence.",
+    "Purely hyperelastic: no rate dependence, stress relaxation or hysteresis, while the reference quantity is a storage modulus from an oscillatory viscoelastic measurement.",
+    "One loading mode. Compression stiffening only; tension, bending and grasping are separate gates.",
+    "Reference endpoints are small-cohort reported percentages; raw rheometer curves were not digitised.",
+    "The volumetric penalty (1/D1)(J-1)^2 is one of several admissible forms; another choice shifts the near-incompressible results."
+  ],
+  "source": {
+    "appendix_article": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11591559/",
+    "extends": "local_validation/physx_corotated_compression_audit.py",
+    "analysis_script_sha256": "af007e61b83a5cefedff273768504248d5eb76738e02c283747d06f1715a8feb"
+  }
+}

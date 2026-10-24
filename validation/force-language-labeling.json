@@ -1,0 +1,164 @@
+{
+  "scope": "Force-to-language labels for VLA training on phantom specimen A01; relative-magnitude labels only, no absolute newtons and no direction",
+  "absolute_newtons_validated": false,
+  "direction_channel_used": false,
+  "quantity": "r = F_tip / F_slip_ref, F_tip = hypot(bending_gripper_x, bending_gripper_y)",
+  "why_ratio": "The decoupling matrix was fitted for a different load point, so every newton value carries one unknown multiplicative constant (phantom_force_A01/README.md limitation 1). A ratio to an in-dataset reference cancels it, exactly as the dataset own Phase 2 result does.",
+  "ratio_anchor": {
+    "definition": "median peak F_tip of the dry slip trials (protocol 4)",
+    "meaning": "r = 1 is the tension at which the tissue escaped the jaws",
+    "value_N_nominal": 2.1571,
+    "trials": 10,
+    "peaks_N_nominal": [
+      1.7354,
+      1.8029,
+      1.8835,
+      1.9185,
+      2.0753,
+      2.239,
+      2.2677,
+      2.4034,
+      2.4667,
+      2.6275
+    ],
+    "median_N_nominal": 2.1571,
+    "spread_N_nominal": [
+      1.7354,
+      2.6275
+    ]
+  },
+  "label_axes": {
+    "level": [
+      {
+        "band": 0,
+        "r_from": 0.0,
+        "r_to": 0.07,
+        "name": "no_load",
+        "name_ko": "무하중"
+      },
+      {
+        "band": 1,
+        "r_from": 0.07,
+        "r_to": 0.25,
+        "name": "light_contact",
+        "name_ko": "가벼운 접촉"
+      },
+      {
+        "band": 2,
+        "r_from": 0.25,
+        "r_to": 0.6,
+        "name": "secure_traction",
+        "name_ko": "안정 견인"
+      },
+      {
+        "band": 3,
+        "r_from": 0.6,
+        "r_to": 1.0,
+        "name": "high_traction",
+        "name_ko": "강한 견인"
+      },
+      {
+        "band": 4,
+        "r_from": 1.0,
+        "r_to": null,
+        "name": "beyond_grip_limit",
+        "name_ko": "파지 한계 초과"
+      }
+    ],
+    "trend": {
+      "unit": "r per second",
+      "rising_fast": ">= 0.5",
+      "rising": ">= 0.1",
+      "steady": "|.| < 0.1",
+      "releasing": "<= -0.1",
+      "dropping_fast": "<= -0.5",
+      "window_s": 0.3
+    },
+    "event": {
+      "contact_onset": "band 0 -> >=1",
+      "release": "band >=1 -> 0",
+      "traction_loss": "r falls below 0.6 of the peak held over the preceding 1.6 s, from a peak in band 2 or above, and does not climb back to 0.85 of that peak within 0.5 s",
+      "why_not_called_slip": "magnitude cannot tell an escaped grasp from a deliberate release. Trough persistence does not separate the stages: move_F troughs last longer (median 3.2 s) than slip_dry troughs (2.2 s). The event states what is measured -- the tension collapsed and stayed down.",
+      "subtype": {
+        "from": "handle gauge change across the drop, +-0.5 N nominal deadband",
+        "handle_held": "handle force rose or held: the pattern of tissue escaping closed jaws",
+        "handle_opened": "handle force fell: the pattern of a deliberate release",
+        "evidence_N_nominal_median_by_stage": {
+          "slip_dry": 1.36,
+          "lift": -1.63,
+          "move": -1.16,
+          "grasp": -0.85
+        },
+        "caveat": "the handle gauge carries -1.07 to -1.20 N of bending contamination at 4.9 N and -1.57 N under 0.23 N.m of torsion (protocol 1), and bending is falling across the drop, so relief of that contamination pushes the reading up by a few tenths on its own. The separation above is larger than that, but the subtype is a cue, not a measurement."
+      }
+    }
+  },
+  "stability": {
+    "label_rate_hz": 10.0,
+    "dwell_ticks": 2,
+    "boundary_hysteresis": 0.1,
+    "asymmetric": "escalation immediate, de-escalation needs dwell + hysteresis",
+    "why": "at 100 Hz a raw threshold flickers across a boundary and the language label would change several times a second; the asymmetry keeps a rising force from being under-reported"
+  },
+  "noise_floor": {
+    "bending_axis_N_nominal": 0.1,
+    "in_ratio_units": 0.0464,
+    "lowest_band_edge": 0.07,
+    "note": "no_load is kept strictly below anything the axis resolves"
+  },
+  "coverage": {
+    "sessions": 7,
+    "trials": 60,
+    "labels": 5902,
+    "clips_linked": 10,
+    "clip_match": "clip_duration",
+    "clip_files": 10,
+    "band_distribution": {
+      "no_load": 58,
+      "light_contact": 640,
+      "secure_traction": 2660,
+      "high_traction": 1605,
+      "beyond_grip_limit": 939
+    },
+    "trend_distribution": {
+      "rising_fast": 324,
+      "rising": 1346,
+      "steady": 2853,
+      "releasing": 1132,
+      "dropping_fast": 247
+    },
+    "stages": [
+      "grasp",
+      "lift_05",
+      "lift_10",
+      "lift_15",
+      "lift_20",
+      "move_B",
+      "move_F",
+      "move_L",
+      "move_R",
+      "slip_dry"
+    ]
+  },
+  "not_labelled": [
+    "direction: theta clusters at 130-165 deg for all four move directions, so the bending_gripper_y calibration is stale (README limitation 2). move_L/R/F/B is carried as operator intent, never as a measured direction.",
+    "grasp force in newtons: the gripping gauge is on the handle lever, 0.5 N resolution with -1.57 N torsion contamination (protocol 1)",
+    "stiffness, displacement, axial thrust: no such channel exists",
+    "the 261021 surgilog session: no-load recording, refuse_unloaded_session() blocks it"
+  ],
+  "remaining": [
+    "Protocol appendix A-1 (push-type scale at the contact point) fixes the one constant that turns these ratios into absolute newtons; the band edges then stay as they are and only the anchor gains a unit.",
+    "One specimen and n=5 per stage, below the protocol n>=10; the anchor should be remeasured per specimen before the bands are quoted as phantom specifications.",
+    "A loaded session on the 261021 rig would give video + kinematics + force together; A01 has no MCU kinematics, so these labels carry no insertion depth or grip percentage."
+  ],
+  "refused_inputs": {
+    "sessions": 13,
+    "example": "external/phantom_261021/surgilog_261021_complete version of Phantom data/NI6009/collected_data/261021/episode_20261021_171006.h5",
+    "reason": "no-load session. Live channels are bending_trocar_x/y at 1.4-2.2 mN against ~100 mN resolution (1/45), spectrally and statistically indistinguishable from the gauge-removed channels. Usable here only as the no_load class; force magnitude, trend and slip labels must not be derived from it (DATASET_MANUAL.md 6.1).",
+    "may_still_contribute": "the no_load class, and video + MCU kinematics, which are sound in that session"
+  },
+  "outputs": {
+    "per_tick": "out/vla_force_labels/<episode>.jsonl",
+    "per_trial": "out/vla_force_labels/episodes.jsonl"
+  }
+}

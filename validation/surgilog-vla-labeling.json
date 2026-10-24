@@ -1,0 +1,225 @@
+{
+  "scope": "VLA state-action-language labels for surgilog_261021: endoscope video, both instruments kinematics, and a declared no-load force axis",
+  "force_measured": false,
+  "force_axis": {
+    "state": "no_load",
+    "state_ko": "무하중",
+    "measured": false,
+    "detection_limit_mN_1s_average": 0.2,
+    "detection_limit_mN_2s_average": 0.13,
+    "basis": "NI6009 bending_trocar_x/y, 1.4-2.2 mN against ~100 mN resolution; averaging follows 1/sqrt(n) to 2 s, converging on zero (DATASET_MANUAL 6.1)",
+    "cutter_channel": "SurgiTag loadcell is uncalibrated uV/V at drift level; corr with grip flips sign between episodes (DATASET_MANUAL 6.2)",
+    "vocabulary_defined_in": "local_validation/force_language_labeling.py",
+    "vocabulary_source_session": "phantom_force_A01 (loaded, ratio-valid)"
+  },
+  "why_this_session": "the only session carrying video, both instruments kinematics and one shared absolute clock. 6973 frames with zero drops, camera/master_index gives a 1:1 frame-to-sample key, MCU CRC and sequence loss are both zero. The A01 force session has no MCU at all, so no tip pose, insertion depth or grip percentage, and its force trace cannot be tied to a state or an action.",
+  "force_axis_is_declared_not_estimated": "Every record carries force.state = no_load with the measured detection limit. That is the manual one sanctioned use of this session force channel. No magnitude, trend or slip word is emitted: z-scoring this channel yields a convincing +-3 sigma trace indistinguishable from the physically disconnected channels, so a post-processed force label here would be manufactured, not recovered (DATASET_MANUAL 6.1 c).",
+  "label_axes": {
+    "jaw": {
+      "from": "MCU grip percent",
+      "bands": [
+        {
+          "from_pct": 0.0,
+          "name": "jaw_open",
+          "name_ko": "겸자 열림"
+        },
+        {
+          "from_pct": 10.0,
+          "name": "jaw_part_closed",
+          "name_ko": "겸자 반쯤 닫힘"
+        },
+        {
+          "from_pct": 60.0,
+          "name": "jaw_closed",
+          "name_ko": "겸자 닫힘"
+        },
+        {
+          "from_pct": 99.9,
+          "name": "jaw_clamped_saturated",
+          "name_ko": "겸자 완전 압착(센서 포화)"
+        }
+      ],
+      "motion_threshold_pct_per_s": 25.0,
+      "saturation": "the top band is the hall-to-percent clip; 36.2 percent of valid samples read exactly 100.0 and the jaw angle inside it is unknown. Finer angle needs MCU hall/adc (session range 1675-2456)."
+    },
+    "depth": {
+      "from": "MCU dist, trocar insertion depth in mm",
+      "bands": "terciles of each session own range",
+      "session_cuts_mm": {
+        "A": [
+          198.13,
+          204.59
+        ],
+        "B": [
+          193.51,
+          203.88
+        ]
+      },
+      "motion_threshold_mm_per_s": 2.0,
+      "why_per_session": "rcm_qref is re-zeroed between session A and B (DATASET_MANUAL 6.6), so a shallow/deep word fitted on one does not transfer. The rate of change does transfer and is labelled globally."
+    },
+    "tip_motion": {
+      "from": "speed of MCU rcm_position",
+      "bands": [
+        {
+          "from_mm_s": 0.0,
+          "name": "tip_still",
+          "name_ko": "팁 정지"
+        },
+        {
+          "from_mm_s": 3.0,
+          "name": "tip_slow",
+          "name_ko": "팁 느리게 이동"
+        },
+        {
+          "from_mm_s": 15.0,
+          "name": "tip_moderate",
+          "name_ko": "팁 보통 속도 이동"
+        },
+        {
+          "from_mm_s": 60.0,
+          "name": "tip_fast",
+          "name_ko": "팁 빠르게 이동"
+        }
+      ],
+      "measured_deciles_mm_s": {
+        "p10": 3.03,
+        "p50": 10.56,
+        "p90": 78.76
+      },
+      "cross_session_valid": "yes -- a difference, so the per-session zero cancels"
+    },
+    "cutter_proximity": {
+      "from": "SurgiTag tof_mm",
+      "bands": [
+        {
+          "from_mm": 0.0,
+          "name": "cutter_near",
+          "name_ko": "커터 근접"
+        },
+        {
+          "from_mm": 105.0,
+          "name": "cutter_mid",
+          "name_ko": "커터 중간 거리"
+        },
+        {
+          "from_mm": 140.0,
+          "name": "cutter_far",
+          "name_ko": "커터 원거리"
+        }
+      ],
+      "motion_threshold_mm_per_s": 15.0,
+      "naming": "proximity only. The manual allows ToF, dist and grip as contact proxies on the explicit condition that they are not named force."
+    },
+    "coordination": {
+      "from": "grasper tip speed, and cutter angular rate or range rate -- the cutter has no tip-position stream, so rotation alone would call a translating cutter idle",
+      "cutter_spin_threshold_dps": 30.0,
+      "cutter_range_rate_threshold_mm_per_s": 15.0,
+      "classes": [
+        "both_active",
+        "both_still",
+        "cutter_leads",
+        "grasper_leads"
+      ]
+    }
+  },
+  "state_action": {
+    "tick_hz": 10.0,
+    "diff_window_s": 0.2,
+    "action": "delta tip position (mm) and delta grip (percent) over the next tick",
+    "action_chunk_len": 5,
+    "frame_key": "camera/master_index, monotone and duplicate-free in all 13 episodes",
+    "state_fields": [
+      "insertion_depth_mm",
+      "grip_pct",
+      "tip_xyz_mm_session_zero",
+      "tip_quat_rel_xyzw",
+      "cutter_quat_wxyz",
+      "cutter_tof_mm",
+      "cutter_spin_dps"
+    ]
+  },
+  "validity_handling": {
+    "rates": "every rate and speed requires BOTH ends of its window to pass the stream own validity mask, so no value is computed across a dropout or across the NaN head and tail the merge leaves",
+    "ble_gap_episodes": [
+      "175635",
+      "175653",
+      "175713",
+      "175731",
+      "175750"
+    ],
+    "ble_gap_effect": "350-380 ms gaps filled by linear interpolation; ticks failing imu/valid carry no cutter label and say so in the utterance",
+    "clean_episodes": [
+      "171006",
+      "171033",
+      "175616",
+      "175809",
+      "175828",
+      "175846",
+      "175906",
+      "175925"
+    ],
+    "uncorrected_lag": [
+      "none (0 ms: no tap test yet)"
+    ],
+    "lag_effect": "no tap test, so cross-modal timing is good to the clock residual (0.2-0.9 ms MCU, 2.2-4.2 ms SurgiTag) but not to a measured sensor-to-sensor lag; do not read causality at tens of ms"
+  },
+  "not_labelled": [
+    "force magnitude, trend, or slip: no load in this session on either instrument",
+    "subtask or phase: this dataset carries no such annotation, so unlike the A01 labels nothing in these records is operator intent",
+    "session A to B tip position comparison: different RCM zero",
+    "jaw angle above the grip saturation point"
+  ],
+  "coverage": {
+    "episodes": 13,
+    "labels": 2310,
+    "frames": 6973,
+    "duration_s": 234.19,
+    "label_distribution": {
+      "jaw": {
+        "jaw_clamped_saturated": 839,
+        "jaw_closed": 184,
+        "jaw_part_closed": 1102,
+        "jaw_open": 185
+      },
+      "speed": {
+        "tip_slow": 1105,
+        "tip_still": 270,
+        "tip_moderate": 615,
+        "tip_fast": 320
+      },
+      "coord": {
+        "grasper_leads": 1075,
+        "both_still": 132,
+        "cutter_leads": 138,
+        "both_active": 965
+      },
+      "cutter": {
+        "cutter_far": 490,
+        "cutter_mid": 1222,
+        "cutter_near": 544,
+        "unlabelled": 54
+      }
+    },
+    "max_live_force_span_mN": 2.151,
+    "manual_reported_span_mN": {
+      "bending_trocar_x": [
+        1.4,
+        2.0
+      ],
+      "bending_trocar_y": [
+        1.6,
+        2.2
+      ]
+    }
+  },
+  "remaining": [
+    "A loaded session on THIS rig is the one missing piece: it would fill the force bands defined in local_validation/force_language_labeling.py against the state and action labelled here. Until then the force axis trains only the no-load class.",
+    "Protocol section 7 of the dataset manual gives the calibration the cutter loadcell needs (software half bridge, common-mode projection removal, then an affine decoupling fitted on LOADED data -- fitting it on this session overfits drift and makes leakage worse).",
+    "A tap test would fix the uncorrected sensor-to-sensor lag and allow cross-modal reasoning at tens of ms."
+  ],
+  "outputs": {
+    "per_tick": "out/vla_surgilog_labels/<episode>.jsonl",
+    "per_episode": "out/vla_surgilog_labels/episodes.jsonl"
+  }
+}

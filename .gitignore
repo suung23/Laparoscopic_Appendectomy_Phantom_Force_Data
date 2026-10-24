@@ -22,3 +22,5 @@ private-asset-downloads.json
 /IsaacSimulator.exe
 /RobotAgent.exe
 /optix7cache.db*
+
+/external/
